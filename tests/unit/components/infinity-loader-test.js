@@ -26,13 +26,13 @@ test('it will not destroy on load unless set', function(assert) {
   ];
 
   var component = this.subject();
-  component.set('infiniteModel', infinityModelStub);
+  component.set('infinityModel', infinityModelStub);
   this.render();
 
   assert.equal(component.get('destroyOnInfinity'), false);
 
   Ember.run(function() {
-    component.set('infiniteModel.reachedInfinity', true);
+    component.set('infinityModel.reachedInfinity', true);
   });
 
   assert.equal(component._state, 'inDOM');
@@ -54,14 +54,14 @@ test('it changes text property', function(assert) {
 
   var componentText;
   var component = this.subject();
-  component.set('infiniteModel', infinityModelStub);
+  component.set('infinityModel', infinityModelStub);
   this.render();
 
   componentText = $.trim(component.$().text());
   assert.equal(componentText, "Loading Infinite Model...");
 
   Ember.run(function() {
-    component.set('infiniteModel.reachedInfinity', true);
+    component.set('infinityModel.reachedInfinity', true);
   });
 
   componentText = $.trim(component.$().text());
