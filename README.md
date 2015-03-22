@@ -1,4 +1,5 @@
 # Ember Infinity
+[![Build Status](https://travis-ci.org/hhff/ember-infinity.svg)](https://travis-ci.org/hhff/ember-infinity)
 
 Simple, flexible infinite scrolling for Ember CLI Apps.  Works out of the box
 with the [Kaminari Gem](https://github.com/amatsuda/kaminari.git).
@@ -15,7 +16,7 @@ import InfinityRoute from "ember-infinity/mixins/route";
 
 export default Ember.Route.extend(InfinityRoute, {
   model() {
-    // Load pages of the Product Model, starting from page 1, in groups of 12.
+    /* Load pages of the Product Model, starting from page 1, in groups of 12. */
     return this.infinityModel("product", { perPage: 12, startingPage: 1 });
   }
 });
