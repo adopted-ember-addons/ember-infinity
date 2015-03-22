@@ -84,6 +84,7 @@ export default Ember.Mixin.create({
 
     this.set('_infinityModelName', modelName);
 
+    options = options || {};
     var startingPage = options.startingPage || 1;
     var perPage      = options.perPage || this.get('_perPage');
 

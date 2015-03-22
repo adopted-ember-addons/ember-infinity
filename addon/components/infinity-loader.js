@@ -45,7 +45,7 @@ export default Ember.Component.extend({
     }
   },
 
-  loadedStatusDidChange: Ember.observer('infiniteModel.reachedInfinity', function() {
+  loadedStatusDidChange: Ember.observer('infiniteModel.reachedInfinity', 'destroyOnInfinity', function() {
     if (this.get('infiniteModel.reachedInfinity') && this.get('destroyOnInfinity')) { this.destroy(); }
   })
 });
