@@ -4,6 +4,9 @@
 Simple, flexible infinite scrolling for Ember CLI Apps.  Works out of the box
 with the [Kaminari Gem](https://github.com/amatsuda/kaminari.git).
 
+Inspired by @bantic's [Ember Infinite Scroll](https://github.com/bantic/ember-infinite-scroll)
+repo, but without using controllers, in preparation for Ember 2.0.
+
 ## Installation
 
 `ember install:addon ember-infinity`
