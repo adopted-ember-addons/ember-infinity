@@ -42,7 +42,7 @@ When the new records are loaded, they will automatically be pushed into the Mode
 
 The `infinity-loader` component as some extra options to make working with it easy!
 
-* destroyOnInfinity
+* **destroyOnInfinity**
 
 ```html
 {{infinity-loader infinityModel=model destroyOnInfinity=true}}
@@ -51,7 +51,7 @@ The `infinity-loader` component as some extra options to make working with it ea
 Now, when the Infinity Model is fully loaded, the `infinity-loader` will remove itself
 from the page.
 
-* developmentMode
+* **developmentMode**
 
 ```html
 {{infinity-loader infinityModel=model developmentMode=true}}
@@ -60,7 +60,7 @@ from the page.
 This simply stops the `infinity-loader` from fetching triggering loads, so that
 you can work on its appearance.
 
-* loadingText & loadedText
+* **loadingText & loadedText**
 
 ```html
 {{infinity-loader infinityModel=model loadingText="Loading..." loadedText="Loaded!"}}
@@ -68,7 +68,7 @@ you can work on its appearance.
 
 By default, the `infinity-loader` will just output a `span` showing its status.
 
-* reached-infinity Class Name
+* **reached-infinity Class Name**
 
 ```scss
 .infinity-loader {
@@ -83,13 +83,9 @@ By default, the `infinity-loader` will just output a `span` showing its status.
 When the Infinity Model loads entirely, the `reached-infinity` class is added to the
 component.
 
-* infinity-template Generator
+* **infinity-template Generator**
 
 `ember generate infinity-template`
 
 Will install the default `infinity-loader` template into your host app, at
 `app/templates/components/infinity-loader`.
-
-
-
-
