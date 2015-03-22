@@ -1,7 +1,7 @@
 {
   "name": "ember-infinity",
-  "version": "0.0.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "version": "0.0.1",
+  "description": "Simple, flexible infinite scroll for Ember CLI Apps.",
   "directories": {
     "doc": "doc",
     "test": "tests"
@@ -11,12 +11,15 @@
     "build": "ember build",
     "test": "ember test"
   },
-  "repository": "",
+  "repository": "https://github.com/hhff/ember-infinity",
   "engines": {
     "node": ">= 0.10.0"
   },
-  "author": "",
+  "author": "Hugh Francis",
   "license": "MIT",
+  "dependencies": {
+    "ember-cli-htmlbars": "0.7.4"
+  },
   "devDependencies": {
     "broccoli-asset-rev": "^2.0.0",
     "ember-cli": "0.2.0",
