@@ -4,7 +4,7 @@ import layout from '../templates/components/infinity-loader';
 export default Ember.Component.extend({
   layout: layout,
   classNames: ["infinity-loader"],
-  classNameBindings: ["infiniteModel.reachedInfinity"],
+  classNameBindings: ["infinityModel.reachedInfinity"],
   guid: null,
   scrollDebounce: 10,
   loadMoreAction: 'infinityLoad',
@@ -45,7 +45,7 @@ export default Ember.Component.extend({
     }
   },
 
-  loadedStatusDidChange: Ember.observer('infiniteModel.reachedInfinity', 'destroyOnInfinity', function() {
-    if (this.get('infiniteModel.reachedInfinity') && this.get('destroyOnInfinity')) { this.destroy(); }
+  loadedStatusDidChange: Ember.observer('infinityModel.reachedInfinity', 'destroyOnInfinity', function() {
+    if (this.get('infinityModel.reachedInfinity') && this.get('destroyOnInfinity')) { this.destroy(); }
   })
 });
