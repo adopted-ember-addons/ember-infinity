@@ -12,6 +12,7 @@ export default Ember.Component.extend({
   loadedText: 'Infinite Model Entirely Loaded.',
   destroyOnInfinity: false,
   developmentMode: false,
+  scrollable: window,
 
   didInsertElement: function() {
     this.set('guid', Ember.guidFor(this));
@@ -25,20 +26,20 @@ export default Ember.Component.extend({
 
   _bindScroll: function() {
     var _this = this;
-    Ember.$(window).on("scroll."+this.get('guid'), function() {
+    Ember.$(this.get("scrollable")).on("scroll."+this.get('guid'), function() {
       Ember.run.debounce(_this, _this._checkIfInView, _this.get('scrollDebounce'));
     });
   },
 
   _unbindScroll: function() {
-    Ember.$(window).off("scroll."+this.get('guid'));
+    Ember.$(this.get("scrollable")).off("scroll."+this.get('guid'));
   },
 
   _checkIfInView: function() {
     var selfOffset   = this.$().offset().top;
-    var windowBottom = Ember.$(window).height() + Ember.$(window).scrollTop();
+    var scrollableBottom = Ember.$(this.get("scrollable")).height() + Ember.$(this.get("scrollable")).scrollTop();
 
-    var inView = selfOffset < windowBottom ? true : false;
+    var inView = selfOffset < scrollableBottom ? true : false;
 
     if (inView && !this.get('developmentMode')) {
       this.sendAction('loadMoreAction');
