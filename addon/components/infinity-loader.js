@@ -18,6 +18,7 @@ export default Ember.Component.extend({
     this.set('guid', Ember.guidFor(this));
     this._bindScroll();
     this._checkIfInView();
+    this._checkScrollable();
   },
 
   willDestroyElement: function() {
@@ -43,6 +44,20 @@ export default Ember.Component.extend({
 
     if (inView && !this.get('developmentMode')) {
       this.sendAction('loadMoreAction');
+    }
+  },
+
+  _checkScrollable: function() {
+    var scrollable = this.get('scrollable');
+    if (Ember.$.type(scrollable) === 'string') {
+      var items = Ember.$(scrollable);
+      if (items.length === 1) {
+        this.set('scrollable', items[0]);
+      } else if (items.length > 1) {
+        throw new Error("Multiple scrollable elements found for: " + scrollable);
+      } else {
+        throw new Error("No scrollable element found for: " + scrollable);
+      }
     }
   },
 
