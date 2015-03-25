@@ -93,3 +93,12 @@ component.
 
 Will install the default `infinity-loader` template into your host app, at
 `app/templates/components/infinity-loader`.
+
+* **scrollable**
+
+```html
+{{infinity-loader scrollable="#content"}}
+```
+
+You can optionally pass in a jQuery style selector string.  If it's not a string, 
+scrollable will default to using the window for the scroll binding.
