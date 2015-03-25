@@ -73,7 +73,7 @@ test('it uses the window as the scrollable element', function(assert) {
   var component = this.subject();
   this.render();
   var scrollable = component.get("scrollable");
-  assert.equal(scrollable, window);
+  assert.equal(scrollable[0], window);
 });
 
 test('it uses the provided scrollable element', function(assert) {
@@ -82,7 +82,7 @@ test('it uses the provided scrollable element', function(assert) {
   var component = this.subject({scrollable: "#content"});
   this.render();
   var scrollable = component.get("scrollable");
-  assert.equal(scrollable, $("#content")[0]);
+  assert.equal(scrollable[0], $("#content")[0]);
 });
 
 test('it throws error when scrollable element is not found', function(assert) {
