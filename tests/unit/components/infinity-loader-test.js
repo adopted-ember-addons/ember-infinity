@@ -68,3 +68,36 @@ test('it changes text property', function(assert) {
   assert.equal(componentText, "Infinite Model Entirely Loaded.");
 });
 
+test('it uses the window as the scrollable element', function(assert) {
+  assert.expect(1);
+  var component = this.subject();
+  this.render();
+  var scrollable = component.get("scrollable");
+  assert.equal(scrollable[0], window);
+});
+
+test('it uses the provided scrollable element', function(assert) {
+  assert.expect(1);
+  $(document.body).append("<div id='content'/>");
+  var component = this.subject({scrollable: "#content"});
+  this.render();
+  var scrollable = component.get("scrollable");
+  assert.equal(scrollable[0], $("#content")[0]);
+});
+
+test('it throws error when scrollable element is not found', function(assert) {
+  assert.expect(1);
+  var component = this.subject({scrollable: "#notfound"});
+  assert.throws(function() {
+    this.render();
+  }, Error, "Should raise error");
+});
+
+test('it throws error when multiple scrollable elements are found', function(assert) {
+  assert.expect(1);
+  $(document.body).append("<div/><div/>");
+  var component = this.subject({scrollable: "div"});
+  assert.throws(function() {
+    this.render();
+  }, Error, "Should raise error");
+});

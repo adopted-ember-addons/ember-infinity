@@ -12,8 +12,10 @@ export default Ember.Component.extend({
   loadedText: 'Infinite Model Entirely Loaded.',
   destroyOnInfinity: false,
   developmentMode: false,
+  scrollable: null,
 
   didInsertElement: function() {
+    this._setupScrollable();
     this.set('guid', Ember.guidFor(this));
     this._bindScroll();
     this._checkIfInView();
@@ -25,23 +27,40 @@ export default Ember.Component.extend({
 
   _bindScroll: function() {
     var _this = this;
-    Ember.$(window).on("scroll."+this.get('guid'), function() {
+    this.get("scrollable").on("scroll."+this.get('guid'), function() {
       Ember.run.debounce(_this, _this._checkIfInView, _this.get('scrollDebounce'));
     });
   },
 
   _unbindScroll: function() {
-    Ember.$(window).off("scroll."+this.get('guid'));
+    this.get("scrollable").off("scroll."+this.get('guid'));
   },
 
   _checkIfInView: function() {
-    var selfOffset   = this.$().offset().top;
-    var windowBottom = Ember.$(window).height() + Ember.$(window).scrollTop();
+    var selfOffset       = this.$().offset().top;
+    var scrollable       = this.get("scrollable");
+    var scrollableBottom = scrollable.height() + scrollable.scrollTop();
 
-    var inView = selfOffset < windowBottom ? true : false;
+    var inView = selfOffset < scrollableBottom ? true : false;
 
     if (inView && !this.get('developmentMode')) {
       this.sendAction('loadMoreAction');
+    }
+  },
+
+  _setupScrollable: function() {
+    var scrollable = this.get('scrollable');
+    if (Ember.$.type(scrollable) === 'string') {
+      var items = Ember.$(scrollable);
+      if (items.length === 1) {
+        this.set('scrollable', items.eq(0));
+      } else if (items.length > 1) {
+        throw new Error("Multiple scrollable elements found for: " + scrollable);
+      } else {
+        throw new Error("No scrollable element found for: " + scrollable);
+      }
+    } else {
+      this.set('scrollable', Ember.$(window));
     }
   },
 
