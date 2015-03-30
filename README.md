@@ -1,6 +1,7 @@
 # Ember Infinity
 [![Build Status](https://travis-ci.org/hhff/ember-infinity.svg)](https://travis-ci.org/hhff/ember-infinity)
 [![npm version](https://badge.fury.io/js/ember-infinity.svg)](http://badge.fury.io/js/ember-infinity)
+[![Ember Observer Score](http://emberobserver.com/badges/ember-infinity.svg)](http://emberobserver.com/addons/ember-infinity)
 
 Simple, flexible infinite scrolling for Ember CLI Apps.  Works out of the box
 with the [Kaminari Gem](https://github.com/amatsuda/kaminari.git).
@@ -100,5 +101,5 @@ Will install the default `infinity-loader` template into your host app, at
 {{infinity-loader scrollable="#content"}}
 ```
 
-You can optionally pass in a jQuery style selector string.  If it's not a string, 
+You can optionally pass in a jQuery style selector string.  If it's not a string,
 scrollable will default to using the window for the scroll binding.
