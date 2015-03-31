@@ -129,7 +129,7 @@ export default Ember.Mixin.create({
       if (!this.get('_loadingMore') && this.get('_canLoadMore')) {
         this.set('_loadingMore', true);
 
-        var promise = this.store.find(modelName, $.extend(params, { page: startingPage, per_page: perPage }));
+        var promise = this.store.find(modelName, $.extend(params, { page: nextPage, per_page: perPage }));
         promise.then(
           function(infinityModel) {
             model.pushObjects(infinityModel.get('content'));
