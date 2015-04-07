@@ -30,6 +30,14 @@ export default Ember.Mixin.create({
 
   /**
     @private
+    @property _extraParams
+    @type Object
+    @default {}
+  */
+  _extraParams: {},
+
+  /**
+    @private
     @property _loadingMore
     @type Boolean
     @default false
@@ -84,13 +92,18 @@ export default Ember.Mixin.create({
 
     this.set('_infinityModelName', modelName);
 
-    options = options || {};
+    options = options ? Ember.merge({}, options) : {};
     var startingPage = options.startingPage || 1;
     var perPage      = options.perPage || this.get('_perPage');
 
-    this.set('_perPage', perPage);
+    delete options.startingPage;
+    delete options.perPage;
 
-    var promise = this.store.find(modelName, { page: startingPage, per_page: perPage });
+    this.set('_perPage', perPage);
+    this.set('_extraParams', options);
+
+    var params = Ember.merge({ page: startingPage, per_page: perPage }, options);
+    var promise = this.store.find(modelName, params);
 
     promise.then(
       function(infinityModel) {
@@ -108,48 +121,53 @@ export default Ember.Mixin.create({
     return promise;
   },
 
-  actions: {
-    /**
-      Trigger a load of the next page of results.
+  /**
+   Trigger a load of the next page of results.
 
-      @method infinityLoad
-      @return {Boolean}
-    */
-    infinityLoad: function() {
-      var _this       = this;
-      var nextPage    = this.get('_currentPage') + 1;
-      var perPage     = this.get('_perPage');
-      var totalPages  = this.get('_totalPages');
-      var model       = this.get('controller.model');
-      var modelName   = this.get('_infinityModelName');
+   @method infinityLoad
+   @return {Boolean}
+   */
+  _infinityLoad: function() {
+    var _this       = this;
+    var nextPage    = this.get('_currentPage') + 1;
+    var perPage     = this.get('_perPage');
+    var totalPages  = this.get('_totalPages');
+    var model       = this.get('controller.model');
+    var modelName   = this.get('_infinityModelName');
 
-      if (!this.get('_loadingMore') && this.get('_canLoadMore')) {
-        this.set('_loadingMore', true);
+    if (!this.get('_loadingMore') && this.get('_canLoadMore')) {
+      this.set('_loadingMore', true);
 
-        var promise = this.store.find(modelName, { page: nextPage, per_page: perPage });
-        promise.then(
-          function(infinityModel) {
-            model.pushObjects(infinityModel.get('content'));
-            _this.set('_loadingMore', false);
-            _this.set('_currentPage', nextPage);
-            Ember.run.scheduleOnce('afterRender', _this, 'infinityModelUpdated', { lastPageLoaded: nextPage, totalPages: totalPages, newObjects: infinityModel });
-            if (!_this.get('_canLoadMore')) {
-              _this.set('controller.model.reachedInfinity', true);
-              Ember.run.scheduleOnce('afterRender', _this, 'infinityModelLoaded', { totalPages: totalPages });
-            }
-          },
-          function() {
-            _this.set('_loadingMore', false);
-            throw new Ember.Error("You must pass a Model Name to infinityModel");
+      var params = Ember.merge({ page: nextPage, per_page: perPage }, this.get('_extraParams'));
+      var promise = this.store.find(modelName, params);
+      promise.then(
+        function(infinityModel) {
+          model.pushObjects(infinityModel.get('content'));
+          _this.set('_loadingMore', false);
+          _this.set('_currentPage', nextPage);
+          Ember.run.scheduleOnce('afterRender', _this, 'infinityModelUpdated', { lastPageLoaded: nextPage, totalPages: totalPages, newObjects: infinityModel });
+          if (!_this.get('_canLoadMore')) {
+            _this.set('controller.model.reachedInfinity', true);
+            Ember.run.scheduleOnce('afterRender', _this, 'infinityModelLoaded', { totalPages: totalPages });
           }
-        );
-      } else {
-        if (!this.get('_canLoadMore')) {
-          this.set('controller.model.reachedInfinity', true);
-          Ember.run.scheduleOnce('afterRender', _this, 'infinityModelLoaded', { totalPages: totalPages });
+        },
+        function() {
+          _this.set('_loadingMore', false);
+          throw new Ember.Error("You must pass a Model Name to infinityModel");
         }
+      );
+    } else {
+      if (!this.get('_canLoadMore')) {
+        this.set('controller.model.reachedInfinity', true);
+        Ember.run.scheduleOnce('afterRender', _this, 'infinityModelLoaded', { totalPages: totalPages });
       }
-      return false;
+    }
+    return false;
+  },
+
+  actions: {
+    infinityLoad: function() {
+      this._infinityLoad();
     }
   }
 });

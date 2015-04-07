@@ -45,6 +45,20 @@ When the new records are loaded, they will automatically be pushed into the Mode
 
 ## Advanced Usage
 
+### infinityModel
+
+You can also provide additional parameters to `infinityModel` that
+will be passed to your backend server in addition to the
+pagination params. For instance, in the following example a `category`
+parameter is added:
+
+```js
+return this.infinityModel("product", { perPage: 12, startingPage: 1,
+                                       category: "furniture" });
+```
+
+### infinity-loader
+
 The `infinity-loader` component as some extra options to make working with it easy!
 
 * **destroyOnInfinity**
