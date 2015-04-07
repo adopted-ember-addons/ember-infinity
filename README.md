@@ -32,7 +32,7 @@ Then, you'll need to add the Infinity Loader component to your template, like so
 ```html
 {{#each model as |product|}}
   <h1>{{product.name}}</h1>
-  <h2>{{product.description}}</h1>
+  <h2>{{product.description}}</h2>
 {{/each}}
 
 {{infinity-loader infinityModel=model}}
