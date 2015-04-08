@@ -87,10 +87,12 @@ export default Ember.Mixin.create({
     options = options || {};
     var startingPage = options.startingPage || 1;
     var perPage      = options.perPage || this.get('_perPage');
+    var params       = options.params || {};
 
     this.set('_perPage', perPage);
+    this.set('_params', params);
 
-    var promise = this.store.find(modelName, { page: startingPage, per_page: perPage });
+    var promise = this.store.find(modelName, $.extend(params, { page: startingPage, per_page: perPage }));
 
     promise.then(
       function(infinityModel) {
@@ -122,11 +124,12 @@ export default Ember.Mixin.create({
       var totalPages  = this.get('_totalPages');
       var model       = this.get('controller.model');
       var modelName   = this.get('_infinityModelName');
+      var params      = this.get('_params');
 
       if (!this.get('_loadingMore') && this.get('_canLoadMore')) {
         this.set('_loadingMore', true);
 
-        var promise = this.store.find(modelName, { page: nextPage, per_page: perPage });
+        var promise = this.store.find(modelName, $.extend(params, { page: nextPage, per_page: perPage }));
         promise.then(
           function(infinityModel) {
             model.pushObjects(infinityModel.get('content'));
