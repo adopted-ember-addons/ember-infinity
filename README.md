@@ -11,7 +11,7 @@ repo, but without using controllers, in preparation for Ember 2.0.
 
 ## Installation
 
-`ember install:addon ember-infinity`
+`ember install ember-infinity`
 
 ## Basic Usage
 
