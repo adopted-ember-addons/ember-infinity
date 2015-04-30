@@ -57,6 +57,23 @@ return this.infinityModel("product", { perPage: 12, startingPage: 1,
                                        category: "furniture" });
 ```
 
+* **modelPath**
+
+`modelPath` is optional parameter for situations when you are overriding `setupController`
+or when your model is on different location than `controller.model`.
+```js
+model: function() {
+  return this.infinityModel("product", {
+    perPage: 12,
+    startingPage: 1,
+    modelPath: 'controller.products'
+  });
+},
+setupController: function(controller, model) {
+  controller.set('products', model);
+}
+```
+
 ### infinity-loader
 
 The `infinity-loader` component as some extra options to make working with it easy!
