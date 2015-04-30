@@ -62,6 +62,14 @@ export default Ember.Mixin.create({
 
   /**
     @private
+    @property _modelPath
+    @type String
+    @default 'controller.model'
+  */
+  _modelPath: 'controller.model',
+
+  /**
+    @private
     @property _canLoadMore
     @type Boolean
     @default false
@@ -95,11 +103,14 @@ export default Ember.Mixin.create({
     options = options ? Ember.merge({}, options) : {};
     var startingPage = options.startingPage || 1;
     var perPage      = options.perPage || this.get('_perPage');
+    var modelPath    = options.modelPath || this.get('_modelPath');
 
     delete options.startingPage;
     delete options.perPage;
+    delete options.modelPath;
 
     this.set('_perPage', perPage);
+    this.set('_modelPath', modelPath);
     this.set('_extraParams', options);
 
     var params = Ember.merge({ page: startingPage, per_page: perPage }, options);
@@ -132,7 +143,7 @@ export default Ember.Mixin.create({
     var nextPage    = this.get('_currentPage') + 1;
     var perPage     = this.get('_perPage');
     var totalPages  = this.get('_totalPages');
-    var model       = this.get('controller.model');
+    var model       = this.get(this.get('_modelPath'));
     var modelName   = this.get('_infinityModelName');
 
     if (!this.get('_loadingMore') && this.get('_canLoadMore')) {
@@ -147,7 +158,7 @@ export default Ember.Mixin.create({
           _this.set('_currentPage', nextPage);
           Ember.run.scheduleOnce('afterRender', _this, 'infinityModelUpdated', { lastPageLoaded: nextPage, totalPages: totalPages, newObjects: infinityModel });
           if (!_this.get('_canLoadMore')) {
-            _this.set('controller.model.reachedInfinity', true);
+            _this.set(_this.get('_modelPath') + '.reachedInfinity', true);
             Ember.run.scheduleOnce('afterRender', _this, 'infinityModelLoaded', { totalPages: totalPages });
           }
         },
@@ -158,7 +169,7 @@ export default Ember.Mixin.create({
       );
     } else {
       if (!this.get('_canLoadMore')) {
-        this.set('controller.model.reachedInfinity', true);
+        this.set(this.get('_modelPath') + '.reachedInfinity', true);
         Ember.run.scheduleOnce('afterRender', _this, 'infinityModelLoaded', { totalPages: totalPages });
       }
     }
