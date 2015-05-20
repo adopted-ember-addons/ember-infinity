@@ -43,6 +43,17 @@ Now, whenever the `infinity-loader` is in view, it will send an action to the ro
 
 When the new records are loaded, they will automatically be pushed into the Model array.
 
+#### JSON Response
+
+The response provided by your server should include the number of total pages.
+
+```json
+  { "meta": { "total_pages": 4 } }
+```
+
+If your query returns 20 objects, and you're showing 6 per page, then the
+number of total pages would be 4.
+
 ## Advanced Usage
 
 ### infinityModel
