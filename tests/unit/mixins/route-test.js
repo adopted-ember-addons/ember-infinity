@@ -36,7 +36,9 @@ test('it can not use infinityModel without a Model Name', function(assert) {
     }
   });
   var route = RouteObject.create();
-  route.store = {};
+  route.store = {
+    find() {}
+  };
 
   var infinityError;
   try {

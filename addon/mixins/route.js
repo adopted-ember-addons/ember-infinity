@@ -92,7 +92,7 @@ export default Ember.Mixin.create({
   infinityModel: function(modelName, options) {
     var _this = this;
 
-    if (this.store === undefined){
+    if (Ember.isEmpty(this.store) || Ember.isEmpty(this.store.find)){
       throw new Ember.Error("Ember Data store is not available to infinityModel");
     } else if (modelName === undefined) {
       throw new Ember.Error("You must pass a Model Name to infinityModel");

@@ -28,8 +28,8 @@ module('Acceptance: Infinity Route', {
         } else {
           subset = posts;
         }
-        perPage = parseInt(request.queryParams.per_page);
-        startPage = parseInt(request.queryParams.page);
+        perPage = parseInt(request.queryParams.per_page, 10);
+        startPage = parseInt(request.queryParams.page, 10);
 
         var pageCount = Math.ceil(subset.length / perPage);
         offset = perPage * (startPage - 1);
@@ -69,9 +69,9 @@ test('it works with parameters', function(assert) {
     var postList       = find('ul');
     var infinityLoader = find('.infinity-loader');
 
-    assert.equal(postsTitle.text(), "Listing Posts using Parameters");
-    assert.equal(postList.find('li').length, 2);
-    assert.equal(postList.find('li:first-child').text(), "Squarepusher");
-    assert.equal(infinityLoader.hasClass('reached-infinity'), false);
+    assert.equal(postsTitle.text(), "Listing Posts using Parameters", "Post title text is correct");
+    assert.equal(postList.find('li').length, 2, "Two items should be in the list");
+    assert.equal(postList.find('li:first-child').text(), "Squarepusher", "First item should be 'Squarepusher'");
+    assert.equal(infinityLoader.hasClass('reached-infinity'), false, "Infinity should not yet have been reached");
   });
 });
