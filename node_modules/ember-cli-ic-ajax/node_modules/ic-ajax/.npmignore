@@ -1,9 +1,0 @@
-bower_components
-lib
-test
-tmp
-
-bower.json
-Brocfile.js
-karma.conf.js
-

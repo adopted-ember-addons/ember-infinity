@@ -1,5 +1,0 @@
-var foo = 'bar'
-var foo = 'bar'
-var foo = 'bar'
-var foo = 'bar'
-var foo = 'bar'
