@@ -1,1 +1,0 @@
-/Users/northm/Development/ember-infinity/addon/components/infinity-loader.js

@@ -1,1 +1,0 @@
-/Users/northm/Development/ember-infinity/tmp/funnel-dest_Phplh4.tmp/ember-infinity.js

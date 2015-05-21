@@ -1,1 +1,0 @@
-/Users/northm/Development/ember-infinity/tmp/funnel-dest_5IMh50.tmp/ember/ember-testing.js

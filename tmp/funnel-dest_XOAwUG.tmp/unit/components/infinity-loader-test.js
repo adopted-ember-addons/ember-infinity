@@ -1,1 +1,0 @@
-/Users/northm/Development/ember-infinity/tests/unit/components/infinity-loader-test.js

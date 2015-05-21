@@ -1,1 +1,0 @@
-/Users/northm/Development/ember-infinity/tmp/funnel-dest_y0WAbv.tmp/dummy/tests/acceptance/infinity-route-without-meta-test.jshint.js

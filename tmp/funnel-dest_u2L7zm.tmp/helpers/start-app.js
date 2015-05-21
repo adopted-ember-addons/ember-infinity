@@ -1,1 +1,0 @@
-/Users/northm/Development/ember-infinity/tests/helpers/start-app.js

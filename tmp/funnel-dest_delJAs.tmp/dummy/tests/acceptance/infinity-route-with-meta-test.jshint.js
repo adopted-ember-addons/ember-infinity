@@ -1,1 +1,0 @@
-/Users/northm/Development/ember-infinity/tmp/jshinter-tmp_dest_dir-OoEF3Mb1.tmp/acceptance/infinity-route-with-meta-test.jshint.js

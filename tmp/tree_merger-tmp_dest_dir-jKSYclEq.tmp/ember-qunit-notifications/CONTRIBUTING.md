@@ -1,1 +1,0 @@
-/Users/northm/Development/ember-infinity/tmp/custom_static_compiler-tmp_dest_dir-xBgpEYFe.tmp/ember-qunit-notifications/CONTRIBUTING.md

@@ -1,1 +1,0 @@
-/Users/northm/Development/ember-infinity/tmp/tree_merger-tmp_dest_dir-Gqp3zzGk.tmp/initializers/export-application-global.js

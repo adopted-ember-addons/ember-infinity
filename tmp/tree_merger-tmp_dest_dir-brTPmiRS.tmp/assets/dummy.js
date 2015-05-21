@@ -1,1 +1,0 @@
-/Users/northm/Development/ember-infinity/tmp/caching-writer-dest-dir_VagvfR.tmp/assets/dummy.js

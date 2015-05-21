@@ -1,4 +1,0 @@
-module('JSHint - acceptance');
-test('acceptance/infinity-route-with-meta-test.js should pass jshint', function() { 
-  ok(false, 'acceptance/infinity-route-with-meta-test.js should pass jshint.\nacceptance/infinity-route-with-meta-test.js: line 73, col 5, Forgotten \'debugger\' statement?\n\n1 error'); 
-});

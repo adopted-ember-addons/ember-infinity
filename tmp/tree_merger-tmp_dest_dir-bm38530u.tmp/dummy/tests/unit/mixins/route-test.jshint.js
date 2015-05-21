@@ -1,1 +1,0 @@
-/Users/northm/Development/ember-infinity/tmp/funnel-dest_y0WAbv.tmp/dummy/tests/unit/mixins/route-test.jshint.js

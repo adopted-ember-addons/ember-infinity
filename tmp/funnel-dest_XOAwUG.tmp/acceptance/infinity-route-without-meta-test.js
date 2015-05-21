@@ -1,1 +1,0 @@
-/Users/northm/Development/ember-infinity/tests/acceptance/infinity-route-without-meta-test.js
