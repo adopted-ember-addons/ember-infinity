@@ -14,43 +14,44 @@ export default Ember.Component.extend({
   developmentMode: false,
   scrollable: null,
 
-  didInsertElement: function() {
+  didInsertElement() {
+    this._super(...arguments);
     this._setupScrollable();
     this.set('guid', Ember.guidFor(this));
     this._bindScroll();
     this._checkIfInView();
   },
 
-  willDestroyElement: function() {
+  willDestroyElement() {
+    this._super(...arguments);
     this._unbindScroll();
   },
 
-  _bindScroll: function() {
-    var _this = this;
-    this.get("scrollable").on("scroll."+this.get('guid'), function() {
-      Ember.run.debounce(_this, _this._checkIfInView, _this.get('scrollDebounce'));
+  _bindScroll() {
+    this.get("scrollable").on(`scroll.${this.get('guid')}`, () => {
+      Ember.run.debounce(this, this._checkIfInView, this.get('scrollDebounce'));
     });
   },
 
-  _unbindScroll: function() {
-    this.get("scrollable").off("scroll."+this.get('guid'));
+  _unbindScroll() {
+    this.get("scrollable").off(`scroll.${this.get('guid')}`);
   },
 
-  _checkIfInView: function() {
+  _checkIfInView() {
     var selfOffset       = this.$().offset().top;
     var scrollable       = this.get("scrollable");
     var scrollableBottom = scrollable.height() + scrollable.scrollTop();
 
-    var inView = selfOffset < scrollableBottom ? true : false;
+    var inView = selfOffset < scrollableBottom;
 
     if (inView && !this.get('developmentMode')) {
       this.sendAction('loadMoreAction');
     }
   },
 
-  _setupScrollable: function() {
+  _setupScrollable() {
     var scrollable = this.get('scrollable');
-    if (Ember.$.type(scrollable) === 'string') {
+    if (Ember.typeOf(scrollable) === 'string') {
       var items = Ember.$(scrollable);
       if (items.length === 1) {
         this.set('scrollable', items.eq(0));
@@ -64,7 +65,9 @@ export default Ember.Component.extend({
     }
   },
 
-  loadedStatusDidChange: Ember.observer('infinityModel.reachedInfinity', 'destroyOnInfinity', function() {
-    if (this.get('infinityModel.reachedInfinity') && this.get('destroyOnInfinity')) { this.destroy(); }
+  loadedStatusDidChange: Ember.observer('infinityModel.reachedInfinity', 'destroyOnInfinity', function () {
+    if (this.get('infinityModel.reachedInfinity') && this.get('destroyOnInfinity')) {
+      this.destroy();
+    }
   })
 });

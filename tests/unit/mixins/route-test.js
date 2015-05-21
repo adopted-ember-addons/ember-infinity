@@ -4,15 +4,15 @@ import { module, test } from 'qunit';
 
 module('RouteMixin');
 
-test('it works', function(assert) {
+test('it works', assert => {
   var RouteObject = Ember.Route.extend(RouteMixin);
   var route = RouteObject.create();
   assert.ok(route);
 });
 
-test('it can not use infinityModel without Ember Data Store', function(assert) {
+test('it can not use infinityModel without Ember Data Store', assert => {
   var RouteObject = Ember.Route.extend(RouteMixin, {
-    model: function() {
+    model() {
       return this.infinityModel('post');
     }
   });
@@ -29,9 +29,9 @@ test('it can not use infinityModel without Ember Data Store', function(assert) {
   assert.equal(infinityError.message, "Ember Data store is not available to infinityModel");
 });
 
-test('it can not use infinityModel without a Model Name', function(assert) {
+test('it can not use infinityModel without a Model Name', assert => {
   var RouteObject = Ember.Route.extend(RouteMixin, {
-    model: function() {
+    model() {
       return this.infinityModel();
     }
   });
@@ -51,18 +51,18 @@ test('it can not use infinityModel without a Model Name', function(assert) {
   assert.equal(infinityError.message, "You must pass a Model Name to infinityModel");
 });
 
-test('it sets state before it reaches the end', function(assert) {
+test('it sets state before it reaches the end', assert => {
 
   var RouteObject = Ember.Route.extend(RouteMixin, {
-    model: function() {
+    model() {
       return this.infinityModel('item');
     }
   });
   var route = RouteObject.create();
 
   var dummyStore = {
-    find: function() {
-      return new Ember.RSVP.Promise(function(resolve) {
+    find() {
+      return new Ember.RSVP.Promise(resolve => {
         Ember.run(this, resolve, Ember.Object.create({
           items: [{id: 1, name: 'Test'}],
           meta: {
@@ -76,8 +76,8 @@ test('it sets state before it reaches the end', function(assert) {
   route.store = dummyStore;
 
   var model;
-  Ember.run(function() {
-    route.model().then(function(result) {
+  Ember.run(() => {
+    route.model().then(result => {
       model = result;
     });
   });
@@ -113,8 +113,8 @@ test('it allows customizations of request params', assert => {
   route.store = dummyStore;
 
   var model;
-  Ember.run(function() {
-    route.model().then(function(result) {
+  Ember.run(() => {
+    route.model().then(result => {
       model = result;
     });
   });
@@ -145,8 +145,8 @@ test('it allows customizations of meta parsing params', assert => {
   route.store = dummyStore;
 
   var model;
-  Ember.run(function() {
-    route.model().then(function(result) {
+  Ember.run(() => {
+    route.model().then(result => {
       model = result;
     });
   });
@@ -154,18 +154,18 @@ test('it allows customizations of meta parsing params', assert => {
   assert.equal(22, route.get('_totalPages'));
 });
 
-test('it sets state  when it reaches the end', function(assert) {
+test('it sets state  when it reaches the end', assert => {
 
   var RouteObject = Ember.Route.extend(RouteMixin, {
-    model: function() {
+    model() {
       return this.infinityModel('item', {startingPage: 31});
     }
   });
   var route = RouteObject.create();
 
   var dummyStore = {
-    find: function() {
-      return new Ember.RSVP.Promise(function(resolve) {
+    find() {
+      return new Ember.RSVP.Promise(resolve => {
         Ember.run(this, resolve, Ember.Object.create({
           items: [{id: 1, name: 'Test'}],
           meta: {
@@ -179,8 +179,8 @@ test('it sets state  when it reaches the end', function(assert) {
   route.store = dummyStore;
 
   var model;
-  Ember.run(function() {
-    route.model().then(function(result) {
+  Ember.run(() => {
+    route.model().then(result => {
       model = result;
     });
   });
@@ -192,21 +192,21 @@ test('it sets state  when it reaches the end', function(assert) {
   assert.ok(model.get('reachedInfinity'), 'Should reach infinity');
 });
 
-test('it uses extra params when loading more data', function(assert) {
+test('it uses extra params when loading more data', assert => {
 
   assert.expect(8);
 
   var RouteObject = Ember.Route.extend(RouteMixin, {
-    model: function() {
+    model() {
       return this.infinityModel('item', {extra: 'param'});
     }
   });
   var route = RouteObject.create();
 
   var dummyStore = {
-    find: function(name, params) {
+    find(name, params) {
       assert.equal('param', params.extra);
-      return new Ember.RSVP.Promise(function(resolve) {
+      return new Ember.RSVP.Promise(resolve => {
         Ember.run(this, resolve, Ember.Object.create({
           items: [{id: 1, name: 'Test'}],
           pushObjects: Ember.K,
@@ -221,8 +221,8 @@ test('it uses extra params when loading more data', function(assert) {
   route.store = dummyStore;
 
   var model;
-  Ember.run(function() {
-    route.model().then(function(result) {
+  Ember.run(() => {
+    route.model().then(result => {
       model = result;
     });
   });
@@ -230,7 +230,7 @@ test('it uses extra params when loading more data', function(assert) {
   // The controller needs to be set so _infinityLoad() can call
   // pushObjects()
   var dummyController = Ember.Object.create({
-    model: model
+    model
   });
   route.set('controller', dummyController);
 
@@ -238,7 +238,7 @@ test('it uses extra params when loading more data', function(assert) {
   assert.equal(true, route.get('_canLoadMore'));
 
   // Load more
-  Ember.run(function() {
+  Ember.run(() => {
     route._infinityLoad();
   });
 

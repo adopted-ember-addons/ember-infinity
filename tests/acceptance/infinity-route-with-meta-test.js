@@ -15,14 +15,14 @@ var posts = [
 ];
 
 module('Acceptance: Infinity Route', {
-  setup: function() {
+  setup() {
     App = startApp();
     server = new Pretender(function() {
       this.get('/posts', function(request) {
         var body, subset, perPage, startPage, offset;
 
         if (request.queryParams.category) {
-          subset = posts.filter(function(post) {
+          subset = posts.filter(post => {
             return post.category === request.queryParams.category;
           });
         } else {
@@ -41,16 +41,16 @@ module('Acceptance: Infinity Route', {
       });
     });
   },
-  teardown: function() {
+  teardown() {
     Ember.run(App, 'destroy');
     server.shutdown();
   }
 });
 
-test('it works when meta is present in payload', function(assert) {
+test('it works when meta is present in payload', assert => {
   visit('/');
 
-  andThen(function() {
+  andThen(() => {
     var postsTitle     = find('#posts-title');
     var postList       = find('ul');
     var infinityLoader = find('.infinity-loader');
@@ -61,10 +61,10 @@ test('it works when meta is present in payload', function(assert) {
   });
 });
 
-test('it works with parameters', function(assert) {
+test('it works with parameters', assert => {
   visit('/category/a?per_page=2');
 
-  andThen(function() {
+  andThen(() => {
     var postsTitle     = find('#posts-title');
     var postList       = find('ul');
     var infinityLoader = find('.infinity-loader');

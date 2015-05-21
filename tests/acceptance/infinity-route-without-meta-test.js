@@ -6,28 +6,28 @@ import Pretender from 'pretender';
 var App, server;
 
 module('Acceptance: Infinity Route', {
-  setup: function() {
+  setup() {
     App = startApp();
     server = new Pretender(function() {
-      this.get('/posts', function(request) {
+      this.get('/posts', request => {
         var posts = [
           { id: 1, name: "Squarepusher" },
           { id: 2, name: "Aphex Twin" }
         ];
-        return [200, {"Content-Type": "application/json"}, JSON.stringify({posts: posts})];
+        return [200, {"Content-Type": "application/json"}, JSON.stringify({posts})];
       });
     });
   },
-  teardown: function() {
+  teardown() {
     Ember.run(App, 'destroy');
     server.shutdown();
   }
 });
 
-test('it works when meta is not present in payload', function(assert) {
+test('it works when meta is not present in payload', assert => {
   visit('/');
 
-  andThen(function() {
+  andThen(() => {
     var postsTitle     = find('#posts-title');
     var postList       = find('ul');
     var infinityLoader = find('.infinity-loader');
