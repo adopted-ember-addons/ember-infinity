@@ -89,6 +89,71 @@ test('it sets state before it reaches the end', function(assert) {
   assert.ok(!model.get('reachedInfinity'), 'Should not reach infinity');
 });
 
+test('it allows customizations of request params', assert => {
+  var RouteObject = Ember.Route.extend(RouteMixin, {
+    perPageParam: 'per',
+    pageParam: 'p',
+    model() {
+      return this.infinityModel('item');
+    }
+  });
+  var route = RouteObject.create();
+
+  var dummyStore = {
+    find(modelType, findQuery) {
+      assert.deepEqual(findQuery, {per: 25, p: 1});
+      return new Ember.RSVP.Promise(resolve => {
+        Ember.run(this, resolve, Ember.Object.create({
+          items: []
+        }));
+      });
+    }
+  };
+
+  route.store = dummyStore;
+
+  var model;
+  Ember.run(function() {
+    route.model().then(function(result) {
+      model = result;
+    });
+  });
+});
+
+test('it allows customizations of meta parsing params', assert => {
+  var RouteObject = Ember.Route.extend(RouteMixin, {
+    totalPagesParam: 'pagination.total',
+    model() {
+      return this.infinityModel('item');
+    }
+  });
+  var route = RouteObject.create();
+
+  var dummyStore = {
+    find(modelType, findQuery) {
+      return new Ember.RSVP.Promise(resolve => {
+        Ember.run(this, resolve, Ember.Object.create({
+          items: [{id: 1, name: 'Walter White'}],
+          pagination: {
+            total: 22
+          }
+        }));
+      });
+    }
+  };
+
+  route.store = dummyStore;
+
+  var model;
+  Ember.run(function() {
+    route.model().then(function(result) {
+      model = result;
+    });
+  });
+
+  assert.equal(22, route.get('_totalPages'));
+});
+
 test('it sets state  when it reaches the end', function(assert) {
 
   var RouteObject = Ember.Route.extend(RouteMixin, {

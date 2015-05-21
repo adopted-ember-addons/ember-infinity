@@ -43,18 +43,67 @@ Now, whenever the `infinity-loader` is in view, it will send an action to the ro
 
 When the new records are loaded, they will automatically be pushed into the Model array.
 
-#### JSON Response
+## Advanced Usage
 
-The response provided by your server should include the number of total pages.
+### JSON Request/Response Customization
 
-```json
-  { "meta": { "total_pages": 4 } }
+By default, ember-infinity will send pagination parameters as part of a GET request as follows
+
+````
+/items?per_page=5&page=1
+```` 
+
+and will expect to recieve metadata in the response payload via a `total_pages` param in a `meta` object
+
+```js
+{
+  items: [
+    {id: 1, name: 'Test'},
+    {id: 2, name: 'Test 2'}
+  ],
+  meta: {
+    total_pages: 3
+  }
+}
 ```
 
-If your query returns 20 objects, and you're showing 6 per page, then the
-number of total pages would be 4.
+If you wish to customize some aspects of the JSON contract for pagination, you may do so via your routes. For example: 
 
-## Advanced Usage
+```js
+import Ember from 'ember';
+import InfinityRoute from "ember-infinity/mixins/route";
+
+export default Ember.Route.extend(InfinityRoute, {
+  
+  perPageParam: "per",              // instead of "per_page"
+  pageParam: "pg",                  // instead of "page"
+  totalPagesParam: "meta.total",    // instead of "meta.total_pages"
+
+  model() {
+    /* Load pages of the Product Model, starting from page 1, in groups of 12. */
+    return this.infinityModel("product", { perPage: 12, startingPage: 1 });
+  }
+});
+```
+
+This will result in request query params being sent out as follows
+
+````
+/items?per=5&pg=1
+```` 
+
+and ember-infinity will be set up to parse the total number of pages from a JSON response like this:
+
+```js
+{
+  items: [
+    ...
+  ],
+  meta: {
+    total: 3
+  }
+}
+```
 
 ### infinityModel
 

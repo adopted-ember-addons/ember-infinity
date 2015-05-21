@@ -69,6 +69,30 @@ export default Ember.Mixin.create({
   _modelPath: 'controller.model',
 
   /**
+   * Name of the "per page" param in the
+   * resource request payload
+   * @type {String}
+   * @default  "per_page"
+   */
+  perPageParam: 'per_page',
+
+  /**
+   * Name of the "page" param in the
+   * resource request payload
+   * @type {String}
+   * @default "page"
+   */
+  pageParam: 'page',
+
+  /**
+   * Path of the "total pages" param in
+   * the HTTP response
+   * @type {String}
+   * @default  "meta.total_pages"
+   */
+  totalPagesParam: 'meta.total_pages',
+
+  /**
     @private
     @property _canLoadMore
     @type Boolean
@@ -113,18 +137,22 @@ export default Ember.Mixin.create({
     this.set('_modelPath', modelPath);
     this.set('_extraParams', options);
 
-    var params = Ember.merge({ page: startingPage, per_page: perPage }, options);
+    var requestPayloadBase = {};
+    requestPayloadBase[this.get('perPageParam')] = perPage;
+    requestPayloadBase[this.get('pageParam')] = startingPage;
+
+    var params = Ember.merge(requestPayloadBase, options);
     var promise = this.store.find(modelName, params);
 
     promise.then(
-      function(infinityModel) {
-        var totalPages = infinityModel.get('meta.total_pages');
+      infinityModel => {
+        var totalPages = infinityModel.get(this.get('totalPagesParam'));
         _this.set('_currentPage', startingPage);
         _this.set('_totalPages', totalPages);
         infinityModel.set('reachedInfinity', !_this.get('_canLoadMore'));
         Ember.run.scheduleOnce('afterRender', _this, 'infinityModelUpdated', { lastPageLoaded: startingPage, totalPages: totalPages, newObjects: infinityModel });
       },
-      function() {
+      () => {
         throw new Ember.Error("Could not fetch Infinity Model. Please check your serverside configuration.");
       }
     );
