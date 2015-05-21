@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+  - "0.10"
+  - "0.12"
+  - "iojs"
+install:
+  - npm i -g npm@^2
+  - npm install
+  - npm run bower:install
+script:
+  - npm run jshint .
+  - npm test
+notifications:
+  email: false
+matrix:
+  fast_finish: true
+  allow_failures:
+    - node_js: "iojs"

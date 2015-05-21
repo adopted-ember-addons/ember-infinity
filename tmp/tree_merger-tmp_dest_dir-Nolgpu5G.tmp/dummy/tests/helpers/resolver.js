@@ -1,0 +1,1 @@
+/Users/northm/Development/ember-infinity/tmp/babel-tmp_dest_dir-SyIOGMkh.tmp/dummy/tests/helpers/resolver.js

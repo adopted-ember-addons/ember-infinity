@@ -1,0 +1,23 @@
+.sample-img {
+  width: 50px;
+  height: 50px;
+  background-image: url(images/sample.png);
+}
+
+.sample-img2 {
+  width: 50px;
+  height: 50px;
+  background-image: url('images/sample.png');
+}
+
+@font-face {
+  font-family: 'RobotoRegular';
+  src: url('fonts/roboto-regular.eot');
+  src: url('fonts/roboto-regular.eot?#iefix') format('embedded-opentype'),
+    url('fonts/roboto-regular.woff2') format('woff2'),
+    url('fonts/roboto-regular.woff') format('woff'),
+    url('fonts/roboto-regular.ttf') format('truetype'),
+    url('fonts/roboto-regular.svg#robotoregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}

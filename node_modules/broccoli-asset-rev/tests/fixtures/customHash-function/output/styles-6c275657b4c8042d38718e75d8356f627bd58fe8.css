@@ -1,0 +1,11 @@
+.sample-img {
+  width: 50px;
+  height: 50px;
+  background-image: url(images/sample-a3eba6f18695684fa6df5d80f157d82277e93172.png);
+}
+
+.sample-img2 {
+  width: 50px;
+  height: 50px;
+  background-image: url('images/sample-a3eba6f18695684fa6df5d80f157d82277e93172.png');
+}

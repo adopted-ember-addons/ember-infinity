@@ -1,0 +1,8 @@
+{
+  //somerandom comment that should not blow up
+  "asi": true
+
+  /*
+  Also should handle multi-line comments.
+  */
+}

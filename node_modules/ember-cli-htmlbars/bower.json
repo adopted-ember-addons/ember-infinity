@@ -1,0 +1,6 @@
+{
+  "name": "ember-cli-htmlbars",
+  "devDependencies": {
+    "ember": "components/ember#beta"
+  }
+}

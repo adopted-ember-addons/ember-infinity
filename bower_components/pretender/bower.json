@@ -1,0 +1,25 @@
+{
+  "name": "pretender",
+  "version": "0.6.0",
+  "authors": [
+    "Trek Glowacki <trek.glowacki@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "main": [
+    "./pretender.js"
+  ],
+  "dependencies": {
+    "FakeXMLHttpRequest": "~1.0.0",
+    "route-recognizer": "~0.1.1"
+  },
+  "devDependencies": {
+    "jquery": "~2.1.0"
+  }
+}

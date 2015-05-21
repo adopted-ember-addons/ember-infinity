@@ -1,0 +1,23 @@
+{
+  "name": "pretender",
+  "version": "0.6.0",
+  "main": "./pretender.js",
+  "scripts": {
+    "postinstall": "bower install",
+    "test": "./node_modules/karma/bin/karma start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trek/pretender.git"
+  },
+  "devDependencies": {
+    "bower": "^1.3.5",
+    "karma": "^0.12.16",
+    "karma-chrome-launcher": "^0.1.3",
+    "karma-qunit": "^0.1.3"
+  },
+  "dependencies": {
+    "route-recognizer": "^0.1.0",
+    "fake-xml-http-request": "^1.0.0"
+  }
+}

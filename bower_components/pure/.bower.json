@@ -1,0 +1,20 @@
+{
+  "name": "pure",
+  "description": "Use Pure's ridiculously tiny CSS to start any web project.",
+  "version": "0.6.0",
+  "main": "pure.css",
+  "devDependencies": {
+    "normalize-css": "^3.0"
+  },
+  "homepage": "https://github.com/yui/pure-release",
+  "_release": "0.6.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.6.0",
+    "commit": "0a18992a11a6848445687980e9d72b87134a93a4"
+  },
+  "_source": "git://github.com/yui/pure-release.git",
+  "_target": "~0.6.0",
+  "_originalSource": "pure",
+  "_direct": true
+}

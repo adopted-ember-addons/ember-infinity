@@ -1,0 +1,1 @@
+/Users/northm/Development/ember-infinity/tmp/class-tmp_cache_dir-oSU0ExRL.tmp/addons.js

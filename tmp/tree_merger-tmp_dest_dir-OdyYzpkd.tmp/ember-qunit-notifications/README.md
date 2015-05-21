@@ -1,0 +1,1 @@
+/Users/northm/Development/ember-infinity/tmp/funnel-dest_4CMLa1.tmp/ember-qunit-notifications/README.md

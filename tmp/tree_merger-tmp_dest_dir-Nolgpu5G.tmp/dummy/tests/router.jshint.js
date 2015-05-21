@@ -1,0 +1,1 @@
+/Users/northm/Development/ember-infinity/tmp/jshinter-tmp_dest_dir-foyUBGiH.tmp/router.jshint.js

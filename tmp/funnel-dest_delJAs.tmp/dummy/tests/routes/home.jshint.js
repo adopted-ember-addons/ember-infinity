@@ -1,0 +1,1 @@
+/Users/northm/Development/ember-infinity/tmp/jshinter-tmp_cache_dir-TNwITV8b.tmp/4

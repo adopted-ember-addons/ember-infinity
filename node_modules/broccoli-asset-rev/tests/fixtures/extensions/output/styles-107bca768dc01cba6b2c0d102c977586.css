@@ -1,0 +1,23 @@
+.sample-img {
+  width: 50px;
+  height: 50px;
+  background-image: url(images/sample-b7caf246e908cd00d8011f370e3dd992.png);
+}
+
+.sample-img2 {
+  width: 50px;
+  height: 50px;
+  background-image: url('images/sample-b7caf246e908cd00d8011f370e3dd992.png');
+}
+
+@font-face {
+  font-family: 'RobotoRegular';
+  src: url('fonts/roboto-regular-b026324c6904b2a9cb4b88d6d61c81d1.eot');
+  src: url('fonts/roboto-regular-b026324c6904b2a9cb4b88d6d61c81d1.eot?#iefix') format('embedded-opentype'),
+    url('fonts/roboto-regular-26ab0db90d72e28ad0ba1e22ee510510.woff2') format('woff2'),
+    url('fonts/roboto-regular-6d7fce9fee471194aa8b5b6e47267f03.woff') format('woff'),
+    url('fonts/roboto-regular-48a24b70a0b376535542b996af517398.ttf') format('truetype'),
+    url('fonts/roboto-regular-1dcca23355272056f04fe8bf20edfce0.svg#robotoregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}

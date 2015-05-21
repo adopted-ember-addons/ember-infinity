@@ -1,0 +1,1 @@
+/Users/northm/Development/ember-infinity/tmp/tree_merger-tmp_dest_dir-ZUPQ2hx8.tmp/controllers/object.js

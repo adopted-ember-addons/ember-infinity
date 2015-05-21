@@ -1,0 +1,11 @@
+.sample-img {
+  width: 50px;
+  height: 50px;
+  background-image: url(https://foobar.cloudfront.net/images/sample-b7caf246e908cd00d8011f370e3dd992.png);
+}
+
+.sample-img2 {
+  width: 50px;
+  height: 50px;
+  background-image: url('https://foobar.cloudfront.net/images/sample-b7caf246e908cd00d8011f370e3dd992.png');
+}

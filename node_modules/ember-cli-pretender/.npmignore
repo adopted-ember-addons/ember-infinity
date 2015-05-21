@@ -1,0 +1,4 @@
+vendor/FakeXMLHttpRequest
+vendor/pretender
+vendor/route-recognizer
+node_modules

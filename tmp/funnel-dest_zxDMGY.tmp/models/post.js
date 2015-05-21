@@ -1,0 +1,1 @@
+/Users/northm/Development/ember-infinity/tests/dummy/app/models/post.js
