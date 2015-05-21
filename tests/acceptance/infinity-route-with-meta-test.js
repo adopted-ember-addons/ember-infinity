@@ -48,7 +48,7 @@ module('Acceptance: Infinity Route', {
 });
 
 test('it works when meta is present in payload', assert => {
-  visit('/');
+  visit('/test');
 
   andThen(() => {
     var postsTitle     = find('#posts-title');
