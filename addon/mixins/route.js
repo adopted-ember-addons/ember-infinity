@@ -201,7 +201,7 @@ export default Ember.Mixin.create({
         },
         () => {
           this.set('_loadingMore', false);
-          throw new Ember.Error("You must pass a Model Name to infinityModel");
+          throw new Ember.Error("Could not fetch Infinity Model. Please check your serverside configuration.");
         }
       );
     } else {
