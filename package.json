@@ -29,7 +29,6 @@
     "ember-cli-pretender": "0.3.2",
     "ember-cli-qunit": "0.3.13",
     "ember-cli-uglify": "^1.0.1",
-    "ember-cli-version-checker": "^1.0.2",
     "ember-data": "1.0.0-beta.17",
     "ember-disable-prototype-extensions": "^1.0.0",
     "ember-disable-proxy-controllers": "^0.7.0",
@@ -41,6 +40,7 @@
     "ember-addon"
   ],
   "dependencies": {
+    "ember-cli-version-checker": "^1.0.2",
     "ember-cli-babel": "^5.0.0",
     "ember-cli-htmlbars": "0.7.6"
   },
