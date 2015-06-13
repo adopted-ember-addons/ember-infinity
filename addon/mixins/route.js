@@ -140,6 +140,11 @@ export default Ember.Mixin.create({
     requestPayloadBase[this.get('perPageParam')] = perPage;
     requestPayloadBase[this.get('pageParam')] = startingPage;
 
+    var extraParams = this.get('_extraParams'), options = {}, _this = this;
+    Ember.keys(extraParams).forEach(function(key) {
+      options[key] = Ember.isNone(_this.get(extraParams[key])) ? extraParams[key] : _this.get(extraParams[key]);
+    });
+
     var params = Ember.merge(requestPayloadBase, options);
     var promise = this.store.find(modelName, params);
 
@@ -175,11 +180,18 @@ export default Ember.Mixin.create({
     var totalPages  = this.get('_totalPages');
     var model       = this.get(this.get('_modelPath'));
     var modelName   = this.get('_infinityModelName');
+    var extraParams = this.get('_extraParams');
+    var options = {};
 
     if (!this.get('_loadingMore') && this.get('_canLoadMore')) {
       this.set('_loadingMore', true);
 
-      var params = Ember.merge({ page: nextPage, per_page: perPage }, this.get('_extraParams'));
+      var _this = this;
+      Ember.keys(extraParams).forEach(function(key) {
+        options[key] = Ember.isNone(_this.get(extraParams[key])) ? extraParams[key] : _this.get(extraParams[key]);
+      });
+
+      var params = Ember.merge({ page: nextPage, per_page: perPage }, options);
       var promise = this.store.find(modelName, params);
 
       promise.then(
@@ -201,7 +213,7 @@ export default Ember.Mixin.create({
         },
         () => {
           this.set('_loadingMore', false);
-          throw new Ember.Error("Could not fetch Infinity Model. Please check your serverside configuration.");
+          throw new Ember.Error("You must pass a Model Name to infinityModel");
         }
       );
     } else {
