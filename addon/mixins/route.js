@@ -38,6 +38,14 @@ export default Ember.Mixin.create({
 
   /**
     @private
+    @property _boundParams
+    @type Object
+    @default {}
+  */
+  _boundParams: {},
+
+  /**
+    @private
     @property _loadingMore
     @type Boolean
     @default false
@@ -111,9 +119,10 @@ export default Ember.Mixin.create({
     @method infinityModel
     @param {String} modelName The name of the model.
     @param {Object} options Optional, the perPage and startingPage to load from.
+    @param {Object} boundParams Optional, any route properties to be included as additional params.
     @return {Ember.RSVP.Promise}
   */
-  infinityModel(modelName, options) {
+  infinityModel(modelName, options, boundParams) {
 
     if (Ember.isEmpty(this.store) || Ember.isEmpty(this.store.find)){
       throw new Ember.Error("Ember Data store is not available to infinityModel");
@@ -139,6 +148,11 @@ export default Ember.Mixin.create({
     var requestPayloadBase = {};
     requestPayloadBase[this.get('perPageParam')] = perPage;
     requestPayloadBase[this.get('pageParam')] = startingPage;
+
+    if (typeof boundParams === 'object') {
+      this.set('_boundParams', boundParams);
+      options = this._includeBoundParams(options, boundParams);
+    }
 
     var params = Ember.merge(requestPayloadBase, options);
     var promise = this.store.find(modelName, params);
@@ -174,6 +188,8 @@ export default Ember.Mixin.create({
     var perPage     = this.get('_perPage');
     var totalPages  = this.get('_totalPages');
     var modelName   = this.get('_infinityModelName');
+    var options     = this.get('_extraParams');
+    var boundParams = this.get('_boundParams');
 
     if (!this.get('_loadingMore') && this.get('_canLoadMore')) {
       this.set('_loadingMore', true);
@@ -182,7 +198,9 @@ export default Ember.Mixin.create({
       requestPayloadBase[this.get('perPageParam')] = perPage;
       requestPayloadBase[this.get('pageParam')] = nextPage;
 
-      var params = Ember.merge(requestPayloadBase, this.get('_extraParams'));
+      options = this._includeBoundParams(options, boundParams);
+
+      var params = Ember.merge(requestPayloadBase, options);
       var promise = this.store.find(modelName, params);
 
       promise.then(
@@ -214,6 +232,24 @@ export default Ember.Mixin.create({
       }
     }
     return false;
+  },
+
+  /**
+   include any bound params into the options object.
+
+   @method includeBoundParams 
+   @param {Object} options, the object to include bound params into.
+   @param {Object} boundParams, an object of properties to be included into options.
+   @return {Object}
+   */
+  _includeBoundParams: function(options, boundParams) {
+    if (Ember.keys(boundParams).length > 0) {
+      Ember.keys(boundParams).forEach( (key) => {
+        options[key] = this.get(boundParams[key]);
+      });
+    }
+
+    return options;
   },
 
   /**
