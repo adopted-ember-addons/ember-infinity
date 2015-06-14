@@ -140,7 +140,8 @@ export default Ember.Mixin.create({
     requestPayloadBase[this.get('perPageParam')] = perPage;
     requestPayloadBase[this.get('pageParam')] = startingPage;
 
-    var extraParams = this.get('_extraParams'), options = {}, _this = this;
+    var extraParams = this.get('_extraParams'), _this = this;
+    options = {};
     Ember.keys(extraParams).forEach(function(key) {
       options[key] = Ember.isNone(_this.get(extraParams[key])) ? extraParams[key] : _this.get(extraParams[key]);
     });
