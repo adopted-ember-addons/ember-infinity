@@ -139,17 +139,31 @@ setupController: function(controller, model) {
   controller.set('products', model);
 }
 ```
-### event hooks
+### Event Hooks
 
-ember-infinity provides a route mixin that enables us to hook into the following events:
+The route mixin also provides following event hooks:
 
 * **infinityModelUpdated**
 
-This gets fired up when data is loaded into the model.
+Triggered on the route whenever new objects are pushed into the infinityModel.
+
+**Args:**
+
+* totalPages
 
 * **infinityModelLoaded**
 
-Fired up when there's no more data to load from the backend, needless to say this depends on your `meta.total_pages` key returned by your server.
+Triggered on the route when the infinityModel is fully loaded.
+
+**Args:**
+
+
+* lastPageLoaded
+
+* totalPages
+
+* infinityModel
+
 
 ```javascript
 import Ember from 'ember';
@@ -157,6 +171,11 @@ import InfinityRoute from 'ember-infinity/mixins/route';
 
 export default Ember.Route.extend(InfinityRoute, {
   ...
+
+	model: function () {
+	    /* Load pages of the Product Model, starting from page 1, in groups of 12. */
+	    return this.infinityModel("product", { perPage: 12, startingPage: 1 });
+	},
 
 	infinityModelUpdated: function() {
 		Ember.Logger.debug('updated with more items');
