@@ -33,6 +33,12 @@ body {
   box-shadow: 0 15px 15px rgba(0,0,0,0.5);
 }
 
+@media (max-width: 600px) {
+  .jumbo-header {
+    height: 200px;
+  }
+}
+
 .demo-items {
   list-style: none;
 }
