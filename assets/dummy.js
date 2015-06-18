@@ -1263,7 +1263,7 @@ catch(err) {
 if (runningTests) {
   require("dummy/tests/test-helper");
 } else {
-  require("dummy/app")["default"].create({"name":"ember-infinity","version":"0.0.7.297418bf"});
+  require("dummy/app")["default"].create({"name":"ember-infinity","version":"0.0.9.d34dcad7"});
 }
 
 /* jshint ignore:end */
