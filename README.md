@@ -123,6 +123,28 @@ return this.infinityModel("product", { perPage: 12, startingPage: 1,
                                        category: "furniture" });
 ```
 
+If the extra param you pass in is available as a property/computed on the route and it returns some value, its value will be used to set the value of this extra param, otherwise, it'll be left as is:
+
+```js
+prod: function () {
+  return this.get('cat');
+}.property('cat'),
+
+country: '',
+cat: 'shipped',
+date: null,
+
+return this.infinityModel("product", { perPage: 12, startingPage: 1, make: "original", country: "country", category: "prod", date: "2015" });
+```
+
+The route object will be inspected to see if the extra param's value is a property that returns anything but 'none' (as in: not `Ember.isNone(something)`).
+
+In the example above, the query url should look like this:
+
+```js
+    product?make=original&country=&category=shipped&date=2015&per_page=12&page1
+```
+
 * **modelPath**
 
 `modelPath` is optional parameter for situations when you are overriding `setupController`
@@ -137,6 +159,33 @@ model: function() {
 },
 setupController: function(controller, model) {
   controller.set('products', model);
+}
+```
+### event hooks
+
+ember-infinity provides a route mixin that enables us to hook into the following events:
+
+* **infinityModelUpdated**
+
+This gets fired up when data is loaded into the model.
+
+* **infinityModelLoaded**
+
+Fired up when there's no more data to load from the backend, needless to say this depends on your `meta.total_pages` key returned by your server.
+
+```javascript
+import Ember from 'ember';
+import InfinityRoute from 'ember-infinity/mixins/route';
+
+export default Ember.Route.extend(InfinityRoute, {
+  ...
+
+	infinityModelUpdated: function() {
+		Ember.Logger.debug('updated with more items');
+	},
+	infinityModelLoaded: function() {
+		Ember.Logger.info('no more items to load');
+	}
 }
 ```
 
