@@ -179,7 +179,11 @@ export default Ember.Mixin.create({
     if (!this.get('_loadingMore') && this.get('_canLoadMore')) {
       this.set('_loadingMore', true);
 
-      var params = Ember.merge({ page: nextPage, per_page: perPage }, this.get('_extraParams'));
+      var requestPayloadBase = {};
+      requestPayloadBase[this.get('perPageParam')] = perPage;
+      requestPayloadBase[this.get('pageParam')] = nextPage;
+
+      var params = Ember.merge(requestPayloadBase, this.get('_extraParams'));
       var promise = this.store.find(modelName, params);
 
       promise.then(
