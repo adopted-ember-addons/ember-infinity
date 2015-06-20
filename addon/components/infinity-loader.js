@@ -6,7 +6,7 @@ export default Ember.Component.extend({
   classNames: ["infinity-loader"],
   classNameBindings: ["infinityModel.reachedInfinity"],
   guid: null,
-  scrollDebounce: 10,
+  eventDebounce: 10,
   loadMoreAction: 'infinityLoad',
   loadingText: 'Loading Infinite Model...',
   loadedText: 'Infinite Model Entirely Loaded.',
@@ -18,23 +18,25 @@ export default Ember.Component.extend({
     this._super(...arguments);
     this._setupScrollable();
     this.set('guid', Ember.guidFor(this));
-    this._bindScroll();
+    this._bindEvent('scroll');
+    this._bindEvent('resize');
     this._checkIfInView();
   },
 
   willDestroyElement() {
     this._super(...arguments);
-    this._unbindScroll();
+    this._unbindEvent('scroll');
+    this._unbindEvent('resize');
   },
 
-  _bindScroll() {
-    this.get("scrollable").on(`scroll.${this.get('guid')}`, () => {
-      Ember.run.debounce(this, this._checkIfInView, this.get('scrollDebounce'));
+  _bindEvent(eventName) {
+    this.get('scrollable').on(`${eventName}.${this.get('guid')}`, () => {
+      Ember.run.debounce(this, this._checkIfInView, this.get('eventDebounce'));
     });
   },
 
-  _unbindScroll() {
-    this.get("scrollable").off(`scroll.${this.get('guid')}`);
+  _unbindEvent(eventName) {
+    this.get('scrollable').off(`${eventName}.${this.get('guid')}`);
   },
 
   _checkIfInView() {
