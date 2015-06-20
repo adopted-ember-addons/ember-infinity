@@ -69,5 +69,9 @@ export default Ember.Component.extend({
     if (this.get('infinityModel.reachedInfinity') && this.get('destroyOnInfinity')) {
       this.destroy();
     }
+  }),
+
+  infinityModelPushed: Ember.observer('infinityModel.length', function() {
+    Ember.run.scheduleOnce('afterRender', this, this._checkIfInView);
   })
 });
