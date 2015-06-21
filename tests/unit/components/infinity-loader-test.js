@@ -25,8 +25,7 @@ test('it will not destroy on load unless set', function(assert) {
     {id: 2, name: 'Potato'}
   ];
 
-  var component = this.subject();
-  component.set('infinityModel', infinityModelStub);
+  var component = this.subject({ infinityModel: infinityModelStub });
   this.render();
 
   assert.equal(component.get('destroyOnInfinity'), false);
@@ -53,8 +52,7 @@ test('it changes text property', function(assert) {
   ];
 
   var componentText;
-  var component = this.subject();
-  component.set('infinityModel', infinityModelStub);
+  var component = this.subject({ infinityModel: infinityModelStub });
   this.render();
 
   componentText = $.trim(component.$().text());
@@ -100,4 +98,31 @@ test('it throws error when multiple scrollable elements are found', function(ass
   assert.throws(function() {
     this.render();
   }, Error, "Should raise error");
+});
+
+test('it checks if in view after model is pushed', function(assert) {
+  assert.expect(4);
+
+  var infinityModelStub = Ember.A();
+  function pushModel() {
+    infinityModelStub.pushObject({});
+  }
+  pushModel();
+
+  var component = this.subject({ infinityModel: infinityModelStub });
+  component.set('_checkIfInView', function() {
+    assert.ok(true);
+  });
+  this.render();
+
+  var done = assert.async();
+  var count = 3;
+  for (var i = 0; i < 3; i++) {
+    setTimeout(() => {
+      Ember.run(pushModel);
+      if (!--count) {
+        done();
+      }
+    });
+  }
 });
