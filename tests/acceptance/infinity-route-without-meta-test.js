@@ -9,7 +9,7 @@ module('Acceptance: Infinity Route', {
   setup() {
     App = startApp();
     server = new Pretender(function() {
-      this.get('/posts', request => {
+      this.get('/posts', () => {
         var posts = [
           { id: 1, name: "Squarepusher" },
           { id: 2, name: "Aphex Twin" }
