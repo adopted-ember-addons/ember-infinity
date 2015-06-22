@@ -37,7 +37,7 @@ test('it can not use infinityModel without a Model Name', assert => {
   });
   var route = RouteObject.create();
   route.store = {
-    find() {}
+    query() {}
   };
 
   var infinityError;
@@ -61,7 +61,7 @@ test('it sets state before it reaches the end', assert => {
   var route = RouteObject.create();
 
   var dummyStore = {
-    find() {
+    query() {
       return new Ember.RSVP.Promise(resolve => {
         Ember.run(this, resolve, Ember.Object.create({
           items: [{id: 1, name: 'Test'}],
@@ -100,7 +100,7 @@ test('it allows customizations of request params', assert => {
   var route = RouteObject.create();
 
   var dummyStore = {
-    find(modelType, findQuery) {
+    query(modelType, findQuery) {
       assert.deepEqual(findQuery, {per: 25, p: 1});
       return new Ember.RSVP.Promise(resolve => {
         Ember.run(this, resolve, Ember.Object.create({
@@ -130,7 +130,7 @@ test('it allows customizations of meta parsing params', assert => {
   var route = RouteObject.create();
 
   var dummyStore = {
-    find(modelType, findQuery) {
+    query(modelType, findQuery) {
       return new Ember.RSVP.Promise(resolve => {
         Ember.run(this, resolve, Ember.Object.create({
           items: [{id: 1, name: 'Walter White'}],
@@ -164,7 +164,7 @@ test('it sets state  when it reaches the end', assert => {
   var route = RouteObject.create();
 
   var dummyStore = {
-    find() {
+    query() {
       return new Ember.RSVP.Promise(resolve => {
         Ember.run(this, resolve, Ember.Object.create({
           items: [{id: 1, name: 'Test'}],
@@ -204,7 +204,7 @@ test('it uses extra params when loading more data', assert => {
   var route = RouteObject.create();
 
   var dummyStore = {
-    find(name, params) {
+    query(name, params) {
       assert.equal('param', params.extra);
       return new Ember.RSVP.Promise(resolve => {
         Ember.run(this, resolve, Ember.Object.create({
@@ -265,7 +265,7 @@ test('it uses overridden params when loading more data', assert => {
   var route = RouteObject.create();
 
   var dummyStore = {
-    find(name, params) {
+    query(name, params) {
       assert.equal(1, params.testPerPage);
       assert.ok(params.testPage);
       return new Ember.RSVP.Promise(resolve => {

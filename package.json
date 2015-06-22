@@ -40,6 +40,7 @@
     "ember-addon"
   ],
   "dependencies": {
+    "ember-version-is": "0.0.2",
     "ember-cli-babel": "^5.0.0",
     "ember-cli-htmlbars": "0.7.8",
     "ember-cli-version-checker": "^1.0.2"

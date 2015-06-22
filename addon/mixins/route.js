@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import { emberDataVersionIs } from 'ember-version-is';
 
 /**
   The Ember Infinity Route Mixin enables an application route to load paginated
@@ -88,9 +89,18 @@ export default Ember.Mixin.create({
    * Path of the "total pages" param in
    * the HTTP response
    * @type {String}
-   * @default  "meta.total_pages"
+   * @default "meta.total_pages"
    */
   totalPagesParam: 'meta.total_pages',
+  
+  /**
+   * The supported findMethod name for
+   * the developers Ember Data version.
+   * Provided here for backwards compat.
+   * @type {String}
+   * @default "query"
+   */
+  _storeFindMethod: 'query',
 
   /**
     @private
@@ -115,7 +125,15 @@ export default Ember.Mixin.create({
   */
   infinityModel(modelName, options) {
 
-    if (Ember.isEmpty(this.store) || Ember.isEmpty(this.store.find)){
+    if (emberDataVersionIs('greaterThan', '1.0.0-beta.19.2') && emberDataVersionIs('lessThan', '1.13.4')) {
+      throw new Ember.Error("Ember Infinity: You are using an unsupported version of Ember Data.  Please upgrade to at least 1.13.4 or downgrade to 1.0.0-beta.19.2");
+    }
+
+    if (emberDataVersionIs('lessThan', '1.13.0')) {
+      this.set('_storeFindMethod', 'find');
+    }
+
+    if (Ember.isEmpty(this.store) || Ember.isEmpty(this.store[this._storeFindMethod])){
       throw new Ember.Error("Ember Data store is not available to infinityModel");
     } else if (modelName === undefined) {
       throw new Ember.Error("You must pass a Model Name to infinityModel");
@@ -141,7 +159,8 @@ export default Ember.Mixin.create({
     requestPayloadBase[this.get('pageParam')] = startingPage;
 
     var params = Ember.merge(requestPayloadBase, options);
-    var promise = this.store.find(modelName, params);
+
+    let promise = this.store[this._storeFindMethod](modelName, params);
 
     promise.then(
       infinityModel => {
@@ -184,7 +203,8 @@ export default Ember.Mixin.create({
       requestPayloadBase[this.get('pageParam')] = nextPage;
 
       var params = Ember.merge(requestPayloadBase, this.get('_extraParams'));
-      var promise = this.store.find(modelName, params);
+    
+      let promise = this.store[this._storeFindMethod](modelName, params);
 
       promise.then(
         infinityModel => {
