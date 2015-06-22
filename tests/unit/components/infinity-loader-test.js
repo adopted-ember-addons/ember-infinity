@@ -100,6 +100,42 @@ test('it throws error when multiple scrollable elements are found', function(ass
   }, Error, "Should raise error");
 });
 
+test('it checks if in view on the scroll event', function(assert) {
+  assert.expect(1);
+
+  var component = this.subject();
+
+  var isAfterRender = false;
+  component.set('_checkIfInView', function() {
+    if (isAfterRender) {
+      assert.ok(true);
+    }
+  });
+
+  this.render();
+
+  isAfterRender = true;
+  $(window).trigger('scroll');
+});
+
+test('it checks if in view on the resize event', function(assert) {
+  assert.expect(1);
+
+  var component = this.subject();
+
+  var isAfterRender = false;
+  component.set('_checkIfInView', function() {
+    if (isAfterRender) {
+      assert.ok(true);
+    }
+  });
+
+  this.render();
+
+  isAfterRender = true;
+  $(window).trigger('resize');
+});
+
 test('it checks if in view after model is pushed', function(assert) {
   assert.expect(4);
 
