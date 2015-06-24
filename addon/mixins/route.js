@@ -121,7 +121,12 @@ export default Ember.Mixin.create({
 
     promise.then(
       infinityModel => {
-        this.set('_minId', infinityModel.get('lastObject.id'));
+        if (infinityModel.get('length')) {
+          this.set('_minId', infinityModel.get('lastObject.id'));
+        } else {
+          this.set('_canLoadMore', false);
+        }
+
         infinityModel.set('reachedInfinity', !this.get('_canLoadMore'));
         Ember.run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
           minIdLastLoaded: this.get('_minId'),
@@ -163,7 +168,7 @@ export default Ember.Mixin.create({
           model.pushObjects(infinityModel.get('content'));
           this.set('_loadingMore', false);
 
-          if(infinityModel.get('length')) {
+          if (infinityModel.get('length')) {
             this.set('_minId', infinityModel.get('lastObject.id'));
           } else {
             this.set('_canLoadMore', false);
@@ -172,7 +177,7 @@ export default Ember.Mixin.create({
             minIdLastLoaded: minId,
             newObjects: infinityModel
           });
-          
+
           if (!this.get('_canLoadMore')) {
             this.set(this.get('_modelPath') + '.reachedInfinity', true);
             Ember.run.scheduleOnce('afterRender', this, 'infinityModelLoaded', {
