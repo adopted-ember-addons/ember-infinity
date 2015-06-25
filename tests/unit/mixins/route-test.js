@@ -63,12 +63,7 @@ test('it sets state before it reaches the end', assert => {
   var dummyStore = {
     find() {
       return new Ember.RSVP.Promise(resolve => {
-        Ember.run(this, resolve, Ember.Object.create({
-          items: [{id: 1, name: 'Test'}],
-          meta: {
-            total_pages: 31
-          }
-        }));
+        Ember.run(this, resolve, Ember.A([{id: 1, name: 'Test'}]));
       });
     }
   };
@@ -82,8 +77,7 @@ test('it sets state before it reaches the end', assert => {
     });
   });
 
-  assert.equal(31, route.get('_totalPages'));
-  assert.equal(1, route.get('_currentPage'));
+  assert.equal(1, route.get('_minId'));
   assert.equal(true, route.get('_canLoadMore'));
   assert.ok(Ember.$.isEmptyObject(route.get('_extraParams')));
   assert.ok(!model.get('reachedInfinity'), 'Should not reach infinity');
@@ -92,7 +86,6 @@ test('it sets state before it reaches the end', assert => {
 test('it allows customizations of request params', assert => {
   var RouteObject = Ember.Route.extend(RouteMixin, {
     perPageParam: 'per',
-    pageParam: 'p',
     model() {
       return this.infinityModel('item');
     }
@@ -101,11 +94,9 @@ test('it allows customizations of request params', assert => {
 
   var dummyStore = {
     find(modelType, findQuery) {
-      assert.deepEqual(findQuery, {per: 25, p: 1});
+      assert.deepEqual(findQuery, {per: 25});
       return new Ember.RSVP.Promise(resolve => {
-        Ember.run(this, resolve, Ember.Object.create({
-          items: []
-        }));
+        Ember.run(this, resolve, Ember.A());
       });
     }
   };
@@ -118,47 +109,13 @@ test('it allows customizations of request params', assert => {
       model = result;
     });
   });
-});
-
-test('it allows customizations of meta parsing params', assert => {
-  var RouteObject = Ember.Route.extend(RouteMixin, {
-    totalPagesParam: 'pagination.total',
-    model() {
-      return this.infinityModel('item');
-    }
-  });
-  var route = RouteObject.create();
-
-  var dummyStore = {
-    find(modelType, findQuery) {
-      return new Ember.RSVP.Promise(resolve => {
-        Ember.run(this, resolve, Ember.Object.create({
-          items: [{id: 1, name: 'Walter White'}],
-          pagination: {
-            total: 22
-          }
-        }));
-      });
-    }
-  };
-
-  route.store = dummyStore;
-
-  var model;
-  Ember.run(() => {
-    route.model().then(result => {
-      model = result;
-    });
-  });
-
-  assert.equal(22, route.get('_totalPages'));
 });
 
 test('it sets state  when it reaches the end', assert => {
 
   var RouteObject = Ember.Route.extend(RouteMixin, {
     model() {
-      return this.infinityModel('item', {startingPage: 31});
+      return this.infinityModel('item');
     }
   });
   var route = RouteObject.create();
@@ -166,12 +123,7 @@ test('it sets state  when it reaches the end', assert => {
   var dummyStore = {
     find() {
       return new Ember.RSVP.Promise(resolve => {
-        Ember.run(this, resolve, Ember.Object.create({
-          items: [{id: 1, name: 'Test'}],
-          meta: {
-            total_pages: 31
-          }
-        }));
+        Ember.run(this, resolve, Ember.A());
       });
     }
   };
@@ -185,8 +137,6 @@ test('it sets state  when it reaches the end', assert => {
     });
   });
 
-  assert.equal(31, route.get('_totalPages'));
-  assert.equal(31, route.get('_currentPage'));
   assert.ok(Ember.$.isEmptyObject(route.get('_extraParams')));
   assert.equal(false, route.get('_canLoadMore'));
   assert.ok(model.get('reachedInfinity'), 'Should reach infinity');
@@ -194,7 +144,7 @@ test('it sets state  when it reaches the end', assert => {
 
 test('it uses extra params when loading more data', assert => {
 
-  assert.expect(8);
+  assert.expect(7);
 
   var RouteObject = Ember.Route.extend(RouteMixin, {
     model() {
@@ -206,14 +156,12 @@ test('it uses extra params when loading more data', assert => {
   var dummyStore = {
     find(name, params) {
       assert.equal('param', params.extra);
+      var resolution = Ember.A([{id: 1, name: 'Test'}]);
+      if (params.min_id) {
+        resolution = Ember.Object.create({ content: resolution });
+      }
       return new Ember.RSVP.Promise(resolve => {
-        Ember.run(this, resolve, Ember.Object.create({
-          items: [{id: 1, name: 'Test'}],
-          pushObjects: Ember.K,
-          meta: {
-            total_pages: 2
-          }
-        }));
+        Ember.run(this, resolve, resolution);
       });
     }
   };
@@ -244,38 +192,32 @@ test('it uses extra params when loading more data', assert => {
 
   assert.equal('param', route.get('_extraParams.extra'));
   assert.equal(false, route.get('_canLoadMore'));
-  assert.equal(2, route.get('_currentPage'));
   assert.ok(model.get('reachedInfinity'), 'Should reach infinity');
 
 });
 
 test('it uses overridden params when loading more data', assert => {
 
-  assert.expect(8);
+  assert.expect(5);
 
   var RouteObject = Ember.Route.extend(RouteMixin, {
     model() {
-      return this.infinityModel('item', {perPage: 1, startingPage: 2});
+      return this.infinityModel('item', {perPage: 1});
     },
 
-    perPageParam: 'testPerPage',
-    pageParam: 'testPage',
-    totalPagesParam: 'meta.testTotalPages'
+    perPageParam: 'testPerPage'
   });
   var route = RouteObject.create();
 
   var dummyStore = {
     find(name, params) {
+      var resolution = Ember.A([{id: 1, name: 'Test'}]);
       assert.equal(1, params.testPerPage);
-      assert.ok(params.testPage);
+      if (params.min_id) {
+        resolution = Ember.Object.create({ content: resolution });
+      }
       return new Ember.RSVP.Promise(resolve => {
-        Ember.run(this, resolve, Ember.Object.create({
-          items: [{id: 1, name: 'Test'}],
-          pushObjects: Ember.K,
-          meta: {
-            testTotalPages: 3
-          }
-        }));
+        Ember.run(this, resolve, resolution);
       });
     }
   };
@@ -304,7 +246,6 @@ test('it uses overridden params when loading more data', assert => {
   });
 
   assert.equal(false, route.get('_canLoadMore'));
-  assert.equal(3, route.get('_currentPage'));
   assert.ok(model.get('reachedInfinity'), 'Should reach infinity');
 
 });

@@ -34,6 +34,5 @@ test('it works when meta is not present in payload', assert => {
 
     assert.equal(postsTitle.text(), "Listing Posts");
     assert.equal(postList.find('li').length, 2);
-    assert.equal(infinityLoader.hasClass('reached-infinity'), true);
   });
 });
