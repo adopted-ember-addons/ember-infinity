@@ -156,18 +156,13 @@ test('it uses extra params when loading more data', assert => {
   var dummyStore = {
     find(name, params) {
       assert.equal('param', params.extra);
-      if(params.min_id != null) {
-        return new Ember.RSVP.Promise(resolve => {
-          Ember.run(this, resolve, Ember.Object.create({
-            content: Ember.A([{id: 1, name: 'Test'}])
-            })
-          );
-        });
-      } else {
-        return new Ember.RSVP.Promise(resolve => {
-          Ember.run(this, resolve, Ember.A([{id: 1, name: 'Test'}]));
-        });
+      var resolution = Ember.A([{id: 1, name: 'Test'}]);
+      if (params.min_id) {
+        resolution = Ember.Object.create({ content: resolution });
       }
+      return new Ember.RSVP.Promise(resolve => {
+        Ember.run(this, resolve, resolution);
+      });
     }
   };
 
@@ -216,18 +211,14 @@ test('it uses overridden params when loading more data', assert => {
 
   var dummyStore = {
     find(name, params) {
+      var resolution = Ember.A([{id: 1, name: 'Test'}]);
       assert.equal(1, params.testPerPage);
-      if(params.min_id) {
-        return new Ember.RSVP.Promise(resolve => {
-          Ember.run(this, resolve, Ember.Object.create({
-            content: Ember.A([{id: 1, name: 'Test'}])
-          }));
-        });
-      } else {
-        return new Ember.RSVP.Promise(resolve => {
-          Ember.run(this, resolve, Ember.A([{id: 1, name: 'Test'}]));
-        });
+      if (params.min_id) {
+        resolution = Ember.Object.create({ content: resolution });
       }
+      return new Ember.RSVP.Promise(resolve => {
+        Ember.run(this, resolve, resolution);
+      });
     }
   };
 

@@ -84,6 +84,14 @@ export default Ember.Mixin.create({
   */
   _canLoadMore: true,
 
+  _updateInfinityProperties(model) {
+    if (model.get('length')) {
+      this.set('_minId', model.get('lastObject.id'));
+    } else {
+      this.set('_canLoadMore', false);
+    }
+  },
+
   /**
     Use the infinityModel method in the place of `this.store.find('model')` to
     initialize the Infinity Model for your route.
@@ -121,11 +129,7 @@ export default Ember.Mixin.create({
 
     promise.then(
       infinityModel => {
-        if (infinityModel.get('length')) {
-          this.set('_minId', infinityModel.get('lastObject.id'));
-        } else {
-          this.set('_canLoadMore', false);
-        }
+        this._updateInfinityProperties(infinityModel);
 
         infinityModel.set('reachedInfinity', !this.get('_canLoadMore'));
         Ember.run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
@@ -140,7 +144,6 @@ export default Ember.Mixin.create({
 
     return promise;
   },
-
   /**
    Trigger a load of the next page of results.
 
@@ -167,12 +170,8 @@ export default Ember.Mixin.create({
         infinityModel => {
           model.pushObjects(infinityModel.get('content'));
           this.set('_loadingMore', false);
+          this._updateInfinityProperties(infinityModel);
 
-          if (infinityModel.get('length')) {
-            this.set('_minId', infinityModel.get('lastObject.id'));
-          } else {
-            this.set('_canLoadMore', false);
-          }
           Ember.run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
             minIdLastLoaded: minId,
             newObjects: infinityModel
