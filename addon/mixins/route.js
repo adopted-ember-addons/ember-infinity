@@ -173,7 +173,6 @@ export default Ember.Mixin.create({
     var nextPage    = this.get('_currentPage') + 1;
     var perPage     = this.get('_perPage');
     var totalPages  = this.get('_totalPages');
-    var model       = this.get(this.get('_modelPath'));
     var modelName   = this.get('_infinityModelName');
 
     if (!this.get('_loadingMore') && this.get('_canLoadMore')) {
@@ -187,14 +186,14 @@ export default Ember.Mixin.create({
       var promise = this.store.find(modelName, params);
 
       promise.then(
-        infinityModel => {
-          model.pushObjects(infinityModel.get('content'));
+        newObjects => {
+          this.updateInfinityModel(newObjects);
           this.set('_loadingMore', false);
           this.set('_currentPage', nextPage);
           Ember.run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
             lastPageLoaded: nextPage,
             totalPages: totalPages,
-            newObjects: infinityModel
+            newObjects: newObjects
           });
           if (!this.get('_canLoadMore')) {
             this.set(this.get('_modelPath') + '.reachedInfinity', true);
@@ -215,6 +214,19 @@ export default Ember.Mixin.create({
       }
     }
     return false;
+  },
+
+  /**
+   Update the infinity model with new objects
+
+   @method updateInfinityModel
+   @param {Ember.Enumerable} newObjects The new objects to add to the model
+   @return {Ember.Array} returns the updated infinity model
+   */
+  updateInfinityModel(newObjects) {
+    var infinityModel = this.get(this.get('_modelPath'));
+
+    return infinityModel.pushObjects(newObjects.get('content'));
   },
 
   actions: {
