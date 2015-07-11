@@ -105,6 +105,14 @@ export default Ember.Mixin.create({
   }),
 
   /**
+    @private
+    @property _removeOld
+    @type Boolean
+    @default false
+  */
+  _removeOld: false,
+
+  /**
     Use the infinityModel method in the place of `this.store.find('model')` to
     initialize the Infinity Model for your route.
 
@@ -127,13 +135,16 @@ export default Ember.Mixin.create({
     var startingPage = options.startingPage || 1;
     var perPage      = options.perPage || this.get('_perPage');
     var modelPath    = options.modelPath || this.get('_modelPath');
+    var removeOld    = options.removeOld || this.get('_removeOld');
 
     delete options.startingPage;
     delete options.perPage;
     delete options.modelPath;
+    delete options.removeOld;
 
     this.set('_perPage', perPage);
     this.set('_modelPath', modelPath);
+    this.set('_removeOld', removeOld);
     this.set('_extraParams', options);
 
     var requestPayloadBase = {};
@@ -188,7 +199,12 @@ export default Ember.Mixin.create({
 
       promise.then(
         infinityModel => {
-          model.pushObjects(infinityModel.get('content'));
+          if(this.get('_removeOld')){
+            model = infinityModel.get('content');
+          }else{
+            model.pushObjects(infinityModel.get('content'));
+          }
+          
           this.set('_loadingMore', false);
           this.set('_currentPage', nextPage);
           Ember.run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
