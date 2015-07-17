@@ -111,6 +111,19 @@ and ember-infinity will be set up to parse the total number of pages from a JSON
 }
 ```
 
+You may override `updateInfinityModel` to customize how the route's `model` should be updated with new objects. You may also invoke this method directly to manually push new objects into the model:
+
+```js
+actions: {
+  pushHughIntoInfinityModel() [
+    var updatedInfinityModel = this.updateInfinityModel([
+      { id: 1, name: "Hugh Francis" }
+    ]);
+    console.log(updatedInfinityModel);
+  }
+}
+```
+
 ### infinityModel
 
 You can also provide additional parameters to `infinityModel` that

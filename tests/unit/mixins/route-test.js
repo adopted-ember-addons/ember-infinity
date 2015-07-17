@@ -308,3 +308,70 @@ test('it uses overridden params when loading more data', assert => {
   assert.ok(model.get('reachedInfinity'), 'Should reach infinity');
 
 });
+
+test('it allows overrides/manual invocations of updateInfinityModel', assert => {
+  var RouteObject = Ember.Route.extend(RouteMixin, {
+    model() {
+      return this.infinityModel('item', {perPage: 1});
+    },
+    updateInfinityModel(newObjects) {
+      return this._super(newObjects.setEach('author', 'F. Scott Fitzgerald'));
+    }
+  });
+  var route = RouteObject.create();
+
+  var items = [
+    { id: 1, title: 'The Great Gatsby' },
+    { id: 2, title: 'The Last Tycoon' }
+  ];
+
+  var dummyStore = {
+    find(modelType, findQuery) {
+      var item = items[findQuery.page-1];
+      return new Ember.RSVP.Promise(resolve => {
+        Ember.run(this, resolve, Ember.ArrayProxy.create({
+          content: Ember.A([item]),
+          meta: { total_pages: 2 }
+        }));
+      });
+    }
+  };
+
+  route.store = dummyStore;
+
+  var model;
+  Ember.run(() => {
+    route.model().then(result => {
+      model = result;
+    });
+  });
+
+  var dummyController = Ember.Object.create({
+    model
+  });
+  route.set('controller', dummyController);
+
+  assert.equal(route.get('_canLoadMore'), true);
+  assert.equal(model.get('content.length'), 1);
+
+  Ember.run(() => {
+    route._infinityLoad();
+  });
+
+  assert.equal(route.get('_canLoadMore'), false);
+  assert.equal(model.get('content.length'), 2);
+  assert.equal(model.get('content.lastObject.author'), 'F. Scott Fitzgerald', 'overrides to updateInfinityModel should take effect');
+
+  var newObjects = Ember.ArrayProxy.create({
+    content: Ember.A([
+      { id: 3, title: 'Tender Is the Night' }
+    ])
+  });
+
+  Ember.run(() => {
+    route.updateInfinityModel(newObjects);
+  });
+
+  assert.equal(model.get('content.length'), 3);
+  assert.equal(model.get('content.lastObject.title'), 'Tender Is the Night', 'updateInfinityModel can be invoked manually');
+});
