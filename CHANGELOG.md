@@ -1,5 +1,21 @@
 # Change Log
 
+## [Unreleased](https://github.com/hhff/ember-infinity/tree/HEAD)
+
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.0.10...HEAD)
+
+**Closed issues:**
+
+- support multiple directions [\#55](https://github.com/hhff/ember-infinity/issues/55)
+
+- Load more button instead of infinite scrolling [\#46](https://github.com/hhff/ember-infinity/issues/46)
+
+**Merged pull requests:**
+
+- extract `model.pushObjects` to a method [\#54](https://github.com/hhff/ember-infinity/pull/54) ([asross](https://github.com/asross))
+
+- deleteOld [\#56](https://github.com/hhff/ember-infinity/pull/56) ([mandi05](https://github.com/mandi05))
+
 ## [v0.0.10](https://github.com/hhff/ember-infinity/tree/v0.0.10) (2015-06-22)
 
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.0.9...v0.0.10)
