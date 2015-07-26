@@ -22,14 +22,6 @@ export default Ember.Mixin.create({
 
   /**
     @private
-    @property _currentPage
-    @type Integer
-    @default 0
-  */
-  _currentPage: 0,
-
-  /**
-    @private
     @property _extraParams
     @type Object
     @default {}
@@ -75,6 +67,13 @@ export default Ember.Mixin.create({
     @default 'controller.model'
   */
   _modelPath: 'controller.model',
+  
+    /**
+    @property currentPage
+    @type Integer
+    @default 0
+  */
+  currentPage: 0,
 
   /**
    * Name of the "per page" param in the
@@ -106,9 +105,9 @@ export default Ember.Mixin.create({
     @type Boolean
     @default false
   */
-  _canLoadMore: Ember.computed('_totalPages', '_currentPage', function() {
+  _canLoadMore: Ember.computed('_totalPages', 'currentPage', function() {
     var totalPages  = this.get('_totalPages');
-    var currentPage = this.get('_currentPage');
+    var currentPage = this.get('currentPage');
     return (totalPages && currentPage) ? (currentPage < totalPages) : false;
   }),
 
@@ -160,7 +159,7 @@ export default Ember.Mixin.create({
     promise.then(
       infinityModel => {
         var totalPages = infinityModel.get(this.get('totalPagesParam'));
-        this.set('_currentPage', startingPage);
+        this.set('currentPage', startingPage);
         this.set('_totalPages', totalPages);
         infinityModel.set('reachedInfinity', !this.get('_canLoadMore'));
         Ember.run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
@@ -184,7 +183,7 @@ export default Ember.Mixin.create({
    @return {Boolean}
    */
   _infinityLoad() {
-    var nextPage    = this.get('_currentPage') + 1;
+    var nextPage    = this.get('currentPage') + 1;
     var perPage     = this.get('_perPage');
     var totalPages  = this.get('_totalPages');
     var modelName   = this.get('_infinityModelName');
@@ -207,7 +206,7 @@ export default Ember.Mixin.create({
         newObjects => {
           this.updateInfinityModel(newObjects);
           this.set('_loadingMore', false);
-          this.set('_currentPage', nextPage);
+          this.set('currentPage', nextPage);
           Ember.run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
             lastPageLoaded: nextPage,
             totalPages: totalPages,
