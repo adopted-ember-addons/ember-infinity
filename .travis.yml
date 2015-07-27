@@ -10,7 +10,6 @@ cache:
     - node_modules
 
 env:
-  - EMBER_TRY_SCENARIO=default
   - EMBER_TRY_SCENARIO=ember-1.10
   - EMBER_TRY_SCENARIO=ember-1.11
   - EMBER_TRY_SCENARIO=ember-1.12

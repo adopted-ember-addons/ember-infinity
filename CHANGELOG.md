@@ -2,7 +2,19 @@
 
 ## [Unreleased](https://github.com/hhff/ember-infinity/tree/HEAD)
 
-[Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.0.10...HEAD)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.0.12...HEAD)
+
+**Closed issues:**
+
+- Skip x entries instead of requesting pages [\#50](https://github.com/hhff/ember-infinity/issues/50)
+
+## [v0.0.12](https://github.com/hhff/ember-infinity/tree/v0.0.12) (2015-07-18)
+
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.0.11...v0.0.12)
+
+## [v0.0.11](https://github.com/hhff/ember-infinity/tree/v0.0.11) (2015-07-17)
+
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.0.10...v0.0.11)
 
 **Closed issues:**
 
@@ -13,8 +25,6 @@
 **Merged pull requests:**
 
 - extract `model.pushObjects` to a method [\#54](https://github.com/hhff/ember-infinity/pull/54) ([asross](https://github.com/asross))
-
-- deleteOld [\#56](https://github.com/hhff/ember-infinity/pull/56) ([mandi05](https://github.com/mandi05))
 
 ## [v0.0.10](https://github.com/hhff/ember-infinity/tree/v0.0.10) (2015-06-22)
 
@@ -53,12 +63,6 @@
 - Babel.js polyfill in demo app [\#36](https://github.com/hhff/ember-infinity/pull/36) ([truenorth](https://github.com/truenorth))
 
 - uses the override properties when loading more [\#35](https://github.com/hhff/ember-infinity/pull/35) ([kellyselden](https://github.com/kellyselden))
-
-- Document events [\#40](https://github.com/hhff/ember-infinity/pull/40) ([ashrafhasson](https://github.com/ashrafhasson))
-
-- Document event hooks [\#30](https://github.com/hhff/ember-infinity/pull/30) ([ashrafhasson](https://github.com/ashrafhasson))
-
-- Update README.md [\#29](https://github.com/hhff/ember-infinity/pull/29) ([ashrafhasson](https://github.com/ashrafhasson))
 
 ## [v0.0.9](https://github.com/hhff/ember-infinity/tree/v0.0.9) (2015-06-12)
 
@@ -120,7 +124,7 @@
 
 - Fixes install command for new ember-cli [\#14](https://github.com/hhff/ember-infinity/pull/14) ([Keeo](https://github.com/Keeo))
 
-- Add descriptive error message when running ember-cli < 0.2.0 [\#13](https://github.com/hhff/ember-infinity/pull/13) ([amedrz](https://github.com/amedrz))
+- Add descriptive error message when running ember-cli \< 0.2.0 [\#13](https://github.com/hhff/ember-infinity/pull/13) ([amedrz](https://github.com/amedrz))
 
 ## [v0.0.4](https://github.com/hhff/ember-infinity/tree/v0.0.4) (2015-04-08)
 
@@ -141,8 +145,6 @@
 - Support additional parameters for infinityModel\(\) [\#9](https://github.com/hhff/ember-infinity/pull/9) ([bruce](https://github.com/bruce))
 
 - Fixed h2 tag [\#8](https://github.com/hhff/ember-infinity/pull/8) ([Mak-Di](https://github.com/Mak-Di))
-
-- Allow params in store.find [\#7](https://github.com/hhff/ember-infinity/pull/7) ([joshudev](https://github.com/joshudev))
 
 ## [v0.0.3](https://github.com/hhff/ember-infinity/tree/v0.0.3) (2015-03-25)
 
