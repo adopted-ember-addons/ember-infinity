@@ -13,6 +13,7 @@ export default Ember.Component.extend({
   destroyOnInfinity: false,
   developmentMode: false,
   scrollable: null,
+  untimelyLoading: 0,
 
   didInsertElement() {
     this._super(...arguments);
@@ -44,7 +45,7 @@ export default Ember.Component.extend({
     var scrollable       = this.get("scrollable");
     var scrollableBottom = scrollable.height() + scrollable.scrollTop();
 
-    var inView = selfOffset < scrollableBottom;
+    var inView = selfOffset - this.get('untimelyLoading') < scrollableBottom;
 
     if (inView && !this.get('developmentMode')) {
       this.sendAction('loadMoreAction');
