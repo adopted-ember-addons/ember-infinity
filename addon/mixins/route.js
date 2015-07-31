@@ -1,5 +1,7 @@
 import Ember from 'ember';
 
+const { get } = Ember;
+
 /**
   The Ember Infinity Route Mixin enables an application route to load paginated
   records for the route `model` as triggered by the controller (or Infinity Loader
@@ -124,7 +126,7 @@ export default Ember.Mixin.create({
   */
   infinityModel(modelName, options, boundParams) {
 
-    if (Ember.isEmpty(this.store) || Ember.isEmpty(this.store.find)){
+    if (Ember.isEmpty(get(this, 'store')) || Ember.isEmpty(get(this, 'store').find)){
       throw new Ember.Error("Ember Data store is not available to infinityModel");
     } else if (modelName === undefined) {
       throw new Ember.Error("You must pass a Model Name to infinityModel");
@@ -155,7 +157,7 @@ export default Ember.Mixin.create({
     }
 
     var params = Ember.merge(requestPayloadBase, options);
-    var promise = this.store.find(modelName, params);
+    var promise = get(this, 'store').find(modelName, params);
 
     promise.then(
       infinityModel => {
@@ -201,7 +203,7 @@ export default Ember.Mixin.create({
       options = this._includeBoundParams(options, boundParams);
 
       var params = Ember.merge(requestPayloadBase, options);
-      var promise = this.store.find(modelName, params);
+      var promise = get(this, 'store').find(modelName, params);
 
       promise.then(
         newObjects => {
@@ -237,7 +239,7 @@ export default Ember.Mixin.create({
   /**
    include any bound params into the options object.
 
-   @method includeBoundParams 
+   @method includeBoundParams
    @param {Object} options, the object to include bound params into.
    @param {Object} boundParams, an object of properties to be included into options.
    @return {Object}
