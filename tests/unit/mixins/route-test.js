@@ -12,6 +12,7 @@ test('it works', assert => {
 
 test('it can not use infinityModel without Ember Data Store', assert => {
   var RouteObject = Ember.Route.extend(RouteMixin, {
+    store: null,
     model() {
       return this.infinityModel('post');
     }
@@ -73,7 +74,7 @@ test('it sets state before it reaches the end', assert => {
     }
   };
 
-  route.store = dummyStore;
+  route.set('store', dummyStore);
 
   var model;
   Ember.run(() => {
@@ -110,7 +111,7 @@ test('it allows customizations of request params', assert => {
     }
   };
 
-  route.store = dummyStore;
+  route.set('store', dummyStore);
 
   var model;
   Ember.run(() => {
@@ -142,7 +143,7 @@ test('it allows customizations of meta parsing params', assert => {
     }
   };
 
-  route.store = dummyStore;
+  route.set('store', dummyStore);
 
   var model;
   Ember.run(() => {
@@ -176,7 +177,7 @@ test('it sets state  when it reaches the end', assert => {
     }
   };
 
-  route.store = dummyStore;
+  route.set('store', dummyStore);
 
   var model;
   Ember.run(() => {
@@ -218,7 +219,7 @@ test('it uses extra params when loading more data', assert => {
     }
   };
 
-  route.store = dummyStore;
+  route.set('store', dummyStore);
 
   var model;
   Ember.run(() => {
@@ -280,7 +281,7 @@ test('it uses overridden params when loading more data', assert => {
     }
   };
 
-  route.store = dummyStore;
+  route.set('store', dummyStore);
 
   var model;
   Ember.run(() => {
@@ -338,7 +339,7 @@ test('it uses bound params when loading more data', assert => {
     }
   };
 
-  route.store = dummyStore;
+  route.set('store', dummyStore);
 
   var model;
   Ember.run(() => {
@@ -401,7 +402,7 @@ test('it allows overrides/manual invocations of updateInfinityModel', assert => 
     }
   };
 
-  route.store = dummyStore;
+  route.set('store', dummyStore);
 
   var model;
   Ember.run(() => {
