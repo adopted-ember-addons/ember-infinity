@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import emberVersionIs from 'ember-version-is';
 import layout from '../templates/components/infinity-loader';
 
 export default Ember.Component.extend({
@@ -14,8 +15,21 @@ export default Ember.Component.extend({
   developmentMode: false,
   scrollable: null,
 
+  didRender() {
+    this._super(...arguments);
+    if(emberVersionIs('greaterThanOrEqualTo', "1.13.0")) {
+      this._setup();
+    }
+  },
+
   didInsertElement() {
     this._super(...arguments);
+    if(emberVersionIs('lessThan', "1.13.0")) {
+      this._setup();
+    }
+  },
+
+  _setup() {
     this._setupScrollable();
     this.set('guid', Ember.guidFor(this));
     this._bindEvent('scroll');

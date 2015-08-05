@@ -1,0 +1,11 @@
+<h2 id="posts-title">Listing Posts</h2>
+
+<ul class="test-list" style='height: 100px; overflow: scroll;'>
+  {{#each model as |post|}}
+    <li>{{post.name}}</li>
+  {{/each}}
+  <li id='scollable-list-item'>{{infinity-loader infinityModel=model scrollable='.test-list' }}</li>
+</ul>
+
+
+{{outlet}}
