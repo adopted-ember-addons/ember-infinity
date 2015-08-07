@@ -1,9 +1,7 @@
 import Ember from 'ember';
 import emberVersionIs from 'ember-version-is';
-import layout from '../templates/components/infinity-loader';
 
 export default Ember.Component.extend({
-  layout: layout,
   classNames: ["infinity-loader"],
   classNameBindings: ["infinityModel.reachedInfinity"],
   guid: null,
