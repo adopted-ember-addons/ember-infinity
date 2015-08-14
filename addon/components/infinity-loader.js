@@ -12,6 +12,7 @@ export default Ember.Component.extend({
   destroyOnInfinity: false,
   developmentMode: false,
   scrollable: null,
+  offset: 0,
 
   didRender() {
     this._super(...arguments);
@@ -52,7 +53,7 @@ export default Ember.Component.extend({
   },
 
   _checkIfInView() {
-    var selfOffset       = this.$().offset().top;
+    var selfOffset       = this.$().offset().top - this.get('offset');
     var scrollable       = this.get("scrollable");
     var scrollableBottom = scrollable.height() + scrollable.scrollTop();
 
