@@ -279,6 +279,18 @@ you can work on its appearance.
 
 By default, the `infinity-loader` will just output a `span` showing its status.
 
+* **Providing a block**
+
+```html
+{{#infinity-loader infinityModel=model}}
+<img src="loading-spinner.gif" />
+{{/infinity-loader}}
+```
+
+If you provide a block to the component, it will render the block instead of
+rendering `loadingText` or `loadedText`. This will allow you to provide your
+own custom markup or styling for the loading state.
+
 * **reached-infinity Class Name**
 
 ```scss

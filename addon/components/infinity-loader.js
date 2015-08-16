@@ -1,6 +1,7 @@
 import Ember from 'ember';
+import emberVersionIs from 'ember-version-is';
 
-export default Ember.Component.extend({
+const InfinityLoaderComponent = Ember.Component.extend({
   classNames: ["infinity-loader"],
   classNameBindings: ["infinityModel.reachedInfinity"],
   guid: null,
@@ -77,3 +78,11 @@ export default Ember.Component.extend({
     Ember.run.scheduleOnce('afterRender', this, this._checkIfInView);
   })
 });
+
+if (emberVersionIs('lessThan', '1.13.0')) {
+  InfinityLoaderComponent.reopen({
+    hasBlock: Ember.computed.alias('template')
+  });
+}
+
+export default InfinityLoaderComponent;
