@@ -4,6 +4,7 @@
 [![Ember Observer Score](http://emberobserver.com/badges/ember-infinity.svg)](http://emberobserver.com/addons/ember-infinity)
 
 [![Code Climate](https://codeclimate.com/github/hhff/ember-infinity/badges/gpa.svg)](https://codeclimate.com/github/hhff/ember-infinity)
+[![Coverage Status](https://coveralls.io/repos/hhff/ember-infinity/badge.svg?branch=master&service=github)](https://coveralls.io/github/hhff/ember-infinity?branch=master)
 [![Dependency Status](https://david-dm.org/hhff/ember-infinity.svg)](https://david-dm.org/hhff/ember-infinity)
 [![devDependency Status](https://david-dm.org/hhff/ember-infinity/dev-status.svg)](https://david-dm.org/hhff/ember-infinity#info=devDependencies)
 

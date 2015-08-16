@@ -34,4 +34,7 @@ install:
   - bower install
 
 script:
-  - ember try $EMBER_TRY_SCENARIO test
+  - istanbul cover node_modules/ember-cli/bin/ember try $EMBER_TRY_SCENARIO test
+
+after_script:
+  - cat coverage/lcov.info | node_modules/coveralls/bin/coveralls.js
