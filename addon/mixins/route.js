@@ -1,6 +1,8 @@
 import Ember from 'ember';
 import { emberDataVersionIs } from 'ember-version-is';
 
+const { get } = Ember;
+
 /**
   The Ember Infinity Route Mixin enables an application route to load paginated
   records for the route `model` as triggered by the controller (or Infinity Loader
@@ -23,11 +25,11 @@ export default Ember.Mixin.create({
 
   /**
     @private
-    @property _currentPage
+    @property currentPage
     @type Integer
     @default 0
   */
-  _currentPage: 0,
+  currentPage: 0,
 
   /**
     @private
@@ -36,6 +38,14 @@ export default Ember.Mixin.create({
     @default {}
   */
   _extraParams: {},
+
+  /**
+    @private
+    @property _boundParams
+    @type Object
+    @default {}
+  */
+  _boundParams: {},
 
   /**
     @private
@@ -108,9 +118,9 @@ export default Ember.Mixin.create({
     @type Boolean
     @default false
   */
-  _canLoadMore: Ember.computed('_totalPages', '_currentPage', function() {
+  _canLoadMore: Ember.computed('_totalPages', 'currentPage', function() {
     var totalPages  = this.get('_totalPages');
-    var currentPage = this.get('_currentPage');
+    var currentPage = this.get('currentPage');
     return (totalPages && currentPage) ? (currentPage < totalPages) : false;
   }),
 
@@ -121,9 +131,10 @@ export default Ember.Mixin.create({
     @method infinityModel
     @param {String} modelName The name of the model.
     @param {Object} options Optional, the perPage and startingPage to load from.
+    @param {Object} boundParams Optional, any route properties to be included as additional params.
     @return {Ember.RSVP.Promise}
   */
-  infinityModel(modelName, options) {
+  infinityModel(modelName, options, boundParams) {
 
     if (emberDataVersionIs('greaterThan', '1.0.0-beta.19.2') && emberDataVersionIs('lessThan', '1.13.4')) {
       throw new Ember.Error("Ember Infinity: You are using an unsupported version of Ember Data.  Please upgrade to at least 1.13.4 or downgrade to 1.0.0-beta.19.2");
@@ -158,14 +169,18 @@ export default Ember.Mixin.create({
     requestPayloadBase[this.get('perPageParam')] = perPage;
     requestPayloadBase[this.get('pageParam')] = startingPage;
 
-    var params = Ember.merge(requestPayloadBase, options);
+    if (typeof boundParams === 'object') {
+      this.set('_boundParams', boundParams);
+      options = this._includeBoundParams(options, boundParams);
+    }
 
+    var params = Ember.merge(requestPayloadBase, options);
     let promise = this.store[this._storeFindMethod](modelName, params);
 
     promise.then(
       infinityModel => {
         var totalPages = infinityModel.get(this.get('totalPagesParam'));
-        this.set('_currentPage', startingPage);
+        this.set('currentPage', startingPage);
         this.set('_totalPages', totalPages);
         infinityModel.set('reachedInfinity', !this.get('_canLoadMore'));
         Ember.run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
@@ -189,11 +204,12 @@ export default Ember.Mixin.create({
    @return {Boolean}
    */
   _infinityLoad() {
-    var nextPage    = this.get('_currentPage') + 1;
+    var nextPage    = this.get('currentPage') + 1;
     var perPage     = this.get('_perPage');
     var totalPages  = this.get('_totalPages');
-    var model       = this.get(this.get('_modelPath'));
     var modelName   = this.get('_infinityModelName');
+    var options     = this.get('_extraParams');
+    var boundParams = this.get('_boundParams');
 
     if (!this.get('_loadingMore') && this.get('_canLoadMore')) {
       this.set('_loadingMore', true);
@@ -202,19 +218,20 @@ export default Ember.Mixin.create({
       requestPayloadBase[this.get('perPageParam')] = perPage;
       requestPayloadBase[this.get('pageParam')] = nextPage;
 
+      options = this._includeBoundParams(options, boundParams);
       var params = Ember.merge(requestPayloadBase, this.get('_extraParams'));
     
       let promise = this.store[this._storeFindMethod](modelName, params);
 
       promise.then(
-        infinityModel => {
-          model.pushObjects(infinityModel.get('content'));
+        newObjects => {
+          this.updateInfinityModel(newObjects);
           this.set('_loadingMore', false);
-          this.set('_currentPage', nextPage);
+          this.set('currentPage', nextPage);
           Ember.run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
             lastPageLoaded: nextPage,
             totalPages: totalPages,
-            newObjects: infinityModel
+            newObjects: newObjects
           });
           if (!this.get('_canLoadMore')) {
             this.set(this.get('_modelPath') + '.reachedInfinity', true);
@@ -235,6 +252,37 @@ export default Ember.Mixin.create({
       }
     }
     return false;
+  },
+
+  /**
+   include any bound params into the options object.
+
+   @method includeBoundParams
+   @param {Object} options, the object to include bound params into.
+   @param {Object} boundParams, an object of properties to be included into options.
+   @return {Object}
+   */
+  _includeBoundParams: function(options, boundParams) {
+    if (Ember.keys(boundParams).length > 0) {
+      Ember.keys(boundParams).forEach( (key) => {
+        options[key] = this.get(boundParams[key]);
+      });
+    }
+
+    return options;
+  },
+
+  /**
+   Update the infinity model with new objects
+
+   @method updateInfinityModel
+   @param {Ember.Enumerable} newObjects The new objects to add to the model
+   @return {Ember.Array} returns the updated infinity model
+   */
+  updateInfinityModel(newObjects) {
+    var infinityModel = this.get(this.get('_modelPath'));
+
+    return infinityModel.pushObjects(newObjects.get('content'));
   },
 
   actions: {
