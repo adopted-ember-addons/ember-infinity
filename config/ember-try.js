@@ -39,6 +39,16 @@ module.exports = {
       }
     },
     {
+      name: 'ember-release-with-proper-ember-data',
+      dependencies: {
+        'ember': 'components/ember#release',
+        'ember-data': '2.0.0-beta.2'
+      },
+      resolutions: {
+        'ember': 'release'
+      }
+    },
+    {
       name: 'ember-beta',
       dependencies: {
         ember: 'components/ember#beta'
