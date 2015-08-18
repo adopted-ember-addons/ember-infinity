@@ -101,7 +101,7 @@ export default Ember.Mixin.create({
    * @default "meta.total_pages"
    */
   totalPagesParam: 'meta.total_pages',
-  
+
   /**
    * The supported findMethod name for
    * the developers Ember Data version.
@@ -182,11 +182,13 @@ export default Ember.Mixin.create({
         this.set('currentPage', startingPage);
         this.set('_totalPages', totalPages);
         infinityModel.set('reachedInfinity', !this.get('_canLoadMore'));
-        Ember.run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
-          lastPageLoaded: startingPage,
-          totalPages: totalPages,
-          newObjects: infinityModel
-        });
+        if(this.infinityModelUpdated) {
+          Ember.run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
+            lastPageLoaded: startingPage,
+            totalPages: totalPages,
+            newObjects: infinityModel
+          });
+        }
       },
       () => {
         throw new Ember.Error("Could not fetch Infinity Model. Please check your serverside configuration.");
@@ -219,24 +221,29 @@ export default Ember.Mixin.create({
 
       options = this._includeBoundParams(options, boundParams);
       var params = Ember.merge(requestPayloadBase, this.get('_extraParams'));
-    
+
       let promise = this.store[this._storeFindMethod](modelName, params);
 
       promise.then(
         newObjects => {
+
           this.updateInfinityModel(newObjects);
           this.set('_loadingMore', false);
           this.set('currentPage', nextPage);
-          Ember.run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
-            lastPageLoaded: nextPage,
-            totalPages: totalPages,
-            newObjects: newObjects
-          });
+          if(this.infinityModelUpdated) {
+            Ember.run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
+              lastPageLoaded: nextPage,
+              totalPages: totalPages,
+              newObjects: newObjects
+            });
+          }
           if (!this.get('_canLoadMore')) {
             this.set(this.get('_modelPath') + '.reachedInfinity', true);
-            Ember.run.scheduleOnce('afterRender', this, 'infinityModelLoaded', {
-              totalPages: totalPages
-            });
+            if(this.infinityModelLoaded) {
+              Ember.run.scheduleOnce('afterRender', this, 'infinityModelLoaded', {
+                totalPages: totalPages
+              });
+            }
           }
         },
         () => {
@@ -247,7 +254,9 @@ export default Ember.Mixin.create({
     } else {
       if (!this.get('_canLoadMore')) {
         this.set(this.get('_modelPath') + '.reachedInfinity', true);
-        Ember.run.scheduleOnce('afterRender', this, 'infinityModelLoaded', { totalPages: totalPages });
+        if(this.infinityModelLoaded) {
+          Ember.run.scheduleOnce('afterRender', this, 'infinityModelLoaded', { totalPages: totalPages });
+        }
       }
     }
     return false;
