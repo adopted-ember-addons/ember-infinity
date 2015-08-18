@@ -41,7 +41,7 @@
   ],
   "dependencies": {
     "ember-version-is": "0.0.3",
-    "ember-cli-babel": "^5.0.0",
+    "ember-cli-babel": "^5.1.3",
     "ember-cli-htmlbars": "0.7.9",
     "ember-cli-version-checker": "^1.0.2"
   },
