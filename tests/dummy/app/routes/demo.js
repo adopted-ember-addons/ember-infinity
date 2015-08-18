@@ -21,8 +21,8 @@ export default Ember.Route.extend(InfinityRoute, {
     this.get('pretender').get('/posts', request => {
       var queryParams = request.queryParams;
       var fd = fakeData;
-      var page = parseInt(request.queryParams.page, 10);
-      var per =  parseInt(request.queryParams.per_page, 10);
+      var page = parseInt(queryParams.page, 10);
+      var per =  parseInt(queryParams.per_page, 10);
       var payload = {
         posts: fd.slice((page - 1) * per, Math.min((page) * per, fd.length)),
         meta: {

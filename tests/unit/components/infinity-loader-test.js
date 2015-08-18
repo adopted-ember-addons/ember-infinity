@@ -85,7 +85,7 @@ test('it uses the provided scrollable element', function(assert) {
 
 test('it throws error when scrollable element is not found', function(assert) {
   assert.expect(1);
-  var component = this.subject({scrollable: "#notfound"});
+  this.subject({scrollable: "#notfound"});
   assert.throws(function() {
     this.render();
   }, Error, "Should raise error");
@@ -94,7 +94,7 @@ test('it throws error when scrollable element is not found', function(assert) {
 test('it throws error when multiple scrollable elements are found', function(assert) {
   assert.expect(1);
   $(document.body).append("<div/><div/>");
-  var component = this.subject({scrollable: "div"});
+  this.subject({scrollable: "div"});
   assert.throws(function() {
     this.render();
   }, Error, "Should raise error");

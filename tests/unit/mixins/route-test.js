@@ -131,7 +131,7 @@ test('it allows customizations of meta parsing params', assert => {
   var route = RouteObject.create();
 
   var dummyStore = {
-    find(modelType, findQuery) {
+    find(/*modelType, findQuery*/) {
       return new Ember.RSVP.Promise(resolve => {
         Ember.run(this, resolve, Ember.Object.create({
           items: [{id: 1, name: 'Walter White'}],
