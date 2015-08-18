@@ -47,7 +47,7 @@ test('it can not use infinityModel without a Model Name', assert => {
   } catch(error) {
     infinityError = error;
   }
-
+  
   assert.ok(infinityError instanceof Error);
   assert.equal(infinityError.message, "You must pass a Model Name to infinityModel");
 });
@@ -131,7 +131,7 @@ test('it allows customizations of meta parsing params', assert => {
   var route = RouteObject.create();
 
   var dummyStore = {
-    query(modelType, findQuery) {
+    query() {
       return new Ember.RSVP.Promise(resolve => {
         Ember.run(this, resolve, Ember.Object.create({
           items: [{id: 1, name: 'Walter White'}],
@@ -325,7 +325,7 @@ test('it uses bound params when loading more data', assert => {
   var route = RouteObject.create();
 
   var dummyStore = {
-    find(name, params) {
+    query(name, params) {
       assert.equal(route.get('test'), params.category, 'dynamic param is equal to the value of the computed property');
       return new Ember.RSVP.Promise(resolve => {
         Ember.run(this, resolve, Ember.Object.create({
@@ -391,7 +391,7 @@ test('it allows overrides/manual invocations of updateInfinityModel', assert => 
   ];
 
   var dummyStore = {
-    find(modelType, findQuery) {
+    query(modelType, findQuery) {
       var item = items[findQuery.page-1];
       return new Ember.RSVP.Promise(resolve => {
         Ember.run(this, resolve, Ember.ArrayProxy.create({
@@ -439,4 +439,84 @@ test('it allows overrides/manual invocations of updateInfinityModel', assert => 
 
   assert.equal(model.get('content.length'), 3);
   assert.equal(model.get('content.lastObject.title'), 'Tender Is the Night', 'updateInfinityModel can be invoked manually');
+});
+
+/*
+ * Compatibility Tests
+ */
+var dummyStore = {
+  _dummyFetch(modelType, findQuery) {
+    var items = [
+      { id: 1, title: 'The Great Gatsby' },
+      { id: 2, title: 'The Last Tycoon' }
+    ];
+    var item = items[findQuery.page-1];
+    return new Ember.RSVP.Promise(resolve => {
+      Ember.run(this, resolve, Ember.ArrayProxy.create({
+        content: Ember.A([item]),
+        meta: { total_pages: 2 }
+      }));
+    });
+  },
+  query(modelType, findQuery) {
+    return this._dummyFetch(modelType, findQuery);
+  },
+  find(modelType, findQuery) {
+    return this._dummyFetch(modelType, findQuery);
+  }
+};
+
+test('It uses Query for ED >= 1.13.4', assert => {
+
+  var RouteObject = Ember.Route.extend(RouteMixin, {
+    store: dummyStore,
+    model() {
+      return this.infinityModel('item', { perPage: 1 });
+    }
+  });
+  
+  var route = RouteObject.create();
+
+  DS.VERSION = "1.13.4";
+  return route.model().then(function() {
+    assert.equal(route.get('_storeFindMethod'), 'query');
+  });
+});
+
+test('It uses Find for ED <= 1.0.0-beta.19.2', assert => {
+  var RouteObject = Ember.Route.extend(RouteMixin, {
+    store: dummyStore,
+    model() {
+      return this.infinityModel('item', { perPage: 1 });
+    }
+  });
+  
+  var route = RouteObject.create();
+
+  DS.VERSION = "1.0.0-beta.19.2";
+  return route.model().then(function() {
+    assert.equal(route.get('_storeFindMethod'), 'find');
+  });
+});
+
+test('It explodes when using an unsupported ED', assert => {
+  var RouteObject = Ember.Route.extend(RouteMixin, {
+    store: dummyStore,
+    model() {
+      return this.infinityModel('item', { perPage: 1 });
+    }
+  });
+  
+  var route = RouteObject.create();
+
+  DS.VERSION = "1.0.0-beta.19.3";
+  
+  var infinityError;
+  try {
+    route.model();
+  } catch(error) {
+    infinityError = error;
+  }
+  
+  assert.equal(infinityError.message, "Ember Infinity: You are using an unsupported version of Ember Data.  Please upgrade to at least 1.13.4 or downgrade to 1.0.0-beta.19.2");
 });

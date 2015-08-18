@@ -19,7 +19,6 @@ export default Ember.Route.extend(InfinityRoute, {
     var fakeData = generateFakeData(104);
     this.set('pretender', new Pretender());
     this.get('pretender').get('/posts', request => {
-      var queryParams = request.queryParams;
       var fd = fakeData;
       var page = parseInt(request.queryParams.page, 10);
       var per =  parseInt(request.queryParams.per_page, 10);
