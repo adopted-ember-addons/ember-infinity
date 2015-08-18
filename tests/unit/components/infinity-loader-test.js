@@ -7,7 +7,7 @@ import Ember from 'ember';
 import $ from 'jquery';
 
 moduleForComponent('infinity-loader', {
-  unit: true 
+  unit: true
 });
 
 test('it renders', function(assert) {

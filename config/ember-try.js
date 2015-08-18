@@ -7,13 +7,15 @@ module.exports = {
     {
       name: 'ember-1.10',
       dependencies: {
-        ember: '~1.10.0'
+        ember: '~1.10.0',
+        'ember-data': '1.13.10'
       }
     },
     {
       name: 'ember-1.11',
       dependencies: {
-        ember: '~1.11.3'
+        ember: '~1.11.3',
+        'ember-data': '1.13.10'
       }
     },
     {
@@ -31,18 +33,26 @@ module.exports = {
     {
       name: 'ember-release',
       dependencies: {
-        ember: 'components/ember#release',
-        'ember-data': '~2.0.0'
+        ember: 'release',
+        'ember-data': 'release'
+      }
+    },
+    {
+      name: 'ember-release-ember-data-1.13.1x',
+      dependencies: {
+        ember: 'release',
+        'ember-data': '~1.13.11'
       },
       resolutions: {
-        ember: 'release'
+        ember: 'release',
+        'ember-data': '~1.13.11'
       }
     },
     {
       name: 'ember-beta',
       dependencies: {
-        ember: 'components/ember#beta',
-        'ember-data': '~2.0.0'
+        ember: 'beta',
+        'ember-data': 'beta'
       },
       resolutions: {
         ember: 'beta'
@@ -51,8 +61,8 @@ module.exports = {
     {
       name: 'ember-canary',
       dependencies: {
-        ember: 'components/ember#canary',
-        'ember-data': '~2.0.0'
+        ember: 'canary',
+        'ember-data': 'canary'
       },
       resolutions: {
         ember: 'canary'

@@ -31,8 +31,8 @@ test('it can not use infinityModel without the Store Property having the appropr
   var RouteObject = Ember.Route.extend(RouteMixin, {
     store: {
       notQuery() {
-        return null; 
-      } 
+        return null;
+      }
     },
     model() {
       return this.infinityModel('post');
@@ -58,7 +58,7 @@ test('it can not use infinityModel without a Model Name', assert => {
   route.store = {
     query() {}
   };
-  
+
   assert.throws(() => {
     route.model();
   },
@@ -250,19 +250,18 @@ test('it uses extra params when loading more data', assert => {
   });
   route.set('controller', dummyController);
 
-  assert.equal('param', route.get('_extraParams.extra'));
-  assert.equal(true, route.get('_canLoadMore'));
+  assert.equal(route.get('_extraParams.extra'), 'param');
+  assert.equal(route.get('_canLoadMore'), true);
 
   // Load more
   Ember.run(() => {
     route._infinityLoad();
   });
 
-  assert.equal('param', route.get('_extraParams.extra'));
-  assert.equal(false, route.get('_canLoadMore'));
-  assert.equal(2, route.get('currentPage'));
+  assert.equal(route.get('_extraParams.extra'), 'param');
+  assert.equal(route.get('_canLoadMore'), false);
+  assert.equal(route.get('currentPage'), 2);
   assert.ok(model.get('reachedInfinity'), 'Should reach infinity');
-
 });
 
 test('it uses overridden params when loading more data', assert => {
@@ -489,7 +488,7 @@ test('It uses Query for ED >= 1.13.4', assert => {
       return this.infinityModel('item', { perPage: 1 });
     }
   });
-  
+
   var route = RouteObject.create();
 
   DS.VERSION = "1.13.4";
@@ -505,7 +504,7 @@ test('It uses Find for ED <= 1.0.0-beta.19.2', assert => {
       return this.infinityModel('item', { perPage: 1 });
     }
   });
-  
+
   var route = RouteObject.create();
 
   DS.VERSION = "1.0.0-beta.19.2";
@@ -521,7 +520,7 @@ test('It explodes when using an unsupported ED', assert => {
       return this.infinityModel('item', { perPage: 1 });
     }
   });
-  
+
   var route = RouteObject.create();
 
   DS.VERSION = "1.0.0-beta.19.3";

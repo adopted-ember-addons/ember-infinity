@@ -5,7 +5,7 @@
   <h2 id="title">ember-infinity</h2>
 </div>
 <ul class="demo-items">
-  {{#each content key="@guid" as |item|}}
+  {{#each content as |item|}}
     <li>{{item.id}}. {{item.name}}</li>
   {{/each}}
   {{infinity-loader
