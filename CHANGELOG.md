@@ -1,5 +1,18 @@
 # Change Log
 
+## [v0.0.14](https://github.com/hhff/ember-infinity/tree/v0.0.14) (2015-08-20)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.0.13...v0.0.14)
+
+**Closed issues:**
+
+- load multiple models in an infinity route [\#67](https://github.com/hhff/ember-infinity/issues/67)
+- Overwrite infinity-loader template no longer works [\#51](https://github.com/hhff/ember-infinity/issues/51)
+
+**Merged pull requests:**
+
+- Allow Template Overrides, closes \#51 [\#68](https://github.com/hhff/ember-infinity/pull/68) ([hhff](https://github.com/hhff))
+- dont rely on didInsertElement setting up scrollable [\#63](https://github.com/hhff/ember-infinity/pull/63) ([mkorfmann](https://github.com/mkorfmann))
+
 ## [v0.0.13](https://github.com/hhff/ember-infinity/tree/v0.0.13) (2015-08-01)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.0.12...v0.0.13)
 
@@ -25,6 +38,7 @@
 
 - support multiple directions [\#55](https://github.com/hhff/ember-infinity/issues/55)
 - Load more button instead of infinite scrolling [\#46](https://github.com/hhff/ember-infinity/issues/46)
+- Update for Ember 2.0 [\#32](https://github.com/hhff/ember-infinity/issues/32)
 
 **Merged pull requests:**
 
