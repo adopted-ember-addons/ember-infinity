@@ -1,7 +1,7 @@
 import Ember from 'ember';
+import { emberDataVersionIs } from 'ember-version-is';
 
-const { get } = Ember;
-
+const keys = Object.keys || Ember.keys;
 /**
   The Ember Infinity Route Mixin enables an application route to load paginated
   records for the route `model` as triggered by the controller (or Infinity Loader
@@ -98,9 +98,18 @@ export default Ember.Mixin.create({
    * Path of the "total pages" param in
    * the HTTP response
    * @type {String}
-   * @default  "meta.total_pages"
+   * @default "meta.total_pages"
    */
   totalPagesParam: 'meta.total_pages',
+  
+  /**
+   * The supported findMethod name for
+   * the developers Ember Data version.
+   * Provided here for backwards compat.
+   * @type {String}
+   * @default "query"
+   */
+  _storeFindMethod: 'query',
 
   /**
     @private
@@ -126,10 +135,18 @@ export default Ember.Mixin.create({
   */
   infinityModel(modelName, options, boundParams) {
 
-    if (Ember.isEmpty(get(this, 'store')) || Ember.isEmpty(get(this, 'store').find)){
-      throw new Ember.Error("Ember Data store is not available to infinityModel");
+    if (emberDataVersionIs('greaterThan', '1.0.0-beta.19.2') && emberDataVersionIs('lessThan', '1.13.4')) {
+      throw new Ember.Error("Ember Infinity: You are using an unsupported version of Ember Data.  Please upgrade to at least 1.13.4 or downgrade to 1.0.0-beta.19.2");
+    }
+
+    if (emberDataVersionIs('lessThan', '1.13.0')) {
+      this.set('_storeFindMethod', 'find');
+    }
+
+    if (Ember.isEmpty(this.store) || Ember.isEmpty(this.store[this._storeFindMethod])){
+      throw new Ember.Error("Ember Infinity: Ember Data store is not available to infinityModel");
     } else if (modelName === undefined) {
-      throw new Ember.Error("You must pass a Model Name to infinityModel");
+      throw new Ember.Error("Ember Infinity: You must pass a Model Name to infinityModel");
     }
 
     this.set('_infinityModelName', modelName);
@@ -157,7 +174,7 @@ export default Ember.Mixin.create({
     }
 
     var params = Ember.merge(requestPayloadBase, options);
-    var promise = get(this, 'store').find(modelName, params);
+    let promise = this.store[this._storeFindMethod](modelName, params);
 
     promise.then(
       infinityModel => {
@@ -172,7 +189,7 @@ export default Ember.Mixin.create({
         });
       },
       () => {
-        throw new Ember.Error("Could not fetch Infinity Model. Please check your serverside configuration.");
+        throw new Ember.Error("Ember Infinity: Could not fetch Infinity Model. Please check your serverside configuration.");
       }
     );
 
@@ -201,9 +218,9 @@ export default Ember.Mixin.create({
       requestPayloadBase[this.get('pageParam')] = nextPage;
 
       options = this._includeBoundParams(options, boundParams);
-
-      var params = Ember.merge(requestPayloadBase, options);
-      var promise = get(this, 'store').find(modelName, params);
+      var params = Ember.merge(requestPayloadBase, this.get('_extraParams'));
+    
+      let promise = this.store[this._storeFindMethod](modelName, params);
 
       promise.then(
         newObjects => {
@@ -224,7 +241,7 @@ export default Ember.Mixin.create({
         },
         () => {
           this.set('_loadingMore', false);
-          throw new Ember.Error("Could not fetch Infinity Model. Please check your serverside configuration.");
+          throw new Ember.Error("Ember Infinity: Could not fetch Infinity Model. Please check your serverside configuration.");
         }
       );
     } else {
@@ -245,10 +262,8 @@ export default Ember.Mixin.create({
    @return {Object}
    */
   _includeBoundParams: function(options, boundParams) {
-    if (Ember.keys(boundParams).length > 0) {
-      Ember.keys(boundParams).forEach( (key) => {
-        options[key] = this.get(boundParams[key]);
-      });
+    if (!Ember.isEmpty(boundParams)) {
+      keys(boundParams).forEach(k => options[k] = this.get(boundParams[k]));
     }
 
     return options;

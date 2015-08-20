@@ -6,7 +6,9 @@ import {
 import Ember from 'ember';
 import $ from 'jquery';
 
-moduleForComponent('infinity-loader');
+moduleForComponent('infinity-loader', {
+  unit: true 
+});
 
 test('it renders', function(assert) {
   assert.expect(2);
@@ -85,7 +87,7 @@ test('it uses the provided scrollable element', function(assert) {
 
 test('it throws error when scrollable element is not found', function(assert) {
   assert.expect(1);
-  var component = this.subject({scrollable: "#notfound"});
+  
   assert.throws(function() {
     this.render();
   }, Error, "Should raise error");
@@ -94,7 +96,7 @@ test('it throws error when scrollable element is not found', function(assert) {
 test('it throws error when multiple scrollable elements are found', function(assert) {
   assert.expect(1);
   $(document.body).append("<div/><div/>");
-  var component = this.subject({scrollable: "div"});
+  
   assert.throws(function() {
     this.render();
   }, Error, "Should raise error");
