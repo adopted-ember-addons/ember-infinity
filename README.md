@@ -7,6 +7,8 @@
 [![Dependency Status](https://david-dm.org/hhff/ember-infinity.svg)](https://david-dm.org/hhff/ember-infinity)
 [![devDependency Status](https://david-dm.org/hhff/ember-infinity/dev-status.svg)](https://david-dm.org/hhff/ember-infinity#info=devDependencies)
 
+***As of v0.1.0, this library officially supports Ember 1.10 through to 2.0+ (Canary), and (aside from a few buggy versions), Ember Data pre-1.0 through to 2.0+ (Canary).  We plan to support 1.10 for the foreseeable future.***
+
 Demo: [hhff.github.io/ember-infinity/](http://hhff.github.io/ember-infinity/)
 
 Simple, flexible infinite scrolling for Ember CLI Apps.  Works out of the box
