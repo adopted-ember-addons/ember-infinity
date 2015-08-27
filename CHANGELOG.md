@@ -1,5 +1,16 @@
 # Change Log
 
+## [v0.1.0](https://github.com/hhff/ember-infinity/tree/v0.1.0) (2015-08-27)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.0.14...v0.1.0)
+
+**Closed issues:**
+
+- this.refresh\(\)  unbinds Eventhandler [\#78](https://github.com/hhff/ember-infinity/issues/78)
+
+**Merged pull requests:**
+
+- bare minimum update work for ember 2 [\#79](https://github.com/hhff/ember-infinity/pull/79) ([mkorfmann](https://github.com/mkorfmann))
+
 ## [v0.0.14](https://github.com/hhff/ember-infinity/tree/v0.0.14) (2015-08-20)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.0.13...v0.0.14)
 
@@ -12,6 +23,7 @@
 
 - Allow Template Overrides, closes \#51 [\#68](https://github.com/hhff/ember-infinity/pull/68) ([hhff](https://github.com/hhff))
 - dont rely on didInsertElement setting up scrollable [\#63](https://github.com/hhff/ember-infinity/pull/63) ([mkorfmann](https://github.com/mkorfmann))
+- Update for Ember Data 1.13.x, closes \#32 [\#48](https://github.com/hhff/ember-infinity/pull/48) ([hhff](https://github.com/hhff))
 
 ## [v0.0.13](https://github.com/hhff/ember-infinity/tree/v0.0.13) (2015-08-01)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.0.12...v0.0.13)
@@ -30,6 +42,10 @@
 
 ## [v0.0.12](https://github.com/hhff/ember-infinity/tree/v0.0.12) (2015-07-18)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.0.11...v0.0.12)
+
+**Merged pull requests:**
+
+- Added the ability to pass in extra params that are \(computed\) properties [\#43](https://github.com/hhff/ember-infinity/pull/43) ([ashrafhasson](https://github.com/ashrafhasson))
 
 ## [v0.0.11](https://github.com/hhff/ember-infinity/tree/v0.0.11) (2015-07-17)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.0.10...v0.0.11)
