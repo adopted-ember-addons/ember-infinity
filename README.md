@@ -113,14 +113,27 @@ and ember-infinity will be set up to parse the total number of pages from a JSON
 }
 ```
 
-You may override `updateInfinityModel` to customize how the route's `model` should be updated with new objects. You may also invoke this method directly to manually push new objects into the model:
+You may override `updateInfinityModel` to customize how the route's `model` should be updated with new objects.  Let's say we only want to show objects with `isPublished === true`:
+
+```js
+updateInfinityModel(newObjects) {
+  let infinityModel = this.get(this.get('_modelPath'));
+  
+  let content = newObjects.get('content');
+  let filtered = content.filter(obj => { return obj.get('isPublished'); });
+  
+  return infinityModel.pushObjects(filtered);
+}
+```
+
+You may also invoke this method directly to manually push new objects into the model:
 
 ```js
 actions: {
-  pushHughIntoInfinityModel() [
-    var updatedInfinityModel = this.updateInfinityModel([
-      { id: 1, name: "Hugh Francis" }
-    ]);
+  pushHughsRecordsIntoInfinityModel() [
+    var updatedInfinityModel = this.updateInfinityModel(Ember.A([
+      { id: 1, name: "Hugh Francis Discography", isPublished: true }
+    ]));
     console.log(updatedInfinityModel);
   }
 }
