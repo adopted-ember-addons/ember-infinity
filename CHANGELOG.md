@@ -1,5 +1,21 @@
 # Change Log
 
+## [v0.1.1](https://github.com/hhff/ember-infinity/tree/v0.1.1) (2015-08-29)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.1.0...v0.1.1)
+
+**Closed issues:**
+
+- E/ED 2.0.0 support [\#81](https://github.com/hhff/ember-infinity/issues/81)
+- Better Documentation for the UpdateInfinityModel hook [\#74](https://github.com/hhff/ember-infinity/issues/74)
+- Update current model is not working [\#53](https://github.com/hhff/ember-infinity/issues/53)
+- Delete all items and perform a new query [\#47](https://github.com/hhff/ember-infinity/issues/47)
+- Remove some items from array [\#42](https://github.com/hhff/ember-infinity/issues/42)
+
+**Merged pull requests:**
+
+- Document updateInfinityModel hook, closes \#74 [\#83](https://github.com/hhff/ember-infinity/pull/83) ([hhff](https://github.com/hhff))
+- \[Bugfix\] Preserving scrollable on subsequent rerenders - reported by @cprussin [\#69](https://github.com/hhff/ember-infinity/pull/69) ([mkorfmann](https://github.com/mkorfmann))
+
 ## [v0.1.0](https://github.com/hhff/ember-infinity/tree/v0.1.0) (2015-08-27)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.0.14...v0.1.0)
 
