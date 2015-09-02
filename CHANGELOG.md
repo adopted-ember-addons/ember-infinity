@@ -1,5 +1,16 @@
 # Change Log
 
+## [v0.1.2](https://github.com/hhff/ember-infinity/tree/v0.1.2) (2015-09-02)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.1.1...v0.1.2)
+
+**Closed issues:**
+
+- Scroll to current active element in list view [\#84](https://github.com/hhff/ember-infinity/issues/84)
+
+**Merged pull requests:**
+
+- yield from the template [\#72](https://github.com/hhff/ember-infinity/pull/72) ([davidgoli](https://github.com/davidgoli))
+
 ## [v0.1.1](https://github.com/hhff/ember-infinity/tree/v0.1.1) (2015-08-29)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.1.0...v0.1.1)
 
