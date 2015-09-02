@@ -1,5 +1,9 @@
-{{#if infinityModel.reachedInfinity}}
-  <span>{{loadedText}}</span>
+{{#if hasBlock}}
+  {{yield}}
 {{else}}
-  <span>{{loadingText}}</span>
+  {{#if infinityModel.reachedInfinity}}
+    <span>{{loadedText}}</span>
+  {{else}}
+    <span>{{loadingText}}</span>
+  {{/if}}
 {{/if}}
