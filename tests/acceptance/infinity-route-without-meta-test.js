@@ -3,6 +3,7 @@ import { module, test } from 'qunit';
 import startApp from '../helpers/start-app';
 import Pretender from 'pretender';
 import assertDetails from '../helpers/assert-acceptance-details';
+import json from '../helpers/json';
 
 var App, server;
 
@@ -15,7 +16,7 @@ module('Acceptance: Infinity Route', {
           { id: 1, name: "Squarepusher" },
           { id: 2, name: "Aphex Twin" }
         ];
-        return [200, {"Content-Type": "application/json"}, JSON.stringify({posts})];
+        return json(200, {posts});
       });
     });
   },

@@ -118,7 +118,7 @@ test('it checks if in view on the scroll event', function(assert) {
   var component = this.subject();
 
   var isAfterRender = false;
-  component.set('_checkIfInView', function() {
+  component.set('_loadMoreIfNeeded', function() {
     if (isAfterRender) {
       assert.ok(true);
     }
@@ -136,7 +136,7 @@ test('it checks if in view on the resize event', function(assert) {
   var component = this.subject();
 
   var isAfterRender = false;
-  component.set('_checkIfInView', function() {
+  component.set('_loadMoreIfNeeded', function() {
     if (isAfterRender) {
       assert.ok(true);
     }
@@ -158,7 +158,7 @@ test('it checks if in view after model is pushed', function(assert) {
   pushModel();
 
   var component = this.subject({ infinityModel: infinityModelStub });
-  component.set('_checkIfInView', function() {
+  component.set('_loadMoreIfNeeded', function() {
     assert.ok(true);
   });
   this.render();
