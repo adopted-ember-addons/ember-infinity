@@ -7,7 +7,9 @@ moduleForComponent('infinity-loader', {
 
 test('it renders loading text if no block given', function(assert) {
   assert.expect(1);
+  this.send = function () {};
   this.on('infinityLoad', function () {});
+
   this.render(hbs`
               {{infinity-loader}}
               `);
@@ -16,7 +18,9 @@ test('it renders loading text if no block given', function(assert) {
 
 test('it yields to the block if given', function(assert) {
   assert.expect(1);
+  this.send = function () {};
   this.on('infinityLoad', function () {});
+
   this.render(hbs`
               {{#infinity-loader}}
                 <span>My custom block</span>
