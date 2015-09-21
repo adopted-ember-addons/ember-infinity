@@ -10,14 +10,28 @@ test('it works', assert => {
   assert.ok(route);
 });
 
-function createRoute(modelName, routeProperties={}) {
+function createRoute(modelName, routeProperties={}, extraParams={}, boundParams={}) {
   var RouteObject = Ember.Route.extend(RouteMixin, Ember.merge(routeProperties, {
     model() {
-      return this.infinityModel(modelName);
+      return this.infinityModel(modelName, extraParams, boundParams);
     }
   }));
 
   return RouteObject.create();
+}
+
+function createDummyStore(resolution, assertion) {
+  return {
+    query() {
+      if (assertion) {
+        assertion.apply(this, arguments);
+      }
+
+      return new Ember.RSVP.Promise(resolve => {
+        Ember.run(this, resolve, Ember.Object.create(resolution));
+      });
+    }
+  };
 }
 
 test('it can not use infinityModel without Ember Data Store', assert => {
@@ -65,18 +79,12 @@ test('it can not use infinityModel without a Model Name', assert => {
 
 test('it sets state before it reaches the end', assert => {
   var route = createRoute('item', {
-    store: {
-      query() {
-        return new Ember.RSVP.Promise(resolve => {
-          Ember.run(this, resolve, Ember.Object.create({
-            items: [{id: 1, name: 'Test'}],
-            meta: {
-              total_pages: 31
-            }
-          }));
-        });
+    store: createDummyStore({
+      items: [{id: 1, name: 'Test'}],
+      meta: {
+        total_pages: 31
       }
-    }
+    })
   });
 
   var model;
@@ -92,20 +100,6 @@ test('it sets state before it reaches the end', assert => {
   assert.ok(Ember.$.isEmptyObject(route.get('_extraParams')), 'extra params are empty');
   assert.ok(!model.get('reachedInfinity'), 'Should not reach infinity');
 });
-
-function createDummyStore(resolution, assertion) {
-  return {
-    query() {
-      if (assertion) {
-        assertion.apply(this, arguments);
-      }
-
-      return new Ember.RSVP.Promise(resolve => {
-        Ember.run(this, resolve, Ember.Object.create(resolution));
-      });
-    }
-  };
-}
 
 test('it allows customizations of request params', assert => {
   var dummyStore = createDummyStore({ items: [] },
@@ -151,20 +145,17 @@ test('it allows customizations of meta parsing params', assert => {
 });
 
 test('it sets state  when it reaches the end', assert => {
-  var RouteObject = Ember.Route.extend(RouteMixin, {
-    model() {
-      return this.infinityModel('item', {startingPage: 31});
-    }
-  });
-
-  var dummyStore = createDummyStore({
+  var store = createDummyStore({
     items: [{id: 1, name: 'Test'}],
     meta: {
       total_pages: 31
     }
   });
 
-  var route = RouteObject.create({store: dummyStore});
+  var route = createRoute('item',
+    { store },
+    { startingPage: 31 }
+  );
 
   var model;
   Ember.run(() => {
@@ -184,13 +175,7 @@ test('it uses extra params when loading more data', assert => {
 
   assert.expect(8);
 
-  var RouteObject = Ember.Route.extend(RouteMixin, {
-    model() {
-      return this.infinityModel('item', {extra: 'param'});
-    }
-  });
-
-  var dummyStore = createDummyStore({
+  var store = createDummyStore({
     items: [{id: 1, name: 'Test'}],
     pushObjects: Ember.K,
     meta: {
@@ -200,7 +185,7 @@ test('it uses extra params when loading more data', assert => {
     assert.equal(findQuery.extra, 'param', 'params.extra');
   });
 
-  var route = RouteObject.create({store: dummyStore});
+  var route = createRoute('item', {store}, {extra: 'param'});
 
   var model;
   Ember.run(() => {
@@ -233,13 +218,7 @@ test('it uses extra params when loading more data', assert => {
 test("It doesn't request more pages once _canLoadMore is false", assert => {
   assert.expect(6);
 
-  var RouteObject = Ember.Route.extend(RouteMixin, {
-    model() {
-      return this.infinityModel('item');
-    }
-  });
-
-  var dummyStore = createDummyStore({
+  var store = createDummyStore({
     items: [{id: 1, name: 'Test'}],
     pushObjects: Ember.K,
     meta: {
@@ -247,7 +226,7 @@ test("It doesn't request more pages once _canLoadMore is false", assert => {
     }
   });
 
-  var route = RouteObject.create({store: dummyStore});
+  var route = createRoute('item', { store });
 
   var model;
   Ember.run(() => {
@@ -284,13 +263,7 @@ test("It doesn't request more pages once _canLoadMore is false", assert => {
 test("It resets the currentPage when the model hook is called again", assert => {
   assert.expect(5);
 
-  var RouteObject = Ember.Route.extend(RouteMixin, {
-    model() {
-      return this.infinityModel('item');
-    }
-  });
-
-  var dummyStore = createDummyStore({
+  var store = createDummyStore({
     items: [{id: 1, name: 'Test'}],
     pushObjects: Ember.K,
     meta: {
@@ -298,7 +271,7 @@ test("It resets the currentPage when the model hook is called again", assert => 
     }
   });
 
-  var route = RouteObject.create({store: dummyStore});
+  var route = createRoute('item', { store });
 
   var model;
   Ember.run(() => {
@@ -344,18 +317,7 @@ test('it uses overridden params when loading more data', assert => {
 
   assert.expect(8);
 
-  var RouteObject = Ember.Route.extend(RouteMixin, {
-    model() {
-      return this.infinityModel('item', {perPage: 1, startingPage: 2});
-    },
-
-    perPageParam: 'testPerPage',
-    pageParam: 'testPage',
-    totalPagesParam: 'meta.testTotalPages'
-  });
-
-  var expectedPageNumber;
-  var dummyStore = createDummyStore({
+  var store = createDummyStore({
     items: [{id: 1, name: 'Test'}],
     pushObjects: Ember.K,
     meta: {
@@ -366,9 +328,16 @@ test('it uses overridden params when loading more data', assert => {
       assert.equal(findQuery.testPage, expectedPageNumber);
   });
 
-  var route = RouteObject.create({store: dummyStore});
+  var route = createRoute('item', {
+      store,
+      perPageParam: 'testPerPage',
+      pageParam: 'testPage',
+      totalPagesParam: 'meta.testTotalPages'
+    },
+    {perPage: 1, startingPage: 2}
+  );
 
-  expectedPageNumber = 2;
+  var expectedPageNumber = 2;
   var model;
   Ember.run(() => {
     route.model().then(result => {
@@ -400,16 +369,7 @@ test('it uses bound params when loading more data', assert => {
 
   assert.expect(8);
 
-  var RouteObject = Ember.Route.extend(RouteMixin, {
-    model() {
-      return this.infinityModel('item', {perPage: 1, startingPage: 1}, {category: 'feature'});
-    },
-
-    feature: Ember.computed.alias('test'),
-    test: 'new'
-  });
-
-  var dummyStore = createDummyStore({
+  var store = createDummyStore({
     items: [{id: 1, name: 'Test'}, {id: 2, name: 'New Test'}],
     pushObjects: Ember.K,
     meta: {
@@ -419,7 +379,14 @@ test('it uses bound params when loading more data', assert => {
     assert.equal(route.get('test'), findQuery.category, 'dynamic param is equal to the value of the computed property');
   });
 
-  var route = RouteObject.create({store: dummyStore});
+  var route = createRoute('item', {
+      feature: Ember.computed.alias('test'),
+      test: 'new',
+      store
+    },
+    {perPage: 1, startingPage: 1},
+    {category: 'feature'}
+  );
 
   var model;
   Ember.run(() => {
@@ -455,21 +422,12 @@ test('it uses bound params when loading more data', assert => {
 });
 
 test('it allows overrides/manual invocations of updateInfinityModel', assert => {
-  var RouteObject = Ember.Route.extend(RouteMixin, {
-    model() {
-      return this.infinityModel('item', {perPage: 1});
-    },
-    updateInfinityModel(newObjects) {
-      return this._super(newObjects.setEach('author', 'F. Scott Fitzgerald'));
-    }
-  });
-
   var items = [
     { id: 1, title: 'The Great Gatsby' },
     { id: 2, title: 'The Last Tycoon' }
   ];
 
-  var dummyStore = {
+  var store = {
     query(modelType, findQuery) {
       var item = items[findQuery.page-1];
       return new Ember.RSVP.Promise(resolve => {
@@ -481,7 +439,14 @@ test('it allows overrides/manual invocations of updateInfinityModel', assert => 
     }
   };
 
-  var route = RouteObject.create({store: dummyStore});
+  var route = createRoute('item', {
+      store,
+      updateInfinityModel(newObjects) {
+        return this._super(newObjects.setEach('author', 'F. Scott Fitzgerald'));
+      }
+    },
+    {perPage: 1}
+  );
 
   var model;
   Ember.run(() => {
@@ -560,51 +525,35 @@ test('It allows to set startingPage as 0', assert => {
  */
 module('RouteMixin Compatibility', {
   beforeEach: function () {
-    var dummyStore = {
-      _dummyFetch(modelType, findQuery) {
-        var items = [
-          { id: 1, title: 'The Great Gatsby' },
-          { id: 2, title: 'The Last Tycoon' }
-        ];
-        var item = items[findQuery.page-1];
-        return new Ember.RSVP.Promise(resolve => {
-          Ember.run(this, resolve, Ember.ArrayProxy.create({
-            content: Ember.A([item]),
-            meta: { total_pages: 2 }
-          }));
+    var store = {
+      _dummyFetch() {
+        var result = Ember.ArrayProxy.create({
+          content: Ember.A([])
         });
+        return Ember.RSVP.resolve(result);
       },
-      query(modelType, findQuery) {
-        return this._dummyFetch(modelType, findQuery);
+      query() {
+        return this._dummyFetch();
       },
-      find(modelType, findQuery) {
-        return this._dummyFetch(modelType, findQuery);
+      find() {
+        return this._dummyFetch();
       }
     };
 
-    var RouteObject = Ember.Route.extend(RouteMixin, {
-      store: dummyStore,
-      model() {
-        return this.infinityModel('item', { perPage: 1 });
-      }
-    });
-
-    this.route = RouteObject.create();
+    this.route = createRoute('item', { store });
   }
 });
 
 test('It uses Query for ED >= 1.13.4', function (assert) {
   DS.VERSION = "1.13.4";
-  return this.route.model().then(() => {
-    assert.equal(this.route.get('_storeFindMethod'), 'query');
-  });
+  this.route.model();
+  assert.equal(this.route.get('_storeFindMethod'), 'query');
 });
 
 test('It uses Find for ED <= 1.0.0-beta.19.2', function (assert) {
   DS.VERSION = "1.0.0-beta.19.2";
-  return this.route.model().then(() => {
-    assert.equal(this.route.get('_storeFindMethod'), 'find');
-  });
+  this.route.model();
+  assert.equal(this.route.get('_storeFindMethod'), 'find');
 });
 
 test('It explodes when using an unsupported ED', function (assert) {
