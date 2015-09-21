@@ -27,9 +27,9 @@ function createDummyStore(resolution, assertion) {
         assertion.apply(this, arguments);
       }
 
-      return new Ember.RSVP.Promise(resolve => {
-        Ember.run(this, resolve, Ember.Object.create(resolution));
-      });
+      return Ember.RSVP.resolve(
+        Ember.Object.create(resolution)
+      );
     }
   };
 }
@@ -110,9 +110,10 @@ test('it sets state before it reaches the end', assert => {
 });
 
 test('it allows customizations of request params', assert => {
-  var store = createDummyStore({ items: [] },
-                                    function (modelType, findQuery) {
-    assert.deepEqual(findQuery, {per: 25, p: 1}, 'findQuery');
+  var store = createDummyStore(
+    { items: [] },
+    function (modelType, findQuery) {
+      assert.deepEqual(findQuery, {per: 25, p: 1}, 'findQuery');
   });
 
   var route = createRoute('item', {
@@ -169,13 +170,14 @@ test('it uses extra params when loading more data', assert => {
   assert.expect(8);
 
   var store = createDummyStore({
-    items: [{id: 1, name: 'Test'}],
-    pushObjects: Ember.K,
-    meta: {
-      total_pages: 2
-    }
-  }, function (modelType, findQuery) {
-    assert.equal(findQuery.extra, 'param', 'params.extra');
+      items: [{id: 1, name: 'Test'}],
+      pushObjects: Ember.K,
+      meta: {
+        total_pages: 2
+      }
+    },
+    function (modelType, findQuery) {
+      assert.equal(findQuery.extra, 'param', 'params.extra');
   });
 
   var route = createRoute('item', {store}, {extra: 'param'});
@@ -185,7 +187,6 @@ test('it uses extra params when loading more data', assert => {
   assert.equal(route.get('_extraParams.extra'), 'param', '_extraParams.extra');
   assert.equal(route.get('_canLoadMore'), true, '_canLoadMore');
 
-  // Load more
   Ember.run(() => {
     route._infinityLoad();
   });
@@ -266,12 +267,13 @@ test('it uses overridden params when loading more data', assert => {
   assert.expect(8);
 
   var store = createDummyStore({
-    items: [{id: 1, name: 'Test'}],
-    pushObjects: Ember.K,
-    meta: {
-      testTotalPages: 3
-    }
-  }, function (modelType, findQuery) {
+      items: [{id: 1, name: 'Test'}],
+      pushObjects: Ember.K,
+      meta: {
+        testTotalPages: 3
+      }
+    },
+    function (modelType, findQuery) {
       assert.equal(findQuery.testPerPage, 1);
       assert.equal(findQuery.testPage, expectedPageNumber);
   });
@@ -291,7 +293,7 @@ test('it uses overridden params when loading more data', assert => {
   assert.equal(route.get('_canLoadMore'), true, '_canLoadMore');
 
   expectedPageNumber = 3;
-  // Load more
+
   Ember.run(() => {
     route._infinityLoad();
   });
@@ -306,13 +308,14 @@ test('it uses bound params when loading more data', assert => {
   assert.expect(8);
 
   var store = createDummyStore({
-    items: [{id: 1, name: 'Test'}, {id: 2, name: 'New Test'}],
-    pushObjects: Ember.K,
-    meta: {
-      total_pages: 3
-    }
-  }, function (modelType, findQuery) {
-    assert.equal(route.get('test'), findQuery.category, 'dynamic param is equal to the value of the computed property');
+      items: [{id: 1, name: 'Test'}, {id: 2, name: 'New Test'}],
+      pushObjects: Ember.K,
+      meta: {
+        total_pages: 3
+      }
+    },
+    function (modelType, findQuery) {
+      assert.equal(route.get('test'), findQuery.category, 'dynamic param is equal to the value of the computed property');
   });
 
   var route = createRoute('item', {
@@ -328,14 +331,13 @@ test('it uses bound params when loading more data', assert => {
 
   assert.equal(route.get('_canLoadMore'), true, '_canLoadMore');
 
-  // Load more
   Ember.run(() => {
     route._infinityLoad();
   });
 
   assert.equal(route.get('_canLoadMore'), true, 'can load even more data');
   route.set('test', 'hot');
-  // Load even more
+
   Ember.run(() => {
     route._infinityLoad();
   });
@@ -354,12 +356,11 @@ test('it allows overrides/manual invocations of updateInfinityModel', assert => 
   var store = {
     query(modelType, findQuery) {
       var item = items[findQuery.page-1];
-      return new Ember.RSVP.Promise(resolve => {
-        Ember.run(this, resolve, Ember.ArrayProxy.create({
+      return Ember.RSVP.resolve(
+        Ember.ArrayProxy.create({
           content: Ember.A([item]),
           meta: { total_pages: 2 }
-        }));
-      });
+      }));
     }
   };
 
