@@ -34,6 +34,19 @@ function createDummyStore(resolution, assertion) {
   };
 }
 
+function captureModel(route) {
+  var model;
+  Ember.run(() => {
+    route.model().then(result => {
+      model = result;
+    });
+  });
+
+  route.set('controller', Ember.Object.create({ model }));
+
+  return model;
+}
+
 test('it can not use infinityModel without Ember Data Store', assert => {
   var route = createRoute('post', {store: null});
 
@@ -87,12 +100,7 @@ test('it sets state before it reaches the end', assert => {
     })
   });
 
-  var model;
-  Ember.run(() => {
-    route.model().then(result => {
-      model = result;
-    });
-  });
+  var model = captureModel(route);
 
   assert.equal(route.get('_totalPages'), 31, '_totalPages');
   assert.equal(route.get('currentPage'), 1, 'currentPage');
@@ -102,7 +110,7 @@ test('it sets state before it reaches the end', assert => {
 });
 
 test('it allows customizations of request params', assert => {
-  var dummyStore = createDummyStore({ items: [] },
+  var store = createDummyStore({ items: [] },
                                     function (modelType, findQuery) {
     assert.deepEqual(findQuery, {per: 25, p: 1}, 'findQuery');
   });
@@ -110,19 +118,14 @@ test('it allows customizations of request params', assert => {
   var route = createRoute('item', {
     perPageParam: 'per',
     pageParam: 'p',
-    store: dummyStore
+    store
   });
 
-  var model;
-  Ember.run(() => {
-    route.model().then(result => {
-      model = result;
-    });
-  });
+  captureModel(route);
 });
 
 test('it allows customizations of meta parsing params', assert => {
-  var dummyStore = createDummyStore({
+  var store = createDummyStore({
     items: [{id: 1, name: 'Walter White'}],
     pagination: {
       total: 22
@@ -131,15 +134,10 @@ test('it allows customizations of meta parsing params', assert => {
 
   var route = createRoute('item', {
     totalPagesParam: 'pagination.total',
-    store: dummyStore
+    store
   });
 
-  var model;
-  Ember.run(() => {
-    route.model().then(result => {
-      model = result;
-    });
-  });
+  captureModel(route);
 
   assert.equal(route.get('_totalPages'), 22, '_totalPages');
 });
@@ -157,12 +155,7 @@ test('it sets state  when it reaches the end', assert => {
     { startingPage: 31 }
   );
 
-  var model;
-  Ember.run(() => {
-    route.model().then(result => {
-      model = result;
-    });
-  });
+  var model = captureModel(route);
 
   assert.equal(route.get('_totalPages'), 31, '_totalPages');
   assert.equal(route.get('currentPage'), 31, 'currentPage');
@@ -187,19 +180,7 @@ test('it uses extra params when loading more data', assert => {
 
   var route = createRoute('item', {store}, {extra: 'param'});
 
-  var model;
-  Ember.run(() => {
-    route.model().then(result => {
-      model = result;
-    });
-  });
-
-  // The controller needs to be set so _infinityLoad() can call
-  // pushObjects()
-  var dummyController = Ember.Object.create({
-    model
-  });
-  route.set('controller', dummyController);
+  var model = captureModel(route);
 
   assert.equal(route.get('_extraParams.extra'), 'param', '_extraParams.extra');
   assert.equal(route.get('_canLoadMore'), true, '_canLoadMore');
@@ -228,19 +209,7 @@ test("It doesn't request more pages once _canLoadMore is false", assert => {
 
   var route = createRoute('item', { store });
 
-  var model;
-  Ember.run(() => {
-    route.model().then(result => {
-      model = result;
-    });
-  });
-
-  // The controller needs to be set so _infinityLoad() can call
-  // pushObjects()
-  var dummyController = Ember.Object.create({
-    model
-  });
-  route.set('controller', dummyController);
+  captureModel(route);
 
   assert.ok(route.get('_canLoadMore'), 'can load more');
   assert.equal(route.get('currentPage'), 1, 'currentPage');
@@ -273,29 +242,12 @@ test("It resets the currentPage when the model hook is called again", assert => 
 
   var route = createRoute('item', { store });
 
-  var model;
-  Ember.run(() => {
-    route.model().then(result => {
-      model = result;
-    });
-  });
-
-  // The controller needs to be set so _infinityLoad() can call
-  // pushObjects()
-  var dummyController = Ember.Object.create({
-    model
-  });
-  route.set('controller', dummyController);
+  var model = captureModel(route);
 
   assert.ok(route.get('_canLoadMore'), 'can load more');
   assert.equal(route.get('currentPage'), 1, 'currentPage');
 
-  Ember.run(() => {
-    route.model().then(result => {
-      model = result;
-    });
-  });
-
+  model = captureModel(route);
   assert.equal(route.get('currentPage'), 1, 'currentPage');
 
   Ember.run(() => {
@@ -304,11 +256,7 @@ test("It resets the currentPage when the model hook is called again", assert => 
 
   assert.equal(route.get('currentPage'), 2, 'currentPage');
 
-  Ember.run(() => {
-    route.model().then(result => {
-      model = result;
-    });
-  });
+  model = captureModel(route);
 
   assert.equal(route.get('currentPage'), 1, 'currentPage');
 });
@@ -338,19 +286,7 @@ test('it uses overridden params when loading more data', assert => {
   );
 
   var expectedPageNumber = 2;
-  var model;
-  Ember.run(() => {
-    route.model().then(result => {
-      model = result;
-    });
-  });
-
-  // The controller needs to be set so _infinityLoad() can call
-  // pushObjects()
-  var dummyController = Ember.Object.create({
-    model
-  });
-  route.set('controller', dummyController);
+  var model = captureModel(route);
 
   assert.equal(route.get('_canLoadMore'), true, '_canLoadMore');
 
@@ -388,19 +324,7 @@ test('it uses bound params when loading more data', assert => {
     {category: 'feature'}
   );
 
-  var model;
-  Ember.run(() => {
-    route.model().then(result => {
-      model = result;
-    });
-  });
-
-  // The controller needs to be set so _infinityLoad() can call
-  // pushObjects()
-  var dummyController = Ember.Object.create({
-    model
-  });
-  route.set('controller', dummyController);
+  var model = captureModel(route);
 
   assert.equal(route.get('_canLoadMore'), true, '_canLoadMore');
 
@@ -448,17 +372,7 @@ test('it allows overrides/manual invocations of updateInfinityModel', assert => 
     {perPage: 1}
   );
 
-  var model;
-  Ember.run(() => {
-    route.model().then(result => {
-      model = result;
-    });
-  });
-
-  var dummyController = Ember.Object.create({
-    model
-  });
-  route.set('controller', dummyController);
+  var model = captureModel(route);
 
   assert.equal(route.get('_canLoadMore'), true, '_canLoadMore');
   assert.equal(model.get('content.length'), 1, 'content.length');
