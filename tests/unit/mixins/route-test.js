@@ -558,74 +558,59 @@ test('It allows to set startingPage as 0', assert => {
 /*
  * Compatibility Tests
  */
-var dummyStore = {
-  _dummyFetch(modelType, findQuery) {
-    var items = [
-      { id: 1, title: 'The Great Gatsby' },
-      { id: 2, title: 'The Last Tycoon' }
-    ];
-    var item = items[findQuery.page-1];
-    return new Ember.RSVP.Promise(resolve => {
-      Ember.run(this, resolve, Ember.ArrayProxy.create({
-        content: Ember.A([item]),
-        meta: { total_pages: 2 }
-      }));
+module('RouteMixin Compatibility', {
+  beforeEach: function () {
+    var dummyStore = {
+      _dummyFetch(modelType, findQuery) {
+        var items = [
+          { id: 1, title: 'The Great Gatsby' },
+          { id: 2, title: 'The Last Tycoon' }
+        ];
+        var item = items[findQuery.page-1];
+        return new Ember.RSVP.Promise(resolve => {
+          Ember.run(this, resolve, Ember.ArrayProxy.create({
+            content: Ember.A([item]),
+            meta: { total_pages: 2 }
+          }));
+        });
+      },
+      query(modelType, findQuery) {
+        return this._dummyFetch(modelType, findQuery);
+      },
+      find(modelType, findQuery) {
+        return this._dummyFetch(modelType, findQuery);
+      }
+    };
+
+    var RouteObject = Ember.Route.extend(RouteMixin, {
+      store: dummyStore,
+      model() {
+        return this.infinityModel('item', { perPage: 1 });
+      }
     });
-  },
-  query(modelType, findQuery) {
-    return this._dummyFetch(modelType, findQuery);
-  },
-  find(modelType, findQuery) {
-    return this._dummyFetch(modelType, findQuery);
+
+    this.route = RouteObject.create();
   }
-};
+});
 
-test('It uses Query for ED >= 1.13.4', assert => {
-
-  var RouteObject = Ember.Route.extend(RouteMixin, {
-    store: dummyStore,
-    model() {
-      return this.infinityModel('item', { perPage: 1 });
-    }
-  });
-
-  var route = RouteObject.create();
-
+test('It uses Query for ED >= 1.13.4', function (assert) {
   DS.VERSION = "1.13.4";
-  return route.model().then(function() {
-    assert.equal(route.get('_storeFindMethod'), 'query');
+  return this.route.model().then(() => {
+    assert.equal(this.route.get('_storeFindMethod'), 'query');
   });
 });
 
-test('It uses Find for ED <= 1.0.0-beta.19.2', assert => {
-  var RouteObject = Ember.Route.extend(RouteMixin, {
-    store: dummyStore,
-    model() {
-      return this.infinityModel('item', { perPage: 1 });
-    }
-  });
-
-  var route = RouteObject.create();
-
+test('It uses Find for ED <= 1.0.0-beta.19.2', function (assert) {
   DS.VERSION = "1.0.0-beta.19.2";
-  return route.model().then(function() {
-    assert.equal(route.get('_storeFindMethod'), 'find');
+  return this.route.model().then(() => {
+    assert.equal(this.route.get('_storeFindMethod'), 'find');
   });
 });
 
-test('It explodes when using an unsupported ED', assert => {
-  var RouteObject = Ember.Route.extend(RouteMixin, {
-    store: dummyStore,
-    model() {
-      return this.infinityModel('item', { perPage: 1 });
-    }
-  });
-
-  var route = RouteObject.create();
-
+test('It explodes when using an unsupported ED', function (assert) {
   DS.VERSION = "1.0.0-beta.19.3";
   assert.throws(() => {
-    route.model();
+    this.route.model();
   },
     /unsupported version of Ember Data/,
     'Unsupported ember-data error message is shown for beta.19.3'
