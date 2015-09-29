@@ -455,6 +455,40 @@ test('it allows overrides/manual invocations of updateInfinityModel', assert => 
   assert.equal(model.get('content.lastObject.title'), 'Tender Is the Night', 'updateInfinityModel can be invoked manually');
 });
 
+test('It allows to set startingPage as 0', assert => {
+  var RouteObject = Ember.Route.extend(RouteMixin, {
+    model() {
+      return this.infinityModel('item', {startingPage: 0});
+    }
+  });
+  var route = RouteObject.create();
+
+  var dummyStore = {
+    query() {
+      return new Ember.RSVP.Promise(resolve => {
+        Ember.run(this, resolve, Ember.Object.create({
+          items: [{id: 1, name: 'Test'}],
+          meta: {
+            total_pages: 1
+          }
+        }));
+      });
+    }
+  };
+
+  route.set('store', dummyStore);
+
+  var model;
+  Ember.run(() => {
+    route.model().then(result => {
+      model = result;
+    });
+  });
+
+  assert.equal(0, route.get('currentPage'));
+  assert.equal(true, route.get('_canLoadMore'));
+});
+
 /*
  * Compatibility Tests
  */
