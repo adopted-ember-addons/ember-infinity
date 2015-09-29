@@ -120,7 +120,7 @@ export default Ember.Mixin.create({
   _canLoadMore: Ember.computed('_totalPages', 'currentPage', function() {
     var totalPages  = this.get('_totalPages');
     var currentPage = this.get('currentPage');
-    return (totalPages && currentPage) ? (currentPage < totalPages) : false;
+    return (totalPages && currentPage !== undefined) ? (currentPage < totalPages) : false;
   }),
 
   /**
@@ -152,7 +152,7 @@ export default Ember.Mixin.create({
     this.set('_infinityModelName', modelName);
 
     options = options ? Ember.merge({}, options) : {};
-    var startingPage = options.startingPage || 1;
+    var startingPage = options.startingPage === undefined ? 1 : options.startingPage;
     var perPage      = options.perPage || this.get('_perPage');
     var modelPath    = options.modelPath || this.get('_modelPath');
 
