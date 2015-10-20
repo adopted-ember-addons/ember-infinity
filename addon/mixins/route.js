@@ -285,6 +285,11 @@ export default Ember.Mixin.create({
    @return {Ember.Array} returns the new objects
    */
   updateInfinityModel(newObjects) {
+    if (!this.get('_firstPageLoaded')) {
+      // the first set of newObjects becomes infinityModel
+      return newObjects;
+    }
+
     let infinityModel = this._infinityModel();
     return infinityModel.pushObjects(newObjects.get('content'));
   },
@@ -300,11 +305,7 @@ export default Ember.Mixin.create({
     const totalPages = newObjects.get(this.get('totalPagesParam'));
     this.set('_totalPages', totalPages);
 
-    let infinityModel = newObjects;
-
-    if (this.get('_firstPageLoaded')) {
-      infinityModel = this.updateInfinityModel(newObjects);
-    }
+    let infinityModel = this.updateInfinityModel(newObjects);
 
     this.set('_firstPageLoaded', true);
     this._notifyInfinityModelUpdated(newObjects);
