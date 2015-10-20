@@ -102,6 +102,12 @@ export default Ember.Mixin.create({
    */
   totalPagesParam: 'meta.total_pages',
 
+  actions: {
+    infinityLoad() {
+      this._infinityLoad();
+    }
+  },
+
   /**
    * The supported findMethod name for
    * the developers Ember Data version.
@@ -111,6 +117,8 @@ export default Ember.Mixin.create({
    */
   _storeFindMethod: 'query',
 
+  _firstPageLoaded: false,
+
   /**
     @private
     @property _canLoadMore
@@ -118,10 +126,34 @@ export default Ember.Mixin.create({
     @default false
   */
   _canLoadMore: Ember.computed('_totalPages', 'currentPage', function() {
-    var totalPages  = this.get('_totalPages');
-    var currentPage = this.get('currentPage');
+    const totalPages  = this.get('_totalPages');
+    const currentPage = this.get('currentPage');
+
     return (totalPages && currentPage !== undefined) ? (currentPage < totalPages) : false;
   }),
+
+  /**
+   @private
+   @method _infinityModel
+   @return {DS.RecordArray} the model
+  */
+  _infinityModel() {
+    return this.get(this.get('_modelPath'));
+  },
+
+  _ensureCompatibility() {
+    if (emberDataVersionIs('greaterThan', '1.0.0-beta.19.2') && emberDataVersionIs('lessThan', '1.13.4')) {
+      throw new Ember.Error("Ember Infinity: You are using an unsupported version of Ember Data.  Please upgrade to at least 1.13.4 or downgrade to 1.0.0-beta.19.2");
+    }
+
+    if (Ember.isEmpty(this.store) || Ember.isEmpty(this.store[this._storeFindMethod])){
+      throw new Ember.Error("Ember Infinity: Ember Data store is not available to infinityModel");
+    }
+
+    if (this.get('_infinityModelName') === undefined) {
+      throw new Ember.Error("Ember Infinity: You must pass a Model Name to infinityModel");
+    }
+  },
 
   /**
     Use the infinityModel method in the place of `this.store.find('model')` to
@@ -134,166 +166,189 @@ export default Ember.Mixin.create({
     @return {Ember.RSVP.Promise}
   */
   infinityModel(modelName, options, boundParams) {
-
-    if (emberDataVersionIs('greaterThan', '1.0.0-beta.19.2') && emberDataVersionIs('lessThan', '1.13.4')) {
-      throw new Ember.Error("Ember Infinity: You are using an unsupported version of Ember Data.  Please upgrade to at least 1.13.4 or downgrade to 1.0.0-beta.19.2");
-    }
-
     if (emberDataVersionIs('lessThan', '1.13.0')) {
       this.set('_storeFindMethod', 'find');
     }
 
-    if (Ember.isEmpty(this.store) || Ember.isEmpty(this.store[this._storeFindMethod])){
-      throw new Ember.Error("Ember Infinity: Ember Data store is not available to infinityModel");
-    } else if (modelName === undefined) {
-      throw new Ember.Error("Ember Infinity: You must pass a Model Name to infinityModel");
-    }
-
     this.set('_infinityModelName', modelName);
 
+    this._ensureCompatibility();
+
     options = options ? Ember.merge({}, options) : {};
-    var startingPage = options.startingPage === undefined ? 1 : options.startingPage;
-    var perPage      = options.perPage || this.get('_perPage');
-    var modelPath    = options.modelPath || this.get('_modelPath');
+    const startingPage = options.startingPage === undefined ? 0 : options.startingPage-1;
+
+    const perPage      = options.perPage || this.get('_perPage');
+    const modelPath    = options.modelPath || this.get('_modelPath');
 
     delete options.startingPage;
     delete options.perPage;
     delete options.modelPath;
 
-    this.set('_perPage', perPage);
-    this.set('_modelPath', modelPath);
-    this.set('_extraParams', options);
-
-    var requestPayloadBase = {};
-    requestPayloadBase[this.get('perPageParam')] = perPage;
-    requestPayloadBase[this.get('pageParam')] = startingPage;
+    this.setProperties({
+      currentPage: startingPage,
+      _firstPageLoaded: false,
+      _perPage: perPage,
+      _modelPath: modelPath,
+      _extraParams: options
+    });
 
     if (typeof boundParams === 'object') {
       this.set('_boundParams', boundParams);
-      options = this._includeBoundParams(options, boundParams);
     }
 
-    var params = Ember.merge(requestPayloadBase, options);
-    let promise = this.store[this._storeFindMethod](modelName, params);
-
-    promise.then(
-      infinityModel => {
-        var totalPages = infinityModel.get(this.get('totalPagesParam'));
-        this.set('currentPage', startingPage);
-        this.set('_totalPages', totalPages);
-        infinityModel.set('reachedInfinity', !this.get('_canLoadMore'));
-        if(this.infinityModelUpdated) {
-          Ember.run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
-            lastPageLoaded: startingPage,
-            totalPages: totalPages,
-            newObjects: infinityModel
-          });
-        }
-      },
-      () => {
-        throw new Ember.Error("Ember Infinity: Could not fetch Infinity Model. Please check your serverside configuration.");
-      }
-    );
-
-    return promise;
+    return this._loadNextPage();
   },
 
   /**
    Trigger a load of the next page of results.
 
-   @method infinityLoad
-   @return {Boolean}
+   @private
+   @method _infinityLoad
    */
   _infinityLoad() {
-    var nextPage    = this.get('currentPage') + 1;
-    var perPage     = this.get('_perPage');
-    var totalPages  = this.get('_totalPages');
-    var modelName   = this.get('_infinityModelName');
-    var options     = this.get('_extraParams');
-    var boundParams = this.get('_boundParams');
-
-    if (!this.get('_loadingMore') && this.get('_canLoadMore')) {
-      this.set('_loadingMore', true);
-
-      var requestPayloadBase = {};
-      requestPayloadBase[this.get('perPageParam')] = perPage;
-      requestPayloadBase[this.get('pageParam')] = nextPage;
-
-      options = this._includeBoundParams(options, boundParams);
-      var params = Ember.merge(requestPayloadBase, this.get('_extraParams'));
-
-      let promise = this.store[this._storeFindMethod](modelName, params);
-
-      promise.then(
-        newObjects => {
-
-          this.updateInfinityModel(newObjects);
-          this.set('_loadingMore', false);
-          this.set('currentPage', nextPage);
-          if(this.infinityModelUpdated) {
-            Ember.run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
-              lastPageLoaded: nextPage,
-              totalPages: totalPages,
-              newObjects: newObjects
-            });
-          }
-          if (!this.get('_canLoadMore')) {
-            this.set(this.get('_modelPath') + '.reachedInfinity', true);
-            if(this.infinityModelLoaded) {
-              Ember.run.scheduleOnce('afterRender', this, 'infinityModelLoaded', {
-                totalPages: totalPages
-              });
-            }
-          }
-        },
-        () => {
-          this.set('_loadingMore', false);
-          throw new Ember.Error("Ember Infinity: Could not fetch Infinity Model. Please check your serverside configuration.");
-        }
-      );
-    } else {
-      if (!this.get('_canLoadMore')) {
-        this.set(this.get('_modelPath') + '.reachedInfinity', true);
-        if(this.infinityModelLoaded) {
-          Ember.run.scheduleOnce('afterRender', this, 'infinityModelLoaded', { totalPages: totalPages });
-        }
-      }
+    if (this.get('_loadingMore') || !this.get('_canLoadMore')) {
+      return;
     }
-    return false;
+
+    this._loadNextPage();
   },
 
   /**
-   include any bound params into the options object.
+   load the next page from the adapter and update the model
 
-   @method includeBoundParams
-   @param {Object} options, the object to include bound params into.
-   @param {Object} boundParams, an object of properties to be included into options.
-   @return {Object}
+   @private
+   @method _loadNextPage
+   @return {Ember.RSVP.Promise} A Promise that resolves the model
    */
-  _includeBoundParams: function(options, boundParams) {
+  _loadNextPage() {
+    this.set('_loadingMore', true);
+
+    return this._requestNextPage()
+      .then((newObjects) => {
+        this._nextPageLoaded(newObjects);
+
+        return newObjects;
+      },
+      () => {
+        throw new Ember.Error("Ember Infinity: Could not fetch Infinity Model. Please check your serverside configuration.");
+      }
+    )
+    .finally(() => {
+      this.set('_loadingMore', false);
+    });
+  },
+
+  /**
+   request the next page from the adapter
+
+   @private
+   @method _requestNextPage
+   @returns {Ember.RSVP.Promise} A Promise that resolves the next page of objects
+   */
+  _requestNextPage() {
+    const modelName   = this.get('_infinityModelName');
+    const nextPage    = this.incrementProperty('currentPage');
+    const params      = this._buildParams(nextPage);
+
+    return this.store[this._storeFindMethod](modelName, params);
+  },
+
+  /**
+   build the params for the next page request
+
+   @private
+   @method _buildParams
+   @param {Number} nextPage the page number for the current request
+   @return {Object} The query params for the next page of results
+   */
+  _buildParams(nextPage) {
+    const pageParams = {};
+    pageParams[this.get('perPageParam')] = this.get('_perPage');
+    pageParams[this.get('pageParam')] = nextPage;
+
+    const params = Ember.merge(pageParams, this.get('_extraParams'));
+
+    const boundParams = this.get('_boundParams');
     if (!Ember.isEmpty(boundParams)) {
-      keys(boundParams).forEach(k => options[k] = this.get(boundParams[k]));
+      keys(boundParams).forEach(k => params[k] = this.get(boundParams[k]));
     }
 
-    return options;
+    return params;
   },
 
   /**
    Update the infinity model with new objects
+   Only called on the second page and following
 
    @method updateInfinityModel
    @param {Ember.Enumerable} newObjects The new objects to add to the model
-   @return {Ember.Array} returns the updated infinity model
+   @return {Ember.Array} returns the new objects
    */
   updateInfinityModel(newObjects) {
-    var infinityModel = this.get(this.get('_modelPath'));
-
+    let infinityModel = this._infinityModel();
     return infinityModel.pushObjects(newObjects.get('content'));
   },
 
-  actions: {
-    infinityLoad() {
-      this._infinityLoad();
+  /**
+
+   @method _nextPageLoaded
+   @param {Ember.Enumerable} newObjects The new objects to add to the model
+   @return {DS.RecordArray} returns the updated infinity model
+   @private
+   */
+  _nextPageLoaded(newObjects) {
+    const totalPages = newObjects.get(this.get('totalPagesParam'));
+    this.set('_totalPages', totalPages);
+
+    let infinityModel = newObjects;
+
+    if (this.get('_firstPageLoaded')) {
+      infinityModel = this.updateInfinityModel(newObjects);
     }
+
+    this.set('_firstPageLoaded', true);
+    this._notifyInfinityModelUpdated(newObjects);
+
+    const canLoadMore = this.get('_canLoadMore');
+    infinityModel.set('reachedInfinity', !canLoadMore);
+
+    if (!canLoadMore) {
+      this._notifyInfinityModelLoaded();
+    }
+
+    return infinityModel;
+  },
+
+  /**
+   notify that the infinity model has been updated
+
+   @private
+   @method _notifyInfinityModelUpdated
+   */
+  _notifyInfinityModelUpdated(newObjects) {
+    if (!this.infinityModelUpdated) {
+      return;
+    }
+
+    Ember.run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
+      lastPageLoaded: this.get('currentPage'),
+      totalPages: this.get('_totalPages'),
+      newObjects: newObjects
+    });
+  },
+
+  /**
+   finish the loading cycle by notifying that infinity has been reached
+
+   @private
+   @method _notifyInfinityModelLoaded
+   */
+  _notifyInfinityModelLoaded() {
+    if (!this.infinityModelLoaded) {
+      return;
+    }
+
+    const totalPages = this.get('_totalPages');
+    Ember.run.scheduleOnce('afterRender', this, 'infinityModelLoaded', { totalPages: totalPages });
   }
 });

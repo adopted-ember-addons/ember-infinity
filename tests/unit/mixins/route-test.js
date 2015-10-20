@@ -98,10 +98,10 @@ test('it sets state before it reaches the end', assert => {
     });
   });
 
-  assert.equal(31, route.get('_totalPages'));
-  assert.equal(1, route.get('currentPage'));
-  assert.equal(true, route.get('_canLoadMore'));
-  assert.ok(Ember.$.isEmptyObject(route.get('_extraParams')));
+  assert.equal(route.get('_totalPages'), 31, '_totalPages');
+  assert.equal(route.get('currentPage'), 1, 'currentPage');
+  assert.equal(route.get('_canLoadMore'), true, '_canLoadMore');
+  assert.ok(Ember.$.isEmptyObject(route.get('_extraParams')), 'extra params are empty');
   assert.ok(!model.get('reachedInfinity'), 'Should not reach infinity');
 });
 
@@ -167,7 +167,7 @@ test('it allows customizations of meta parsing params', assert => {
     });
   });
 
-  assert.equal(22, route.get('_totalPages'));
+  assert.equal(route.get('_totalPages'), 22, '_totalPages');
 });
 
 test('it sets state  when it reaches the end', assert => {
@@ -201,10 +201,10 @@ test('it sets state  when it reaches the end', assert => {
     });
   });
 
-  assert.equal(31, route.get('_totalPages'));
-  assert.equal(31, route.get('currentPage'));
-  assert.ok(Ember.$.isEmptyObject(route.get('_extraParams')));
-  assert.equal(false, route.get('_canLoadMore'));
+  assert.equal(route.get('_totalPages'), 31, '_totalPages');
+  assert.equal(route.get('currentPage'), 31, 'currentPage');
+  assert.ok(Ember.$.isEmptyObject(route.get('_extraParams')), '_extraParams');
+  assert.equal(route.get('_canLoadMore'), false, '_canLoadMore');
   assert.ok(model.get('reachedInfinity'), 'Should reach infinity');
 });
 
@@ -221,7 +221,7 @@ test('it uses extra params when loading more data', assert => {
 
   var dummyStore = {
     query(name, params) {
-      assert.equal('param', params.extra);
+      assert.equal(params.extra, 'param', 'params.extra');
       return new Ember.RSVP.Promise(resolve => {
         Ember.run(this, resolve, Ember.Object.create({
           items: [{id: 1, name: 'Test'}],
@@ -250,45 +250,38 @@ test('it uses extra params when loading more data', assert => {
   });
   route.set('controller', dummyController);
 
-  assert.equal(route.get('_extraParams.extra'), 'param');
-  assert.equal(route.get('_canLoadMore'), true);
+  assert.equal(route.get('_extraParams.extra'), 'param', '_extraParams.extra');
+  assert.equal(route.get('_canLoadMore'), true, '_canLoadMore');
 
   // Load more
   Ember.run(() => {
     route._infinityLoad();
   });
 
-  assert.equal(route.get('_extraParams.extra'), 'param');
-  assert.equal(route.get('_canLoadMore'), false);
-  assert.equal(route.get('currentPage'), 2);
+  assert.equal(route.get('_extraParams.extra'), 'param', '_extraParams.extra');
+  assert.equal(route.get('_canLoadMore'), false, '_canLoadMore');
+  assert.equal(route.get('currentPage'), 2, 'currentPage');
   assert.ok(model.get('reachedInfinity'), 'Should reach infinity');
 });
 
-test('it uses overridden params when loading more data', assert => {
-
-  assert.expect(8);
+test("It doesn't request more pages once _canLoadMore is false", assert => {
+  assert.expect(6);
 
   var RouteObject = Ember.Route.extend(RouteMixin, {
     model() {
-      return this.infinityModel('item', {perPage: 1, startingPage: 2});
-    },
-
-    perPageParam: 'testPerPage',
-    pageParam: 'testPage',
-    totalPagesParam: 'meta.testTotalPages'
+      return this.infinityModel('item');
+    }
   });
   var route = RouteObject.create();
 
   var dummyStore = {
-    query(name, params) {
-      assert.equal(1, params.testPerPage);
-      assert.ok(params.testPage);
+    query() {
       return new Ember.RSVP.Promise(resolve => {
         Ember.run(this, resolve, Ember.Object.create({
           items: [{id: 1, name: 'Test'}],
           pushObjects: Ember.K,
           meta: {
-            testTotalPages: 3
+            total_pages: 2
           }
         }));
       });
@@ -311,15 +304,149 @@ test('it uses overridden params when loading more data', assert => {
   });
   route.set('controller', dummyController);
 
-  assert.equal(true, route.get('_canLoadMore'));
+  assert.ok(route.get('_canLoadMore'), 'can load more');
+  assert.equal(route.get('currentPage'), 1, 'currentPage');
 
+  Ember.run(() => {
+    route._infinityLoad();
+  });
+
+  assert.notOk(route.get('_canLoadMore'), 'can load more');
+  assert.equal(route.get('currentPage'), 2, 'currentPage');
+
+  Ember.run(() => {
+    route._infinityLoad();
+  });
+
+  assert.notOk(route.get('_canLoadMore'), 'can load more');
+  assert.equal(route.get('currentPage'), 2, 'currentPage');
+});
+
+test("It resets the currentPage when the model hook is called again", assert => {
+  assert.expect(5);
+
+  var RouteObject = Ember.Route.extend(RouteMixin, {
+    model() {
+      return this.infinityModel('item');
+    }
+  });
+  var route = RouteObject.create();
+
+  var dummyStore = {
+    query() {
+      return new Ember.RSVP.Promise(resolve => {
+        Ember.run(this, resolve, Ember.Object.create({
+          items: [{id: 1, name: 'Test'}],
+          pushObjects: Ember.K,
+          meta: {
+            total_pages: 2
+          }
+        }));
+      });
+    }
+  };
+
+  route.set('store', dummyStore);
+
+  var model;
+  Ember.run(() => {
+    route.model().then(result => {
+      model = result;
+    });
+  });
+
+  // The controller needs to be set so _infinityLoad() can call
+  // pushObjects()
+  var dummyController = Ember.Object.create({
+    model
+  });
+  route.set('controller', dummyController);
+
+  assert.ok(route.get('_canLoadMore'), 'can load more');
+  assert.equal(route.get('currentPage'), 1, 'currentPage');
+
+  Ember.run(() => {
+    route.model().then(result => {
+      model = result;
+    });
+  });
+
+  assert.equal(route.get('currentPage'), 1, 'currentPage');
+
+  Ember.run(() => {
+    route._infinityLoad();
+  });
+
+  assert.equal(route.get('currentPage'), 2, 'currentPage');
+
+  Ember.run(() => {
+    route.model().then(result => {
+      model = result;
+    });
+  });
+
+  assert.equal(route.get('currentPage'), 1, 'currentPage');
+});
+
+test('it uses overridden params when loading more data', assert => {
+
+  assert.expect(8);
+
+  var RouteObject = Ember.Route.extend(RouteMixin, {
+    model() {
+      return this.infinityModel('item', {perPage: 1, startingPage: 2});
+    },
+
+    perPageParam: 'testPerPage',
+    pageParam: 'testPage',
+    totalPagesParam: 'meta.testTotalPages'
+  });
+  var route = RouteObject.create();
+
+  var expectedPageNumber;
+  var dummyStore = {
+    query(name, params) {
+      assert.equal(1, params.testPerPage);
+      assert.equal(params.testPage, expectedPageNumber);
+      return new Ember.RSVP.Promise(resolve => {
+        Ember.run(this, resolve, Ember.Object.create({
+          items: [{id: 1, name: 'Test'}],
+          pushObjects: Ember.K,
+          meta: {
+            testTotalPages: 3
+          }
+        }));
+      });
+    }
+  };
+
+  route.set('store', dummyStore);
+
+  expectedPageNumber = 2;
+  var model;
+  Ember.run(() => {
+    route.model().then(result => {
+      model = result;
+    });
+  });
+
+  // The controller needs to be set so _infinityLoad() can call
+  // pushObjects()
+  var dummyController = Ember.Object.create({
+    model
+  });
+  route.set('controller', dummyController);
+
+  assert.equal(route.get('_canLoadMore'), true, '_canLoadMore');
+
+  expectedPageNumber = 3;
   // Load more
   Ember.run(() => {
     route._infinityLoad();
   });
 
-  assert.equal(false, route.get('_canLoadMore'));
-  assert.equal(3, route.get('currentPage'));
+  assert.equal(route.get('_canLoadMore'), false, '_canLoadMore');
+  assert.equal(route.get('currentPage'), 3, 'currentPage');
   assert.ok(model.get('reachedInfinity'), 'Should reach infinity');
 
 });
@@ -369,22 +496,22 @@ test('it uses bound params when loading more data', assert => {
   });
   route.set('controller', dummyController);
 
-  assert.equal(true, route.get('_canLoadMore'));
+  assert.equal(route.get('_canLoadMore'), true, '_canLoadMore');
 
   // Load more
   Ember.run(() => {
     route._infinityLoad();
   });
 
-  assert.equal(true, route.get('_canLoadMore'), 'can load even more data');
+  assert.equal(route.get('_canLoadMore'), true, 'can load even more data');
   route.set('test', 'hot');
   // Load even more
   Ember.run(() => {
     route._infinityLoad();
   });
 
-  assert.equal(false, route.get('_canLoadMore'));
-  assert.equal(3, route.get('currentPage'));
+  assert.equal(route.get('_canLoadMore'), false, '_canLoadMore');
+  assert.equal(route.get('currentPage'), 3, 'currentPage');
   assert.ok(model.get('reachedInfinity'), 'Should reach infinity');
 });
 
@@ -430,15 +557,16 @@ test('it allows overrides/manual invocations of updateInfinityModel', assert => 
   });
   route.set('controller', dummyController);
 
-  assert.equal(route.get('_canLoadMore'), true);
-  assert.equal(model.get('content.length'), 1);
+  assert.equal(route.get('_canLoadMore'), true, '_canLoadMore');
+  assert.equal(model.get('content.length'), 1, 'content.length');
+  assert.notEqual(model.get('content.lastObject.author'), 'F. Scott Fitzgerald', 'overrides to updateInfinityModel should take effect');
 
   Ember.run(() => {
     route._infinityLoad();
   });
 
-  assert.equal(route.get('_canLoadMore'), false);
-  assert.equal(model.get('content.length'), 2);
+  assert.equal(route.get('_canLoadMore'), false, '_canLoadMore');
+  assert.equal(model.get('content.length'), 2, 'content.length');
   assert.equal(model.get('content.lastObject.author'), 'F. Scott Fitzgerald', 'overrides to updateInfinityModel should take effect');
 
   var newObjects = Ember.ArrayProxy.create({
@@ -451,7 +579,7 @@ test('it allows overrides/manual invocations of updateInfinityModel', assert => 
     route.updateInfinityModel(newObjects);
   });
 
-  assert.equal(model.get('content.length'), 3);
+  assert.equal(model.get('content.length'), 3, 'content.length');
   assert.equal(model.get('content.lastObject.title'), 'Tender Is the Night', 'updateInfinityModel can be invoked manually');
 });
 
