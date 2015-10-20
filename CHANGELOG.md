@@ -1,5 +1,20 @@
 # Change Log
 
+## [v0.2.0-beta.1](https://github.com/hhff/ember-infinity/tree/v0.2.0-beta.1) (2015-10-20)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.1.2...v0.2.0-beta.1)
+
+**Closed issues:**
+
+- Resetting the starting page? [\#91](https://github.com/hhff/ember-infinity/issues/91)
+- semver is not defined error when upgraded to ember 2.0 [\#85](https://github.com/hhff/ember-infinity/issues/85)
+- Infinity conflicts with liquid-fire [\#52](https://github.com/hhff/ember-infinity/issues/52)
+
+**Merged pull requests:**
+
+- Allow setting starting page as 0. [\#94](https://github.com/hhff/ember-infinity/pull/94) ([wuron](https://github.com/wuron))
+- Reduce duplication in route [\#88](https://github.com/hhff/ember-infinity/pull/88) ([davidgoli](https://github.com/davidgoli))
+- Allow Canary Failures [\#86](https://github.com/hhff/ember-infinity/pull/86) ([hhff](https://github.com/hhff))
+
 ## [v0.1.2](https://github.com/hhff/ember-infinity/tree/v0.1.2) (2015-09-02)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.1.1...v0.1.2)
 
