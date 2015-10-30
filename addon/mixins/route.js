@@ -200,6 +200,23 @@ export default Ember.Mixin.create({
   },
 
   /**
+   Call additional functions after finding the infinityModel in the Ember data store.
+   @private
+   @method _afterInfinityModel
+   @param {Function} infinityModelPromise The resolved result of the Ember store find method. Passed in automatically.
+   @return {Ember.RSVP.Promise}
+  */
+  _afterInfinityModel(_this) {
+    return function(infinityModelPromiseResult) {
+      if (typeof _this.afterInfinityModel === 'function') {
+        return _this.afterInfinityModel(infinityModelPromiseResult);
+      } else {
+        return infinityModelPromiseResult;
+      }
+    };
+  },
+
+  /**
    Trigger a load of the next page of results.
 
    @private
@@ -250,7 +267,8 @@ export default Ember.Mixin.create({
     const nextPage    = this.incrementProperty('currentPage');
     const params      = this._buildParams(nextPage);
 
-    return this.store[this._storeFindMethod](modelName, params);
+    return this.store[this._storeFindMethod](modelName, params).then(
+      this._afterInfinityModel(this));
   },
 
   /**
