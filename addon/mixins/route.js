@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import { emberDataVersionIs } from 'ember-version-is';
 
-const keys = Object.keys || Ember.keys;
+const keys = Object.keys;
 /**
   The Ember Infinity Route Mixin enables an application route to load paginated
   records for the route `model` as triggered by the controller (or Infinity Loader
