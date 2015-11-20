@@ -205,6 +205,38 @@ setupController: function(controller, model) {
   controller.set('products', model);
 }
 ```
+### afterInfinityModel
+
+In some cases, a single call to your data store isn't enough. The afterInfinityModel method is available for those cases when you need to
+chain together functions or promises after fetching a model.
+
+As a simple example, let's say you had a blog and just needed to set a property on each Post model after fetching all of them:
+
+```js
+model: function() {
+  return this.infinityModel("post");
+},
+
+afterInfinityModel: function(posts) {
+  posts.setEach('author', 'Jane Smith');
+}
+```
+
+As a more complex example, let's say you had a blog with Posts and Authors as separate related models and you needed to fetch one followed
+by the other before returning anything. In that case, afterInfinityModel would allow you to do something like this:
+
+```js
+model: function() {
+  return this.infinityModel("post");
+},
+
+afterInfinityModel: function(posts) {
+  Ember.RSVP.Promise(posts.map(function(post) {
+    post.get('author')
+  }));
+}
+```
+
 ### Event Hooks
 
 The route mixin also provides following event hooks:

@@ -435,6 +435,78 @@ test('It allows to set startingPage as 0', assert => {
   assert.equal(true, route.get('_canLoadMore'));
 });
 
+test('it calls the afterInfinityModel method on objects fetched from the store', assert => {
+  var RouteObject = Ember.Route.extend(RouteMixin, {
+    model() {
+      return this.infinityModel('item');
+    },
+    afterInfinityModel(items) {
+      return items.setEach('author', 'F. Scott Fitzgerald');
+    }
+  });
+
+  var route = RouteObject.create();
+
+  var dummyStore = {
+    query() {
+      var item = { id: 1, title: 'The Great Gatsby' };
+      return new Ember.RSVP.Promise(resolve => {
+        Ember.run(this, resolve, Ember.ArrayProxy.create({
+          content: Ember.A([item])
+        }));
+      });
+    }
+  };
+
+  route.set('store', dummyStore);
+
+  var model;
+  Ember.run(() => {
+    route.model().then(result => {
+      model = result;
+    });
+  });
+
+  assert.equal(model.get('content.firstObject.author'), 'F. Scott Fitzgerald', 'updates made in afterInfinityModel should take effect');
+});
+
+test('it resolves promises returned by the afterInfinityModel method', assert => {
+  var RouteObject = Ember.Route.extend(RouteMixin, {
+    model() {
+      return this.infinityModel('item');
+    },
+    afterInfinityModel(items) {
+      return new Ember.RSVP.Promise((resolve) => {
+        resolve(items.setEach('author', 'F. Scott Fitzgerald'));
+      });
+    }
+  });
+
+  var route = RouteObject.create();
+
+  var dummyStore = {
+    query() {
+      var item = { id: 1, title: 'The Great Gatsby' };
+      return new Ember.RSVP.Promise(resolve => {
+        Ember.run(this, resolve, Ember.ArrayProxy.create({
+          content: Ember.A([item])
+        }));
+      });
+    }
+  };
+
+  route.set('store', dummyStore);
+
+  var model;
+  Ember.run(() => {
+    route.model().then(result => {
+      model = result;
+    });
+  });
+
+  assert.equal(model.get('content.firstObject.author'), 'F. Scott Fitzgerald', 'updates made in afterInfinityModel should take effect');
+});
+
 /*
  * Compatibility Tests
  */
