@@ -377,7 +377,7 @@ test('it allows overrides/manual invocations of updateInfinityModel', assert => 
 
   assert.equal(route.get('_canLoadMore'), true, '_canLoadMore');
   assert.equal(model.get('content.length'), 1, 'content.length');
-  assert.notEqual(model.get('content.lastObject.author'), 'F. Scott Fitzgerald', 'overrides to updateInfinityModel should take effect');
+  assert.equal(model.get('content.lastObject.author'), 'F. Scott Fitzgerald', 'overrides to updateInfinityModel should take effect');
 
   Ember.run(() => {
     route._infinityLoad();
