@@ -1,5 +1,23 @@
 # Change Log
 
+## [v0.2.0](https://github.com/hhff/ember-infinity/tree/v0.2.0) (2015-11-25)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.2.0-beta.1...v0.2.0)
+
+**Closed issues:**
+
+- Tests fail under Ember 2.3.0-beta1 [\#103](https://github.com/hhff/ember-infinity/issues/103)
+- Deprecation Ember 2+ [\#101](https://github.com/hhff/ember-infinity/issues/101)
+- \_canLoadMore doesn't fetch totalPages [\#99](https://github.com/hhff/ember-infinity/issues/99)
+- Update queryParams with page and perPage [\#95](https://github.com/hhff/ember-infinity/issues/95)
+- Cursor-based pagination loads duplicate results [\#90](https://github.com/hhff/ember-infinity/issues/90)
+- Refactor Tests for Code Climate [\#80](https://github.com/hhff/ember-infinity/issues/80)
+
+**Merged pull requests:**
+
+- Add afterInfinityModel [\#105](https://github.com/hhff/ember-infinity/pull/105) ([davidgoli](https://github.com/davidgoli))
+- Upgrade ember-qunit [\#104](https://github.com/hhff/ember-infinity/pull/104) ([davidgoli](https://github.com/davidgoli))
+- Refactor Route test [\#98](https://github.com/hhff/ember-infinity/pull/98) ([davidgoli](https://github.com/davidgoli))
+
 ## [v0.2.0-beta.1](https://github.com/hhff/ember-infinity/tree/v0.2.0-beta.1) (2015-10-20)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.1.2...v0.2.0-beta.1)
 
@@ -40,7 +58,7 @@
 **Merged pull requests:**
 
 - Document updateInfinityModel hook, closes \#74 [\#83](https://github.com/hhff/ember-infinity/pull/83) ([hhff](https://github.com/hhff))
-- \[Bugfix\] Preserving scrollable on subsequent rerenders - reported by @cprussin [\#69](https://github.com/hhff/ember-infinity/pull/69) ([mkorfmann](https://github.com/mkorfmann))
+- \[Bugfix\] Preserving scrollable on subsequent rerenders - reported by @cprussin [\#69](https://github.com/hhff/ember-infinity/pull/69) ([ManuelArno](https://github.com/ManuelArno))
 
 ## [v0.1.0](https://github.com/hhff/ember-infinity/tree/v0.1.0) (2015-08-27)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.0.14...v0.1.0)
@@ -51,7 +69,7 @@
 
 **Merged pull requests:**
 
-- bare minimum update work for ember 2 [\#79](https://github.com/hhff/ember-infinity/pull/79) ([mkorfmann](https://github.com/mkorfmann))
+- bare minimum update work for ember 2 [\#79](https://github.com/hhff/ember-infinity/pull/79) ([ManuelArno](https://github.com/ManuelArno))
 
 ## [v0.0.14](https://github.com/hhff/ember-infinity/tree/v0.0.14) (2015-08-20)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.0.13...v0.0.14)
@@ -64,7 +82,7 @@
 **Merged pull requests:**
 
 - Allow Template Overrides, closes \#51 [\#68](https://github.com/hhff/ember-infinity/pull/68) ([hhff](https://github.com/hhff))
-- dont rely on didInsertElement setting up scrollable [\#63](https://github.com/hhff/ember-infinity/pull/63) ([mkorfmann](https://github.com/mkorfmann))
+- dont rely on didInsertElement setting up scrollable [\#63](https://github.com/hhff/ember-infinity/pull/63) ([ManuelArno](https://github.com/ManuelArno))
 - Update for Ember Data 1.13.x, closes \#32 [\#48](https://github.com/hhff/ember-infinity/pull/48) ([hhff](https://github.com/hhff))
 
 ## [v0.0.13](https://github.com/hhff/ember-infinity/tree/v0.0.13) (2015-08-01)
