@@ -34,6 +34,16 @@ function createDummyStore(resolution, assertion) {
   };
 }
 
+function createArrayStore(resolution) {
+  return {
+    query() {
+      return Ember.RSVP.resolve(
+        Ember.ArrayProxy.create({content: Ember.A(resolution)})
+      );
+    }
+  };
+}
+
 function captureModel(route) {
   var model;
   Ember.run(() => {
@@ -402,38 +412,63 @@ test('it allows overrides/manual invocations of updateInfinityModel', assert => 
 });
 
 test('It allows to set startingPage as 0', assert => {
-  var RouteObject = Ember.Route.extend(RouteMixin, {
-    model() {
-      return this.infinityModel('item', {startingPage: 0});
-    }
-  });
-  var route = RouteObject.create();
+  var route = createRoute('item', {
+    store: createDummyStore({
+      items: [{id: 1, name: 'Test'}],
+      meta: {
+        total_pages: 1
+      }
+    })
+  }, {startingPage: 0});
 
-  var dummyStore = {
-    query() {
-      return new Ember.RSVP.Promise(resolve => {
-        Ember.run(this, resolve, Ember.Object.create({
-          items: [{id: 1, name: 'Test'}],
-          meta: {
-            total_pages: 1
-          }
-        }));
-      });
-    }
-  };
-
-  route.set('store', dummyStore);
-
-  var model;
-  Ember.run(() => {
-    route.model().then(result => {
-      model = result;
-    });
-  });
+  captureModel(route);
 
   assert.equal(0, route.get('currentPage'));
   assert.equal(true, route.get('_canLoadMore'));
 });
+
+module('RouteMixin.afterInfinityModel', {
+  beforeEach() {
+    var item = { id: 1, title: 'The Great Gatsby' };
+    this.route = createRoute('item', {
+      store: createArrayStore([item])
+    });
+  }
+});
+
+test('it calls the afterInfinityModel method on objects fetched from the store', function (assert) {
+  this.route.afterInfinityModel = (items) => {
+    return items.setEach('author', 'F. Scott Fitzgerald');
+  };
+
+  var model = captureModel(this.route);
+
+  assert.equal(model.get('content.firstObject.author'), 'F. Scott Fitzgerald', 'updates made in afterInfinityModel should take effect');
+});
+
+test('it does not require a return value to work', function (assert) {
+  this.route.afterInfinityModel = (items) => {
+    items.setEach('author', 'F. Scott Fitzgerald');
+  };
+
+  var model = captureModel(this.route);
+
+  assert.equal(model.get('content.firstObject.author'), 'F. Scott Fitzgerald', 'updates made in afterInfinityModel should take effect');
+});
+
+test('it resolves a promise returned from afterInfinityModel', function (assert) {
+  this.route.afterInfinityModel = (items) => {
+    return new Ember.RSVP.Promise(function (resolve) {
+      resolve(items.setEach('author', 'F. Scott Fitzgerald'));
+    });
+  };
+
+  var model = captureModel(this.route);
+
+  assert.equal(model.get('content.firstObject.author'), 'F. Scott Fitzgerald', 'updates made in afterInfinityModel should take effect');
+});
+
+
 
 /*
  * Compatibility Tests

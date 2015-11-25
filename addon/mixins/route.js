@@ -12,7 +12,7 @@ const keys = Object.keys || Ember.keys;
   @module ember-infinity/mixins/route
   @extends Ember.Mixin
 */
-export default Ember.Mixin.create({
+const RouteMixin = Ember.Mixin.create({
 
   /**
     @private
@@ -200,6 +200,26 @@ export default Ember.Mixin.create({
   },
 
   /**
+   Call additional functions after finding the infinityModel in the Ember data store.
+   @private
+   @method _afterInfinityModel
+   @param {Function} infinityModelPromise The resolved result of the Ember store find method. Passed in automatically.
+   @return {Ember.RSVP.Promise}
+  */
+  _afterInfinityModel(_this) {
+    return function(infinityModelPromiseResult) {
+      if (typeof _this.afterInfinityModel === 'function') {
+        let result = _this.afterInfinityModel(infinityModelPromiseResult);
+        if (result) {
+          return result;
+        }
+      }
+
+      return infinityModelPromiseResult;
+    };
+  },
+
+  /**
    Trigger a load of the next page of results.
 
    @private
@@ -250,7 +270,8 @@ export default Ember.Mixin.create({
     const nextPage    = this.incrementProperty('currentPage');
     const params      = this._buildParams(nextPage);
 
-    return this.store[this._storeFindMethod](modelName, params);
+    return this.store[this._storeFindMethod](modelName, params).then(
+      this._afterInfinityModel(this));
   },
 
   /**
@@ -280,11 +301,16 @@ export default Ember.Mixin.create({
    Update the infinity model with new objects
    Only called on the second page and following
 
+   @deprecated
    @method updateInfinityModel
    @param {Ember.Enumerable} newObjects The new objects to add to the model
    @return {Ember.Array} returns the new objects
    */
   updateInfinityModel(newObjects) {
+    return this._doUpdate(newObjects);
+  },
+
+  _doUpdate(newObjects) {
     let infinityModel = this._infinityModel();
     return infinityModel.pushObjects(newObjects.get('content'));
   },
@@ -303,7 +329,19 @@ export default Ember.Mixin.create({
     let infinityModel = newObjects;
 
     if (this.get('_firstPageLoaded')) {
-      infinityModel = this.updateInfinityModel(newObjects);
+      if (typeof this.updateInfinityModel === 'function' &&
+          (this.updateInfinityModel !==
+           Ember.Object.extend(RouteMixin).create().updateInfinityModel)) {
+        Ember.deprecate("EmberInfinity.updateInfinityModel is deprecated. "+
+                        "Please use EmberInfinity.afterInfinityModel.",
+                        false,
+                        {id: 'ember-infinity.updateInfinityModel', until: '2.1'}
+                       );
+
+        infinityModel = this.updateInfinityModel(newObjects);
+      } else {
+        infinityModel = this._doUpdate(newObjects);
+      }
     }
 
     this.set('_firstPageLoaded', true);
@@ -352,3 +390,5 @@ export default Ember.Mixin.create({
     Ember.run.scheduleOnce('afterRender', this, 'infinityModelLoaded', { totalPages: totalPages });
   }
 });
+
+export default RouteMixin;

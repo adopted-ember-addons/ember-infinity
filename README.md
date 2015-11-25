@@ -115,30 +115,39 @@ and ember-infinity will be set up to parse the total number of pages from a JSON
 }
 ```
 
-You may override `updateInfinityModel` to customize how the route's `model` should be updated with new objects.  Let's say we only want to show objects with `isPublished === true`:
+### Cursor-based pagination
+
+If you are serving a continuously updating stream, it's helpful to keep track
+of your place in the list while paginating, to avoid duplicates. This is known
+as **cursor-based pagination** and is common in popular APIs like Twitter,
+Facebook, and Instagram. Instead of relying on `page_number` to paginate,
+you'll want to extract the `min_id` or `min_updated_at` from each page of
+results, so that you can fetch the next page without risking duplicates if new
+items are added to the top of the list by other users in between requests.
+
+To do this, implement the `afterInfinityModel` hook as follows:
 
 ```js
-updateInfinityModel(newObjects) {
-  let infinityModel = this.get(this.get('_modelPath'));
-  
-  let content = newObjects.get('content');
-  let filtered = content.filter(obj => { return obj.get('isPublished'); });
-  
-  return infinityModel.pushObjects(filtered);
-}
-```
+export default Ember.Route.extend(InfinityRoute, {
+  _minId: undefined,
+  _minUpdatedAt: undefined,
+  _canLoadMore: true,
 
-You may also invoke this method directly to manually push new objects into the model:
+  model() {
+    return this.infinityModel("post", {}, {
+      min_id: '_minId',
+      min_updated_at: '_minUpdatedAt'
+    });
+  },
 
-```js
-actions: {
-  pushHughsRecordsIntoInfinityModel() [
-    var updatedInfinityModel = this.updateInfinityModel(Ember.A([
-      { id: 1, name: "Hugh Francis Discography", isPublished: true }
-    ]));
-    console.log(updatedInfinityModel);
+  afterInfinityModel(posts) {
+    loadedAny = posts.get('length') > 0;
+    this.set('_canLoadMore', loadedAny);
+
+    this.set('_minId', posts.get('lastObject.id'));
+    this.set('_minUpdatedAt', posts.get('lastObject.updated_at').toISOString());
   }
-}
+});
 ```
 
 ### infinityModel
@@ -164,11 +173,11 @@ import InfinityRoute from 'ember-infinity/mixins/route';
 export default Ember.Route.extend(InfinityRoute, {
   ...
 
-  prod: function () { return this.get('cat'); }.property('cat'),
+  prod: Ember.computed('cat', function () { return this.get('cat'); }),
   country: '',
   cat: 'shipped',
 
-  model: function () {
+  model() {
     return this.infinityModel("product", { perPage: 12, startingPage: 1, make: "original" }, { country: "country", category: "prod" });
   }
 });
@@ -193,18 +202,53 @@ When you need to pass in bound parameters but no static parameters or custom pag
 
 `modelPath` is optional parameter for situations when you are overriding `setupController`
 or when your model is on different location than `controller.model`.
+
 ```js
-model: function() {
+model() {
   return this.infinityModel("product", {
     perPage: 12,
     startingPage: 1,
     modelPath: 'controller.products'
   });
 },
-setupController: function(controller, model) {
+setupController(controller, model) {
   controller.set('products', model);
 }
 ```
+
+### afterInfinityModel
+
+In some cases, a single call to your data store isn't enough. The afterInfinityModel
+method is available for those cases when you need to chain together functions or
+promises after fetching a model.
+
+As a simple example, let's say you had a blog and just needed to set a property
+on each Post model after fetching all of them:
+
+```js
+model() {
+  return this.infinityModel("post");
+},
+
+afterInfinityModel(posts) {
+  posts.setEach('author', 'Jane Smith');
+}
+```
+
+As a more complex example, let's say you had a blog with Posts and Authors as separate
+related models and you needed to extract an association from Posts. In that case,
+return the collection you want from afterInfinityModel:
+
+```js
+model() {
+  return this.infinityModel("post");
+},
+
+afterInfinityModel(posts) {
+  return posts.mapBy('author').uniq();
+}
+```
+
 ### Event Hooks
 
 The route mixin also provides following event hooks:
@@ -237,15 +281,15 @@ import InfinityRoute from 'ember-infinity/mixins/route';
 export default Ember.Route.extend(InfinityRoute, {
   ...
 
-  model: function () {
+  model() {
     /* Load pages of the Product Model, starting from page 1, in groups of 12. */
     return this.infinityModel("product", { perPage: 12, startingPage: 1 });
   },
 
-  infinityModelUpdated: function(totalPages) {
+  infinityModelUpdated(totalPages) {
     Ember.Logger.debug('updated with more items');
   },
-  infinityModelLoaded: function(lastPageLoaded, totalPages, infinityModel) {
+  infinityModelLoaded(lastPageLoaded, totalPages, infinityModel) {
     Ember.Logger.info('no more items to load');
   }
 }
