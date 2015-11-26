@@ -249,6 +249,23 @@ afterInfinityModel(posts) {
 }
 ```
 
+### Push new record to infinityModel
+
+`createRecord` will not auto update infinityModel.
+
+```
+var post = this.store.createRecord('post', {
+  body: body,
+});
+
+// Push new record
+this.get('controller.model').unshiftObject(post._internalModel);
+
+// Delete pushed record
+this.get('controller.model').removeObject(post);
+
+```
+
 ### Event Hooks
 
 The route mixin also provides following event hooks:
