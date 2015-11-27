@@ -2,6 +2,7 @@ import Ember from 'ember';
 import { module, test } from 'qunit';
 import startApp from '../helpers/start-app';
 import Pretender from 'pretender';
+import assertDetails from '../helpers/assert-acceptance-details';
 
 var App, server;
 
@@ -28,12 +29,10 @@ test('it works when meta is not present in payload', assert => {
   visit('/test');
 
   andThen(() => {
-    var postsTitle     = find('#posts-title');
-    var postList       = find('ul');
-    var infinityLoader = find('.infinity-loader');
-
-    assert.equal(postsTitle.text(), "Listing Posts");
-    assert.equal(postList.find('li').length, 2);
-    assert.equal(infinityLoader.hasClass('reached-infinity'), true);
+    assertDetails(assert, {
+      title: 'Listing Posts',
+      listLength: 2,
+      reachedInfinity: true
+    });
   });
 });
