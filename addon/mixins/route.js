@@ -156,7 +156,7 @@ const RouteMixin = Ember.Mixin.create({
   },
 
   /**
-    Use the infinityModel method in the place of `this.get('store').find('model')` to
+    Use the infinityModel method in the place of `this.store.find('model')` to
     initialize the Infinity Model for your route.
 
     @method infinityModel
