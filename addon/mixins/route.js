@@ -146,7 +146,7 @@ const RouteMixin = Ember.Mixin.create({
       throw new Ember.Error("Ember Infinity: You are using an unsupported version of Ember Data.  Please upgrade to at least 1.13.4 or downgrade to 1.0.0-beta.19.2");
     }
 
-    if (Ember.isEmpty(this.store) || Ember.isEmpty(this.store[this._storeFindMethod])){
+    if (Ember.isEmpty(this.get('store')) || Ember.isEmpty(this.get('store')[this._storeFindMethod])){
       throw new Ember.Error("Ember Infinity: Ember Data store is not available to infinityModel");
     }
 
@@ -270,7 +270,7 @@ const RouteMixin = Ember.Mixin.create({
     const nextPage    = this.incrementProperty('currentPage');
     const params      = this._buildParams(nextPage);
 
-    return this.store[this._storeFindMethod](modelName, params).then(
+    return this.get('store')[this._storeFindMethod](modelName, params).then(
       this._afterInfinityModel(this));
   },
 
