@@ -367,3 +367,40 @@ Will install the default `infinity-loader` template into your host app, at
 
 You can optionally pass in a jQuery style selector string.  If it's not a string,
 scrollable will default to using the window for the scroll binding.
+
+### Use ember-infinity with button
+
+You can use the route loading magic of Ember Infinity without using the InfinityLoader component.
+
+load-more-button.js:
+
+```
+export default Ember.Component.extend({
+  loadText: 'Load more',
+  loadedText: 'Loaded',
+  click: function(){    
+    this.sendAction();  
+  }
+});
+```
+
+load-more-button.hbs:
+
+```
+{{#if infinityModel.reachedInfinity}}
+  <button>{{loadedText}}</button>
+{{else}}
+  <button>{{loadText}}</button>
+{{/if}}  
+```
+template.hbs:
+
+```
+<ul class="test-list">
+{{#each model as |item|}}
+  <li>{{item.name}}</li>
+{{/each}}
+</ul>
+
+{{load-more-button action='infinityLoad' infinityModel=model}}
+```
