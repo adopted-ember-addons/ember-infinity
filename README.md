@@ -39,7 +39,7 @@ export default Ember.Route.extend(InfinityRoute, {
 
 Then, you'll need to add the Infinity Loader component to your template, like so:
 
-```html
+```hbs
 {{#each model as |product|}}
   <h1>{{product.name}}</h1>
   <h2>{{product.description}}</h2>
@@ -59,9 +59,9 @@ When the new records are loaded, they will automatically be pushed into the Mode
 
 By default, ember-infinity will send pagination parameters as part of a GET request as follows
 
-````
+```
 /items?per_page=5&page=1
-```` 
+```
 
 and will expect to recieve metadata in the response payload via a `total_pages` param in a `meta` object
 
@@ -98,9 +98,9 @@ export default Ember.Route.extend(InfinityRoute, {
 
 This will result in request query params being sent out as follows
 
-````
+```
 /items?per=5&pg=1
-```` 
+``` 
 
 and ember-infinity will be set up to parse the total number of pages from a JSON response like this:
 
@@ -185,8 +185,8 @@ export default Ember.Route.extend(InfinityRoute, {
 
 In the example above, the query url should look like this:
 
-```js
-    product?make=original&country=&category=shipped&per_page=12&page=1
+```
+  product?make=original&country=&category=shipped&per_page=12&page=1
 ```
 
 If the value of the bound parameter cannot be found, the parameter is not included in the request. Note that you cannot have
@@ -274,7 +274,7 @@ Triggered on the route when the infinityModel is fully loaded.
 * infinityModel
 
 
-```javascript
+```js
 import Ember from 'ember';
 import InfinityRoute from 'ember-infinity/mixins/route';
 
@@ -301,7 +301,7 @@ The `infinity-loader` component as some extra options to make working with it ea
 
 * **destroyOnInfinity**
 
-```html
+```hbs
 {{infinity-loader infinityModel=model destroyOnInfinity=true}}
 ```
 
@@ -310,7 +310,7 @@ from the page.
 
 * **developmentMode**
 
-```html
+```hbs
 {{infinity-loader infinityModel=model developmentMode=true}}
 ```
 
@@ -319,7 +319,7 @@ you can work on its appearance.
 
 * **loadingText & loadedText**
 
-```html
+```hbs
 {{infinity-loader infinityModel=model loadingText="Loading..." loadedText="Loaded!"}}
 ```
 
@@ -327,9 +327,9 @@ By default, the `infinity-loader` will just output a `span` showing its status.
 
 * **Providing a block**
 
-```html
+```hbs
 {{#infinity-loader infinityModel=model}}
-<img src="loading-spinner.gif" />
+  <img src="loading-spinner.gif" />
 {{/infinity-loader}}
 ```
 
@@ -361,7 +361,7 @@ Will install the default `infinity-loader` template into your host app, at
 
 * **scrollable**
 
-```html
+```hbs
 {{infinity-loader scrollable="#content"}}
 ```
 
