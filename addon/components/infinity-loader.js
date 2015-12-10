@@ -12,20 +12,27 @@ const InfinityLoaderComponent = Ember.Component.extend({
   destroyOnInfinity: false,
   developmentMode: false,
   scrollable: null,
+  buttonMode: false,
+  buttonClass: 'infinityButton',
+  buttonText: 'Load more',
 
   didInsertElement() {
     this._super(...arguments);
-    this._setupScrollable();
-    this.set('guid', Ember.guidFor(this));
-    this._bindEvent('scroll');
-    this._bindEvent('resize');
-    this._checkIfInView();
+    if(!this.buttonMode){
+      this._setupScrollable();
+      this.set('guid', Ember.guidFor(this));
+      this._bindEvent('scroll');
+      this._bindEvent('resize');
+      this._checkIfInView();
+    }
   },
 
   willDestroyElement() {
     this._super(...arguments);
-    this._unbindEvent('scroll');
-    this._unbindEvent('resize');
+    if(!this.buttonMode){
+      this._unbindEvent('scroll');
+      this._unbindEvent('resize');
+    }
   },
 
   _bindEvent(eventName) {
@@ -72,11 +79,22 @@ const InfinityLoaderComponent = Ember.Component.extend({
     if (this.get('infinityModel.reachedInfinity') && this.get('destroyOnInfinity')) {
       this.destroy();
     }
+    if (this.get('infinityModel.reachedInfinity') && this.get('buttonMode')){
+      this.set('buttonText', this.get('loadedText'));
+    }
   }),
 
   infinityModelPushed: Ember.observer('infinityModel.length', function() {
-    Ember.run.scheduleOnce('afterRender', this, this._checkIfInView);
-  })
+    if(!this.buttonMode){
+      Ember.run.scheduleOnce('afterRender', this, this._checkIfInView);
+    }
+  }),
+
+  actions: {
+    loadMore: function(){
+      this.sendAction('loadMoreAction');
+    }
+  }
 });
 
 if (emberVersionIs('lessThan', '1.13.0')) {

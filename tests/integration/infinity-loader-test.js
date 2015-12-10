@@ -28,3 +28,14 @@ test('it yields to the block if given', function(assert) {
               `);
   assert.equal(this.$('.infinity-loader > span').text(), "My custom block");
 });
+
+test('it renders button for buttonMode true', function(assert) {
+  assert.expect(1);
+  this.send = function () {};
+  this.on('infinityLoad', function () {});
+
+  this.render(hbs`
+              {{infinity-loader buttonMode=true}}
+              `);
+  assert.equal(this.$('.infinity-loader > button').text(), "Load more");
+});

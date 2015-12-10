@@ -1,9 +1,13 @@
 {{#if hasBlock}}
   {{yield}}
 {{else}}
-  {{#if infinityModel.reachedInfinity}}
-    <span>{{loadedText}}</span>
+  {{#if buttonMode}}
+    <button class={{buttonClass}} {{action 'loadMore'}}>{{buttonText}}</button>
   {{else}}
-    <span>{{loadingText}}</span>
+    {{#if infinityModel.reachedInfinity}}
+      <span>{{loadedText}}</span>
+    {{else}}
+      <span>{{loadingText}}</span>
+    {{/if}}
   {{/if}}
 {{/if}}
