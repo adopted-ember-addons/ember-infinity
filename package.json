@@ -41,10 +41,10 @@
     "ember-addon"
   ],
   "dependencies": {
-    "ember-version-is": "0.0.3",
     "ember-cli-babel": "^5.1.3",
-    "ember-cli-htmlbars": "0.7.9",
-    "ember-cli-version-checker": "^1.0.2"
+    "ember-cli-htmlbars": "^1.0.1",
+    "ember-cli-version-checker": "^1.0.2",
+    "ember-version-is": "0.0.3"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config",
