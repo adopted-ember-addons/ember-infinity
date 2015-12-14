@@ -374,7 +374,7 @@ You can use the route loading magic of Ember Infinity without using the Infinity
 
 load-more-button.js:
 
-```
+```js
 export default Ember.Component.extend({
   loadText: 'Load more',
   loadedText: 'Loaded',
@@ -386,7 +386,7 @@ export default Ember.Component.extend({
 
 load-more-button.hbs:
 
-```
+```hbs
 {{#if infinityModel.reachedInfinity}}
   <button>{{loadedText}}</button>
 {{else}}
@@ -395,7 +395,7 @@ load-more-button.hbs:
 ```
 template.hbs:
 
-```
+```hbs
 <ul class="test-list">
 {{#each model as |item|}}
   <li>{{item.name}}</li>
