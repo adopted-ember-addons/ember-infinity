@@ -249,8 +249,14 @@ const RouteMixin = Ember.Mixin.create({
 
         return newObjects;
       },
-      () => {
-        throw new Ember.Error("Ember Infinity: Could not fetch Infinity Model. Please check your serverside configuration.");
+      (ex) => {
+        var errorMessage;
+        if (typeof(ex) === 'string'){
+          errorMessage = ex;
+        } else {
+          errorMessage = (ex.message || ex.responseText || 'undefined error');
+        }
+        throw new Ember.Error("Ember Infinity: Could not fetch Infinity Model. Error: " + errorMessage);
       }
     )
     .finally(() => {

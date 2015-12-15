@@ -500,6 +500,21 @@ test('it resolves a promise returned from afterInfinityModel', function (assert)
   this.assertAfterInfinityWorks(assert);
 });
 
+test('error "Could not fetch Infinity Model" should include RSVP rejection message', assert => {
+  var route = createRoute(['post'], {
+    store: {
+      query() {
+        return Ember.RSVP.reject(new Error("I don't like this API"));
+      }
+    }
+  });
+
+  return route.model().then(function() {
+      assert.ok(false, "promise should not be fulfilled");
+    })['catch'](function(err) {
+      assert.equal(err.message, "Ember Infinity: Could not fetch Infinity Model. Error: I don't like this API");
+    });
+});
 
 /*
  * Compatibility Tests
