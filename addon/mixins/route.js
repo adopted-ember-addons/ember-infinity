@@ -248,14 +248,10 @@ const RouteMixin = Ember.Mixin.create({
         this._nextPageLoaded(newObjects);
 
         return newObjects;
-      },
-      () => {
-        throw new Ember.Error("Ember Infinity: Could not fetch Infinity Model. Please check your serverside configuration.");
-      }
-    )
-    .finally(() => {
-      this.set('_loadingMore', false);
-    });
+      })
+      .finally(() => {
+        this.set('_loadingMore', false);
+      });
   },
 
   /**
