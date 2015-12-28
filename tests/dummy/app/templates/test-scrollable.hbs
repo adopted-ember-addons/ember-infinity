@@ -1,0 +1,15 @@
+<h2 id="posts-title">Listing Posts</h2>
+
+<ul id="test-list" class="test-list test-list-scrollable">
+  {{#each model as |post|}}
+    <li>{{post.name}}</li>
+  {{/each}}
+
+  {{infinity-loader
+    infinityModel=model
+    scrollable="#test-list"
+    triggerOffset=triggerOffset
+    loadingText="loading"
+    loadedText="loaded"
+  }}
+</ul>

@@ -12,6 +12,7 @@ const InfinityLoaderComponent = Ember.Component.extend({
   destroyOnInfinity: false,
   developmentMode: false,
   scrollable: null,
+  triggerOffset: 0,
 
   didInsertElement() {
     this._super(...arguments);
@@ -19,7 +20,7 @@ const InfinityLoaderComponent = Ember.Component.extend({
     this.set('guid', Ember.guidFor(this));
     this._bindEvent('scroll');
     this._bindEvent('resize');
-    this._checkIfInView();
+    this._loadMoreIfNeeded();
   },
 
   willDestroyElement() {
@@ -30,7 +31,7 @@ const InfinityLoaderComponent = Ember.Component.extend({
 
   _bindEvent(eventName) {
     this.get('_scrollable').on(`${eventName}.${this.get('guid')}`, () => {
-      Ember.run.debounce(this, this._checkIfInView, this.get('eventDebounce'));
+      Ember.run.debounce(this, this._loadMoreIfNeeded, this.get('eventDebounce'));
     });
   },
 
@@ -38,14 +39,32 @@ const InfinityLoaderComponent = Ember.Component.extend({
     this.get('_scrollable').off(`${eventName}.${this.get('guid')}`);
   },
 
-  _checkIfInView() {
-    var selfOffset       = this.$().offset().top;
-    var scrollable       = this.get("_scrollable");
-    var scrollableBottom = scrollable.height() + scrollable.scrollTop();
+  _selfOffset() {
+    if (this.get('_customScrollableIsDefined')) {
+      return this.$().position().top + this.get("_scrollable").scrollTop();
+    } else {
+      return this.$().offset().top;
+    }
+  },
 
-    var inView = selfOffset < scrollableBottom;
+  _bottomOfScrollableOffset() {
+    return this.get('_scrollable').height() + this.get("_scrollable").scrollTop();
+  },
 
-    if (inView && !this.get('developmentMode')) {
+  _triggerOffset() {
+    return this._selfOffset() - this.get('triggerOffset');
+  },
+
+  _shouldLoadMore() {
+    if (this.get('developmentMode')) {
+      return false;
+    }
+
+    return this._bottomOfScrollableOffset() > this._triggerOffset();
+  },
+
+  _loadMoreIfNeeded() {
+    if (this._shouldLoadMore()) {
       this.sendAction('loadMoreAction');
     }
   },
@@ -61,8 +80,10 @@ const InfinityLoaderComponent = Ember.Component.extend({
       } else {
         throw new Error("Ember Infinity: No scrollable element found for: " + scrollable);
       }
+      this.set('_customScrollableIsDefined', true);
     } else if (scrollable === undefined || scrollable === null) {
       this.set('_scrollable', Ember.$(window));
+      this.set('_customScrollableIsDefined', false);
     } else {
       throw new Error("Ember Infinity: Scrollable must either be a css selector string or left empty to default to window");
     }
@@ -75,7 +96,7 @@ const InfinityLoaderComponent = Ember.Component.extend({
   }),
 
   infinityModelPushed: Ember.observer('infinityModel.length', function() {
-    Ember.run.scheduleOnce('afterRender', this, this._checkIfInView);
+    Ember.run.scheduleOnce('afterRender', this, this._loadMoreIfNeeded);
   })
 });
 
