@@ -1,5 +1,31 @@
 # Change Log
 
+## [v0.2.1](https://github.com/hhff/ember-infinity/tree/v0.2.1) (2015-12-28)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.2.0...v0.2.1)
+
+**Closed issues:**
+
+- load data from nested url [\#124](https://github.com/hhff/ember-infinity/issues/124)
+- Infinity model allow skip-like pagination [\#122](https://github.com/hhff/ember-infinity/issues/122)
+- Where does `loadMoreAction` action get's handled? [\#118](https://github.com/hhff/ember-infinity/issues/118)
+- Uncaught Error: \<...\> had no action handler for: infinityLoad [\#117](https://github.com/hhff/ember-infinity/issues/117)
+- ember-cli-htmlbars is out of date [\#114](https://github.com/hhff/ember-infinity/issues/114)
+- Not Working With JSON API [\#109](https://github.com/hhff/ember-infinity/issues/109)
+- "Could not fetch Infinity Model" masks other errors [\#96](https://github.com/hhff/ember-infinity/issues/96)
+- Add README Instructions about building an Infinity Button Component [\#49](https://github.com/hhff/ember-infinity/issues/49)
+
+**Merged pull requests:**
+
+- Don't swallow errors when loading records [\#125](https://github.com/hhff/ember-infinity/pull/125) ([philipp-spiess](https://github.com/philipp-spiess))
+- Update README [\#121](https://github.com/hhff/ember-infinity/pull/121) ([ryanponce](https://github.com/ryanponce))
+- Update ember-qunit to fix build [\#119](https://github.com/hhff/ember-infinity/pull/119) ([anilmaurya](https://github.com/anilmaurya))
+- update htmlbars dependency [\#115](https://github.com/hhff/ember-infinity/pull/115) ([davidgoli](https://github.com/davidgoli))
+- Update README, add Infinity Button Component [\#113](https://github.com/hhff/ember-infinity/pull/113) ([anilmaurya](https://github.com/anilmaurya))
+- Update README [\#112](https://github.com/hhff/ember-infinity/pull/112) ([ryanponce](https://github.com/ryanponce))
+- Changed references to this.store in order to allow using the mixin inside components [\#108](https://github.com/hhff/ember-infinity/pull/108) ([mariuszzak](https://github.com/mariuszzak))
+- Improve tests [\#106](https://github.com/hhff/ember-infinity/pull/106) ([davidgoli](https://github.com/davidgoli))
+- Implemented triggerOffset property. [\#87](https://github.com/hhff/ember-infinity/pull/87) ([mariuszzak](https://github.com/mariuszzak))
+
 ## [v0.2.0](https://github.com/hhff/ember-infinity/tree/v0.2.0) (2015-11-25)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.2.0-beta.1...v0.2.0)
 
