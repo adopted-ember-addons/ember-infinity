@@ -368,6 +368,14 @@ Will install the default `infinity-loader` template into your host app, at
 You can optionally pass in a jQuery style selector string.  If it's not a string,
 scrollable will default to using the window for the scroll binding.
 
+* **triggerOffset**
+
+```hbs
+{{infinity-loader triggerOffset=offset}}
+```
+
+You can optionally pass an offset value.   This value will be used when calculating if the bottom of the scrollable has been reached.  
+
 ### Use ember-infinity with button
 
 You can use the route loading magic of Ember Infinity without using the InfinityLoader component.
