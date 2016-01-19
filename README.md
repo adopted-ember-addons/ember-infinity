@@ -249,6 +249,14 @@ afterInfinityModel(posts) {
 }
 ```
 
+afterInfinityModel should return either some kind of an ArrayProxy or a
+falsy value.  The returned value, when not falsy, will take the place of the
+resolved promise object.  In the case of a falsy value, the original
+promise result is used. So relating this to the examples above...
+In the first example, afterInfinityModel does not have an explicit return
+defined so the original posts promise result is used.  In the second example,
+the returned collection of authors is used.
+
 ### Event Hooks
 
 The route mixin also provides following event hooks:
