@@ -101,6 +101,31 @@ test('it should start loading more items when the scroll is on the very bottom '
   });
 });
 
+test('it should start loading more items when the scroll is on the very bottom ' +
+  'when triggerOffset is not set and our scrollable element is the window', assert => {
+  visit('/test-window-scrollable');
+
+  andThen(() => {
+    shouldBeItemsOnTheList(assert, 25);
+    infinityShouldNotBeReached(assert);
+    scrollTo(triggerOffset() - 100);
+  });
+
+  triggerEvent('ul', 'scroll');
+
+  andThen(() => {
+    shouldBeItemsOnTheList(assert, 25);
+    scrollTo(triggerOffset() + 100);
+  });
+
+  triggerEvent('ul', 'scroll');
+
+  andThen(() => {
+    shouldBeItemsOnTheList(assert, 50);
+    infinityShouldBeReached(assert);
+  });
+});
+
 test('it should start loading more items before the scroll is on the very bottom ' +
   'when triggerOffset is set', assert => {
   visit('/test-scrollable?triggerOffset=200');

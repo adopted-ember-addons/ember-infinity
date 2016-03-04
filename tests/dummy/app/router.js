@@ -10,6 +10,7 @@ Router.map(function() {
   this.route('demo-scrollable', { path: '/demo-scrollable' });
   this.route('home', { path: 'test' });
   this.route('test-scrollable', { path: '/test-scrollable' });
+  this.route('test-window-scrollable', { path: '/test-window-scrollable' });
   this.route('category', { path: '/category/:category' });
   this.resource('posts', function() {
     this.route('show', { path: '/:post' });
