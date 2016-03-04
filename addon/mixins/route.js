@@ -133,6 +133,14 @@ const RouteMixin = Ember.Mixin.create({
   }),
 
   /**
+    @private
+    @property _infinityModelId
+    @type Integer
+    @default 0
+  */
+  _infinityModelId: 0,
+
+  /**
    @private
    @method _infinityModel
    @return {DS.RecordArray} the model
@@ -169,7 +177,7 @@ const RouteMixin = Ember.Mixin.create({
     if (emberDataVersionIs('lessThan', '1.13.0')) {
       this.set('_storeFindMethod', 'find');
     }
-
+    this.incrementProperty('_infinityModelId');
     this.set('_infinityModelName', modelName);
 
     this._ensureCompatibility();
@@ -243,11 +251,14 @@ const RouteMixin = Ember.Mixin.create({
   _loadNextPage() {
     this.set('_loadingMore', true);
 
+    var infinityModelId = this.get('_infinityModelId');
     return this._requestNextPage()
       .then((newObjects) => {
-        this._nextPageLoaded(newObjects);
-
-        return newObjects;
+        if(this.get('_infinityModelId') === infinityModelId) {
+          return this._nextPageLoaded(newObjects);
+        } else {
+          return [];
+        }
       })
       .finally(() => {
         this.set('_loadingMore', false);
