@@ -165,12 +165,13 @@ test('it checks if in view after model is pushed', function(assert) {
 
   var done = assert.async();
   var count = 3;
+  var pushModelAsynchronously = () => {
+    Ember.run(pushModel);
+    if (!--count) {
+      done();
+    }
+  };
   for (var i = 0; i < 3; i++) {
-    setTimeout(() => {
-      Ember.run(pushModel);
-      if (!--count) {
-        done();
-      }
-    });
+    setTimeout(pushModelAsynchronously);
   }
 });
