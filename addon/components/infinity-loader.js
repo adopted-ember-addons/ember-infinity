@@ -56,7 +56,7 @@ const InfinityLoaderComponent = Ember.Component.extend({
   },
 
   _shouldLoadMore() {
-    if (this.get('developmentMode')) {
+    if (this.get('developmentMode') || this.isDestroying || this.isDestroyed) {
       return false;
     }
 
