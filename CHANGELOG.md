@@ -1,5 +1,40 @@
 # Change Log
 
+## [Unreleased](https://github.com/hhff/ember-infinity/tree/HEAD)
+
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.2...HEAD)
+
+**Closed issues:**
+
+- How to load two different infinity model on same page? [\#93](https://github.com/hhff/ember-infinity/issues/93)
+
+## [0.2.2](https://github.com/hhff/ember-infinity/tree/0.2.2) (2016-03-11)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.2.1...0.2.2)
+
+**Closed issues:**
+
+- TypeError: infinityModel.pushObjects is not a function [\#144](https://github.com/hhff/ember-infinity/issues/144)
+- Issue with cursor based pagination [\#140](https://github.com/hhff/ember-infinity/issues/140)
+- this.$\(\).offset\(\).top undefined at times [\#137](https://github.com/hhff/ember-infinity/issues/137)
+- How to use route mixin within component [\#136](https://github.com/hhff/ember-infinity/issues/136)
+- call view on infinityModelUpdate event [\#135](https://github.com/hhff/ember-infinity/issues/135)
+- Preferred method of handling server error [\#133](https://github.com/hhff/ember-infinity/issues/133)
+- Can we load it in reverse? [\#132](https://github.com/hhff/ember-infinity/issues/132)
+- Anyone have computed.sort success [\#131](https://github.com/hhff/ember-infinity/issues/131)
+- Issue using afterInfinityModel [\#123](https://github.com/hhff/ember-infinity/issues/123)
+- Ember 1.13.10 get\('content'\) vs toArrray\(\) [\#111](https://github.com/hhff/ember-infinity/issues/111)
+- Uncaught TypeError: Cannot read property 'offset' of undefined [\#100](https://github.com/hhff/ember-infinity/issues/100)
+- Add code coverage % changed to pull requests [\#65](https://github.com/hhff/ember-infinity/issues/65)
+
+**Merged pull requests:**
+
+- Prevent load more action when component is destroying or destroyed [\#145](https://github.com/hhff/ember-infinity/pull/145) ([ilucin](https://github.com/ilucin))
+- Fixed failing test `Don't make functions within a loop.` [\#143](https://github.com/hhff/ember-infinity/pull/143) ([mariuszzak](https://github.com/mariuszzak))
+- Update README.md with requirements for the return value from afterInfinityModel [\#130](https://github.com/hhff/ember-infinity/pull/130) ([chbonser](https://github.com/chbonser))
+- ember-cli 1.13.8 -\> 1.13.14 [\#129](https://github.com/hhff/ember-infinity/pull/129) ([john-kurkowski](https://github.com/john-kurkowski))
+- Pin jQuery to Ember.js compatible version [\#128](https://github.com/hhff/ember-infinity/pull/128) ([john-kurkowski](https://github.com/john-kurkowski))
+- Update README.md [\#127](https://github.com/hhff/ember-infinity/pull/127) ([albertovasquez](https://github.com/albertovasquez))
+
 ## [v0.2.1](https://github.com/hhff/ember-infinity/tree/v0.2.1) (2015-12-28)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.2.0...v0.2.1)
 
