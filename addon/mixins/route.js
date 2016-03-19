@@ -285,8 +285,14 @@ const RouteMixin = Ember.Mixin.create({
    */
   _buildParams(nextPage) {
     const pageParams = {};
-    pageParams[this.get('perPageParam')] = this.get('_perPage');
-    pageParams[this.get('pageParam')] = nextPage;
+
+    if(this.get('perPageParam')){
+      pageParams[this.get('perPageParam')] = this.get('_perPage');
+    }
+
+    if(this.get('pageParam')){
+      pageParams[this.get('pageParam')] = nextPage;
+    }
 
     const params = assign(pageParams, this.get('_extraParams'));
 
