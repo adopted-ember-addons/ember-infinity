@@ -130,6 +130,23 @@ test('it allows customizations of request params', assert => {
   callModelHook(route);
 });
 
+test('it skips request params when set to null', assert => {
+  var store = createMockStore(
+    EO({ items: [] }),
+    function (modelType, findQuery) {
+      assert.deepEqual(findQuery, {}, 'findQuery');
+  });
+
+  var route = createRoute(['item'], {
+    perPageParam: null,
+    pageParam: null,
+    store
+  });
+
+  callModelHook(route);
+});
+
+
 test('it allows customizations of meta parsing params', assert => {
   var store = createMockStore(EO({
     items: [{id: 1, name: 'Walter White'}],
