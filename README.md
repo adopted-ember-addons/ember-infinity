@@ -19,6 +19,8 @@ repo, but without using controllers, in preparation for Ember 2.0.
 
 Also:
 
+![Fastbootable](https://s3.amazonaws.com/f.cl.ly/items/392o0m1N0R2515091z25/ember-infinity.gif?v=13181cd7)
+
 ## Installation
 
 `ember install ember-infinity`
