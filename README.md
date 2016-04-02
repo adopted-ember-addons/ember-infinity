@@ -17,6 +17,8 @@ with the [Kaminari Gem](https://github.com/amatsuda/kaminari.git).
 Inspired by @bantic's [Ember Infinite Scroll](https://github.com/bantic/ember-infinite-scroll)
 repo, but without using controllers, in preparation for Ember 2.0.
 
+Also:
+
 ## Installation
 
 `ember install ember-infinity`
