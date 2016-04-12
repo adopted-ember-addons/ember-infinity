@@ -1,12 +1,16 @@
 # Change Log
 
-## [Unreleased](https://github.com/hhff/ember-infinity/tree/HEAD)
-
-[Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.2...HEAD)
+## [0.2.3](https://github.com/hhff/ember-infinity/tree/0.2.3) (2016-04-12)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.2...0.2.3)
 
 **Closed issues:**
 
+- will this work with ember 2.4? [\#152](https://github.com/hhff/ember-infinity/issues/152)
 - How to load two different infinity model on same page? [\#93](https://github.com/hhff/ember-infinity/issues/93)
+
+**Merged pull requests:**
+
+- Use Ember.assign over Ember.merge when possible [\#153](https://github.com/hhff/ember-infinity/pull/153) ([martndemus](https://github.com/martndemus))
 
 ## [0.2.2](https://github.com/hhff/ember-infinity/tree/0.2.2) (2016-03-11)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/v0.2.1...0.2.2)
