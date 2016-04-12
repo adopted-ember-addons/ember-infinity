@@ -4,6 +4,8 @@ import { module, test } from 'qunit';
 
 module('RouteMixin');
 
+const assign = Ember.assign || Ember.merge;
+
 let EO = Ember.Object.create.bind(Ember.Object);
 let EA = function (content, meta={}) {
   return Ember.ArrayProxy.create({ content: Ember.A(content), meta });
@@ -16,7 +18,7 @@ test('it works', assert => {
 });
 
 function createRoute(infinityModelArgs, routeProperties={}) {
-  var RouteObject = Ember.Route.extend(RouteMixin, Ember.merge(routeProperties, {
+  var RouteObject = Ember.Route.extend(RouteMixin, assign(routeProperties, {
     model() {
       return this.infinityModel(...infinityModelArgs);
     }

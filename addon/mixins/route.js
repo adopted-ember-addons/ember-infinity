@@ -2,6 +2,7 @@ import Ember from 'ember';
 import { emberDataVersionIs } from 'ember-version-is';
 
 const keys = Object.keys || Ember.keys;
+const assign = Ember.assign || Ember.merge;
 /**
   The Ember Infinity Route Mixin enables an application route to load paginated
   records for the route `model` as triggered by the controller (or Infinity Loader
@@ -174,7 +175,7 @@ const RouteMixin = Ember.Mixin.create({
 
     this._ensureCompatibility();
 
-    options = options ? Ember.merge({}, options) : {};
+    options = options ? assign({}, options) : {};
     const startingPage = options.startingPage === undefined ? 0 : options.startingPage-1;
 
     const perPage      = options.perPage || this.get('_perPage');
@@ -283,7 +284,7 @@ const RouteMixin = Ember.Mixin.create({
     pageParams[this.get('perPageParam')] = this.get('_perPage');
     pageParams[this.get('pageParam')] = nextPage;
 
-    const params = Ember.merge(pageParams, this.get('_extraParams'));
+    const params = assign(pageParams, this.get('_extraParams'));
 
     const boundParams = this.get('_boundParams');
     if (!Ember.isEmpty(boundParams)) {
