@@ -67,7 +67,7 @@ By default, ember-infinity will send pagination parameters as part of a GET requ
 /items?per_page=5&page=1
 ```
 
-and will expect to recieve metadata in the response payload via a `total_pages` param in a `meta` object
+and will expect to receive metadata in the response payload via a `total_pages` param in a `meta` object
 
 ```js
 {
