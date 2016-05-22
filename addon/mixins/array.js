@@ -93,10 +93,9 @@ const ArrayMixin = Ember.Mixin.create({
    */
   totalPagesParam: 'meta.total_pages',
 
-  actions: {
-    infinityLoad() {
-      this._infinityLoad();
-    }
+  
+  infinityLoad() {
+    this._infinityLoad();
   },
 
   /**
