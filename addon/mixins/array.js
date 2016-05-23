@@ -186,7 +186,10 @@ const ArrayMixin = Ember.Mixin.create({
       this.set('_boundParams', boundParams);
     }
 
-    return this._loadNextPage();
+    return this._loadNextPage().then(function(newObjects) {
+        this.set('content',newObjects);
+        return newObjects;
+    }.bind(this));
   },
 
   /**
@@ -221,7 +224,7 @@ const ArrayMixin = Ember.Mixin.create({
       return;
     }
 
-    this._loadNextPage().then((newObjects) => { this.set('content',newObjects)});
+    this._loadNextPage();
   },
 
   /**
