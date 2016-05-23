@@ -221,7 +221,7 @@ const ArrayMixin = Ember.Mixin.create({
       return;
     }
 
-    this._loadNextPage();
+    this._loadNextPage().then((newObjects) => { this.set('content',newObjects)});
   },
 
   /**
@@ -332,7 +332,7 @@ const ArrayMixin = Ember.Mixin.create({
     }
 
     this.set('_firstPageLoaded', true);
-    Ember.run.scheduleOnce('afterRender',this,this.updateInfinityModel,newObjects);
+    this._notifyInfinityModelUpdated(newObjects);
 
     const canLoadMore = this.get('_canLoadMore');
     infinityModel.set('reachedInfinity', !canLoadMore);
