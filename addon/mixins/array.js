@@ -317,7 +317,7 @@ const ArrayMixin = Ember.Mixin.create({
     if (this.get('_firstPageLoaded')) {
       if (typeof this.updateInfinityModel === 'function' &&
           (this.updateInfinityModel !==
-           Ember.Object.extend(RouteMixin).create().updateInfinityModel)) {
+           Ember.Object.extend(ArrayMixin).create().updateInfinityModel)) {
         Ember.deprecate("EmberInfinity.updateInfinityModel is deprecated. "+
                         "Please use EmberInfinity.afterInfinityModel.",
                         false,
