@@ -198,7 +198,6 @@ const ArrayMixin = Ember.Mixin.create({
   */
   _afterInfinityModel(_this) {
     return function(infinityModelPromiseResult) {
-      _this.set('content',infinityModelPromiseResult);
       if (typeof _this.afterInfinityModel === 'function') {
         let result = _this.afterInfinityModel(infinityModelPromiseResult);
         if (result) {
@@ -333,7 +332,7 @@ const ArrayMixin = Ember.Mixin.create({
     }
 
     this.set('_firstPageLoaded', true);
-    this._notifyInfinityModelUpdated(newObjects);
+    this.updateInfinityModel(newObjects);
 
     const canLoadMore = this.get('_canLoadMore');
     infinityModel.set('reachedInfinity', !canLoadMore);
