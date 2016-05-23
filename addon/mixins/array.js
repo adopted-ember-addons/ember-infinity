@@ -199,6 +199,7 @@ const ArrayMixin = Ember.Mixin.create({
   _afterInfinityModel(_this) {
     return function(infinityModelPromiseResult) {
       if (typeof _this.afterInfinityModel === 'function') {
+        _this.set('content',infinityModelPromiseResult);
         let result = _this.afterInfinityModel(infinityModelPromiseResult);
         if (result) {
           return result;
