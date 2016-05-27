@@ -13,12 +13,14 @@ const assign = Ember.assign || Ember.merge;
   @module ember-infinity/mixins/route
   @extends Ember.Mixin
 */
-const RouteMixin = Ember.Mixin.create(InfinityMixin,{
-  actions: {
-    infinityLoad() {
-      this.infinityLoad();
-    }
-  }
+const InfinityArrayMixin = Ember.Mixin.create(InfinityMixin,{
+  _modelPath: 'content',
+  infinityModel(modelName, options, boundParams) {
+    return this._super(modelName,options,boundParams).then(function(newObjects){
+      this.set(this.get('_modelPath'),newObjects);
+      return newObjects;
+    }.bind(this));
+  },
 });
 
-export default RouteMixin;
+export default InfinityArrayMixin;
