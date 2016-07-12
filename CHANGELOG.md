@@ -1,5 +1,30 @@
 # Change Log
 
+## [0.2.4](https://github.com/hhff/ember-infinity/tree/0.2.4) (2016-07-12)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.3...0.2.4)
+
+**Closed issues:**
+
+- Can it work without totalPages? [\#166](https://github.com/hhff/ember-infinity/issues/166)
+- ember-infinity demo as Ember Twiddle for presenting issues [\#165](https://github.com/hhff/ember-infinity/issues/165)
+- Introduction to ember-infinity on The Ember Show at Global Ember Meetup [\#162](https://github.com/hhff/ember-infinity/issues/162)
+- Component not updating when infinityModel.reachedInfinity [\#160](https://github.com/hhff/ember-infinity/issues/160)
+- How to load a hasMany relationship? [\#159](https://github.com/hhff/ember-infinity/issues/159)
+- Using offset parameter in backend request [\#157](https://github.com/hhff/ember-infinity/issues/157)
+- Infinity model and server side filtering [\#156](https://github.com/hhff/ember-infinity/issues/156)
+- strange behavior [\#155](https://github.com/hhff/ember-infinity/issues/155)
+- Adding without scroll action, Deleting records [\#154](https://github.com/hhff/ember-infinity/issues/154)
+- Using websockets to insert new records [\#149](https://github.com/hhff/ember-infinity/issues/149)
+- Pagination when the endpoint is not standard. [\#148](https://github.com/hhff/ember-infinity/issues/148)
+- Preserve scrolling position and model data when navigating from/to InfinityRoute [\#146](https://github.com/hhff/ember-infinity/issues/146)
+- Using skip / take instead of page / perPage [\#139](https://github.com/hhff/ember-infinity/issues/139)
+- Upgrade to be Fastboot-able [\#134](https://github.com/hhff/ember-infinity/issues/134)
+
+**Merged pull requests:**
+
+- Use new super format from init to avoid deprecation warnings [\#169](https://github.com/hhff/ember-infinity/pull/169) ([mdentremont](https://github.com/mdentremont))
+- Fix typo in README [\#158](https://github.com/hhff/ember-infinity/pull/158) ([mdentremont](https://github.com/mdentremont))
+
 ## [0.2.3](https://github.com/hhff/ember-infinity/tree/0.2.3) (2016-04-12)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.2...0.2.3)
 
