@@ -16,7 +16,9 @@ function generateFakeData(qty) {
 
 export default Ember.Route.extend(InfinityRoute, {
   init: function () {
-    this._super(...arguments);
+    if (this._super.init) {
+      this._super.init.apply(this, arguments);
+    }
     var fakeData = generateFakeData(104);
     this.set('pretender', new Pretender());
     this.get('pretender').get('/posts', request => {
