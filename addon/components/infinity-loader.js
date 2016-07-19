@@ -39,7 +39,7 @@ const InfinityLoaderComponent = Ember.Component.extend(InViewportMixin, {
     }
   },
 
-  loadedStatusDidChange: observer('infinityModel.reachedInfinity', 'destroyOnInfinity', function () {
+  destroyWhenReachedInfinity: observer('infinityModel.reachedInfinity', 'destroyOnInfinity', function () {
     if (this.get('infinityModel.reachedInfinity') && this.get('destroyOnInfinity')) {
       this.destroy();
     }
