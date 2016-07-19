@@ -81,14 +81,14 @@ and will expect to receive metadata in the response payload via a `total_pages` 
 }
 ```
 
-If you wish to customize some aspects of the JSON contract for pagination, you may do so via your routes. For example: 
+If you wish to customize some aspects of the JSON contract for pagination, you may do so via your routes. For example:
 
 ```js
 import Ember from 'ember';
 import InfinityRoute from "ember-infinity/mixins/route";
 
 export default Ember.Route.extend(InfinityRoute, {
-  
+
   perPageParam: "per",              // instead of "per_page"
   pageParam: "pg",                  // instead of "page"
   totalPagesParam: "meta.total",    // instead of "meta.total_pages"
@@ -104,7 +104,7 @@ This will result in request query params being sent out as follows
 
 ```
 /items?per=5&pg=1
-``` 
+```
 
 and ember-infinity will be set up to parse the total number of pages from a JSON response like this:
 
@@ -166,8 +166,8 @@ return this.infinityModel("product", { perPage: 12, startingPage: 1,
                                        category: "furniture" });
 ```
 
-Moreover, you can optionally pass in an object of bound parameters as a third option to `infinityModel` to further 
-customize the request to the backend. The values of the contained parameters will be looked up against the route 
+Moreover, you can optionally pass in an object of bound parameters as a third option to `infinityModel` to further
+customize the request to the backend. The values of the contained parameters will be looked up against the route
 properties and the respective values will be included in the request:
 
 ```js
@@ -371,15 +371,6 @@ component.
 
 Will install the default `infinity-loader` template into your host app, at
 `app/templates/components/infinity-loader`.
-
-* **scrollable**
-
-```hbs
-{{infinity-loader scrollable="#content"}}
-```
-
-You can optionally pass in a jQuery style selector string.  If it's not a string,
-scrollable will default to using the window for the scroll binding.
 
 * **triggerOffset**
 
