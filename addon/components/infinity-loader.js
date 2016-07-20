@@ -23,7 +23,10 @@ const InfinityLoaderComponent = Ember.Component.extend(InViewportMixin, {
     return guidFor(this);
   }).readOnly(),
 
-  setupViewportOptions: on('didInsertElement', function() {
+  didInsertElement() {
+    this._super(...arguments);
+
+    // Override viewport options
     this.setProperties({
       viewportSpy: true,
       viewportTolerance: {
@@ -33,7 +36,7 @@ const InfinityLoaderComponent = Ember.Component.extend(InViewportMixin, {
         right  : 0
       }
     });
-  }),
+  },
 
   didEnterViewport() {
     if(!this.get('infinityModel.reachedInfinity') && !this.get('developmentMode')) {
