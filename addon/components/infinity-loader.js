@@ -3,7 +3,6 @@ import emberVersionIs from 'ember-version-is';
 import InViewportMixin from 'ember-in-viewport';
 
 const {
-  on,
   guidFor,
   observer,
   computed
