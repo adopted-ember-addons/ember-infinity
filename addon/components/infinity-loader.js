@@ -3,14 +3,15 @@ import emberVersionIs from 'ember-version-is';
 import InViewportMixin from 'ember-in-viewport';
 
 const {
+  on,
   guidFor,
-  observer
+  observer,
+  computed
 } = Ember;
 
 const InfinityLoaderComponent = Ember.Component.extend(InViewportMixin, {
   classNames: ['infinity-loader'],
   classNameBindings: ['infinityModel.reachedInfinity', 'viewportEntered:in-viewport'],
-  guid: null,
   loadMoreAction: 'infinityLoad',
   loadingText: 'Loading Infinite Model...',
   loadedText: 'Infinite Model Entirely Loaded.',
@@ -18,11 +19,12 @@ const InfinityLoaderComponent = Ember.Component.extend(InViewportMixin, {
   developmentMode: false,
   triggerOffset: 0,
 
-  didInsertElement() {
-    this._super(...arguments);
+  guid: computed(function() {
+    return guidFor(this);
+  }).readOnly(),
 
+  setupViewportOptions: on('didInsertElement', function() {
     this.setProperties({
-      guid: guidFor(this),
       viewportSpy: true,
       viewportTolerance: {
         bottom : this.get('triggerOffset'),
@@ -31,7 +33,7 @@ const InfinityLoaderComponent = Ember.Component.extend(InViewportMixin, {
         right  : 0
       }
     });
-  },
+  }),
 
   didEnterViewport() {
     if(!this.get('infinityModel.reachedInfinity') && !this.get('developmentMode')) {
