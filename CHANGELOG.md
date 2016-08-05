@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.2.5](https://github.com/hhff/ember-infinity/tree/0.2.5) (2016-08-05)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.4...0.2.5)
+
+**Closed issues:**
+
+- Dynamic change scrollable element [\#172](https://github.com/hhff/ember-infinity/issues/172)
+- Loader with custom scrollable never fires [\#126](https://github.com/hhff/ember-infinity/issues/126)
+
+**Merged pull requests:**
+
+- Fix loader with custom scrollable that never fires [\#173](https://github.com/hhff/ember-infinity/pull/173) ([jimmay5469](https://github.com/jimmay5469))
+
 ## [0.2.4](https://github.com/hhff/ember-infinity/tree/0.2.4) (2016-07-12)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.3...0.2.4)
 
