@@ -65,7 +65,7 @@ const InfinityLoaderComponent = Ember.Component.extend({
 
   _loadMoreIfNeeded() {
     if (this._shouldLoadMore()) {
-      this.sendAction('loadMoreAction');
+      this.sendAction('loadMoreAction', this.get('infinityModel'));
     }
   },
 

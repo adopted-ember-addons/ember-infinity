@@ -104,8 +104,12 @@ const RouteMixin = Ember.Mixin.create({
   totalPagesParam: 'meta.total_pages',
 
   actions: {
-    infinityLoad() {
-      this._infinityLoad();
+    infinityLoad(infinityModel) {
+      if (infinityModel === this._infinityModel()) {
+        this._infinityLoad();
+      } else {
+        return true;
+      }
     }
   },
 
