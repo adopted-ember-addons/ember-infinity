@@ -1,5 +1,18 @@
 # Change Log
 
+## [0.2.6](https://github.com/hhff/ember-infinity/tree/0.2.6) (2016-08-08)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.5...0.2.6)
+
+**Closed issues:**
+
+- Basic Usage [\#168](https://github.com/hhff/ember-infinity/issues/168)
+- Ember Infinity on 2 or more nested routes [\#150](https://github.com/hhff/ember-infinity/issues/150)
+- loadMoreAction fires prematurely [\#82](https://github.com/hhff/ember-infinity/issues/82)
+
+**Merged pull requests:**
+
+- Only infinityLoad for this route's infinityModel [\#174](https://github.com/hhff/ember-infinity/pull/174) ([jimmay5469](https://github.com/jimmay5469))
+
 ## [0.2.5](https://github.com/hhff/ember-infinity/tree/0.2.5) (2016-08-05)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.4...0.2.5)
 
