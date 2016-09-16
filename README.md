@@ -425,3 +425,67 @@ template.hbs:
 
 {{load-more-button action='infinityLoad' infinityModel=model}}
 ```
+
+### Using inside your own component 
+
+Note that this is NOT recommended as it's not been widely tested/used like this.
+
+However, if you wish to enter uncharted waters, this can be achieved as follows:
+
+Let's say you have a list of employees being loaded into your index route's model.
+
+app/routes/employees/index.js
+
+```js
+import Ember from 'ember';
+import InfinityRoute from "ember-infinity/mixins/route";
+
+export default Ember.Route.extend(InfinityRoute, {
+
+	model() {
+		return this.infinityModel("employee", { perPage: 10, startingPage: 1 });
+	},
+
+});
+```
+
+app/templates/employees/index.hbs
+
+```hbs
+{{employees-list employeesModel=model}}
+```
+
+Note that the above template is where you would normally put the infinity-loader itself. But you are up for a challenge and you want the data to be displayed inside a component:
+
+app/templates/components/employees-list.hbs
+
+```hbs
+<ul class="test-list">
+{{#each employeesModel as |employee|}}
+  <li>{{employee.name}}</li>
+{{/each}}
+</ul>
+{{infinityLoader infinityModel=employeesModel}}
+```
+
+app/components/employees-list.js
+
+```js
+import Ember from 'ember';
+
+export default Ember.Component.extend({
+
+  infinityLoadAction: 'infinityLoad',
+  
+  actions: {
+    infinityLoad(employeesModel) {
+      this.sendAction('infinityLoadAction', employeesModel);
+    }
+  }
+  
+});
+```
+
+Note that the event `infinityLoad` is fired automatically when you have the loader in your template and you scroll to the page limit. You just have to 'catch and throw' it like above. If you comment out the above action, and check the console you will see the error that no action was found to handle the event.
+
+Also, note that you don't need to add any code in your route to catch it, because the `infinity-loader` will catch the `infinityLoadAction` that you throw from the component.
