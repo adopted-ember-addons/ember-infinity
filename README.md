@@ -81,14 +81,14 @@ and will expect to receive metadata in the response payload via a `total_pages` 
 }
 ```
 
-If you wish to customize some aspects of the JSON contract for pagination, you may do so via your routes. For example: 
+If you wish to customize some aspects of the JSON contract for pagination, you may do so via your routes. For example:
 
 ```js
 import Ember from 'ember';
 import InfinityRoute from "ember-infinity/mixins/route";
 
 export default Ember.Route.extend(InfinityRoute, {
-  
+
   perPageParam: "per",              // instead of "per_page"
   pageParam: "pg",                  // instead of "page"
   totalPagesParam: "meta.total",    // instead of "meta.total_pages"
@@ -104,7 +104,7 @@ This will result in request query params being sent out as follows
 
 ```
 /items?per=5&pg=1
-``` 
+```
 
 and ember-infinity will be set up to parse the total number of pages from a JSON response like this:
 
@@ -166,8 +166,8 @@ return this.infinityModel("product", { perPage: 12, startingPage: 1,
                                        category: "furniture" });
 ```
 
-Moreover, you can optionally pass in an object of bound parameters as a third option to `infinityModel` to further 
-customize the request to the backend. The values of the contained parameters will be looked up against the route 
+Moreover, you can optionally pass in an object of bound parameters as a third option to `infinityModel` to further
+customize the request to the backend. The values of the contained parameters will be looked up against the route
 properties and the respective values will be included in the request:
 
 ```js
@@ -220,6 +220,22 @@ setupController(controller, model) {
 }
 ```
 
+* **newObjectsAddMethod**
+
+`newObjectsAddMethod` is optional parameter for situations that you want to change
+the method used to append new objects to the list. Default value is `pushObjects`. You can use
+for example `unshiftObjects` to add objects to the beginning of the list.
+
+```js
+model() {
+  return this.infinityModel("product", {
+    perPage: 12,
+    startingPage: 1,
+    newObjectsAddMethod: 'unshiftObjects'
+  });
+}
+```
+
 ### afterInfinityModel
 
 In some cases, a single call to your data store isn't enough. The afterInfinityModel
@@ -261,6 +277,14 @@ In the case of a falsy value, the original promise result is used.
 So relating this to the examples above... In the first example, afterInfinityModel
 does not have an explicit return defined so the original posts promise result is used.
 In the second example, the returned collection of authors is used.
+
+#### Inverting the order of newObjects
+
+```javascript
+afterInfinityModel(newObjects) {
+  return newObjects.content.reverse();
+}
+```
 
 ### Event Hooks
 
@@ -388,6 +412,16 @@ scrollable will default to using the window for the scroll binding.
 ```
 
 You can optionally pass an offset value.   This value will be used when calculating if the bottom of the scrollable has been reached.  
+
+* **reverse**
+
+```hbs
+{{infinity-loader reverse=true}}
+```
+
+You can optionally reverse the infinity-loader in case you want to scroll up to add new objects instead of scroll down.
+
+By changing this behavior, you probably want to new objects be added at the beginning of the list and invert the order of new objects.
 
 ### Use ember-infinity with button
 
