@@ -25,11 +25,18 @@ const RouteMixin = Ember.Mixin.create({
 
   /**
     @private
-    @property currentPage
+    @property firstPage
     @type Integer
     @default 0
   */
-  firstPage: Infinity,
+  firstPage: 0,
+
+  /**
+    @private
+    @property lastPage
+    @type Integer
+    @default 0
+  */
   lastPage: 0,
 
   /**
@@ -138,6 +145,12 @@ const RouteMixin = Ember.Mixin.create({
     return (totalPages && lastPage !== undefined) ? (lastPage < totalPages) : false;
   }),
 
+  /**
+    @private
+    @property _canLoadMorePrevious
+    @type Boolean
+    @default false
+  */
   _canLoadPrevious: Ember.computed('firstPage', function() {
     const firstPage = this.get('firstPage');
 
