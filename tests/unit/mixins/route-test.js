@@ -148,6 +148,46 @@ test('it allows customizations of meta parsing params', assert => {
   assert.equal(route.get('_totalPages'), 22, '_totalPages');
 });
 
+
+test("It loads previous page when loadPrevious parameter is set to true", function(assert) {
+  var store =  createMockStore(EO({
+      items: [
+        {id: 1, name: 'Test'},
+        {id: 2, name: 'Test 2'}
+      ],
+      unshiftObjects: Ember.K,
+      meta: {
+        total_pages: 2
+      }
+    }));
+
+  var route = createRoute(['item', { startingPage: 2, perPage: 1 }],
+    { store: store }
+  );
+
+  callModelHook(route);
+
+  var loadMore = (loadPrevious) => {
+    Ember.run(() => {
+      route._infinityLoad(loadPrevious);
+    });
+  };
+
+  assert.expect(6);
+
+  loadMore();
+
+  assert.ok(route.get('_canLoadPrevious'), 'can load previous');
+  assert.equal(route.get('firstPage'), 2, 'firstPage');
+  assert.equal(route.get('lastPage'), 2, 'lastPage');
+
+  loadMore(true);
+
+  assert.notOk(route.get('_canLoadPrevious'), 'can load previous');
+  assert.equal(route.get('firstPage'), 1, 'firstPage');
+  assert.equal(route.get('lastPage'), 2, 'lastPage');
+});
+
 module('RouteMixin - reaching the end', {
   setup() {
     this.store = createMockStore(EO({
