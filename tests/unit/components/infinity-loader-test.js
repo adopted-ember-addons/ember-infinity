@@ -10,15 +10,6 @@ moduleForComponent('infinity-loader', {
   unit: true
 });
 
-test('it renders', function(assert) {
-  assert.expect(2);
-
-  var component = this.subject();
-  assert.equal(component._state, 'preRender');
-  this.render();
-  assert.equal(component._state, 'inDOM');
-});
-
 test('it will not destroy on load unless set', function(assert) {
   assert.expect(3);
 
@@ -83,69 +74,6 @@ test('it uses the provided scrollable element', function(assert) {
   this.render();
   var scrollable = component.get("_scrollable");
   assert.equal(scrollable[0], $("#content")[0]);
-});
-
-test('it throws error when scrollable element is not found', function(assert) {
-  assert.expect(1);
-
-  assert.throws(function() {
-    this.render();
-  }, Error, "Should raise error");
-});
-
-test('it throws error when multiple scrollable elements are found', function(assert) {
-  assert.expect(1);
-  $(document.body).append("<div/><div/>");
-
-  assert.throws(function() {
-    this.render();
-  }, Error, "Should raise error");
-});
-
-test('it throws error when scrollable is something other than nothing or string', function(assert) {
-  assert.expect(1);
-  $(document.body).append("<div id='content'/>");
-  this.subject({scrollable: $("#content")});
-
-  assert.throws(function() {
-    this.render();
-  }, Error, "Should raise error");
-});
-
-test('it checks if in view on the scroll event', function(assert) {
-  assert.expect(1);
-
-  var component = this.subject();
-
-  var isAfterRender = false;
-  component.set('_loadMoreIfNeeded', function() {
-    if (isAfterRender) {
-      assert.ok(true);
-    }
-  });
-
-  this.render();
-
-  isAfterRender = true;
-  $(window).trigger('scroll');
-});
-
-test('it checks if in view on the resize event', function(assert) {
-  assert.expect(1);
-
-  var component = this.subject();
-
-  var isAfterRender = false;
-  component.set('_loadMoreIfNeeded', function() {
-    if (isAfterRender) {
-      assert.ok(true);
-    }
-  });
-
-  this.render();
-
-  isAfterRender = true;
-  $(window).trigger('resize');
 });
 
 test('it checks if in view after model is pushed', function(assert) {
