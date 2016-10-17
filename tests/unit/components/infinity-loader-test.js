@@ -88,6 +88,7 @@ test('it uses the provided scrollable element', function(assert) {
 test('it throws error when scrollable element is not found', function(assert) {
   assert.expect(1);
 
+  this.subject({scrollable: "#nonexistent"});
   assert.throws(function() {
     this.render();
   }, Error, "Should raise error");
@@ -95,8 +96,10 @@ test('it throws error when scrollable element is not found', function(assert) {
 
 test('it throws error when multiple scrollable elements are found', function(assert) {
   assert.expect(1);
-  $(document.body).append("<div/><div/>");
+  $(document.body).append("<div class='hello'><div/>");
+  $(document.body).append("<div class='hello'><div/>");
 
+  this.subject({scrollable: ".hello"});
   assert.throws(function() {
     this.render();
   }, Error, "Should raise error");
@@ -114,6 +117,7 @@ test('it throws error when scrollable is something other than nothing or string'
 
 test('it checks if in view on the scroll event', function(assert) {
   assert.expect(1);
+  var done = assert.async();
 
   var component = this.subject();
 
@@ -121,6 +125,7 @@ test('it checks if in view on the scroll event', function(assert) {
   component.set('_loadMoreIfNeeded', function() {
     if (isAfterRender) {
       assert.ok(true);
+      done();
     }
   });
 
@@ -132,6 +137,7 @@ test('it checks if in view on the scroll event', function(assert) {
 
 test('it checks if in view on the resize event', function(assert) {
   assert.expect(1);
+  var done = assert.async();
 
   var component = this.subject();
 
@@ -139,6 +145,7 @@ test('it checks if in view on the resize event', function(assert) {
   component.set('_loadMoreIfNeeded', function() {
     if (isAfterRender) {
       assert.ok(true);
+      done();
     }
   });
 

@@ -36,7 +36,10 @@ const InfinityLoaderComponent = Ember.Component.extend({
   },
 
   _unbindEvent(eventName) {
-    this.get('_scrollable').off(`${eventName}.${this.get('guid')}`);
+    let scrollable = this.get('_scrollable');
+    if (scrollable) {
+      scrollable.off(`${eventName}.${this.get('guid')}`);
+    }
   },
 
   _selfOffset() {
