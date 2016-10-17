@@ -42,7 +42,10 @@ test('it will not destroy on load unless set', function(assert) {
     component.set('destroyOnInfinity', true);
   });
 
-  assert.equal(component._state, 'destroying');
+  // In Ember 2.8, there was an optimization that meant tearing
+  // down views would return them to the preRender state, ready
+  // to be reinserted. See here: https://github.com/emberjs/ember.js/pull/13648#issuecomment-225334352
+  assert.notEqual(component._state, 'inDOM');
 });
 
 test('it changes text property', function(assert) {
