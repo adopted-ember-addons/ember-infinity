@@ -1,5 +1,22 @@
 # Change Log
 
+## [0.2.7](https://github.com/hhff/ember-infinity/tree/0.2.7) (2016-11-28)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.6...0.2.7)
+
+**Closed issues:**
+
+- Not working with multiple models. [\#193](https://github.com/hhff/ember-infinity/issues/193)
+- Doesn't work with RSVP? [\#192](https://github.com/hhff/ember-infinity/issues/192)
+- Doesn't load data [\#190](https://github.com/hhff/ember-infinity/issues/190)
+- "Calling set on destroyed object" [\#189](https://github.com/hhff/ember-infinity/issues/189)
+- Inside a component? [\#180](https://github.com/hhff/ember-infinity/issues/180)
+- Only semi-working out of the box - says Infinity Model Fully Loaded [\#179](https://github.com/hhff/ember-infinity/issues/179)
+
+**Merged pull requests:**
+
+- Ensures no FastBoot environment before loading more records [\#194](https://github.com/hhff/ember-infinity/pull/194) ([willviles](https://github.com/willviles))
+- Fix Ember Infinity Tests [\#187](https://github.com/hhff/ember-infinity/pull/187) ([hhff](https://github.com/hhff))
+
 ## [0.2.6](https://github.com/hhff/ember-infinity/tree/0.2.6) (2016-08-08)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.5...0.2.6)
 
