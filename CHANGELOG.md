@@ -1,5 +1,19 @@
 # Change Log
 
+## [0.2.8](https://github.com/hhff/ember-infinity/tree/0.2.8) (2017-01-03)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.7...0.2.8)
+
+**Closed issues:**
+
+- Won't load data, but fires all functions [\#199](https://github.com/hhff/ember-infinity/issues/199)
+- Release 0.2.7 needs published to NPM [\#198](https://github.com/hhff/ember-infinity/issues/198)
+- Option to use meta data from headers [\#197](https://github.com/hhff/ember-infinity/issues/197)
+- How to create a new record? [\#196](https://github.com/hhff/ember-infinity/issues/196)
+
+**Merged pull requests:**
+
+- Skip pagination parameters when set to null  [\#147](https://github.com/hhff/ember-infinity/pull/147) ([ShogunPanda](https://github.com/ShogunPanda))
+
 ## [0.2.7](https://github.com/hhff/ember-infinity/tree/0.2.7) (2016-11-28)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.6...0.2.7)
 
