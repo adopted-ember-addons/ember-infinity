@@ -299,10 +299,10 @@ export default Ember.Route.extend(InfinityRoute, {
     return this.infinityModel("product", { perPage: 12, startingPage: 1 });
   },
 
-  infinityModelUpdated(totalPages) {
+  infinityModelUpdated({ lastPageLoaded, totalPages, newObjects }) {
     Ember.Logger.debug('updated with more items');
   },
-  infinityModelLoaded(lastPageLoaded, totalPages, infinityModel) {
+  infinityModelLoaded({ totalPages }) {
     Ember.Logger.info('no more items to load');
   }
 }
