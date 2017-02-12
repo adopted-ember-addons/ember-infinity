@@ -119,6 +119,8 @@ and ember-infinity will be set up to parse the total number of pages from a JSON
 }
 ```
 
+You can also prevent the `per_page` or `page` parameters from being sent by setting `perPageParam` or `pageParam` to `null`, respectively.
+
 ### Cursor-based pagination
 
 If you are serving a continuously updating stream, it's helpful to keep track
