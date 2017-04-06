@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import DS from 'ember-data';
 import RouteMixin from 'ember-infinity/mixins/route';
 import { module, test } from 'qunit';
 

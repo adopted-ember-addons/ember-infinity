@@ -97,7 +97,7 @@ module.exports = {
     {
       name: 'ember-release',
       dependencies: {
-        ember: 'release',
+        ember: 'components/ember#release',
         'ember-data': 'release'
       }
     },
@@ -115,7 +115,7 @@ module.exports = {
     {
       name: 'ember-beta',
       dependencies: {
-        ember: 'beta',
+        ember: 'components/ember#beta',
         'ember-data': 'beta'
       },
       resolutions: {
@@ -126,7 +126,7 @@ module.exports = {
       name: 'ember-canary',
       dependencies: {
         ember: 'canary',
-        'ember-data': 'canary'
+        'ember-data': 'components/ember#canary'
       },
       resolutions: {
         ember: 'canary'
