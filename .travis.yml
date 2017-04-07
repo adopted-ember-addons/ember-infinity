@@ -1,7 +1,7 @@
 ---
 language: node_js
 node_js:
-  - "0.12"
+  - "4.2.6"
 
 sudo: false
 
@@ -16,7 +16,6 @@ env:
   - EMBER_TRY_SCENARIO=ember-beta
   - EMBER_TRY_SCENARIO=ember-canary
   - EMBER_TRY_SCENARIO=ember-default
-  - EMBER_TRY_SCENARIO=ember-canary
 
 matrix:
   fast_finish: true

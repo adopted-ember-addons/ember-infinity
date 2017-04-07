@@ -98,7 +98,7 @@ skip('it throws error when scrollable element is not found', function(assert) {
   }, Error, "Should raise error");
 });
 
-skip('scott it throws error when multiple scrollable elements are found', function(assert) {
+skip('it throws error when multiple scrollable elements are found', function(assert) {
   assert.expect(1);
   $(document.body).append("<div class='hello'><div/>");
   $(document.body).append("<div class='hello'><div/>");
