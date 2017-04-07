@@ -56,12 +56,11 @@ function callModelHook(route) {
 test('it can not use infinityModel without Ember Data Store', assert => {
   var route = createRoute(['post'], {store: null});
 
-  assert.throws(() => {
+  try {
     route.model();
-  },
-    /store is not available to infinityModel/,
-    'It throws if a store property is not available to the Route.'
-  );
+  } catch(e) {
+    assert.equal(e.message, 'Ember Infinity: Ember Data store is not available to infinityModel');
+  }
 });
 
 test('it can not use infinityModel without the Store Property having the appropriate finder method', assert => {
@@ -73,12 +72,11 @@ test('it can not use infinityModel without the Store Property having the appropr
     }
   });
 
-  assert.throws(() => {
+  try {
     route.model();
-  },
-    /store is not available to infinityModel/,
-    'It throws if the resolved store finder method is not available on the store.'
-  );
+  } catch(e) {
+    assert.equal(e.message, 'Ember Infinity: Ember Data store is not available to infinityModel');
+  }
 });
 
 test('it can not use infinityModel without a Model Name', assert => {
@@ -87,13 +85,12 @@ test('it can not use infinityModel without a Model Name', assert => {
       query() {}
     }
   });
-
-  assert.throws(() => {
+ 
+  try {
     route.model();
-  },
-    /must pass a Model Name to infinityModel/,
-    'It throws unless you pass a model name to the infinityModel function.'
-  );
+  } catch(e) {
+    assert.equal(e.message, 'Ember Infinity: You must pass a Model Name to infinityModel');
+  }
 });
 
 test('it sets state before it reaches the end', assert => {
