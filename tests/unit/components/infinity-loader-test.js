@@ -93,9 +93,11 @@ skip('it throws error when scrollable element is not found', function(assert) {
   assert.expect(1);
 
   this.subject({scrollable: "#nonexistent"});
-  assert.throws(function() {
-    this.render();
-  }, Error, "Should raise error");
+  try {
+    this.$();
+  } catch(e) {
+    return e.message.indexOf('Ember Infinity: No scrollable element found for') > -1;
+  }
 });
 
 skip('it throws error when multiple scrollable elements are found', function(assert) {

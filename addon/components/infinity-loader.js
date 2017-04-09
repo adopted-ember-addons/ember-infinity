@@ -79,16 +79,16 @@ const InfinityLoaderComponent = Ember.Component.extend({
       if (items.length === 1) {
         this.set('_scrollable', items.eq(0));
       } else if (items.length > 1) {
-        throw new Error("Ember Infinity: Multiple scrollable elements found for: " + scrollable);
+        throw new Ember.Error("Ember Infinity: Multiple scrollable elements found for: " + scrollable);
       } else {
-        throw new Error("Ember Infinity: No scrollable element found for: " + scrollable);
+        throw new Ember.Error("Ember Infinity: No scrollable element found for: " + scrollable);
       }
       this.set('_customScrollableIsDefined', true);
     } else if (scrollable === undefined || scrollable === null) {
       this.set('_scrollable', Ember.$(window));
       this.set('_customScrollableIsDefined', false);
     } else {
-      throw new Error("Ember Infinity: Scrollable must either be a css selector string or left empty to default to window");
+      throw new Ember.Error("Ember Infinity: Scrollable must either be a css selector string or left empty to default to window");
     }
   },
 
