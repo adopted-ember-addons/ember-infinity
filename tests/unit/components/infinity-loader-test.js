@@ -91,10 +91,12 @@ test('it uses the provided scrollable element', function(assert) {
 test('it throws error when scrollable element is not found', function(assert) {
   assert.expect(1);
 
-  this.subject({scrollable: "#nonexistent"});
-  assert.throws(function() {
-    this.render();
-  }, Error, "Should raise error");
+  const component = this.subject({scrollable: "#nonexistent"});
+  try {
+    component.didInsertElement();
+  } catch(e) {
+    return assert.ok(e.message.indexOf('Ember Infinity: No scrollable element found for') > -1);
+  }
 });
 
 test('it throws error when multiple scrollable elements are found', function(assert) {
@@ -102,20 +104,24 @@ test('it throws error when multiple scrollable elements are found', function(ass
   $(document.body).append("<div class='hello'><div/>");
   $(document.body).append("<div class='hello'><div/>");
 
-  this.subject({scrollable: ".hello"});
-  assert.throws(function() {
-    this.render();
-  }, Error, "Should raise error");
+  const component = this.subject({scrollable: ".hello"});
+  try {
+    component.didInsertElement();
+  } catch(e) {
+    return assert.ok(e.message.indexOf('Ember Infinity: Multiple scrollable elements found for') > -1);
+  }
 });
 
 test('it throws error when scrollable is something other than nothing or string', function(assert) {
   assert.expect(1);
   $(document.body).append("<div id='content'/>");
-  this.subject({scrollable: $("#content")});
+  const component = this.subject({scrollable: $("#content")});
 
-  assert.throws(function() {
-    this.render();
-  }, Error, "Should raise error");
+  try {
+    component.didInsertElement();
+  } catch(e) {
+    return assert.ok(e.message.indexOf('Ember Infinity: Scrollable must either be a css selector string or left empty to default to window') > -1);
+  }
 });
 
 test('it checks if in view on the scroll event', function(assert) {

@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import DS from 'ember-data';
 import RouteMixin from 'ember-infinity/mixins/route';
 import { module, test } from 'qunit';
 
@@ -6,7 +7,6 @@ module('RouteMixin');
 
 const assign = Ember.assign || Ember.merge;
 
-let EO = Ember.Object.create.bind(Ember.Object);
 let EA = function (content, meta={}) {
   return Ember.ArrayProxy.create({ content: Ember.A(content), meta });
 };
@@ -55,12 +55,11 @@ function callModelHook(route) {
 test('it can not use infinityModel without Ember Data Store', assert => {
   var route = createRoute(['post'], {store: null});
 
-  assert.throws(() => {
+  try {
     route.model();
-  },
-    /store is not available to infinityModel/,
-    'It throws if a store property is not available to the Route.'
-  );
+  } catch(e) {
+    assert.equal(e.message, 'Ember Infinity: Ember Data store is not available to infinityModel');
+  }
 });
 
 test('it can not use infinityModel without the Store Property having the appropriate finder method', assert => {
@@ -72,12 +71,11 @@ test('it can not use infinityModel without the Store Property having the appropr
     }
   });
 
-  assert.throws(() => {
+  try {
     route.model();
-  },
-    /store is not available to infinityModel/,
-    'It throws if the resolved store finder method is not available on the store.'
-  );
+  } catch(e) {
+    assert.equal(e.message, 'Ember Infinity: Ember Data store is not available to infinityModel');
+  }
 });
 
 test('it can not use infinityModel without a Model Name', assert => {
@@ -86,18 +84,17 @@ test('it can not use infinityModel without a Model Name', assert => {
       query() {}
     }
   });
-
-  assert.throws(() => {
+ 
+  try {
     route.model();
-  },
-    /must pass a Model Name to infinityModel/,
-    'It throws unless you pass a model name to the infinityModel function.'
-  );
+  } catch(e) {
+    assert.equal(e.message, 'Ember Infinity: You must pass a Model Name to infinityModel');
+  }
 });
 
 test('it sets state before it reaches the end', assert => {
   var route = createRoute(['item'], {
-    store: createMockStore(EO({
+    store: createMockStore(Ember.Object.create({
       items: [{id: 1, name: 'Test'}],
       meta: {
         total_pages: 31
@@ -116,7 +113,7 @@ test('it sets state before it reaches the end', assert => {
 
 test('it allows customizations of request params', assert => {
   var store = createMockStore(
-    EO({ items: [] }),
+    Ember.Object.create({ items: [] }),
     function (modelType, findQuery) {
       assert.deepEqual(findQuery, {per: 25, p: 1}, 'findQuery');
   });
@@ -132,7 +129,7 @@ test('it allows customizations of request params', assert => {
 
 test('it skips request params when set to null', assert => {
   var store = createMockStore(
-    EO({ items: [] }),
+    Ember.Object.create({ items: [] }),
     function (modelType, findQuery) {
       assert.deepEqual(findQuery, {}, 'findQuery');
   });
@@ -148,7 +145,7 @@ test('it skips request params when set to null', assert => {
 
 
 test('it allows customizations of meta parsing params', assert => {
-  var store = createMockStore(EO({
+  var store = createMockStore(Ember.Object.create({
     items: [{id: 1, name: 'Walter White'}],
     pagination: {
       total: 22
@@ -167,7 +164,7 @@ test('it allows customizations of meta parsing params', assert => {
 
 module('RouteMixin - reaching the end', {
   setup() {
-    this.store = createMockStore(EO({
+    this.store = createMockStore(Ember.Object.create({
       items: [{id: 1, name: 'Test'}],
       pushObjects: Ember.K,
       meta: {
@@ -264,7 +261,7 @@ test("It resets the currentPage when the model hook is called again", function (
 
 module('RouteMixin - loading more data', {
   setup(assert) {
-    var store = createMockStore(EO({
+    var store = createMockStore(Ember.Object.create({
         items: [{id: 1, name: 'Test'}, {id: 2, name: 'Test 2'}],
         pushObjects: Ember.K,
         meta: {
@@ -315,7 +312,7 @@ test('it uses overridden params when reaching the end', function (assert) {
 
 module('RouteMixin - bound params', {
   setup(assert) {
-    var store = createMockStore(EO({
+    var store = createMockStore(Ember.Object.create({
         items: [
           {id: 1, name: 'Test'},
           {id: 2, name: 'New Test'}
@@ -460,7 +457,7 @@ test('it allows manual invocations of updateInfinityModel', function (assert) {
 
 test('It allows to set startingPage as 0', assert => {
   var route = createRoute(['item', {startingPage: 0}], {
-    store: createMockStore(EO({
+    store: createMockStore(Ember.Object.create({
       items: [{id: 1, name: 'Test'}],
       meta: {
         total_pages: 1

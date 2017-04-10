@@ -11,7 +11,7 @@ Router.map(function() {
   this.route('home', { path: 'test' });
   this.route('test-scrollable', { path: '/test-scrollable' });
   this.route('category', { path: '/category/:category' });
-  this.resource('posts', function() {
+  this.route('posts', function() {
     this.route('show', { path: '/:post' });
   });
 });
