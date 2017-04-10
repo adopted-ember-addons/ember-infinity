@@ -179,6 +179,9 @@ const RouteMixin = Ember.Mixin.create({
     @return {Ember.RSVP.Promise}
   */
   infinityModel(modelName, options, boundParams) {
+    if (options.store && typeof options.store !== 'string') {
+      throw new Ember.Error("Ember Infinity: Custom Data store must be a string");
+    }
     if (emberDataVersionIs('lessThan', '1.13.0')) {
       this.set('_storeFindMethod', 'find');
     }
