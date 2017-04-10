@@ -13,6 +13,7 @@ const InfinityLoaderComponent = Ember.Component.extend({
   developmentMode: false,
   scrollable: null,
   triggerOffset: 0,
+  reverse: false,
 
   didInsertElement() {
     this._super(...arguments);
@@ -63,13 +64,22 @@ const InfinityLoaderComponent = Ember.Component.extend({
       return false;
     }
 
-    return this._bottomOfScrollableOffset() > this._triggerOffset();
+    if (this.get('reverse')) {
+      return this.get("_scrollable").scrollTop() <= this.get('triggerOffset');
+    } else {
+      return this._bottomOfScrollableOffset() > this._triggerOffset();
+    }
   },
 
   _loadMoreIfNeeded() {
     if (this._shouldLoadMore()) {
       this.sendAction('loadMoreAction', this.get('infinityModel'));
     }
+  },
+
+  _contentScrollDown() {
+    let scrollable = this.get("_scrollable");
+    scrollable.scrollTop(scrollable[0].scrollHeight);
   },
 
   _setupScrollable() {
@@ -99,7 +109,17 @@ const InfinityLoaderComponent = Ember.Component.extend({
   }),
 
   infinityModelPushed: Ember.observer('infinityModel.length', function() {
-    Ember.run.scheduleOnce('afterRender', this, this._loadMoreIfNeeded);
+    if (this.get('reverse')) {
+      if (!this.get('firstTimePushed')) {
+        this.set('firstTimePushed', true);
+        Ember.run.debounce(this, this._contentScrollDown, 150);
+      } else {
+        Ember.run.scheduleOnce('afterRender', this, this._loadMoreIfNeeded);
+        this.get("_scrollable").scrollTop(100);
+      }
+    } else {
+      Ember.run.scheduleOnce('afterRender', this, this._loadMoreIfNeeded);
+    }
   })
 });
 
