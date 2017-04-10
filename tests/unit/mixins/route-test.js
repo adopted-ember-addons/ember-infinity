@@ -105,7 +105,7 @@ test('it sets state before it reaches the end', assert => {
   var model = callModelHook(route);
 
   assert.equal(route.get('_totalPages'), 31, '_totalPages');
-  assert.equal(route.get('currentPage'), 1, 'currentPage');
+  assert.equal(route.get('lastPage'), 1, 'lastPage');
   assert.equal(route.get('_canLoadMore'), true, '_canLoadMore');
   assert.ok(Ember.$.isEmptyObject(route.get('_extraParams')), 'extra params are empty');
   assert.ok(!model.get('reachedInfinity'), 'Should not reach infinity');
@@ -162,6 +162,46 @@ test('it allows customizations of meta parsing params', assert => {
   assert.equal(route.get('_totalPages'), 22, '_totalPages');
 });
 
+
+test("It loads previous page when loadPrevious parameter is set to true", function(assert) {
+  var store =  createMockStore(EO({
+      items: [
+        {id: 1, name: 'Test'},
+        {id: 2, name: 'Test 2'}
+      ],
+      unshiftObjects: Ember.K,
+      meta: {
+        total_pages: 2
+      }
+    }));
+
+  var route = createRoute(['item', { startingPage: 2, perPage: 1 }],
+    { store: store }
+  );
+
+  callModelHook(route);
+
+  var loadMore = (loadPrevious) => {
+    Ember.run(() => {
+      route._infinityLoad(loadPrevious);
+    });
+  };
+
+  assert.expect(6);
+
+  loadMore();
+
+  assert.ok(route.get('_canLoadPrevious'), 'can load previous');
+  assert.equal(route.get('firstPage'), 2, 'firstPage');
+  assert.equal(route.get('lastPage'), 2, 'lastPage');
+
+  loadMore(true);
+
+  assert.notOk(route.get('_canLoadPrevious'), 'can load previous');
+  assert.equal(route.get('firstPage'), 1, 'firstPage');
+  assert.equal(route.get('lastPage'), 2, 'lastPage');
+});
+
 module('RouteMixin - reaching the end', {
   setup() {
     this.store = createMockStore(Ember.Object.create({
@@ -198,7 +238,7 @@ test('it sets state when it reaches the end', function (assert) {
   this.createRoute({ startingPage: 2 });
 
   assert.equal(this.route.get('_totalPages'), 2, '_totalPages');
-  assert.equal(this.route.get('currentPage'), 2, 'currentPage');
+  assert.equal(this.route.get('lastPage'), 2, 'lastPage');
   assert.equal(this.route.get('_canLoadMore'), false, '_canLoadMore');
   assert.ok(Ember.$.isEmptyObject(this.route.get('_extraParams')), '_extraParams');
   assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
@@ -216,7 +256,7 @@ test('it uses extra params when loading more data', function (assert) {
 
   assert.equal(this.route.get('_extraParams.extra'), 'param', '_extraParams.extra');
   assert.equal(this.route.get('_canLoadMore'), false, '_canLoadMore');
-  assert.equal(this.route.get('currentPage'), 2, 'currentPage');
+  assert.equal(this.route.get('lastPage'), 2, 'lastPage');
   assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
 });
 
@@ -226,17 +266,17 @@ test("It doesn't request more pages once _canLoadMore is false", function (asser
   this.createRoute();
 
   assert.ok(this.route.get('_canLoadMore'), 'can load more');
-  assert.equal(this.route.get('currentPage'), 1, 'currentPage');
+  assert.equal(this.route.get('lastPage'), 1, 'lastPage');
 
   this.loadMore();
 
   assert.notOk(this.route.get('_canLoadMore'), 'can load more');
-  assert.equal(this.route.get('currentPage'), 2, 'currentPage');
+  assert.equal(this.route.get('lastPage'), 2, 'lastPage');
 
   this.loadMore();
 
   assert.notOk(this.route.get('_canLoadMore'), 'can load more');
-  assert.equal(this.route.get('currentPage'), 2, 'currentPage');
+  assert.equal(this.route.get('lastPage'), 2, 'lastPage');
 });
 
 test("It resets the currentPage when the model hook is called again", function (assert) {
@@ -245,18 +285,18 @@ test("It resets the currentPage when the model hook is called again", function (
   this.createRoute();
 
   assert.ok(this.route.get('_canLoadMore'), 'can load more');
-  assert.equal(this.route.get('currentPage'), 1, 'currentPage');
+  assert.equal(this.route.get('lastPage'), 1, 'lastPage');
 
   this.callModelHook();
-  assert.equal(this.route.get('currentPage'), 1, 'currentPage');
+  assert.equal(this.route.get('lastPage'), 1, 'lastPage');
 
   this.loadMore();
 
-  assert.equal(this.route.get('currentPage'), 2, 'currentPage');
+  assert.equal(this.route.get('lastPage'), 2, 'lastPage');
 
   this.callModelHook();
 
-  assert.equal(this.route.get('currentPage'), 1, 'currentPage');
+  assert.equal(this.route.get('lastPage'), 1, 'lastPage');
 });
 
 module('RouteMixin - loading more data', {
@@ -293,7 +333,7 @@ test('it uses overridden params when loading more data', function (assert) {
   this.expectedPageNumber = 2;
 
   assert.equal(this.route.get('_canLoadMore'), true, '_canLoadMore');
-  assert.equal(this.route.get('currentPage'), 2, 'currentPage');
+  assert.equal(this.route.get('lastPage'), 2, 'lastPage');
 });
 
 test('it uses overridden params when reaching the end', function (assert) {
@@ -306,7 +346,7 @@ test('it uses overridden params when reaching the end', function (assert) {
   });
 
   assert.equal(this.route.get('_canLoadMore'), false, '_canLoadMore');
-  assert.equal(this.route.get('currentPage'), 3, 'currentPage');
+  assert.equal(this.route.get('lastPage'), 3, 'lastPage');
   assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
 });
 
@@ -368,7 +408,7 @@ test('it uses bound params when reaching the end', function (assert) {
   this.loadMore();
 
   assert.equal(this.route.get('_canLoadMore'), false, '_canLoadMore');
-  assert.equal(this.route.get('currentPage'), 3, 'currentPage');
+  assert.equal(this.route.get('lastPage'), 3, 'lastPage');
   assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
 });
 
@@ -467,7 +507,7 @@ test('It allows to set startingPage as 0', assert => {
 
   callModelHook(route);
 
-  assert.equal(0, route.get('currentPage'));
+  assert.equal(0, route.get('lastPage'));
   assert.equal(true, route.get('_canLoadMore'));
 });
 

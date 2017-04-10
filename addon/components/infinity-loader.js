@@ -13,6 +13,7 @@ const InfinityLoaderComponent = Ember.Component.extend({
   developmentMode: false,
   scrollable: null,
   triggerOffset: 0,
+  loadPrevious: false,
 
   didInsertElement() {
     this._super(...arguments);
@@ -58,17 +59,35 @@ const InfinityLoaderComponent = Ember.Component.extend({
     return this._selfOffset() - this.get('triggerOffset');
   },
 
+  _scrollableHeight() {
+    return this.get('_scrollable')[0].scrollHeight || document.documentElement.scrollHeight;
+  },
+
   _shouldLoadMore() {
     if (this.get('developmentMode') || typeof FastBoot !== 'undefined' || this.isDestroying || this.isDestroyed) {
       return false;
     }
 
-    return this._bottomOfScrollableOffset() > this._triggerOffset();
+    var scrolledBelowTrigger = this._bottomOfScrollableOffset() > this._triggerOffset();
+
+    if (scrolledBelowTrigger && this.get('loadPrevious')) {
+      var scrollable = this.get('_scrollable'),
+          scrollableScrollTop = scrollable.scrollTop(),
+          scrollableHeight = scrollable.height(),
+          offsetTop = this._selfOffset();
+
+      return (
+        offsetTop > scrollableScrollTop &&
+        offsetTop < scrollableScrollTop + scrollableHeight
+      );
+    }
+
+    return scrolledBelowTrigger;
   },
 
   _loadMoreIfNeeded() {
     if (this._shouldLoadMore()) {
-      this.sendAction('loadMoreAction', this.get('infinityModel'));
+      this.sendAction('loadMoreAction', this.get('infinityModel'), this.get('loadPrevious'));
     }
   },
 
@@ -92,6 +111,13 @@ const InfinityLoaderComponent = Ember.Component.extend({
     }
   },
 
+  _updateScrollPosition(oldScrollableHeight) {
+    var scrollable = this.get('_scrollable'),
+        newScrollableHeight = this._scrollableHeight();
+
+    scrollable.scrollTop(scrollable.scrollTop() + (newScrollableHeight - oldScrollableHeight));
+  },
+
   loadedStatusDidChange: Ember.observer('infinityModel.reachedInfinity', 'destroyOnInfinity', function () {
     if (this.get('infinityModel.reachedInfinity') && this.get('destroyOnInfinity')) {
       this.destroy();
@@ -99,6 +125,14 @@ const InfinityLoaderComponent = Ember.Component.extend({
   }),
 
   infinityModelPushed: Ember.observer('infinityModel.length', function() {
+    if (this.get('loadPrevious')) {
+      var oldScrollableHeight = this._scrollableHeight();
+
+      Ember.run.scheduleOnce('afterRender', this, function() {
+        this._updateScrollPosition(oldScrollableHeight);
+      });
+    }
+
     Ember.run.scheduleOnce('afterRender', this, this._loadMoreIfNeeded);
   })
 });

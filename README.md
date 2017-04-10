@@ -391,6 +391,14 @@ scrollable will default to using the window for the scroll binding.
 
 You can optionally pass an offset value.   This value will be used when calculating if the bottom of the scrollable has been reached.  
 
+* **loadPrevious**
+
+```hbs
+{{#infinity-loader loadPrevious=true}}
+```
+
+You can optionally pass a value for loadPrevious. Setting this to true will cause the infinity loader to load the previous page instead of the next.
+
 ### Use ember-infinity with button
 
 You can use the route loading magic of Ember Infinity without using the InfinityLoader component.
