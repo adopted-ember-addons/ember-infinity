@@ -58,7 +58,65 @@ test('it can not use infinityModel without Ember Data Store', assert => {
   try {
     route.model();
   } catch(e) {
-    assert.equal(e.message, 'Ember Infinity: Ember Data store is not available to infinityModel');
+    assert.equal(e.message, 'Ember Infinity: Store is not available to infinityModel');
+  }
+});
+
+test('it can use infinityModel with a custom data store', assert => {
+  var route = createRoute(['post', { store: 'simpleStore' }], {
+    simpleStore: createMockStore(Ember.Object.create({}))
+  });
+
+  try {
+    route.model();
+    assert.ok(route.get(route._store).query, 'custom store works');
+  } catch(e) {
+    assert.ok(false, 'something failed');
+  }
+});
+
+test('custom data store can specify custom query method', assert => {
+  var route = createRoute(['post', { store: 'simpleStore', storeFindMethod: 'findAll' }], {
+    simpleStore: {
+      findAll() {
+        var item = { id: 1, title: 'The Great Gatsby' };
+        return Ember.RSVP.resolve(EA([item]));
+      }
+    }
+  });
+
+  try {
+    route.model();
+    assert.ok(true, 'custom store with specified query method works');
+  } catch(e) {
+    assert.ok(false, 'something failed');
+  }
+});
+
+
+test('custom data store must specify custom query method', assert => {
+  var route = createRoute(['post', { store: 'simpleStore' }], {
+    simpleStore: {
+      findAll() {
+        return Ember.RSVP.resolve();
+      }
+    }
+  });
+
+  try {
+    route.model();
+  } catch(e) {
+    assert.equal(e.message, 'Ember Infinity: Custom data store must specify query method');
+  }
+});
+
+test('it can not use infinityModel without passing a string for custom data store', assert => {
+  var route = createRoute(['post', { store: 23 }]);
+
+  try {
+    route.model();
+  } catch(e) {
+    assert.equal(e.message, 'Ember Infinity: Must pass custom data store as a string');
   }
 });
 
@@ -74,7 +132,7 @@ test('it can not use infinityModel without the Store Property having the appropr
   try {
     route.model();
   } catch(e) {
-    assert.equal(e.message, 'Ember Infinity: Ember Data store is not available to infinityModel');
+    assert.equal(e.message, 'Ember Infinity: Store is not available to infinityModel');
   }
 });
 
