@@ -179,9 +179,6 @@ const RouteMixin = Ember.Mixin.create({
     @return {Ember.RSVP.Promise}
   */
   infinityModel(modelName, options, boundParams) {
-    if (options.store && typeof options.store !== 'string') {
-      throw new Ember.Error("Ember Infinity: Custom Data store must be a string");
-    }
     if (emberDataVersionIs('lessThan', '1.13.0')) {
       this.set('_storeFindMethod', 'find');
     }
@@ -189,6 +186,11 @@ const RouteMixin = Ember.Mixin.create({
     this.set('_infinityModelName', modelName);
 
     options = options ? assign({}, options) : {};
+
+    if (options.store && typeof options.store !== 'string') {
+      throw new Ember.Error("Ember Infinity: Custom Data store must be a string");
+    }
+
     const startingPage = options.startingPage === undefined ? 0 : options.startingPage-1;
     const perPage      = options.perPage || this.get('_perPage');
     const store        = options.store && this.get(options.store) || this.get('store');
