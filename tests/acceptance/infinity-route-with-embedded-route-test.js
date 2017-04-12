@@ -1,22 +1,19 @@
-import Ember from 'ember';
-import { module, test } from 'qunit';
-import startApp from '../helpers/start-app';
+import { test } from 'qunit';
+import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
 import buildServer from '../helpers/fake-album-server';
 
-var App, server;
+let server;
 
-module('Acceptance: Infinity Route', {
-  setup() {
-    App = startApp();
+moduleForAcceptance('Acceptance: Infinity Route', {
+  beforeEach() {
     server = buildServer();
   },
-  teardown() {
-    Ember.run(App, 'destroy');
+  afterEach() {
     server.shutdown();
   }
 });
 
-test('it works when embedded route is refreshed', assert => {
+test('it works when embedded route is refreshed', function(assert) {
   visit('/posts/1');
   click('button.refreshRoute');
 

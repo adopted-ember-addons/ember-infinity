@@ -1,15 +1,13 @@
-import Ember from 'ember';
-import { module, test } from 'qunit';
-import startApp from '../helpers/start-app';
+import { test } from 'qunit';
+import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
 import Pretender from 'pretender';
 import assertDetails from '../helpers/assert-acceptance-details';
 import json from '../helpers/json';
 
-var App, server;
+let server;
 
-module('Acceptance: Infinity Route', {
-  setup() {
-    App = startApp();
+moduleForAcceptance('Acceptance: Infinity Route', {
+  beforeEach() {
     server = new Pretender(function() {
       this.get('/posts', () => {
         var posts = [
@@ -20,13 +18,12 @@ module('Acceptance: Infinity Route', {
       });
     });
   },
-  teardown() {
-    Ember.run(App, 'destroy');
+  afterEach() {
     server.shutdown();
   }
 });
 
-test('it works when meta is not present in payload', assert => {
+test('it works when meta is not present in payload', function(assert) {
   visit('/test');
 
   andThen(() => {
