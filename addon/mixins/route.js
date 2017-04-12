@@ -1,8 +1,7 @@
 import Ember from 'ember';
+const { Mixin, computed } = Ember;
 import { emberDataVersionIs } from 'ember-version-is';
 
-const keys = Object.keys || Ember.keys;
-const assign = Ember.assign || Ember.merge;
 /**
   The Ember Infinity Route Mixin enables an application route to load paginated
   records for the route `model` as triggered by the controller (or Infinity Loader
@@ -13,7 +12,7 @@ const assign = Ember.assign || Ember.merge;
   @module ember-infinity/mixins/route
   @extends Ember.Mixin
 */
-const RouteMixin = Ember.Mixin.create({
+const RouteMixin = Mixin.create({
 
   /**
     @private
@@ -66,10 +65,10 @@ const RouteMixin = Ember.Mixin.create({
   /**
     @private
     @property _store
-    @type Object
-    @default null
+    @type String
+    @default 'store'
   */
-  _store: null,
+  _store: 'store',
 
   /**
     @private
@@ -138,12 +137,12 @@ const RouteMixin = Ember.Mixin.create({
     @type Boolean
     @default false
   */
-  _canLoadMore: Ember.computed('_totalPages', 'currentPage', function() {
+  _canLoadMore: computed('_totalPages', 'currentPage', function() {
     const totalPages  = this.get('_totalPages');
     const currentPage = this.get('currentPage');
 
     return (totalPages && currentPage !== undefined) ? (currentPage < totalPages) : false;
-  }),
+  }).readOnly(),
 
   /**
    @private
@@ -154,13 +153,20 @@ const RouteMixin = Ember.Mixin.create({
     return this.get(this.get('_modelPath'));
   },
 
+  /**
+    Determine if Ember data is valid
+    Ensure _store is set on route with a query method
+    Ensure model passed to infinity model
+
+    @method _ensureCompatibility
+  */
   _ensureCompatibility() {
     if (emberDataVersionIs('greaterThan', '1.0.0-beta.19.2') && emberDataVersionIs('lessThan', '1.13.4')) {
       throw new Ember.Error("Ember Infinity: You are using an unsupported version of Ember Data.  Please upgrade to at least 1.13.4 or downgrade to 1.0.0-beta.19.2");
     }
 
-    if (Ember.isEmpty(this._store) || Ember.isEmpty(this._store[this._storeFindMethod])){
-      throw new Ember.Error("Ember Infinity: Ember Data store is not available to infinityModel");
+    if (Ember.isEmpty(this.get(this._store)) || Ember.isEmpty(this.get(this._store)[this._storeFindMethod])){
+      throw new Ember.Error("Ember Infinity: Store is not available to infinityModel");
     }
 
     if (this.get('_infinityModelName') === undefined) {
@@ -169,7 +175,25 @@ const RouteMixin = Ember.Mixin.create({
   },
 
   /**
-    Use the infinityModel method in the place of `this.store.find('model')` to
+    If pass in custom store, ensure passed string
+    Ensure query method exists, otherwise pass method (that returns a promise) in as storeFindMethod in options
+
+    @method _ensureCustomStoreCompatibility
+    @param {Option} options
+  */
+  _ensureCustomStoreCompatibility(options) {
+    if (typeof options.store !== 'string') {
+      throw new Ember.Error("Ember Infinity: Must pass custom data store as a string");
+    } 
+
+    const store = this.get(options.store);
+    if (!store[this.get('_storeFindMethod')]) {
+      throw new Ember.Error("Ember Infinity: Custom data store must specify query method");
+    } 
+  },
+
+  /**
+    Use the infinityModel method in the place of `this.store.query('model')` to
     initialize the Infinity Model for your route.
 
     @method infinityModel
@@ -178,22 +202,30 @@ const RouteMixin = Ember.Mixin.create({
     @param {Object} boundParams Optional, any route properties to be included as additional params.
     @return {Ember.RSVP.Promise}
   */
-  infinityModel(modelName, options, boundParams) {
+  infinityModel(modelName, options = {}, boundParams) {
     if (emberDataVersionIs('lessThan', '1.13.0')) {
       this.set('_storeFindMethod', 'find');
     }
 
+    options = Object.assign({}, options);
+
     this.set('_infinityModelName', modelName);
 
-    options = options ? assign({}, options) : {};
+    if (options.store) {
+      if (options.storeFindMethod) {
+        this.set('_storeFindMethod', options.storeFindMethod);
+      }
 
-    if (options.store && typeof options.store !== 'string') {
-      throw new Ember.Error("Ember Infinity: Custom Data store must be a string");
+      this._ensureCustomStoreCompatibility(options);
+
+      this.set('_store', options.store);
+
+      delete options.store;
+      delete options.storeFindMethod;
     }
 
     const startingPage = options.startingPage === undefined ? 0 : options.startingPage-1;
     const perPage      = options.perPage || this.get('_perPage');
-    const store        = options.store && this.get(options.store) || this.get('store');
     const modelPath    = options.modelPath || this.get('_modelPath');
 
     delete options.startingPage;
@@ -204,16 +236,15 @@ const RouteMixin = Ember.Mixin.create({
       currentPage: startingPage,
       _firstPageLoaded: false,
       _perPage: perPage,
-      _store: store,
       _modelPath: modelPath,
       _extraParams: options
     });
 
+    this._ensureCompatibility();
+
     if (typeof boundParams === 'object') {
       this.set('_boundParams', boundParams);
     }
-
-    this._ensureCompatibility();
 
     return this._loadNextPage();
   },
@@ -285,7 +316,7 @@ const RouteMixin = Ember.Mixin.create({
     const nextPage    = this.incrementProperty('currentPage');
     const params      = this._buildParams(nextPage);
 
-    return this._store[this._storeFindMethod](modelName, params).then(
+    return this.get(this._store)[this._storeFindMethod](modelName, params).then(
       this._afterInfinityModel(this));
   },
 
@@ -308,11 +339,11 @@ const RouteMixin = Ember.Mixin.create({
       pageParams[this.get('pageParam')] = nextPage;
     }
 
-    const params = assign(pageParams, this.get('_extraParams'));
+    const params = Object.assign(pageParams, this.get('_extraParams'));
 
     const boundParams = this.get('_boundParams');
     if (!Ember.isEmpty(boundParams)) {
-      keys(boundParams).forEach(k => params[k] = this.get(boundParams[k]));
+      Object.keys(boundParams).forEach(k => params[k] = this.get(boundParams[k]));
     }
 
     return params;
