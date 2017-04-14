@@ -184,12 +184,12 @@ const RouteMixin = Mixin.create({
   _ensureCustomStoreCompatibility(options) {
     if (typeof options.store !== 'string') {
       throw new Ember.Error("Ember Infinity: Must pass custom data store as a string");
-    } 
+    }
 
     const store = this.get(options.store);
     if (!store[this.get('_storeFindMethod')]) {
       throw new Ember.Error("Ember Infinity: Custom data store must specify query method");
-    } 
+    }
   },
 
   /**
@@ -206,6 +206,8 @@ const RouteMixin = Mixin.create({
     if (emberDataVersionIs('lessThan', '1.13.0')) {
       this.set('_storeFindMethod', 'find');
     }
+
+    this._polyfillAssign();
 
     options = Object.assign({}, options);
 
@@ -440,6 +442,40 @@ const RouteMixin = Mixin.create({
 
     const totalPages = this.get('_totalPages');
     Ember.run.scheduleOnce('afterRender', this, 'infinityModelLoaded', { totalPages: totalPages });
+  },
+
+
+  /**
+   Fallback for IE Object.assign is not supported
+
+   @private
+   @method _polyfillAssign
+   */
+  _polyfillAssign() {
+    if (typeof Object.assign != 'function') {
+      Object.assign = function(target, varArgs) { // .length of function is 2
+        'use strict';
+        if (target == null) { // TypeError if undefined or null
+          throw new TypeError('Cannot convert undefined or null to object');
+        }
+
+        var to = Object(target);
+
+        for (var index = 1; index < arguments.length; index++) {
+          var nextSource = arguments[index];
+
+          if (nextSource != null) { // Skip over if undefined or null
+            for (var nextKey in nextSource) {
+              // Avoid bugs when hasOwnProperty is shadowed
+              if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+                to[nextKey] = nextSource[nextKey];
+              }
+            }
+          }
+        }
+        return to;
+      };
+    }
   }
 });
 
