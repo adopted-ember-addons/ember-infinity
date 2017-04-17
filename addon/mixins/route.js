@@ -1,6 +1,6 @@
 import Ember from 'ember';
 const { Mixin, computed } = Ember;
-import { emberDataVersionIs } from 'ember-version-is';
+import { objectAssign } from '../utils';
 
 /**
   The Ember Infinity Route Mixin enables an application route to load paginated
@@ -161,10 +161,6 @@ const RouteMixin = Mixin.create({
     @method _ensureCompatibility
   */
   _ensureCompatibility() {
-    if (emberDataVersionIs('greaterThan', '1.0.0-beta.19.2') && emberDataVersionIs('lessThan', '1.13.4')) {
-      throw new Ember.Error("Ember Infinity: You are using an unsupported version of Ember Data.  Please upgrade to at least 1.13.4 or downgrade to 1.0.0-beta.19.2");
-    }
-
     if (Ember.isEmpty(this.get(this._store)) || Ember.isEmpty(this.get(this._store)[this._storeFindMethod])){
       throw new Ember.Error("Ember Infinity: Store is not available to infinityModel");
     }
@@ -202,12 +198,8 @@ const RouteMixin = Mixin.create({
     @param {Object} boundParams Optional, any route properties to be included as additional params.
     @return {Ember.RSVP.Promise}
   */
-  infinityModel(modelName, options = {}, boundParams) {
-    if (emberDataVersionIs('lessThan', '1.13.0')) {
-      this.set('_storeFindMethod', 'find');
-    }
-
-    options = Object.assign({}, options);
+  infinityModel(modelName, options, boundParams) {
+    options = options ? objectAssign({}, options) : {};
 
     this.set('_infinityModelName', modelName);
 
@@ -339,7 +331,7 @@ const RouteMixin = Mixin.create({
       pageParams[this.get('pageParam')] = nextPage;
     }
 
-    const params = Object.assign(pageParams, this.get('_extraParams'));
+    const params = objectAssign(pageParams, this.get('_extraParams'));
 
     const boundParams = this.get('_boundParams');
     if (!Ember.isEmpty(boundParams)) {

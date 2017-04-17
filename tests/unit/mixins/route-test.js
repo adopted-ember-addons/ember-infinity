@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import DS from 'ember-data';
 import RouteMixin from 'ember-infinity/mixins/route';
 import { module, test } from 'qunit';
 
@@ -572,48 +571,4 @@ test('it resolves a promise returned from afterInfinityModel', function (assert)
   };
 
   this.assertAfterInfinityWorks(assert);
-});
-
-
-/*
- * Compatibility Tests
- */
-module('RouteMixin Compatibility', {
-  beforeEach: function () {
-    var store = {
-      _dummyFetch() {
-        return Ember.RSVP.resolve(EA([]));
-      },
-      query() {
-        return this._dummyFetch();
-      },
-      find() {
-        return this._dummyFetch();
-      }
-    };
-
-    this.route = createRoute(['item'], { store });
-  }
-});
-
-test('It uses Query for ED >= 1.13.4', function (assert) {
-  DS.VERSION = "1.13.4";
-  this.route.model();
-  assert.equal(this.route.get('_storeFindMethod'), 'query');
-});
-
-test('It uses Find for ED <= 1.0.0-beta.19.2', function (assert) {
-  DS.VERSION = "1.0.0-beta.19.2";
-  this.route.model();
-  assert.equal(this.route.get('_storeFindMethod'), 'find');
-});
-
-test('It explodes when using an unsupported ED', function (assert) {
-  DS.VERSION = "1.0.0-beta.19.3";
-  assert.throws(() => {
-    this.route.model();
-  },
-    /unsupported version of Ember Data/,
-    'Unsupported ember-data error message is shown for beta.19.3'
-  );
 });

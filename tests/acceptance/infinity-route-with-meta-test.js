@@ -1,23 +1,20 @@
-import Ember from 'ember';
-import { module, test } from 'qunit';
-import startApp from '../helpers/start-app';
+import { test } from 'qunit';
+import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
 import buildServer from '../helpers/fake-album-server';
 import assertDetails from '../helpers/assert-acceptance-details';
 
-var App, server;
+let server;
 
-module('Acceptance: Infinity Route', {
-  setup() {
-    App = startApp();
+moduleForAcceptance('Acceptance: Infinity Route', {
+  beforeEach() {
     server = buildServer();
   },
-  teardown() {
-    Ember.run(App, 'destroy');
+  afterEach() {
     server.shutdown();
   }
 });
 
-test('it works when meta is present in payload', assert => {
+test('it works when meta is present in payload', function(assert) {
   visit('/test');
 
   andThen(() => {
@@ -29,7 +26,7 @@ test('it works when meta is present in payload', assert => {
   });
 });
 
-test('it works with parameters', assert => {
+test('it works with parameters', function(assert) {
   visit('/category/a?per_page=2');
 
   andThen(() => {
@@ -39,7 +36,7 @@ test('it works with parameters', assert => {
       reachedInfinity: false
     });
 
-    var postList       = find('ul');
+    var postList = find('ul');
 
     assert.equal(postList.find('li:first-child').text(), "Squarepusher", "First item should be 'Squarepusher'");
   });
