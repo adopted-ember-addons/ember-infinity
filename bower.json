@@ -4,7 +4,6 @@
     "ember": "~2.8.0",
     "ember-cli-shims": "0.1.1",
     "pretender": "^0.9.0",
-    "Faker": "~3.0.1",
-    "ember-cli-test-loader": "0.2.2"
+    "Faker": "~3.0.1"
   }
 }
