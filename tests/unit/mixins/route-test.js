@@ -223,7 +223,9 @@ module('RouteMixin - reaching the end', {
   setup() {
     this.store = createMockStore(Ember.Object.create({
       items: [{id: 1, name: 'Test'}],
-      pushObjects: Ember.K,
+      pushObjects() {
+        return this;
+      },
       meta: {
         total_pages: 2
       }
@@ -320,7 +322,9 @@ module('RouteMixin - loading more data', {
   setup(assert) {
     var store = createMockStore(Ember.Object.create({
         items: [{id: 1, name: 'Test'}, {id: 2, name: 'Test 2'}],
-        pushObjects: Ember.K,
+        pushObjects() {
+          return this;
+        },
         meta: {
           testTotalPages: 3
         }
@@ -374,7 +378,9 @@ module('RouteMixin - bound params', {
           {id: 1, name: 'Test'},
           {id: 2, name: 'New Test'}
         ],
-        pushObjects: Ember.K,
+        pushObjects() {
+          return this;
+        },
         meta: {
           total_pages: 3
         }
