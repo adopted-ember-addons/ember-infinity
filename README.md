@@ -312,7 +312,7 @@ export default Ember.Route.extend(InfinityRoute, {
 
 ### Custom store
 
-Chances are you'll want to scroll some source other than the default dataStore to infinity. You can do that by injecting it to the route and specify the store in the infinityModel options:
+Chances are you'll want to scroll some source other than the default ember-data store to infinity. You can do that by injecting it to the route and specify the store in the infinityModel options:
 
 ```
 export default Ember.Route.extend(InfinityRoute, {
@@ -321,7 +321,8 @@ export default Ember.Route.extend(InfinityRoute, {
     return this.infinityModel('product', {
       perPage: 12,
       startingPage: 1,
-      store: 'customStore'  // BAM!
+      store: 'customStore', // custom ember-data store or ember-redux / ember-cli-simple-store / your own hand rolled store (see dummy app)
+      storeFindMethod: 'findAll' // should return a promise (optional if custom store method uses `query`)
     })
   }
 });
