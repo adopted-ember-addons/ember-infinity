@@ -13,7 +13,10 @@ const InfinityLoaderComponent = Ember.Component.extend({
   scrollable: null,
   triggerOffset: 0,
 
-  didInsertElement() {
+  didInsertElement(){
+    Ember.run.schedule('routerTransitions', this, ()  =>  this.setupElement());
+  },
+  setupElement() {
     this._super(...arguments);
     this._setupScrollable();
     this.set('guid', Ember.guidFor(this));
