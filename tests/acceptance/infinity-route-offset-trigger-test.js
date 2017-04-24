@@ -55,12 +55,21 @@ function triggerOffset() {
   return list.get(0).scrollHeight - list.height();
 }
 
+function triggerWindowOffset() {
+  var tmpWindow = Ember.$(window);
+  return tmpWindow.get(0).scrollHeight - tmpWindow.height();
+}
+
 function shouldBeItemsOnTheList(assert, amount) {
   assert.equal(postList().find('li').length, amount, `${amount} items should be in the list`);
 }
 
 function scrollTo(offset) {
   postList().scrollTop(offset);
+}
+
+function scrollToWindow(offset) {
+  Ember.$(window).scrollTop(offset);
 }
 
 function infinityShouldNotBeReached(assert) {
@@ -91,6 +100,37 @@ test('it should start loading more items when the scroll is on the very bottom '
   });
 
   triggerEvent('ul', 'scroll');
+
+  andThen(() => {
+    shouldBeItemsOnTheList(assert, 50);
+    infinityShouldBeReached(assert);
+  });
+});
+
+test('it should start loading more items when the scroll is on the very bottom ' +
+  'when triggerOffset is not set and our scrollable element is the window', assert => {
+  visit('/test-window-scrollable');
+
+  andThen(() => {
+    shouldBeItemsOnTheList(assert, 25);
+    infinityShouldNotBeReached(assert);
+    scrollToWindow(triggerWindowOffset() - 100);
+  });
+
+  andThen(() => {
+    // can't use Ember's triggerEvent as we can't use a 'window' selector ...
+    Ember.$(window).scroll();
+  });
+
+  andThen(() => {
+    shouldBeItemsOnTheList(assert, 25);
+    scrollToWindow(triggerWindowOffset() + 100);
+    //Ember.$(window).scrollTop(2000); (doesn't seem to work either)
+  });
+
+  andThen(() => {
+    Ember.$(window).scroll();
+  });
 
   andThen(() => {
     shouldBeItemsOnTheList(assert, 50);
