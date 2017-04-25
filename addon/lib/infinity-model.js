@@ -84,6 +84,12 @@ export default ArrayProxy.extend({
    */
   totalPagesParam: 'meta.total_pages',
 
+  /**
+    @private
+    @property _firstPageLoaded
+    @type Boolean
+    @default false
+  */
   _firstPageLoaded: false,
 
   /**
@@ -102,7 +108,6 @@ export default ArrayProxy.extend({
    build the params for the next page request
    @private
    @method _buildParams
-   @param {Number} nextPage the page number for the current request
    @return {Object} The query params for the next page of results
    */
   buildParams() {

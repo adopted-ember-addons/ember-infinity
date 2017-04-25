@@ -43,12 +43,12 @@ const RouteMixin = Mixin.create({
    * The supported findMethod name for
    * the developers Ember Data version.
    * Provided here for backwards compat.
+    @private
+    @property _storeFindMethod
    * @type {String}
    * @default "query"
    */
   _storeFindMethod: 'query',
-
-  _firstPageLoaded: false,
 
   /**
     Determine if Ember data is valid
@@ -171,6 +171,7 @@ const RouteMixin = Mixin.create({
 
    @private
    @method _infinityLoad
+   @param {Ember.ArrayProxy} infinityModel
    */
   _infinityLoad(infinityModel) {
     if (get(infinityModel, '_loadingMore') || !get(infinityModel, '_canLoadMore')) {
@@ -185,6 +186,7 @@ const RouteMixin = Mixin.create({
 
    @private
    @method _loadNextPage
+   @param {Ember.ArrayProxy} infinityModel
    @return {Ember.RSVP.Promise} A Promise that resolves the model
    */
   _loadNextPage(infinityModel) {
@@ -213,6 +215,8 @@ const RouteMixin = Mixin.create({
 
    @private
    @method _requestNextPage
+   @param {String} modelName
+   @param {Object} options
    @returns {Ember.RSVP.Promise} A Promise that resolves the next page of objects
    */
   _requestNextPage(modelName, params) {
