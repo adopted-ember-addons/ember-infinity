@@ -147,7 +147,7 @@ const RouteMixin = Mixin.create({
   },
 
   /**
-   Call additional functions after finding the infinityModel in the Ember data store.
+   Call additional functions after finding the infinityModel in the Ember store.
    @private
    @method _afterInfinityModel
    @param {Function} infinityModelPromise The resolved result of the Ember store find method. Passed in automatically.
@@ -229,7 +229,8 @@ const RouteMixin = Mixin.create({
    set _totalPages param on infinityModel
    Update the infinity model with new objects
 
-   @method doUpdate
+   @private
+   @method _doUpdate
    @param {Ember.Enumerable} queryObject The new objects to add to the model
    @param {Ember.ArrayProxy} infinityModel
    @return {Ember.Array} returns the new objects
