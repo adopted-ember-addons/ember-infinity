@@ -1,20 +1,18 @@
-import Ember from 'ember';
-import { module, test } from 'qunit';
-import startApp from '../helpers/start-app';
+import { test } from 'qunit';
+import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
 import Pretender from 'pretender';
 import faker from 'faker';
 
-var App, server;
+let server;
 
-module('Acceptance: Infinity Route - offset trigger', {
-  setup() {
+moduleForAcceptance('Acceptance: Infinity Route - offset trigger', {
+  beforeEach() {
     var posts = [];
 
     for (var i = 0; i < 50; i++) {
       posts.push({id: i, name: faker.company.companyName()});
     }
 
-    App = startApp();
     server = new Pretender(function() {
       this.get('/posts', function(request) {
         var body, subset, perPage, startPage, offset;
@@ -39,8 +37,7 @@ module('Acceptance: Infinity Route - offset trigger', {
       });
     });
   },
-  teardown() {
-    Ember.run(App, 'destroy');
+  afterEach() {
     server.shutdown();
   }
 });
@@ -77,7 +74,7 @@ function infinityShouldBeReached(assert) {
 }
 
 test('it should start loading more items when the scroll is on the very bottom ' +
-  'when triggerOffset is not set', assert => {
+  'when triggerOffset is not set', function(assert) {
   visit('/test-scrollable');
 
   andThen(() => {
@@ -102,7 +99,7 @@ test('it should start loading more items when the scroll is on the very bottom '
 });
 
 test('it should start loading more items before the scroll is on the very bottom ' +
-  'when triggerOffset is set', assert => {
+  'when triggerOffset is set', function(assert) {
   visit('/test-scrollable?triggerOffset=200');
 
   andThen(() => {

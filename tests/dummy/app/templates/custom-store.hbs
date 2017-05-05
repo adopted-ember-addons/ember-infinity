@@ -1,0 +1,9 @@
+<h2 id="posts-title">Listing Posts</h2>
+
+<ul class="test-list">
+  {{#each model as |post|}}
+    <li>{{post.name}}</li>
+  {{/each}}
+</ul>
+
+{{infinity-loader infinityModel=model}}

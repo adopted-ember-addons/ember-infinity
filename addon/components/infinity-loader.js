@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import emberVersionIs from 'ember-version-is';
 
 const InfinityLoaderComponent = Ember.Component.extend({
   classNames: ["infinity-loader"],
@@ -42,6 +41,12 @@ const InfinityLoaderComponent = Ember.Component.extend({
     }
   },
 
+  /**
+   * determine how far the infinity-loader component is from the top of the 
+    scrollable element
+   * @method _selfOffset
+   * @return {Number}
+   */
   _selfOffset() {
     if (this.get('_customScrollableIsDefined')) {
       return this.$().offset().top - this.get("_scrollable").offset().top + this.get("_scrollable").scrollTop();
@@ -50,14 +55,33 @@ const InfinityLoaderComponent = Ember.Component.extend({
     }
   },
 
+  /**
+   * total pixels where _scrollable's bottom position is from top of screen 
+   * @method _bottomOfScrollableOffset
+   * @return {Number}
+   */
   _bottomOfScrollableOffset() {
     return this.get('_scrollable').height() + this.get("_scrollable").scrollTop();
   },
 
+  /**
+   * distance infinity loader is from top of _scrollable/window's top position 
+    less the buffer amount specified by triggerOffset
+   * @method _triggerOffset
+   * @return {Number}
+   */
   _triggerOffset() {
     return this._selfOffset() - this.get('triggerOffset');
   },
 
+  /**
+   * is _scrollable's bottom position greater than the distance from the
+    infinity-loader component to _scrollable's top
+   * in other words if at top of page and _scrollable's height is 100px and 
+    infinity loader is 200px from the top, has the scrollable traversed 101px to trigger loading more records
+   * @method _shouldLoadMore
+   * @return {Boolean}
+   */
   _shouldLoadMore() {
     if (this.get('developmentMode') || typeof FastBoot !== 'undefined' || this.isDestroying || this.isDestroyed) {
       return false;
@@ -79,16 +103,16 @@ const InfinityLoaderComponent = Ember.Component.extend({
       if (items.length === 1) {
         this.set('_scrollable', items.eq(0));
       } else if (items.length > 1) {
-        throw new Error("Ember Infinity: Multiple scrollable elements found for: " + scrollable);
+        throw new Ember.Error("Ember Infinity: Multiple scrollable elements found for: " + scrollable);
       } else {
-        throw new Error("Ember Infinity: No scrollable element found for: " + scrollable);
+        throw new Ember.Error("Ember Infinity: No scrollable element found for: " + scrollable);
       }
       this.set('_customScrollableIsDefined', true);
     } else if (scrollable === undefined || scrollable === null) {
       this.set('_scrollable', Ember.$(window));
       this.set('_customScrollableIsDefined', false);
     } else {
-      throw new Error("Ember Infinity: Scrollable must either be a css selector string or left empty to default to window");
+      throw new Ember.Error("Ember Infinity: Scrollable must either be a css selector string or left empty to default to window");
     }
   },
 
@@ -102,11 +126,5 @@ const InfinityLoaderComponent = Ember.Component.extend({
     Ember.run.scheduleOnce('afterRender', this, this._loadMoreIfNeeded);
   })
 });
-
-if (emberVersionIs('lessThan', '1.13.0')) {
-  InfinityLoaderComponent.reopen({
-    hasBlock: Ember.computed.alias('template')
-  });
-}
 
 export default InfinityLoaderComponent;
