@@ -1,4 +1,5 @@
 import Ember from 'ember';
+const { Route, RSVP, run } = Ember;
 import RouteMixin from 'ember-infinity/mixins/route';
 import { module, test } from 'qunit';
 
@@ -11,13 +12,13 @@ let EA = function (content, meta={}) {
 };
 
 test('it works', assert => {
-  let RouteObject = Ember.Route.extend(RouteMixin);
+  let RouteObject = Route.extend(RouteMixin);
   let route = RouteObject.create();
   assert.ok(route);
 });
 
 function createRoute(infinityModelArgs, routeProperties={}) {
-  let RouteObject = Ember.Route.extend(RouteMixin, assign(routeProperties, {
+  let RouteObject = Route.extend(RouteMixin, assign(routeProperties, {
     model() {
       return this.infinityModel(...infinityModelArgs);
     }
@@ -33,14 +34,14 @@ function createMockStore(resolution, assertion) {
         assertion.apply(this, arguments);
       }
 
-      return Ember.RSVP.resolve(resolution);
+      return RSVP.resolve(resolution);
     }
   };
 }
 
 function callModelHook(route) {
   let model;
-  Ember.run(() => {
+  run(() => {
     route.model().then(result => {
       model = result;
     });
@@ -80,7 +81,7 @@ test('custom data store can specify custom query method', assert => {
     simpleStore: {
       findAll() {
         let item = { id: 1, title: 'The Great Gatsby' };
-        return Ember.RSVP.resolve(EA([item]));
+        return RSVP.resolve(EA([item]));
       }
     }
   });
@@ -98,7 +99,7 @@ test('custom data store must specify custom query method', assert => {
   let route = createRoute(['post', { store: 'simpleStore' }], {
     simpleStore: {
       findAll() {
-        return Ember.RSVP.resolve();
+        return RSVP.resolve();
       }
     }
   });
@@ -245,7 +246,7 @@ module('RouteMixin - reaching the end', {
     };
 
     this.loadMore = () => {
-      Ember.run(() => {
+      run(() => {
         this.route._infinityLoad();
       });
     };
@@ -321,25 +322,25 @@ test("It resets the currentPage when the model hook is called again", function (
 
 module('RouteMixin - loading more data', {
   setup(assert) {
-    let store = createMockStore(Ember.Object.create({
-        items: [{id: 1, name: 'Test'}, {id: 2, name: 'Test 2'}],
-        pushObjects() {
-          return this;
-        },
-        meta: {
-          testTotalPages: 3
-        }
-      }),
+    let store = createMockStore(
+      // return response for model hook
+      EA([{id: 1, name: 'Test'}, {id: 2, name: 'Test 2'}], { testTotalPages: 3 }),
+      // for query method in model hook
       (modelType, findQuery) => {
         assert.equal(findQuery.testPerPage, 1);
         assert.equal(findQuery.testPage, this.expectedPageNumber);
-    });
+      }
+    );
 
-    this.route = createRoute(['item', {perPage: 1, startingPage: 2}], {
+    this.route = createRoute(
+      ['item', {
+        // explicit params passed to infinityModel hook
+        perPage: 1, startingPage: 2, 
+        totalPagesParam: 'meta.testTotalPages', perPageParam: 'testPerPage', pageParam: 'testPage' 
+      }], 
+      {
+        // route properties
         store,
-        perPageParam: 'testPerPage',
-        pageParam: 'testPage',
-        totalPagesParam: 'meta.testTotalPages'
       }
     );
 
@@ -354,8 +355,8 @@ test('it uses overridden params when loading more data', function (assert) {
 
   this.expectedPageNumber = 2;
 
-  assert.equal(this.route.get('_canLoadMore'), true, '_canLoadMore');
-  assert.equal(this.route.get('currentPage'), 2, 'currentPage');
+  assert.equal(this.model.get('_canLoadMore'), true, '_canLoadMore');
+  assert.equal(this.model.get('currentPage'), 2, 'currentPage');
 });
 
 test('it uses overridden params when reaching the end', function (assert) {
@@ -363,12 +364,13 @@ test('it uses overridden params when reaching the end', function (assert) {
 
   this.expectedPageNumber = 3;
 
-  Ember.run(() => {
-    this.route._infinityLoad();
+  const infinityModel = this.route._infinityModels.objectAt(0);
+  run(() => {
+    this.route._infinityLoad(infinityModel);
   });
 
-  assert.equal(this.route.get('_canLoadMore'), false, '_canLoadMore');
-  assert.equal(this.route.get('currentPage'), 3, 'currentPage');
+  assert.equal(this.model.get('_canLoadMore'), false, '_canLoadMore');
+  assert.equal(this.model.get('currentPage'), 3, 'currentPage');
   assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
 });
 
@@ -408,7 +410,7 @@ module('RouteMixin - bound params', {
     this.model = callModelHook(this.route);
 
     this.loadMore = () => {
-      Ember.run(() => {
+      run(() => {
         this.route._infinityLoad();
       });
     };
@@ -446,7 +448,7 @@ module('RouteMixin.updateInfinityModel', {
     let store = {
       query(modelType, findQuery) {
         let item = items[findQuery.page-1];
-        return Ember.RSVP.resolve(
+        return RSVP.resolve(
           EA([item], {total_pages: 2})
         );
       }
@@ -463,12 +465,12 @@ module('RouteMixin.updateInfinityModel', {
     this.model = callModelHook(this.route);
 
     this.testPage = ({canLoadMore, contentLength}) => {
-      assert.equal(this.route.get('_canLoadMore'), canLoadMore, '_canLoadMore');
+      assert.equal(this.model.get('_canLoadMore'), canLoadMore, '_canLoadMore');
       assert.equal(this.model.get('content.length'), contentLength, 'content.length');
     };
 
     this.loadMore = () => {
-      Ember.run(() => {
+      run(() => {
         this.route._infinityLoad();
       });
     };
@@ -505,7 +507,7 @@ test('it allows manual invocations of updateInfinityModel', function (assert) {
 
   this.loadMore();
 
-  Ember.run(() => {
+  run(() => {
     this.route.updateInfinityModel(EA([
       { id: 3, title: 'Tender Is the Night' }
     ]));
@@ -572,7 +574,7 @@ test('it does not require a return value to work', function (assert) {
 
 test('it resolves a promise returned from afterInfinityModel', function (assert) {
   this.route.afterInfinityModel = (items) => {
-    return new Ember.RSVP.Promise(function (resolve) {
+    return new RSVP.Promise(function (resolve) {
       resolve(items.setEach('author', 'F. Scott Fitzgerald'));
     });
   };

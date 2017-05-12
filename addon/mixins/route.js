@@ -22,6 +22,13 @@ const RouteMixin = Mixin.create({
   currentPage: computed.alias('_infinityModel.currentPage'),
 
   actions: {
+    /**
+     * determine if the passed infinityModel already exists on the infinityRoute and
+     * return boolean to tell infinity-loader component if it should make another request
+     * @method infinityLoad
+     * @param {Object} infinityModel
+     * @return {Boolean}
+     */
     infinityLoad(infinityModel) {
       let matchingInfinityModel = this._infinityModels.find(model => model === infinityModel);
       if (matchingInfinityModel) {
@@ -118,6 +125,7 @@ const RouteMixin = Mixin.create({
     const currentPage = options.startingPage === undefined ? 0 : options.startingPage-1;
     const perPage         = options.perPage || 25;
     const perPageParam    = options.perPageParam || 'per_page';
+    const pageParam    = options.pageParam || 'page';
     const totalPagesParam = options.totalPagesParam || 'meta.total_pages';
 
     delete options.startingPage;
@@ -129,6 +137,7 @@ const RouteMixin = Mixin.create({
       currentPage,
       perPage,
       perPageParam,
+      pageParam,
       totalPagesParam,
       _infinityModelName: modelName,
       extraParams: options,
@@ -220,8 +229,6 @@ const RouteMixin = Mixin.create({
    @returns {Ember.RSVP.Promise} A Promise that resolves the next page of objects
    */
   _requestNextPage(modelName, params) {
-    this.incrementProperty('currentPage');
-
     return this.get(this._store)[this._storeFindMethod](modelName, params);
   },
 
