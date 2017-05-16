@@ -106,14 +106,21 @@ export default ArrayProxy.extend({
 
   /**
    build the params for the next page request
+   if param does not exist (user set to null or not defined) it will not be sent with request
    @private
    @method _buildParams
    @return {Object} The query params for the next page of results
    */
   buildParams() {
     const pageParams = {};
-    pageParams[get(this, 'perPageParam')] = get(this, 'perPage');
-    pageParams[get(this, 'pageParam')] = get(this, 'currentPage') + 1;
+    const perPageParam = get(this, 'perPageParam');
+    const pageParam = get(this, 'pageParam');
+    if (perPageParam) {
+      pageParams[perPageParam] = get(this, 'perPage');
+    }
+    if (pageParam) {
+      pageParams[pageParam] = get(this, 'currentPage') + 1;
+    }
 
     const params = objectAssign(pageParams, get(this, 'extraParams'));
 

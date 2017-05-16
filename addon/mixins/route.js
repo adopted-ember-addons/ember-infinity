@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 const { Mixin, computed, get, set, run, A } = Ember;
-import { objectAssign } from '../utils';
+import { objectAssign, typeOfCheck } from '../utils';
 
 /**
   The Ember Infinity Route Mixin enables an application route to load paginated
@@ -123,14 +123,17 @@ const RouteMixin = Mixin.create({
     }
 
     const currentPage = options.startingPage === undefined ? 0 : options.startingPage-1;
-    const perPage         = options.perPage || 25;
-    const perPageParam    = options.perPageParam || 'per_page';
-    const pageParam    = options.pageParam || 'page';
+    const perPage = options.perPage || 25;
+
+    // check if user passed in param w/ infinityModel, else check if defined on the route (for backwards compat), else default
+    const perPageParam = typeOfCheck(options.perPageParam, get(this, 'perPageParam'), 'per_page');
+    const pageParam = typeOfCheck(options.pageParam, get(this, 'pageParam'), 'page');
     const totalPagesParam = options.totalPagesParam || 'meta.total_pages';
 
     delete options.startingPage;
     delete options.perPage;
     delete options.perPageParam;
+    delete options.pageParam;
     delete options.totalPagesParam;
 
     const infinityModel = InfinityModel.create({

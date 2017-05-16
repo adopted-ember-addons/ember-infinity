@@ -153,55 +153,46 @@ test('it can not use infinityModel without a Model Name', assert => {
 
 test('it sets state before it reaches the end', assert => {
   let route = createRoute(['item'], {
-    store: createMockStore(Ember.Object.create({
-      items: [{id: 1, name: 'Test'}],
-      meta: {
-        total_pages: 31
-      }
-    }))
+    store: createMockStore(EA([{id: 1, name: 'Test'}], { total_pages: 31 } ))
   });
 
   let model = callModelHook(route);
 
-  assert.equal(route.get('_totalPages'), 31, '_totalPages');
-  assert.equal(route.get('currentPage'), 1, 'currentPage');
-  assert.equal(route.get('_canLoadMore'), true, '_canLoadMore');
+  assert.equal(model.get('_totalPages'), 31, '_totalPages');
+  assert.equal(model.get('currentPage'), 1, 'currentPage');
+  assert.equal(model.get('_canLoadMore'), true, '_canLoadMore');
   assert.ok(Ember.$.isEmptyObject(route.get('_extraParams')), 'extra params are empty');
   assert.ok(!model.get('reachedInfinity'), 'Should not reach infinity');
 });
 
 test('it allows customizations of request params', assert => {
   let store = createMockStore(
-    Ember.Object.create({ items: [] }),
-    function (modelType, findQuery) {
+    EA([]), 
+    (modelType, findQuery) => {
       assert.deepEqual(findQuery, {per: 25, p: 1}, 'findQuery');
-  });
+    }
+  );
 
-  let route = createRoute(['item'], {
-    perPageParam: 'per',
-    pageParam: 'p',
-    store
-  });
+  let route = createRoute(['item', { 
+    perPageParam: 'per', pageParam: 'p'
+  }], { store });
 
   callModelHook(route);
 });
 
 test('it skips request params when set to null', assert => {
   let store = createMockStore(
-    Ember.Object.create({ items: [] }),
-    function (modelType, findQuery) {
+    EA([]), 
+    (modelType, findQuery) => {
       assert.deepEqual(findQuery, {}, 'findQuery');
   });
 
-  let route = createRoute(['item'], {
-    perPageParam: null,
-    pageParam: null,
-    store
-  });
+  let route = createRoute(['item', { 
+    perPageParam: null, pageParam: null
+  }], { store });
 
   callModelHook(route);
 });
-
 
 test('it allows customizations of meta parsing params', assert => {
   let store = createMockStore(Ember.Object.create({
