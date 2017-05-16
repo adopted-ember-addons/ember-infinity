@@ -32,16 +32,16 @@ export let objectAssign = Object.assign || function objectAssign(target) {
  * @param {String} - default
  * @return {String} 
  */
-export function typeOfCheck(value, option, defaultParam) {
-  if (typeOf(value) === 'null') {
+export function typeOfCheck(optionParam, routeParam, defaultParam) {
+  if (typeOf(optionParam) === 'null' || typeOf(routeParam) === 'null') {
     // allow user to set to null if passed into infinityRoute explicitly
     return;
 
-  } else if (value) {
-    return value;
+  } else if (optionParam) {
+    return optionParam;
 
-  } else if (option) {
-    return value;
+  } else if (routeParam) {
+    return routeParam;
 
   } else {
     return defaultParam;
