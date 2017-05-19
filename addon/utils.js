@@ -1,5 +1,5 @@
 import Ember from 'ember';
-const { typeOf, get } = Ember;
+const { typeOf } = Ember;
 
 export let objectAssign = Object.assign || function objectAssign(target) {
   'use strict';
@@ -47,4 +47,4 @@ export function typeOfCheck(optionParam, routeParam, defaultParam) {
     return defaultParam;
 
   }
-};
+}
