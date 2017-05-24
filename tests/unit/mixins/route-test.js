@@ -365,10 +365,8 @@ module('RouteMixin - bound params', {
         );
     });
 
-    this.route = createRoute(['item',
-        {perPage: 1, startingPage: 1},
-        {category: 'feature'}
-      ],
+    this.route = createRoute(
+      ['item', {perPage: 1, startingPage: 1}, {category: 'feature'}],
       {
         feature: Ember.computed.alias('test'),
         test: 'new',
@@ -395,14 +393,14 @@ test('it uses bound params when loading more data', function (assert) {
 test('it uses bound params when loading even more data', function (assert) {
   this.loadMore();
 
-  assert.equal(this.route.get('_canLoadMore'), true, 'can load even more data');
+  assert.equal(this.model.get('_canLoadMore'), true, 'can load even more data');
 });
 
 test('it uses bound params when reaching the end', function (assert) {
   this.loadMore();
   this.loadMore();
 
-  assert.equal(this.route.get('_canLoadMore'), false, '_canLoadMore');
+  assert.equal(this.model.get('_canLoadMore'), false, '_canLoadMore');
   assert.equal(this.route.get('currentPage'), 3, 'currentPage');
   assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
 });

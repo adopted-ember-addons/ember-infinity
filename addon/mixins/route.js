@@ -150,7 +150,10 @@ const RouteMixin = Mixin.create({
     this._ensureCompatibility();
 
     if (typeof boundParams === 'object') {
-      set(infinityModel, '_boundParams', boundParams);
+      let params = {};
+      // get off route before setting on infinityModel
+      Object.keys(boundParams).forEach(k => params[k] = get(this, boundParams[k]));
+      set(infinityModel, '_boundParams', params);
     }
 
     this._infinityModels.pushObject(infinityModel);

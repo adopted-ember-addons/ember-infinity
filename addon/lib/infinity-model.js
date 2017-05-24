@@ -126,7 +126,7 @@ export default ArrayProxy.extend({
 
     const boundParams = get(this, '_boundParams');
     if (!Ember.isEmpty(boundParams)) {
-      Object.keys(boundParams).forEach(k => params[k] = get(this, boundParams[k]));
+      Object.keys(boundParams).forEach(k => params[k] = boundParams[k]);
     }
 
     return params;
