@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import { objectAssign } from '../utils';
 
-const { get, ArrayProxy, computed } = Ember;
+const { get, ArrayProxy, computed, typeOf } = Ember;
 
 export default ArrayProxy.extend({
   /**
@@ -115,10 +115,10 @@ export default ArrayProxy.extend({
     const pageParams = {};
     const perPageParam = get(this, 'perPageParam');
     const pageParam = get(this, 'pageParam');
-    if (perPageParam) {
+    if (typeOf(perPageParam) === 'string') {
       pageParams[perPageParam] = get(this, 'perPage');
     }
-    if (pageParam) {
+    if (typeOf(pageParam) === 'string') {
       pageParams[pageParam] = get(this, 'currentPage') + 1;
     }
 

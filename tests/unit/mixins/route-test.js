@@ -8,10 +8,27 @@ module('RouteMixin');
 const assign = Ember.assign || Ember.merge;
 
 let EA = function (content, meta={}) {
-  return Ember.ArrayProxy.create({ content: Ember.A(content), ...meta });
+  meta = meta; // get around jshint warnings until eslint
+  return Ember.ArrayProxy.create({ 
+    content: Ember.A(content), 
+    // jshint ignore:start
+    ...meta
+    // jshint ignore:end
+  }); 
 };
 
-test('it works', assert => {
+// let EA = function (content, meta) {
+//   // can use meta={} and ...meta when get eslint in to avoid 
+//   let key = null;
+//   let val = null;
+//   for (let x in meta) {
+//     key = x;
+//     val = meta[x];
+//   }
+//   return Ember.ArrayProxy.create({ content: Ember.A(content), [key]: val });
+// };
+
+test('it works', function(assert) {
   let RouteObject = Route.extend(RouteMixin);
   let route = RouteObject.create();
   assert.ok(route);
@@ -52,7 +69,7 @@ function callModelHook(route) {
   return model;
 }
 
-test('it can not use infinityModel without Ember Data Store', assert => {
+test('it can not use infinityModel without Ember Data Store', function(assert) {
   let route = createRoute(['post'], {store: null});
 
   try {
@@ -62,7 +79,7 @@ test('it can not use infinityModel without Ember Data Store', assert => {
   }
 });
 
-test('it can use infinityModel with a custom data store', assert => {
+test('it can use infinityModel with a custom data store', function(assert) {
   let item = { id: 1, title: 'The Great Gatsby' };
   let route = createRoute(['post', { store: 'simpleStore' }], {
     simpleStore: createMockStore(EA([item]))
@@ -76,7 +93,7 @@ test('it can use infinityModel with a custom data store', assert => {
   }
 });
 
-test('custom data store can specify custom query method', assert => {
+test('custom data store can specify custom query method', function(assert) {
   let route = createRoute(['post', { store: 'simpleStore', storeFindMethod: 'findAll' }], {
     simpleStore: {
       findAll() {
@@ -95,7 +112,7 @@ test('custom data store can specify custom query method', assert => {
 });
 
 
-test('custom data store must specify custom query method', assert => {
+test('custom data store must specify custom query method', function(assert) {
   let route = createRoute(['post', { store: 'simpleStore' }], {
     simpleStore: {
       findAll() {
@@ -111,7 +128,7 @@ test('custom data store must specify custom query method', assert => {
   }
 });
 
-test('it can not use infinityModel without passing a string for custom data store', assert => {
+test('it can not use infinityModel without passing a string for custom data store', function(assert) {
   let route = createRoute(['post', { store: 23 }]);
 
   try {
@@ -121,7 +138,7 @@ test('it can not use infinityModel without passing a string for custom data stor
   }
 });
 
-test('it can not use infinityModel without the Store Property having the appropriate finder method', assert => {
+test('it can not use infinityModel without the Store Property having the appropriate finder method', function(assert) {
   let route = createRoute(['post'], {
     store: {
       notQuery() {
@@ -137,7 +154,7 @@ test('it can not use infinityModel without the Store Property having the appropr
   }
 });
 
-test('it can not use infinityModel without a Model Name', assert => {
+test('it can not use infinityModel without a Model Name', function(assert) {
   let route = createRoute([], {
     store: {
       query() {}
@@ -151,7 +168,7 @@ test('it can not use infinityModel without a Model Name', assert => {
   }
 });
 
-test('it sets state before it reaches the end', assert => {
+test('it sets state before it reaches the end', function(assert) {
   let route = createRoute(['item'], {
     store: createMockStore(EA([{id: 1, name: 'Test'}], { meta: { total_pages: 31 } } ))
   });
@@ -165,7 +182,7 @@ test('it sets state before it reaches the end', assert => {
   assert.ok(!model.get('reachedInfinity'), 'Should not reach infinity');
 });
 
-test('it allows customizations of request params', assert => {
+test('it allows customizations of request params', function(assert) {
   let store = createMockStore(
     EA([]), 
     (modelType, findQuery) => {
@@ -180,7 +197,7 @@ test('it allows customizations of request params', assert => {
   callModelHook(route);
 });
 
-test('It allows to set startingPage as 0', assert => {
+test('It allows to set startingPage as 0', function(assert) {
   let store = createMockStore( EA([{id: 1, name: 'Test'}], { total_pages: 1 }) );
   let route = createRoute(['item', {
     startingPage: 0
@@ -192,7 +209,7 @@ test('It allows to set startingPage as 0', assert => {
   assert.equal(model.get('_canLoadMore'), false);
 });
 
-test('it skips request params when set to null', assert => {
+test('it skips request params when set to null', function(assert) {
   let store = createMockStore(
     EA([]), 
     (modelType, findQuery) => {
@@ -206,7 +223,7 @@ test('it skips request params when set to null', assert => {
   callModelHook(route);
 });
 
-test('it allows customizations of meta parsing params', assert => {
+test('it allows customizations of meta parsing params', function(assert) {
   let store = createMockStore(
     EA([{id: 1, name: 'Walter White'}], { pagination: { total: 22 } })
   );
@@ -222,7 +239,7 @@ test('it allows customizations of meta parsing params', assert => {
 });
 
 module('RouteMixin - reaching the end', {
-  setup() {
+  beforeEach() {
     this.store = createMockStore(EA([{id: 1, name: 'Test'}], { meta: { total_pages: 2 } }));
 
     this.createRoute = (extras) => {
@@ -313,7 +330,7 @@ test("It resets the currentPage when the model hook is called again", function (
 });
 
 module('RouteMixin - loading more data', {
-  setup(assert) {
+  beforeEach(assert) {
     let store = createMockStore(
       // return response for model hook
       EA([{id: 1, name: 'Test'}, {id: 2, name: 'Test 2'}], { meta: { testTotalPages: 3 } }),
@@ -367,7 +384,7 @@ test('it uses overridden params when reaching the end', function (assert) {
 });
 
 module('RouteMixin - bound params', {
-  setup(assert) {
+  beforeEach(assert) {
     let store = createMockStore(EA([{id: 1, name: 'Test'}, {id: 2, name: 'New Test'}], { meta: { total_pages: 3 } }),
       (modelType, findQuery) => {
         assert.equal(
@@ -418,7 +435,7 @@ test('it uses bound params when reaching the end', function (assert) {
 });
 
 // module('RouteMixin.updateInfinityModel', {
-//   setup(assert) {
+//   beforeEach(assert) {
 //     let items = [
 //       { id: 1, title: 'The Great Gatsby' },
 //       { id: 2, title: 'The Last Tycoon' }
