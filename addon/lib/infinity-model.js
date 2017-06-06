@@ -30,14 +30,6 @@ export default ArrayProxy.extend({
 
   /**
     @private
-    @property _boundParams
-    @type Object
-    @default {}
-  */
-  _boundParams: {},
-
-  /**
-    @private
     @property _loadingMore
     @type Boolean
     @default false
@@ -122,13 +114,6 @@ export default ArrayProxy.extend({
       pageParams[pageParam] = get(this, 'currentPage') + 1;
     }
 
-    const params = objectAssign(pageParams, get(this, 'extraParams'));
-
-    const boundParams = get(this, '_boundParams');
-    if (!Ember.isEmpty(boundParams)) {
-      Object.keys(boundParams).forEach(k => params[k] = boundParams[k]);
-    }
-
-    return params;
+    return objectAssign(pageParams, get(this, 'extraParams'));
   }
 });

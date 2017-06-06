@@ -79,6 +79,16 @@ test('it can not use infinityModel without Ember Data Store', function(assert) {
   }
 });
 
+test('it throws warning for passing bound params', function(assert) {
+  let route = createRoute(['post', { store: 23 }, { country: 'Ukraine' } ]);
+
+  try {
+    route.model();
+  } catch(e) {
+    assert.equal(e.message, 'Bound params are now deprecated. Please pass explicitly as second param to infinityModel');
+  }
+});
+
 test('it can use infinityModel with a custom data store', function(assert) {
   let item = { id: 1, title: 'The Great Gatsby' };
   let route = createRoute(['post', { store: 'simpleStore' }], {
@@ -110,7 +120,6 @@ test('custom data store can specify custom query method', function(assert) {
     assert.ok(false, 'something failed');
   }
 });
-
 
 test('custom data store must specify custom query method', function(assert) {
   let route = createRoute(['post', { store: 'simpleStore' }], {
@@ -380,57 +389,6 @@ test('it uses overridden params when reaching the end', function (assert) {
 
   assert.equal(this.model.get('_canLoadMore'), false, '_canLoadMore');
   assert.equal(this.model.get('currentPage'), 3, 'currentPage');
-  assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
-});
-
-module('RouteMixin - bound params', {
-  beforeEach(assert) {
-    let store = createMockStore(EA([{id: 1, name: 'Test'}, {id: 2, name: 'New Test'}], { meta: { total_pages: 3 } }),
-      (modelType, findQuery) => {
-        assert.equal(
-          this.route.get('test'),
-          findQuery.category,
-          'dynamic param is equal to the value of the computed property'
-        );
-    });
-
-    this.route = createRoute(
-      ['item', {perPage: 1, startingPage: 1}, {category: 'feature'}],
-      {
-        feature: Ember.computed.alias('test'),
-        test: 'new',
-        store
-      }
-    );
-
-    this.model = callModelHook(this.route);
-
-    this.loadMore = () => {
-      run(() => {
-        this.route._infinityLoad(this.model);
-      });
-    };
-  }
-});
-
-test('it uses bound params when loading more data', function (assert) {
-  assert.expect(2);
-
-  assert.equal(this.model.get('_canLoadMore'), true, '_canLoadMore');
-});
-
-test('it uses bound params when loading even more data', function (assert) {
-  this.loadMore();
-
-  assert.equal(this.model.get('_canLoadMore'), true, 'can load even more data');
-});
-
-test('it uses bound params when reaching the end', function (assert) {
-  this.loadMore();
-  this.loadMore();
-
-  assert.equal(this.model.get('_canLoadMore'), false, '_canLoadMore');
-  assert.equal(this.route.get('currentPage'), 3, 'currentPage');
   assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
 });
 

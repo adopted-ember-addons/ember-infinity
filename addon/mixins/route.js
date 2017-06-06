@@ -95,12 +95,14 @@ const RouteMixin = Mixin.create({
     @method infinityModel
     @param {String} modelName The name of the model.
     @param {Object} options Optional, the perPage and startingPage to load from.
-    @param {Object} boundParams Optional, any route properties to be included as additional params.
     @return {Ember.RSVP.Promise}
   */
   infinityModel(modelName, options, boundParams) {
     if (modelName === undefined) {
       throw new Ember.Error("Ember Infinity: You must pass a Model Name to infinityModel");
+    }
+    if (boundParams) {
+      throw new Ember.Error("Bound params are now deprecated. Please pass explicitly as second param to infinityModel");
     }
 
     if (!this._infinityModels) {
@@ -148,13 +150,6 @@ const RouteMixin = Mixin.create({
     });
 
     this._ensureCompatibility();
-
-    if (typeof boundParams === 'object') {
-      let params = {};
-      // get off route before setting on infinityModel
-      Object.keys(boundParams).forEach(k => params[k] = get(this, boundParams[k]));
-      set(infinityModel, '_boundParams', params);
-    }
 
     this._infinityModels.pushObject(infinityModel);
 
