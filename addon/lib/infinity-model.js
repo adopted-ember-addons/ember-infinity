@@ -94,7 +94,7 @@ export default ArrayProxy.extend({
     const totalPages  = get(this, '_totalPages');
     const currentPage = get(this, 'currentPage');
     return (totalPages && currentPage !== undefined) ? (currentPage < totalPages) : false;
-  }),
+  }).readOnly(),
 
   /**
    build the params for the next page request

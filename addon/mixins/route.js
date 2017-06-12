@@ -18,8 +18,8 @@ const RouteMixin = Mixin.create({
   // these are here for backwards compat
   _infinityModel: computed('_infinityModels.[]', function() { 
     return get(this, '_infinityModels.firstObject'); 
-  }),
-  currentPage: computed.alias('_infinityModel.currentPage'),
+  }).readOnly(),
+  currentPage: computed.alias('_infinityModel.currentPage').readOnly(),
 
   actions: {
     /**
