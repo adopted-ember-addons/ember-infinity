@@ -31,6 +31,7 @@ before_install:
   - export PATH=$HOME/.yarn/bin:$PATH
 
 install:
+  - npm install -g bower
   - yarn install --no-lockfile
   - bower install
 
