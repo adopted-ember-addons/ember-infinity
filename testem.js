@@ -7,7 +7,13 @@ module.exports = {
     "Chrome"
   ],
   "launch_in_dev": [
-    "Firefox",
-    "Chrome"
-  ]
+    "Chrome",
+    "Firefox"
+  ],
+  "browser_args": {
+    "Chrome": {
+      "mode": "ci",
+      "args": [ '--headless', '--disable-gpu', '--remote-debugging-port=9222' ]
+    }
+  },
 };
