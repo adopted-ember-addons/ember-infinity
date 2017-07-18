@@ -100,7 +100,7 @@ export default ArrayProxy.extend({
    build the params for the next page request
    if param does not exist (user set to null or not defined) it will not be sent with request
    @private
-   @method _buildParams
+   @method buildParams
    @return {Object} The query params for the next page of results
    */
   buildParams() {

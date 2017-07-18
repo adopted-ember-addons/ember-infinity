@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
-const { Mixin, computed, get, set, run, A } = Ember;
+const { Mixin, computed, get, set, run, A, deprecate } = Ember;
 import { objectAssign, typeOfCheck } from '../utils';
 
 /**
@@ -102,7 +102,7 @@ const RouteMixin = Mixin.create({
       throw new Ember.Error("Ember Infinity: You must pass a Model Name to infinityModel");
     }
     if (boundParams) {
-      throw new Ember.Error("Bound params are now deprecated. Please pass explicitly as second param to infinityModel");
+      throw new Ember.Error("Ember Infinity: Bound params are now deprecated. Please pass explicitly as second param to the infinityModel method");
     }
 
     if (!this._infinityModels) {
@@ -154,6 +154,20 @@ const RouteMixin = Mixin.create({
     this._infinityModels.pushObject(infinityModel);
 
     return this._loadNextPage(infinityModel);
+  },
+
+  /**
+     Update the infinity model with new objects
+     Only called on the second page and following
+
+     @deprecated
+     @method updateInfinityModel
+     @param {Ember.Enumerable} newObjects The new objects to add to the model
+     @return {Ember.Array} returns the new objects
+  */
+  updateInfinityModel(newObjects) {
+    deprecate('Ember Infinity: this method will be deprecated in the future.');
+    return this._doUpdate(newObjects);
   },
 
   /**
@@ -261,6 +275,7 @@ const RouteMixin = Mixin.create({
       return;
     }
 
+    deprecate('Ember Infinity: infinityModelUpdated will be deprecated in the future.');
     run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
       lastPageLoaded: this.get('currentPage'),
       totalPages: this.get('_totalPages'),

@@ -167,6 +167,7 @@ return this.infinityModel("product", { perPage: 12, startingPage: 1,
 ```
 
 Bound Parameters has been DEPRECATED as the third argument to `infinityModel`.  
+Please include as second argument to infinityModel.
 
 * **modelPath**
 
