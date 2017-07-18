@@ -1,5 +1,5 @@
 import Ember from 'ember';
-const { typeOf } = Ember;
+const { typeOf, deprecate } = Ember;
 
 export let objectAssign = Object.assign || function objectAssign(target) {
   'use strict';
@@ -41,6 +41,7 @@ export function typeOfCheck(optionParam, routeParam, defaultParam) {
     return optionParam;
 
   } else if (routeParam) {
+    deprecate(`Ember Infinity: Please migrate route param - ${routeParam} - to be explicitly passed as second argument to infinityModel`);
     return routeParam;
 
   } else {
