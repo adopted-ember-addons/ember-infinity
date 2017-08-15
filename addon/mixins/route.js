@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
+import BoundParamsMixin from 'ember-infinity/mixins/bound_params';
 const { Mixin, computed, get, set, run, A, deprecate } = Ember;
 import { objectAssign, typeOfCheck } from '../utils';
 
@@ -23,11 +24,11 @@ const RouteMixin = Mixin.create({
 
   actions: {
     /**
-     * determine if the passed infinityModel already exists on the infinityRoute and
-     * return boolean to tell infinity-loader component if it should make another request
-     * @method infinityLoad
-     * @param {Object} infinityModel
-     * @return {Boolean}
+      determine if the passed infinityModel already exists on the infinityRoute and
+      return boolean to tell infinity-loader component if it should make another request
+      @method infinityLoad
+      @param {Object} infinityModel
+      @return {Boolean}
      */
     infinityLoad(infinityModel) {
       let matchingInfinityModel = this._infinityModels.find(model => model === infinityModel);
@@ -47,13 +48,13 @@ const RouteMixin = Mixin.create({
   _store: 'store',
 
   /**
-   * The supported findMethod name for
-   * the developers Ember Data version.
-   * Provided here for backwards compat.
+    The supported findMethod name for
+    the developers Ember Data version.
+    Provided here for backwards compat.
     @private
     @property _storeFindMethod
-   * @type {String}
-   * @default "query"
+    @type {String}
+    @default "query"
    */
   _storeFindMethod: 'query',
 
@@ -101,9 +102,6 @@ const RouteMixin = Mixin.create({
     if (modelName === undefined) {
       throw new Ember.Error("Ember Infinity: You must pass a Model Name to infinityModel");
     }
-    if (boundParams) {
-      throw new Ember.Error("Ember Infinity: Bound params are now deprecated. Please pass explicitly as second param to the infinityModel method");
-    }
 
     if (!this._infinityModels) {
       this._infinityModels = A();
@@ -138,7 +136,12 @@ const RouteMixin = Mixin.create({
     delete options.pageParam;
     delete options.totalPagesParam;
 
-    const infinityModel = InfinityModel.create({
+    // if pass boundParams, send to backwards compatible mixin that sets bound params on route
+    // and subsequently looked up when user wants to load next page
+    let didPassBoundParams = !!boundParams;
+    const InfinityModelFactory = didPassBoundParams ? InfinityModel.extend(BoundParamsMixin) : InfinityModel;
+
+    let initParams = {
       currentPage,
       perPage,
       perPageParam,
@@ -147,7 +150,14 @@ const RouteMixin = Mixin.create({
       _infinityModelName: modelName,
       extraParams: options,
       content: A()
-    });
+    };
+
+    if (didPassBoundParams) {
+      initParams._deprecatedBoundParams = boundParams;
+      initParams.route = this;
+    }
+
+    const infinityModel = InfinityModelFactory.create(initParams);
 
     this._ensureCompatibility();
 
@@ -157,13 +167,13 @@ const RouteMixin = Mixin.create({
   },
 
   /**
-     Update the infinity model with new objects
-     Only called on the second page and following
+    Update the infinity model with new objects
+    Only called on the second page and following
 
-     @deprecated
-     @method updateInfinityModel
-     @param {Ember.Enumerable} newObjects The new objects to add to the model
-     @return {Ember.Array} returns the new objects
+    @deprecated
+    @method updateInfinityModel
+    @param {Ember.Enumerable} newObjects The new objects to add to the model
+    @return {Ember.Array} returns the new objects
   */
   updateInfinityModel(newObjects) {
     deprecate('Ember Infinity: this method will be deprecated in the future.');
@@ -171,11 +181,11 @@ const RouteMixin = Mixin.create({
   },
 
   /**
-   Call additional functions after finding the infinityModel in the Ember store.
-   @private
-   @method _afterInfinityModel
-   @param {Function} infinityModelPromise The resolved result of the Ember store find method. Passed in automatically.
-   @return {Ember.RSVP.Promise}
+    Call additional functions after finding the infinityModel in the Ember store.
+    @private
+    @method _afterInfinityModel
+    @param {Function} infinityModelPromise The resolved result of the Ember store find method. Passed in automatically.
+    @return {Ember.RSVP.Promise}
   */
   _afterInfinityModel(_this) {
     return function(infinityModelPromiseResult, infinityModel) {
@@ -191,11 +201,11 @@ const RouteMixin = Mixin.create({
   },
 
   /**
-   Trigger a load of the next page of results.
+    Trigger a load of the next page of results.
 
-   @private
-   @method _infinityLoad
-   @param {Ember.ArrayProxy} infinityModel
+    @private
+    @method _infinityLoad
+    @param {Ember.ArrayProxy} infinityModel
    */
   _infinityLoad(infinityModel) {
     if (get(infinityModel, '_loadingMore') || !get(infinityModel, '_canLoadMore')) {
@@ -206,12 +216,12 @@ const RouteMixin = Mixin.create({
   },
 
   /**
-   load the next page from the adapter and update the model
+    load the next page from the adapter and update the model
 
-   @private
-   @method _loadNextPage
-   @param {Ember.ArrayProxy} infinityModel
-   @return {Ember.RSVP.Promise} A Promise that resolves the model
+    @private
+    @method _loadNextPage
+    @param {Ember.ArrayProxy} infinityModel
+    @return {Ember.RSVP.Promise} A Promise that resolves the model
    */
   _loadNextPage(infinityModel) {
     set(infinityModel, '_loadingMore', true);
@@ -235,27 +245,27 @@ const RouteMixin = Mixin.create({
   },
 
   /**
-   request the next page from the adapter
+    request the next page from the adapter
 
-   @private
-   @method _requestNextPage
-   @param {String} modelName
-   @param {Object} options
-   @returns {Ember.RSVP.Promise} A Promise that resolves the next page of objects
+    @private
+    @method _requestNextPage
+    @param {String} modelName
+    @param {Object} options
+    @returns {Ember.RSVP.Promise} A Promise that resolves the next page of objects
    */
   _requestNextPage(modelName, params) {
     return this.get(this._store)[this._storeFindMethod](modelName, params);
   },
 
   /**
-   set _totalPages param on infinityModel
-   Update the infinity model with new objects
+    set _totalPages param on infinityModel
+    Update the infinity model with new objects
 
-   @private
-   @method _doUpdate
-   @param {Ember.Enumerable} queryObject The new objects to add to the model
-   @param {Ember.ArrayProxy} infinityModel
-   @return {Ember.Array} returns the new objects
+    @private
+    @method _doUpdate
+    @param {Ember.Enumerable} queryObject The new objects to add to the model
+    @param {Ember.ArrayProxy} infinityModel
+    @return {Ember.Array} returns the new objects
    */
   _doUpdate(queryObject, infinityModel) {
     const totalPages = queryObject.get(get(infinityModel, 'totalPagesParam'));
@@ -265,10 +275,10 @@ const RouteMixin = Mixin.create({
   },
 
   /**
-   notify that the infinity model has been updated
+    notify that the infinity model has been updated
 
-   @private
-   @method _notifyInfinityModelUpdated
+    @private
+    @method _notifyInfinityModelUpdated
    */
   _notifyInfinityModelUpdated(newObjects) {
     if (!this.infinityModelUpdated) {
@@ -284,10 +294,10 @@ const RouteMixin = Mixin.create({
   },
 
   /**
-   finish the loading cycle by notifying that infinity has been reached
+    finish the loading cycle by notifying that infinity has been reached
 
-   @private
-   @method _notifyInfinityModelLoaded
+    @private
+    @method _notifyInfinityModelLoaded
    */
   _notifyInfinityModelLoaded() {
     if (!this.infinityModelLoaded) {

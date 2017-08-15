@@ -1,7 +1,7 @@
 import Ember from 'ember';
 const { Route, RSVP, run } = Ember;
 import RouteMixin from 'ember-infinity/mixins/route';
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 
 module('RouteMixin');
 
@@ -16,17 +16,6 @@ let EA = function (content, meta={}) {
     // jshint ignore:end
   }); 
 };
-
-// let EA = function (content, meta) {
-//   // can use meta={} and ...meta when get eslint in to avoid 
-//   let key = null;
-//   let val = null;
-//   for (let x in meta) {
-//     key = x;
-//     val = meta[x];
-//   }
-//   return Ember.ArrayProxy.create({ content: Ember.A(content), [key]: val });
-// };
 
 test('it works', function(assert) {
   let RouteObject = Route.extend(RouteMixin);
@@ -79,13 +68,14 @@ test('it can not use infinityModel without Ember Data Store', function(assert) {
   }
 });
 
-test('it throws warning for passing bound params', function(assert) {
+// not sure how to test deps
+skip('it throws deprecate warning for passing bound params', function(assert) {
   let route = createRoute(['post', { store: 23 }, { country: 'Ukraine' } ]);
 
   try {
     route.model();
   } catch(e) {
-    assert.equal(e.message, 'Bound params are now deprecated. Please pass explicitly as second param to infinityModel');
+    assert.equal(e.message, 'Ember Infinity: Bound params are now deprecated. Please pass explicitly as second param to the infinityModel method');
   }
 });
 
@@ -251,8 +241,8 @@ module('RouteMixin - reaching the end', {
   beforeEach() {
     this.store = createMockStore(EA([{id: 1, name: 'Test'}], { meta: { total_pages: 2 } }));
 
-    this.createRoute = (extras) => {
-      this.route = createRoute(['item', extras],
+    this.createRoute = (extras, boundParams) => {
+      this.route = createRoute(['item', extras, boundParams],
         { store: this.store }
       );
 
@@ -296,6 +286,20 @@ test('it uses extra params when loading more data', function (assert) {
   // assert.equal(this.model.get('_extraParams.extra'), 'param', '_extraParams.extra');
   assert.equal(this.model.get('_canLoadMore'), false, '_canLoadMore');
   assert.equal(this.model.get('currentPage'), 2, 'currentPage');
+  assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
+});
+
+test('route accepts bound params and sets on infinity model to be passed on subsequent requests', function (assert) {
+  assert.expect(3);
+
+  const boundParam = { category: 'myCategory' };
+  this.createRoute({ extra: 'param' }, boundParam);
+
+  assert.deepEqual(this.model.get('_deprecatedBoundParams'), boundParam, '_deprecatedBoundParams');
+
+  this.loadMore();
+
+  assert.deepEqual(this.model.get('_deprecatedBoundParams'), boundParam, '_deprecatedBoundParams');
   assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
 });
 

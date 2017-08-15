@@ -53,26 +53,26 @@ export default ArrayProxy.extend({
   _infinityModelName: null,
 
   /**
-   * Name of the "per page" param in the
-   * resource request payload
-   * @type {String}
-   * @default  "per_page"
+    Name of the "per page" param in the
+    resource request payload
+    @type {String}
+    @default  "per_page"
    */
   perPageParam: 'per_page',
 
   /**
-   * Name of the "page" param in the
-   * resource request payload
-   * @type {String}
-   * @default "page"
+    Name of the "page" param in the
+    resource request payload
+    @type {String}
+    @default "page"
    */
   pageParam: 'page',
 
   /**
-   * Path of the "total pages" param in
-   * the HTTP response
-   * @type {String}
-   * @default "meta.total_pages"
+    Path of the "total pages" param in
+    the HTTP response
+    @type {String}
+    @default "meta.total_pages"
    */
   totalPagesParam: 'meta.total_pages',
 
@@ -97,11 +97,11 @@ export default ArrayProxy.extend({
   }).readOnly(),
 
   /**
-   build the params for the next page request
-   if param does not exist (user set to null or not defined) it will not be sent with request
-   @private
-   @method buildParams
-   @return {Object} The query params for the next page of results
+    build the params for the next page request
+    if param does not exist (user set to null or not defined) it will not be sent with request
+    @private
+    @method buildParams
+    @return {Object} The query params for the next page of results
    */
   buildParams() {
     const pageParams = {};
