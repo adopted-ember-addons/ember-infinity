@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
-import BoundParamsMixin from 'ember-infinity/mixins/bound_params';
-const { Mixin, computed, get, set, run, A, deprecate } = Ember;
+import BoundParamsMixin from 'ember-infinity/mixins/bound-params';
+const { Mixin, computed, get, set, run, A, deprecate, isEmpty } = Ember;
 import { objectAssign, typeOfCheck } from '../utils';
 
 /**
@@ -66,7 +66,7 @@ const RouteMixin = Mixin.create({
     @method _ensureCompatibility
   */
   _ensureCompatibility() {
-    if (Ember.isEmpty(this.get(this._store)) || Ember.isEmpty(this.get(this._store)[this._storeFindMethod])){
+    if (isEmpty(this.get(this._store)) || isEmpty(this.get(this._store)[this._storeFindMethod])){
       throw new Ember.Error("Ember Infinity: Store is not available to infinityModel");
     }
   },
@@ -138,7 +138,7 @@ const RouteMixin = Mixin.create({
 
     // if pass boundParams, send to backwards compatible mixin that sets bound params on route
     // and subsequently looked up when user wants to load next page
-    let didPassBoundParams = !!boundParams;
+    let didPassBoundParams = !isEmpty(boundParams);
     const InfinityModelFactory = didPassBoundParams ? InfinityModel.extend(BoundParamsMixin) : InfinityModel;
 
     let initParams = {
