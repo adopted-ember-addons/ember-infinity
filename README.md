@@ -25,8 +25,6 @@ Also:
 
 `ember install ember-infinity`
 
-**Note:** If you're getting an error like `semver is not defined`, you probably did `npm install` instead of `ember install`.  We use [ember-version-is](https://github.com/hhff/ember-version-is) to manage the code for different versions of Ember & Ember Data, which relies on semver.  `npm install` won't run the nested generator that adds semver to your app.
-
 ## Basic Usage
 
 ```js
@@ -81,7 +79,11 @@ and will expect to receive metadata in the response payload via a `total_pages` 
 }
 ```
 
-If you wish to customize some aspects of the JSON contract for pagination, you may do so via your routes. For example:
+If you wish to customize some aspects of the JSON contract for pagination, you may do so via your routes. For example, you may want to customize the following:
+
+- perPageParam: "per",              // instead of "per_page"
+- pageParam: "pg",                  // instead of "page"
+- totalPagesParam: "meta.total",    // instead of "meta.total_pages"
 
 ```js
 import Ember from 'ember';
@@ -89,13 +91,9 @@ import InfinityRoute from "ember-infinity/mixins/route";
 
 export default Ember.Route.extend(InfinityRoute, {
 
-  perPageParam: "per",              // instead of "per_page"
-  pageParam: "pg",                  // instead of "page"
-  totalPagesParam: "meta.total",    // instead of "meta.total_pages"
-
   model() {
-    /* Load pages of the Product Model, starting from page 1, in groups of 12. */
-    return this.infinityModel("product", { perPage: 12, startingPage: 1 });
+    /* Load pages of the Product Model, starting from page 1, in groups of 12. Also set query params by handing off to infinityModel */
+    return this.infinityModel("product", { perPage: 12, startingPage: 1, perPageParam: "per", pageParam: "pg", totalPagesParam: "meta.total" });
   }
 });
 ```
@@ -168,41 +166,8 @@ return this.infinityModel("product", { perPage: 12, startingPage: 1,
                                        category: "furniture" });
 ```
 
-Moreover, you can optionally pass in an object of bound parameters as a third option to `infinityModel` to further
-customize the request to the backend. The values of the contained parameters will be looked up against the route
-properties and the respective values will be included in the request:
-
-```js
-import Ember from 'ember';
-import InfinityRoute from 'ember-infinity/mixins/route';
-
-export default Ember.Route.extend(InfinityRoute, {
-  ...
-
-  prod: Ember.computed('cat', function () { return this.get('cat'); }),
-  country: '',
-  cat: 'shipped',
-
-  model() {
-    return this.infinityModel("product", { perPage: 12, startingPage: 1, make: "original" }, { country: "country", category: "prod" });
-  }
-});
-```
-
-In the example above, the query url should look like this:
-
-```
-  product?make=original&country=&category=shipped&per_page=12&page=1
-```
-
-If the value of the bound parameter cannot be found, the parameter is not included in the request. Note that you cannot have
-a static and bound parameter of the same name, the latter will take precedence.
-
-When you need to pass in bound parameters but no static parameters or custom pagination, call `infinityModel` with an empty object for it's second param:
-
-```js
-  return this.infinityModel("product", {}, { country: "country", category: "prod" });
-```
+Bound Parameters has been DEPRECATED as the third argument to `infinityModel`.  
+Please include as second argument to infinityModel.
 
 * **modelPath**
 
@@ -317,6 +282,7 @@ Chances are you'll want to scroll some source other than the default ember-data 
 ```js
 export default Ember.Route.extend(InfinityRoute, {
   customStore: Ember.inject.service('my-custom-store'),
+
   model(params) {
     return this.infinityModel('product', {
       perPage: 12,
