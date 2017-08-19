@@ -303,6 +303,14 @@ test('route accepts bound params and sets on infinity model to be passed on subs
   assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
 });
 
+test('route does not detect boundParams when no boundParams passed', function (assert) {
+  assert.expect(1);
+
+  this.createRoute({ extra: 'param' });
+
+  assert.equal(this.model.get('_deprecatedBoundParams'), undefined, 'bound params is not detected');
+});
+
 test("It doesn't request more pages once _canLoadMore is false", function (assert) {
   assert.expect(6);
 
