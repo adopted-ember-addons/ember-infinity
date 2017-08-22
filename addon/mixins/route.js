@@ -1,6 +1,8 @@
 import Ember from 'ember';
-const { Mixin, computed } = Ember;
-import { objectAssign } from '../utils';
+import InfinityModel from 'ember-infinity/lib/infinity-model';
+import BoundParamsMixin from 'ember-infinity/mixins/bound-params';
+const { Mixin, computed, get, set, run, A, deprecate, isEmpty } = Ember;
+import { objectAssign, typeOfCheck } from '../utils';
 
 /**
   The Ember Infinity Route Mixin enables an application route to load paginated
@@ -14,54 +16,29 @@ import { objectAssign } from '../utils';
 */
 const RouteMixin = Mixin.create({
 
-  /**
-    @private
-    @property _perPage
-    @type Integer
-    @default 25
-  */
-  _perPage: 25,
+  // these are here for backwards compat
+  _infinityModel: computed('_infinityModels.[]', function() { 
+    return get(this, '_infinityModels.firstObject'); 
+  }).readOnly(),
+  currentPage: computed.alias('_infinityModel.currentPage').readOnly(),
 
-  /**
-    @private
-    @property currentPage
-    @type Integer
-    @default 0
-  */
-  currentPage: 0,
-
-  /**
-    @private
-    @property _extraParams
-    @type Object
-    @default {}
-  */
-  _extraParams: {},
-
-  /**
-    @private
-    @property _boundParams
-    @type Object
-    @default {}
-  */
-  _boundParams: {},
-
-  /**
-    @private
-    @property _loadingMore
-    @type Boolean
-    @default false
-  */
-  _loadingMore: false,
-
-  /**
-    @private
-    @property _totalPages
-    @type Integer
-    @default 0
-  */
-  _totalPages: 0,
-
+  actions: {
+    /**
+      determine if the passed infinityModel already exists on the infinityRoute and
+      return boolean to tell infinity-loader component if it should make another request
+      @method infinityLoad
+      @param {Object} infinityModel
+      @return {Boolean}
+     */
+    infinityLoad(infinityModel) {
+      let matchingInfinityModel = this._infinityModels.find(model => model === infinityModel);
+      if (matchingInfinityModel) {
+        this._infinityLoad(matchingInfinityModel);
+      } else {
+        return true;
+      }
+    }
+  },
   /**
     @private
     @property _store
@@ -71,87 +48,15 @@ const RouteMixin = Mixin.create({
   _store: 'store',
 
   /**
+    The supported findMethod name for
+    the developers Ember Data version.
+    Provided here for backwards compat.
     @private
-    @property _infinityModelName
-    @type String
-    @default null
-  */
-  _infinityModelName: null,
-
-  /**
-    @private
-    @property _modelPath
-    @type String
-    @default 'controller.model'
-  */
-  _modelPath: 'controller.model',
-
-  /**
-   * Name of the "per page" param in the
-   * resource request payload
-   * @type {String}
-   * @default  "per_page"
-   */
-  perPageParam: 'per_page',
-
-  /**
-   * Name of the "page" param in the
-   * resource request payload
-   * @type {String}
-   * @default "page"
-   */
-  pageParam: 'page',
-
-  /**
-   * Path of the "total pages" param in
-   * the HTTP response
-   * @type {String}
-   * @default "meta.total_pages"
-   */
-  totalPagesParam: 'meta.total_pages',
-
-  actions: {
-    infinityLoad(infinityModel) {
-      if (infinityModel === this._infinityModel()) {
-        this._infinityLoad();
-      } else {
-        return true;
-      }
-    }
-  },
-
-  /**
-   * The supported findMethod name for
-   * the developers Ember Data version.
-   * Provided here for backwards compat.
-   * @type {String}
-   * @default "query"
+    @property _storeFindMethod
+    @type {String}
+    @default "query"
    */
   _storeFindMethod: 'query',
-
-  _firstPageLoaded: false,
-
-  /**
-    @private
-    @property _canLoadMore
-    @type Boolean
-    @default false
-  */
-  _canLoadMore: computed('_totalPages', 'currentPage', function() {
-    const totalPages  = this.get('_totalPages');
-    const currentPage = this.get('currentPage');
-
-    return (totalPages && currentPage !== undefined) ? (currentPage < totalPages) : false;
-  }).readOnly(),
-
-  /**
-   @private
-   @method _infinityModel
-   @return {DS.RecordArray} the model
-  */
-  _infinityModel() {
-    return this.get(this.get('_modelPath'));
-  },
 
   /**
     Determine if Ember data is valid
@@ -161,12 +66,8 @@ const RouteMixin = Mixin.create({
     @method _ensureCompatibility
   */
   _ensureCompatibility() {
-    if (Ember.isEmpty(this.get(this._store)) || Ember.isEmpty(this.get(this._store)[this._storeFindMethod])){
+    if (isEmpty(this.get(this._store)) || isEmpty(this.get(this._store)[this._storeFindMethod])){
       throw new Ember.Error("Ember Infinity: Store is not available to infinityModel");
-    }
-
-    if (this.get('_infinityModelName') === undefined) {
-      throw new Ember.Error("Ember Infinity: You must pass a Model Name to infinityModel");
     }
   },
 
@@ -195,13 +96,18 @@ const RouteMixin = Mixin.create({
     @method infinityModel
     @param {String} modelName The name of the model.
     @param {Object} options Optional, the perPage and startingPage to load from.
-    @param {Object} boundParams Optional, any route properties to be included as additional params.
     @return {Ember.RSVP.Promise}
   */
   infinityModel(modelName, options, boundParams) {
-    options = options ? objectAssign({}, options) : {};
+    if (modelName === undefined) {
+      throw new Ember.Error("Ember Infinity: You must pass a Model Name to infinityModel");
+    }
 
-    this.set('_infinityModelName', modelName);
+    if (!this._infinityModels) {
+      this._infinityModels = A();
+    }
+
+    options = options ? objectAssign({}, options) : {};
 
     if (options.store) {
       if (options.storeFindMethod) {
@@ -216,42 +122,75 @@ const RouteMixin = Mixin.create({
       delete options.storeFindMethod;
     }
 
-    const startingPage = options.startingPage === undefined ? 0 : options.startingPage-1;
-    const perPage      = options.perPage || this.get('_perPage');
-    const modelPath    = options.modelPath || this.get('_modelPath');
+    const currentPage = options.startingPage === undefined ? 0 : options.startingPage-1;
+    const perPage = options.perPage || 25;
+
+    // check if user passed in param w/ infinityModel, else check if defined on the route (for backwards compat), else default
+    const perPageParam = typeOfCheck(options.perPageParam, get(this, 'perPageParam'), 'per_page');
+    const pageParam = typeOfCheck(options.pageParam, get(this, 'pageParam'), 'page');
+    const totalPagesParam = options.totalPagesParam || 'meta.total_pages';
 
     delete options.startingPage;
     delete options.perPage;
-    delete options.modelPath;
+    delete options.perPageParam;
+    delete options.pageParam;
+    delete options.totalPagesParam;
 
-    this.setProperties({
-      currentPage: startingPage,
-      _firstPageLoaded: false,
-      _perPage: perPage,
-      _modelPath: modelPath,
-      _extraParams: options
-    });
+    // if pass boundParams, send to backwards compatible mixin that sets bound params on route
+    // and subsequently looked up when user wants to load next page
+    let didPassBoundParams = !isEmpty(boundParams);
+    const InfinityModelFactory = didPassBoundParams ? InfinityModel.extend(BoundParamsMixin) : InfinityModel;
+
+    let initParams = {
+      currentPage,
+      perPage,
+      perPageParam,
+      pageParam,
+      totalPagesParam,
+      _infinityModelName: modelName,
+      extraParams: options,
+      content: A()
+    };
+
+    if (didPassBoundParams) {
+      initParams._deprecatedBoundParams = boundParams;
+      initParams.route = this;
+    }
+
+    const infinityModel = InfinityModelFactory.create(initParams);
 
     this._ensureCompatibility();
 
-    if (typeof boundParams === 'object') {
-      this.set('_boundParams', boundParams);
-    }
+    this._infinityModels.pushObject(infinityModel);
 
-    return this._loadNextPage();
+    return this._loadNextPage(infinityModel);
   },
 
   /**
-   Call additional functions after finding the infinityModel in the Ember data store.
-   @private
-   @method _afterInfinityModel
-   @param {Function} infinityModelPromise The resolved result of the Ember store find method. Passed in automatically.
-   @return {Ember.RSVP.Promise}
+    Update the infinity model with new objects
+    Only called on the second page and following
+
+    @deprecated
+    @method updateInfinityModel
+    @param {Ember.Enumerable} newObjects The new objects to add to the model
+    @return {Ember.Array} returns the new objects
+  */
+  updateInfinityModel(newObjects) {
+    deprecate('Ember Infinity: this method will be deprecated in the future.');
+    return this._doUpdate(newObjects);
+  },
+
+  /**
+    Call additional functions after finding the infinityModel in the Ember store.
+    @private
+    @method _afterInfinityModel
+    @param {Function} infinityModelPromise The resolved result of the Ember store find method. Passed in automatically.
+    @return {Ember.RSVP.Promise}
   */
   _afterInfinityModel(_this) {
-    return function(infinityModelPromiseResult) {
+    return function(infinityModelPromiseResult, infinityModel) {
       if (typeof _this.afterInfinityModel === 'function') {
-        let result = _this.afterInfinityModel(infinityModelPromiseResult);
+        let result = _this.afterInfinityModel(infinityModelPromiseResult, infinityModel);
         if (result) {
           return result;
         }
@@ -262,157 +201,92 @@ const RouteMixin = Mixin.create({
   },
 
   /**
-   Trigger a load of the next page of results.
+    Trigger a load of the next page of results.
 
-   @private
-   @method _infinityLoad
+    @private
+    @method _infinityLoad
+    @param {Ember.ArrayProxy} infinityModel
    */
-  _infinityLoad() {
-    if (this.get('_loadingMore') || !this.get('_canLoadMore')) {
+  _infinityLoad(infinityModel) {
+    if (get(infinityModel, '_loadingMore') || !get(infinityModel, '_canLoadMore')) {
       return;
     }
 
-    this._loadNextPage();
+    this._loadNextPage(infinityModel);
   },
 
   /**
-   load the next page from the adapter and update the model
+    load the next page from the adapter and update the model
 
-   @private
-   @method _loadNextPage
-   @return {Ember.RSVP.Promise} A Promise that resolves the model
+    @private
+    @method _loadNextPage
+    @param {Ember.ArrayProxy} infinityModel
+    @return {Ember.RSVP.Promise} A Promise that resolves the model
    */
-  _loadNextPage() {
-    this.set('_loadingMore', true);
+  _loadNextPage(infinityModel) {
+    set(infinityModel, '_loadingMore', true);
 
-    return this._requestNextPage()
-      .then((newObjects) => {
-        this._nextPageLoaded(newObjects);
+    const modelName = get(infinityModel, '_infinityModelName');
+    const params    = infinityModel.buildParams();
 
-        return newObjects;
-      })
-      .finally(() => {
-        this.set('_loadingMore', false);
-      });
+    return this._requestNextPage(modelName, params)
+      .then(newObjects => this._afterInfinityModel(this)(newObjects, infinityModel))
+      .then(newObjects => this._doUpdate(newObjects, infinityModel))
+      .then(infinityModel => {
+        infinityModel.incrementProperty('currentPage');
+        set(infinityModel, '_firstPageLoaded', true);
+
+        const canLoadMore = get(infinityModel, '_canLoadMore');
+        set(infinityModel, 'reachedInfinity', !canLoadMore);
+        if (!canLoadMore) { this._notifyInfinityModelLoaded(); }
+
+        return infinityModel;
+      }).finally(() => set(infinityModel, '_loadingMore', false));
   },
 
   /**
-   request the next page from the adapter
+    request the next page from the adapter
 
-   @private
-   @method _requestNextPage
-   @returns {Ember.RSVP.Promise} A Promise that resolves the next page of objects
+    @private
+    @method _requestNextPage
+    @param {String} modelName
+    @param {Object} options
+    @returns {Ember.RSVP.Promise} A Promise that resolves the next page of objects
    */
-  _requestNextPage() {
-    const modelName   = this.get('_infinityModelName');
-    const nextPage    = this.incrementProperty('currentPage');
-    const params      = this._buildParams(nextPage);
-
-    return this.get(this._store)[this._storeFindMethod](modelName, params).then(
-      this._afterInfinityModel(this));
+  _requestNextPage(modelName, params) {
+    return this.get(this._store)[this._storeFindMethod](modelName, params);
   },
 
   /**
-   build the params for the next page request
+    set _totalPages param on infinityModel
+    Update the infinity model with new objects
 
-   @private
-   @method _buildParams
-   @param {Number} nextPage the page number for the current request
-   @return {Object} The query params for the next page of results
+    @private
+    @method _doUpdate
+    @param {Ember.Enumerable} queryObject The new objects to add to the model
+    @param {Ember.ArrayProxy} infinityModel
+    @return {Ember.Array} returns the new objects
    */
-  _buildParams(nextPage) {
-    const pageParams = {};
+  _doUpdate(queryObject, infinityModel) {
+    const totalPages = queryObject.get(get(infinityModel, 'totalPagesParam'));
+    set(infinityModel, '_totalPages', totalPages);
 
-    if(this.get('perPageParam')){
-      pageParams[this.get('perPageParam')] = this.get('_perPage');
-    }
-
-    if(this.get('pageParam')){
-      pageParams[this.get('pageParam')] = nextPage;
-    }
-
-    const params = objectAssign(pageParams, this.get('_extraParams'));
-
-    const boundParams = this.get('_boundParams');
-    if (!Ember.isEmpty(boundParams)) {
-      Object.keys(boundParams).forEach(k => params[k] = this.get(boundParams[k]));
-    }
-
-    return params;
+    return infinityModel.pushObjects(queryObject.toArray());
   },
 
   /**
-   Update the infinity model with new objects
-   Only called on the second page and following
+    notify that the infinity model has been updated
 
-   @deprecated
-   @method updateInfinityModel
-   @param {Ember.Enumerable} newObjects The new objects to add to the model
-   @return {Ember.Array} returns the new objects
-   */
-  updateInfinityModel(newObjects) {
-    return this._doUpdate(newObjects);
-  },
-
-  _doUpdate(newObjects) {
-    let infinityModel = this._infinityModel();
-    return infinityModel.pushObjects(newObjects.get('content'));
-  },
-
-  /**
-
-   @method _nextPageLoaded
-   @param {Ember.Enumerable} newObjects The new objects to add to the model
-   @return {DS.RecordArray} returns the updated infinity model
-   @private
-   */
-  _nextPageLoaded(newObjects) {
-    const totalPages = newObjects.get(this.get('totalPagesParam'));
-    this.set('_totalPages', totalPages);
-
-    let infinityModel = newObjects;
-
-    if (this.get('_firstPageLoaded')) {
-      if (typeof this.updateInfinityModel === 'function' &&
-          (this.updateInfinityModel !==
-           Ember.Object.extend(RouteMixin).create().updateInfinityModel)) {
-        Ember.deprecate("EmberInfinity.updateInfinityModel is deprecated. "+
-                        "Please use EmberInfinity.afterInfinityModel.",
-                        false,
-                        {id: 'ember-infinity.updateInfinityModel', until: '2.1'}
-                       );
-
-        infinityModel = this.updateInfinityModel(newObjects);
-      } else {
-        infinityModel = this._doUpdate(newObjects);
-      }
-    }
-
-    this.set('_firstPageLoaded', true);
-    this._notifyInfinityModelUpdated(newObjects);
-
-    const canLoadMore = this.get('_canLoadMore');
-    infinityModel.set('reachedInfinity', !canLoadMore);
-
-    if (!canLoadMore) {
-      this._notifyInfinityModelLoaded();
-    }
-
-    return infinityModel;
-  },
-
-  /**
-   notify that the infinity model has been updated
-
-   @private
-   @method _notifyInfinityModelUpdated
+    @private
+    @method _notifyInfinityModelUpdated
    */
   _notifyInfinityModelUpdated(newObjects) {
     if (!this.infinityModelUpdated) {
       return;
     }
 
-    Ember.run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
+    deprecate('Ember Infinity: infinityModelUpdated will be deprecated in the future.');
+    run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
       lastPageLoaded: this.get('currentPage'),
       totalPages: this.get('_totalPages'),
       newObjects: newObjects
@@ -420,10 +294,10 @@ const RouteMixin = Mixin.create({
   },
 
   /**
-   finish the loading cycle by notifying that infinity has been reached
+    finish the loading cycle by notifying that infinity has been reached
 
-   @private
-   @method _notifyInfinityModelLoaded
+    @private
+    @method _notifyInfinityModelLoaded
    */
   _notifyInfinityModelLoaded() {
     if (!this.infinityModelLoaded) {
