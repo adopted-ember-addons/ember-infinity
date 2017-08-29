@@ -1,7 +1,8 @@
 import Ember from 'ember';
-const { Route, RSVP, run } = Ember;
+const { Route, RSVP, run, get } = Ember;
 import RouteMixin from 'ember-infinity/mixins/route';
 import { module, test, skip } from 'qunit';
+import InfinityModel from 'ember-infinity/lib/infinity-model';
 
 module('RouteMixin');
 
@@ -295,6 +296,46 @@ test('route accepts bound params and sets on infinity model to be passed on subs
 
   assert.deepEqual(this.model.get('_deprecatedBoundParams'), boundParam, '_deprecatedBoundParams');
   assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
+});
+
+test('route accepts an instance of InfinityModel as the third argument', function (assert) {
+  assert.expect(3);
+
+  const ExtendedInfinityModel = InfinityModel.extend({
+    customId: 2,
+    buildParams() {
+      let params = this._super(...arguments);
+      params['custom_id'] = get(this, 'customId');
+      return params;
+    }
+  });
+  this.createRoute({ extra: 'param' }, ExtendedInfinityModel);
+
+  assert.equal(this.model instanceof ExtendedInfinityModel, true, 'model is instance of extended infinity model');
+
+  this.loadMore();
+
+  assert.equal(this.model instanceof ExtendedInfinityModel, true, 'model is instance of extended infinity model');
+  assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
+});
+
+test('route does not accept class that is not an instance of InfinityModel', function (assert) {
+  assert.expect(1);
+
+  const ExtendedEmberObject = Ember.Object.extend({
+    customId: 2,
+    buildParams() {
+      let params = this._super(...arguments);
+      params['custom_id'] = get(this, 'customId');
+      return params;
+    }
+  });
+
+  try {
+    this.createRoute({ extra: 'param' }, ExtendedEmberObject);
+  } catch(e) {
+    assert.equal(e.message, 'Ember Infinity: You must pass an Infinity Model instance as the third argument');
+  }
 });
 
 test('route does not detect boundParams when no boundParams passed', function (assert) {
