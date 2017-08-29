@@ -1,0 +1,16 @@
+<h2 id='posts-title'>Non Blocking Model Hook</h2>
+
+<ul class="test-list test-list-scrollable">
+  {{#each model.things as |things|}}
+    <li>{{things.name}}</li>
+  {{/each}}
+
+  {{#if model.things.isFulfilled}}
+    {{infinity-loader
+      infinityModel=model.things
+      scrollable=".test-list"
+      loadingText="loading"
+      loadedText="loaded"
+    }}
+  {{/if}}
+</ul>
