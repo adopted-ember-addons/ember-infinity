@@ -22,16 +22,16 @@ export let objectAssign = Object.assign || function objectAssign(target) {
 };
 
 /**
- * determine param to set on infinityModel
- * if user passes null, then don't send query param in request
- * if user does not pass anything for value, then see if defined on route
- * else set to default param
- * @method typeOfCheck
- * @param {String} value - param passed with infinityRoute
- * @param {String} option - property defined on user route
- * @param {String} - default
- * @return {String} 
- */
+  determine param to set on infinityModel
+  if user passes null, then don't send query param in request
+  if user does not pass anything for value, then see if defined on route
+  else set to default param
+  @method typeOfCheck
+  @param {String} value - param passed with infinityRoute
+  @param {String} option - property defined on user route
+  @param {String} - default
+  @return {String} 
+*/
 export function typeOfCheck(optionParam, routeParam, defaultParam) {
   if (typeOf(optionParam) === 'null' || typeOf(routeParam) === 'null') {
     // allow user to set to null if passed into infinityRoute explicitly
