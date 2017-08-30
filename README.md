@@ -29,6 +29,8 @@ Also:
 
 ## Basic Usage
 
+**Note:** We are moving towards a 1-0 release that will allow for the use of multiple infinity models, provide extensibility to the InfinityModel, and generally make the addon easier to reason about.  Check it out here [1-0](https://github.com/hhff/ember-infinity/tree/1-0).
+
 ```js
 import Ember from 'ember';
 import InfinityRoute from "ember-infinity/mixins/route";
