@@ -9,6 +9,9 @@
 
 ***As of v0.1.0, this library officially supports Ember 1.10 through to 2.0+ (Canary), and (aside from a few buggy versions), Ember Data pre-1.0 through to 2.0+ (Canary).  We plan to support 1.10 for the foreseeable future.***
 
+***Note: We are moving towards a 1-0 release that will allow for the use of multiple infinity models, provide extensibility to the InfinityModel, and generally make the addon easier to reason about.  
+Check it out here [1-0](https://github.com/hhff/ember-infinity/tree/1-0)***
+
 Demo: [hhff.github.io/ember-infinity/](http://hhff.github.io/ember-infinity/)
 
 Simple, flexible infinite scrolling for Ember CLI Apps.  Works out of the box
@@ -28,8 +31,6 @@ Also:
 **Note:** If you're getting an error like `semver is not defined`, you probably did `npm install` instead of `ember install`.  We use [ember-version-is](https://github.com/hhff/ember-version-is) to manage the code for different versions of Ember & Ember Data, which relies on semver.  `npm install` won't run the nested generator that adds semver to your app.
 
 ## Basic Usage
-
-**Note:** We are moving towards a 1-0 release that will allow for the use of multiple infinity models, provide extensibility to the InfinityModel, and generally make the addon easier to reason about.  Check it out here [1-0](https://github.com/hhff/ember-infinity/tree/1-0).
 
 ```js
 import Ember from 'ember';
