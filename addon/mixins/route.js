@@ -1,5 +1,5 @@
 import Ember from 'ember';
-const { Mixin, computed } = Ember;
+const { Mixin, computed, RSVP, } = Ember;
 import { objectAssign } from '../utils';
 
 /**
@@ -112,11 +112,16 @@ const RouteMixin = Mixin.create({
 
   actions: {
     infinityLoad(infinityModel) {
-      if (infinityModel === this._infinityModel()) {
-        this._infinityLoad();
-      } else {
-        return true;
-      }
+      return RSVP.hash({
+          infinityModel,
+          _infinityModel: this._infinityModel(),
+        }).then((result) => {
+          if(result.infinityModel === result._infinityModel) {
+            return this._infinityLoad();
+          } else {
+            return true;
+          }
+        });
     }
   },
 
@@ -147,10 +152,10 @@ const RouteMixin = Mixin.create({
   /**
    @private
    @method _infinityModel
-   @return {DS.RecordArray} the model
+   @return {Ember.RSVP.Promise} for the model
   */
   _infinityModel() {
-    return this.get(this.get('_modelPath'));
+    return RSVP.resolve(this.get(this.get('_modelPath')));
   },
 
   /**
@@ -180,12 +185,12 @@ const RouteMixin = Mixin.create({
   _ensureCustomStoreCompatibility(options) {
     if (typeof options.store !== 'string') {
       throw new Ember.Error("Ember Infinity: Must pass custom data store as a string");
-    } 
+    }
 
     const store = this.get(options.store);
     if (!store[this.get('_storeFindMethod')]) {
       throw new Ember.Error("Ember Infinity: Custom data store must specify query method");
-    } 
+    }
   },
 
   /**
@@ -272,7 +277,7 @@ const RouteMixin = Mixin.create({
       return;
     }
 
-    this._loadNextPage();
+    return this._loadNextPage();
   },
 
   /**
@@ -287,9 +292,7 @@ const RouteMixin = Mixin.create({
 
     return this._requestNextPage()
       .then((newObjects) => {
-        this._nextPageLoaded(newObjects);
-
-        return newObjects;
+        return this._nextPageLoaded(newObjects);
       })
       .finally(() => {
         this.set('_loadingMore', false);
@@ -355,8 +358,8 @@ const RouteMixin = Mixin.create({
   },
 
   _doUpdate(newObjects) {
-    let infinityModel = this._infinityModel();
-    return infinityModel.pushObjects(newObjects.get('content'));
+    return this._infinityModel()
+      .then((_infinityModel) => _infinityModel.pushObjects(newObjects.get('content')));
   },
 
   /**
@@ -370,7 +373,7 @@ const RouteMixin = Mixin.create({
     const totalPages = newObjects.get(this.get('totalPagesParam'));
     this.set('_totalPages', totalPages);
 
-    let infinityModel = newObjects;
+    let updatePromise = RSVP.resolve(newObjects);
 
     if (this.get('_firstPageLoaded')) {
       if (typeof this.updateInfinityModel === 'function' &&
@@ -382,23 +385,26 @@ const RouteMixin = Mixin.create({
                         {id: 'ember-infinity.updateInfinityModel', until: '2.1'}
                        );
 
-        infinityModel = this.updateInfinityModel(newObjects);
+        updatePromise = updatePromise.then((newObjects) => this.updateInfinityModel(newObjects));
       } else {
-        infinityModel = this._doUpdate(newObjects);
+        updatePromise = updatePromise.then((newObjects) => this._doUpdate(newObjects));
       }
     }
 
-    this.set('_firstPageLoaded', true);
-    this._notifyInfinityModelUpdated(newObjects);
+    return updatePromise
+      .then((infinityModel) => {
+        this.set('_firstPageLoaded', true);
+        this._notifyInfinityModelUpdated(newObjects);
 
-    const canLoadMore = this.get('_canLoadMore');
-    infinityModel.set('reachedInfinity', !canLoadMore);
+        const canLoadMore = this.get('_canLoadMore');
+        infinityModel.set('reachedInfinity', !canLoadMore);
 
-    if (!canLoadMore) {
-      this._notifyInfinityModelLoaded();
-    }
+        if (!canLoadMore) {
+          this._notifyInfinityModelLoaded();
+        }
 
-    return infinityModel;
+        return infinityModel;
+      });
   },
 
   /**

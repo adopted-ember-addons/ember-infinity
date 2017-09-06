@@ -448,3 +448,23 @@ template.hbs:
 
 {{load-more-button action='infinityLoad' infinityModel=model}}
 ```
+
+### Using ember-infinity with non-blocking model hooks
+
+Chances are you might want to render your templates without blocking the render for the initial model hook.
+Ember-infinity works with this but there are some gotchas.
+
+Ensure your model returns a proper Ember-Data request, or use an Ember [PromiseProxy](https://www.emberjs.com/api/ember/2.14/classes/Ember.PromiseProxyMixin) so that ember knows how to render your promise once it is resolved.
+Ensure you do not render the 'infinity-loader', if you are using it, until the initial model is loaded. If you are using the PromiseProxy above, you can use `{{#if .isFulfilled}}`. If you don't do this, the 'infinity-loader' might render on screen (because your infinity-list is not yet rendered), and immediately fire a request for the second page. You can also just push the 'infinity-loader' off screen with CSS to ensure you don't get this double request.
+
+Your model hook might look like:
+
+```js
+model() {
+  return {
+    things: this.infinityModel('post', {
+      modelPath: 'controller.model.things',
+    })
+  };
+}
+```

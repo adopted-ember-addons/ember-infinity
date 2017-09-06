@@ -16,6 +16,7 @@ Router.map(function() {
   this.route('posts', function() {
     this.route('show', { path: '/:post' });
   });
+  this.route('non-blocking-model-hook', { path: '/non-blocking-model-hook' });
 });
 
 export default Router;
