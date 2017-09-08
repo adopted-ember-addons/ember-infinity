@@ -301,7 +301,7 @@ test('route accepts bound params and sets on infinity model to be passed on subs
 test('route accepts an instance of InfinityModel as the third argument', function (assert) {
   assert.expect(3);
 
-  const ExtendedInfinityModel = InfinityModel.extend({
+  let ExtendedInfinityModel = InfinityModel.extend({
     customId: 2,
     buildParams() {
       let params = this._super(...arguments);
@@ -309,13 +309,14 @@ test('route accepts an instance of InfinityModel as the third argument', functio
       return params;
     }
   });
+  ExtendedInfinityModel = ExtendedInfinityModel.create();
   this.createRoute({ extra: 'param' }, ExtendedInfinityModel);
 
-  assert.equal(this.model instanceof ExtendedInfinityModel, true, 'model is instance of extended infinity model');
+  assert.equal(this.model instanceof InfinityModel, true, 'model is instance of extended infinity model');
 
   this.loadMore();
 
-  assert.equal(this.model instanceof ExtendedInfinityModel, true, 'model is instance of extended infinity model');
+  assert.equal(this.model instanceof InfinityModel, true, 'model is instance of extended infinity model');
   assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
 });
 
