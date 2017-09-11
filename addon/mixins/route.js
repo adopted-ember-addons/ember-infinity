@@ -234,12 +234,9 @@ const RouteMixin = Mixin.create({
       .then(infinityModel => {
         infinityModel.incrementProperty('currentPage');
         set(infinityModel, '_firstPageLoaded', true);
-
         const canLoadMore = get(infinityModel, '_canLoadMore');
-        console.log(canLoadMore, 'can')
         set(infinityModel, 'reachedInfinity', !canLoadMore);
         if (!canLoadMore) { this._notifyInfinityModelLoaded(); }
-
         return infinityModel;
       }).finally(() => set(infinityModel, '_loadingMore', false));
   },
