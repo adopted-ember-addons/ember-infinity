@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
+import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
 import BoundParamsMixin from 'ember-infinity/mixins/bound-params';
 const { Mixin, computed, get, set, run, A, deprecate, isEmpty } = Ember;
 import { objectAssign, typeOfCheck } from '../utils';
@@ -17,8 +18,8 @@ import { objectAssign, typeOfCheck } from '../utils';
 const RouteMixin = Mixin.create({
 
   // these are here for backwards compat
-  _infinityModel: computed('_infinityModels.[]', function() { 
-    return get(this, '_infinityModels.firstObject'); 
+  _infinityModel: computed('_infinityModels.[]', function() {
+    return get(this, '_infinityModels.firstObject');
   }).readOnly(),
   currentPage: computed.alias('_infinityModel.currentPage').readOnly(),
 
@@ -81,12 +82,12 @@ const RouteMixin = Mixin.create({
   _ensureCustomStoreCompatibility(options) {
     if (typeof options.store !== 'string') {
       throw new Ember.Error("Ember Infinity: Must pass custom data store as a string");
-    } 
+    }
 
     const store = this.get(options.store);
     if (!store[this.get('_storeFindMethod')]) {
       throw new Ember.Error("Ember Infinity: Custom data store must specify query method");
-    } 
+    }
   },
 
   /**
@@ -99,6 +100,7 @@ const RouteMixin = Mixin.create({
     @return {Ember.RSVP.Promise}
   */
   infinityModel(modelName, options, boundParams) {
+    this._ensureCompatibility();
     if (modelName === undefined) {
       throw new Ember.Error("Ember Infinity: You must pass a Model Name to infinityModel");
     }
@@ -158,12 +160,9 @@ const RouteMixin = Mixin.create({
     }
 
     const infinityModel = InfinityModelFactory.create(initParams);
-
-    this._ensureCompatibility();
-
     this._infinityModels.pushObject(infinityModel);
 
-    return this._loadNextPage(infinityModel);
+    return InfinityPromiseArray.create({ promise: this._loadNextPage(infinityModel) });
   },
 
   /**
@@ -237,6 +236,7 @@ const RouteMixin = Mixin.create({
         set(infinityModel, '_firstPageLoaded', true);
 
         const canLoadMore = get(infinityModel, '_canLoadMore');
+        console.log(canLoadMore, 'can')
         set(infinityModel, 'reachedInfinity', !canLoadMore);
         if (!canLoadMore) { this._notifyInfinityModelLoaded(); }
 
