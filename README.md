@@ -451,9 +451,7 @@ template.hbs:
 
 ### Delay start of infinite loading until user has indicated they would like to load more
 
-Infinite loading need not start automatically, it may be kickstarted from a user action. The infinity-loader component can be popped in and out, eg: each time a new search is entered, the component may be removed, and then put back in place at the user’s request.
-
-Example:
+template.hbs:
 
 ```hbs
 {{#if hasClickedLoadMore}}
