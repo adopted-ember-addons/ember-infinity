@@ -448,3 +448,15 @@ template.hbs:
 
 {{load-more-button action='infinityLoad' infinityModel=model}}
 ```
+
+### Delay start of infinite loading until user has indicated they would like to load more
+
+template.hbs:
+
+```hbs
+{{#if hasClickedLoadMore}}
+  {{infinity-loader infinityModel=model triggerOffset=400}}
+{{else}}
+  <button {{action (toggle 'hasClickedLoadMore' this)}}>Load more</button>
+{{/if}}
+```
