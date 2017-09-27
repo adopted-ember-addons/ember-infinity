@@ -448,3 +448,17 @@ template.hbs:
 
 {{load-more-button action='infinityLoad' infinityModel=model}}
 ```
+
+### Delay start of infinite loading until user has indicated they would like to load more
+
+Infinite loading need not start automatically, it may be kickstarted from a user action. The infinity-loader component can be popped in and out, eg: each time a new search is entered, the component may be removed, and then put back in place at the user’s request.
+
+Example:
+
+```hbs
+{{#if hasClickedLoadMore}}
+  {{infinity-loader infinityModel=model triggerOffset=400}}
+{{else}}
+  <button {{action (toggle 'hasClickedLoadMore' this)}}>Load more</button>
+{{/if}}
+```
