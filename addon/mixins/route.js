@@ -100,7 +100,6 @@ const RouteMixin = Mixin.create({
     @return {Ember.RSVP.Promise}
   */
   infinityModel(modelName, options, boundParams) {
-    this._ensureCompatibility();
     if (modelName === undefined) {
       throw new Ember.Error("Ember Infinity: You must pass a Model Name to infinityModel");
     }
@@ -160,6 +159,7 @@ const RouteMixin = Mixin.create({
     }
 
     const infinityModel = InfinityModelFactory.create(initParams);
+    this._ensureCompatibility();
     this._infinityModels.pushObject(infinityModel);
 
     return InfinityPromiseArray.create({ promise: this._loadNextPage(infinityModel) });
@@ -267,7 +267,6 @@ const RouteMixin = Mixin.create({
   _doUpdate(queryObject, infinityModel) {
     const totalPages = queryObject.get(get(infinityModel, 'totalPagesParam'));
     set(infinityModel, '_totalPages', totalPages);
-
     return infinityModel.pushObjects(queryObject.toArray());
   },
 
