@@ -8,7 +8,7 @@ module('RouteMixin');
 const assign = Ember.assign || Ember.merge;
 
 let EA = function (content, meta={}) {
-  return Ember.ArrayProxy.create(Ember.assign({ content: Ember.A(content) }, meta));
+  return Ember.ArrayProxy.create(assign({ content: Ember.A(content) }, meta));
 };
 
 test('it works', function(assert) {
