@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 function factoryForType(type, store) {
-  return Ember.getOwner(store)._lookupFactory('model:' + type);
+  return Ember.getOwner(store).resolveRegistration('model:' + type);
 }
 
 function persistData(type, obj, customStore) {
@@ -10,7 +10,7 @@ function persistData(type, obj, customStore) {
   const record = Factory.create(obj);
   const id = obj.id;
   if (persistentContainer[type]) {
-    return persistentContainer[type].set(id, record); 
+    return persistentContainer[type].set(id, record);
   }
   persistentContainer[type] = new Map();
   return persistentContainer[type].set(id, record);

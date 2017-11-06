@@ -8,13 +8,7 @@ module('RouteMixin');
 const assign = Ember.assign || Ember.merge;
 
 let EA = function (content, meta={}) {
-  meta = meta; // get around jshint warnings until eslint
-  return Ember.ArrayProxy.create({ 
-    content: Ember.A(content), 
-    // jshint ignore:start
-    ...meta
-    // jshint ignore:end
-  }); 
+  return Ember.ArrayProxy.create(assign({ content: Ember.A(content) }, meta));
 };
 
 test('it works', function(assert) {
@@ -159,7 +153,7 @@ test('it can not use infinityModel without a Model Name', function(assert) {
       query() {}
     }
   });
- 
+
   try {
     route.model();
   } catch(e) {
@@ -183,13 +177,13 @@ test('it sets state before it reaches the end', function(assert) {
 
 test('it allows customizations of request params', function(assert) {
   let store = createMockStore(
-    EA([]), 
+    EA([]),
     (modelType, findQuery) => {
       assert.deepEqual(findQuery, { per: 25, p: 1 }, 'findQuery');
     }
   );
 
-  let route = createRoute(['item', { 
+  let route = createRoute(['item', {
     perPageParam: 'per', pageParam: 'p'
   }], { store });
 
@@ -210,12 +204,12 @@ test('It allows to set startingPage as 0', function(assert) {
 
 test('it skips request params when set to null', function(assert) {
   let store = createMockStore(
-    EA([]), 
+    EA([]),
     (modelType, findQuery) => {
       assert.deepEqual(findQuery, {}, 'findQuery');
   });
 
-  let route = createRoute(['item', { 
+  let route = createRoute(['item', {
     perPageParam: null, pageParam: null
   }], { store });
 
@@ -365,9 +359,9 @@ module('RouteMixin - loading more data', {
     this.route = createRoute(
       ['item', {
         // explicit params passed to infinityModel hook
-        perPage: 1, startingPage: 2, 
-        totalPagesParam: 'meta.testTotalPages', perPageParam: 'testPerPage', pageParam: 'testPage' 
-      }], 
+        perPage: 1, startingPage: 2,
+        totalPagesParam: 'meta.testTotalPages', perPageParam: 'testPerPage', pageParam: 'testPage'
+      }],
       {
         // route properties
         store,
