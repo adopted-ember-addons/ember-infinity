@@ -13,7 +13,7 @@ const {
   isEmpty,
   typeOf
 } = Ember;
-import { objectAssign, typeOfCheck } from '../utils';
+import { objectAssign, paramsCheck } from '../utils';
 
 /**
   The Ember Infinity Route Mixin enables an application route to load paginated
@@ -151,10 +151,9 @@ const RouteMixin = Mixin.create({
     const perPage = options.perPage || 25;
 
     // check if user passed in param w/ infinityModel, else check if defined on the route (for backwards compat), else default
-    // TODO: change typeOfCheck to a diff name
-    const perPageParam = typeOfCheck(options.perPageParam, get(this, 'perPageParam'), 'per_page');
-    const pageParam = typeOfCheck(options.pageParam, get(this, 'pageParam'), 'page');
-    const totalPagesParam = options.totalPagesParam || 'meta.total_pages';
+    const perPageParam = paramsCheck(options.perPageParam, get(this, 'perPageParam'), 'per_page');
+    const pageParam = paramsCheck(options.pageParam, get(this, 'pageParam'), 'page');
+    const totalPagesParam = paramsCheck(options.totalPagesParam, get(this, 'totalPagesParam'), 'meta.total_pages');
 
     delete options.startingPage;
     delete options.perPage;
@@ -208,7 +207,9 @@ const RouteMixin = Mixin.create({
     @return {Ember.Array} returns the new objects
   */
   updateInfinityModel(newObjects) {
-    deprecate('Ember Infinity: this method will be deprecated in the future.');
+    deprecate('Ember Infinity: this method will be deprecated in the future.', {
+      id: 'ember-infinity'
+    });
     return this._doUpdate(newObjects);
   },
 
@@ -314,7 +315,9 @@ const RouteMixin = Mixin.create({
       return;
     }
 
-    deprecate('Ember Infinity: infinityModelUpdated will be deprecated in the future.');
+    deprecate('Ember Infinity: infinityModelUpdated will be deprecated in the future.', {
+      id: 'ember-infinity'
+    });
     run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
       lastPageLoaded: this.get('currentPage'),
       totalPages: this.get('_totalPages'),
