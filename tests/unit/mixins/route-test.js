@@ -63,6 +63,29 @@ test('it can not use infinityModel without Ember Data Store', function(assert) {
   }
 });
 
+test('it can not use infinityModel that is not an instance of InfinityModel', function (assert) {
+  assert.expect(1);
+
+  const ExtendedEmberObject = Ember.Object.extend({
+    customId: 2,
+    buildParams() {
+      let params = this._super(...arguments);
+      params['custom_id'] = get(this, 'customId');
+      return params;
+    }
+  });
+
+  let item = { id: 1, title: 'The Great Gatsby' };
+  let route = createRoute(['post', { store: 'simpleStore' }, ExtendedEmberObject], 
+    { extra: 'param', simpleStore: createMockStore(EA([item])) });
+
+  try {
+    route.model();
+  } catch(e) {
+    assert.equal(e.message, 'Ember Infinity: You must pass an Infinity Model instance as the third argument', "wat");
+  }
+});
+
 // not sure how to test deps
 skip('it throws deprecate warning for passing bound params', function(assert) {
   let route = createRoute(['post', { store: 23 }, { country: 'Ukraine' } ]);
@@ -318,25 +341,6 @@ test('route accepts an instance of InfinityModel as the third argument', functio
 
   assert.equal(this.model instanceof InfinityModel, true, 'model is instance of extended infinity model');
   assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
-});
-
-test('route does not accept class that is not an instance of InfinityModel', function (assert) {
-  assert.expect(1);
-
-  const ExtendedEmberObject = Ember.Object.extend({
-    customId: 2,
-    buildParams() {
-      let params = this._super(...arguments);
-      params['custom_id'] = get(this, 'customId');
-      return params;
-    }
-  });
-
-  try {
-    this.createRoute({ extra: 'param' }, ExtendedEmberObject);
-  } catch(e) {
-    assert.equal(e.message, 'Ember Infinity: You must pass an Infinity Model instance as the third argument');
-  }
 });
 
 test('route does not detect boundParams when no boundParams passed', function (assert) {
