@@ -7,7 +7,7 @@
 [![Dependency Status](https://david-dm.org/hhff/ember-infinity.svg)](https://david-dm.org/hhff/ember-infinity)
 [![devDependency Status](https://david-dm.org/hhff/ember-infinity/dev-status.svg)](https://david-dm.org/hhff/ember-infinity#info=devDependencies)
 
-***As of v0.1.0, this library officially supports Ember 1.10 through to 2.0+ (Canary), and (aside from a few buggy versions), Ember Data pre-1.0 through to 2.0+ (Canary).  We plan to support 1.10 for the foreseeable future.***
+***As of v1.0-alpha and above, this library officially supports Ember 2.4 and above***
 
 Demo: [hhff.github.io/ember-infinity/](http://hhff.github.io/ember-infinity/)
 
@@ -166,7 +166,34 @@ return this.infinityModel("product", { perPage: 12, startingPage: 1,
                                        category: "furniture" });
 ```
 
-Bound Parameters has been DEPRECATED as the third argument to `infinityModel`.  
+**Extending infinityModel**
+
+You can customize your infinityModel through configuring it like so and pass as the third argument to infinityModel:
+
+```js
+const ExtendedInfinityModel = InfinityModel.extend({
+  global: service(),
+  buildParams() {
+    let params = this._super(...arguments);
+    params['category_id'] = get(this, 'global.categoryId');
+    return params;
+  }
+});
+
+export default Route.extend({
+  global: service(),
+  categoryId: computed('global.categoryId', function() {
+    return get(this, 'global.categoryId');
+  }),
+  model() {
+    this.infinityModel('product', {}, ExtendedInfinityModel);
+  }
+});
+```
+
+**Bound Parameters** 
+
+DEPRECATED as the third argument to `infinityModel`.  
 Please include as second argument to infinityModel.
 
 * **modelPath**
@@ -410,4 +437,21 @@ template.hbs:
 </ul>
 
 {{load-more-button action='infinityLoad' infinityModel=model}}
+```
+
+### Using ember-infinity with non-blocking model hooks
+
+Chances are you might want to render your templates without blocking the render for the initial model hook.
+Ember-infinity works with this but there are some gotchas.
+
+Ensure your model returns a proper Ember-Data request, or use an Ember [PromiseProxy](https://www.emberjs.com/api/ember/2.14/classes/Ember.PromiseProxyMixin) so that ember knows how to render your promise once it is resolved.
+
+Your model hook might look like:
+
+```js
+model() {
+  return {
+    posts: this.infinityModel('post')
+  };
+}
 ```
