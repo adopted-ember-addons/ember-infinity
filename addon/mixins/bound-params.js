@@ -12,7 +12,9 @@ export default Mixin.create({
     @return {Object}
    */
   buildParams() {
-    Ember.deprecate("Ember Infinity: Bound params are now deprecated. Please pass explicitly as second param to the infinityModel method");
+    Ember.deprecate("Ember Infinity: Bound params are now deprecated. Please pass explicitly as second param to the infinityModel method", {
+      id: 'ember-infinity'
+    });
 
     let params = this._super(...arguments);
     let boundParams = get(this, '_deprecatedBoundParams');
