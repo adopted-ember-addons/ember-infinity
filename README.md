@@ -55,6 +55,20 @@ Now, whenever the `infinity-loader` is in view, it will send an action to the ro
 
 When the new records are loaded, they will automatically be pushed into the Model array.
 
+### Non-Blocking Model Hooks
+
+In the world of optimistic route transitions & skeleton UI, it's necessary to return a POJO or similar primitive to Ember's Route#model hook to ensure the transition is not blocked by promise.
+
+As of 1.0, the infinityModel hook now supports this behavior out of the box:
+
+```js
+model() {
+  return {
+    posts: this.infinityModel('post')
+  };
+}
+```
+
 ## Advanced Usage
 
 ### JSON Request/Response Customization
@@ -168,9 +182,13 @@ return this.infinityModel("product", { perPage: 12, startingPage: 1,
 
 **Extending infinityModel**
 
-You can customize your infinityModel through configuring it like so and pass as the third argument to infinityModel:
+As of 1.0+, you can override or extend the behavior of Ember Infinity by providing a class that extends InfinityModel as a third argument to the Route#infinityModel hook.
+
+**Note**: This behavior should negate any need for the pre 1.0 "Bound Params" style of work. See [Bound Parameters][Bound Parameters] Section below for more information.
 
 ```js
+import InfinityModel from 'ember-infinity/lib/infinity-model';
+
 const ExtendedInfinityModel = InfinityModel.extend({
   global: service(),
   buildParams() {
@@ -191,10 +209,13 @@ export default Route.extend({
 });
 ```
 
-**Bound Parameters** 
+**[DEPRECATED] Bound Parameters** 
 
-DEPRECATED as the third argument to `infinityModel`.  
-Please include as second argument to infinityModel.
+As of 1.0+, passing a third parameter to represent Bound Parameters is deprecated. All valid use cases of this feature should now be ported to the [Extended Infinity Model pattern][Extending infinityModel].
+
+Bound Params were introduced as a way of dynamically fetching data over time - the query params passed to the server would be dictated by a property (computed or otherwise) on the route level, that was evaluated at the request time.
+
+This design has always felt a little off - using computed properties on the Route level is an uncommon (and thus non-ergonomic) pattern in Ember. As users have requested more features in Ember Infinity, we've realized it's more important to provide a flexible primitive that can be manipulated and extended in a Ember-esque way. This opens Ember Infinity up to a great deal more use cases, while also providing a path forward to those using the pre 1.0 version of Bound Params.
 
 * **modelPath**
 
@@ -437,21 +458,4 @@ template.hbs:
 </ul>
 
 {{load-more-button action='infinityLoad' infinityModel=model}}
-```
-
-### Using ember-infinity with non-blocking model hooks
-
-Chances are you might want to render your templates without blocking the render for the initial model hook.
-Ember-infinity works with this but there are some gotchas.
-
-Ensure your model returns a proper Ember-Data request, or use an Ember [PromiseProxy](https://www.emberjs.com/api/ember/2.14/classes/Ember.PromiseProxyMixin) so that ember knows how to render your promise once it is resolved.
-
-Your model hook might look like:
-
-```js
-model() {
-  return {
-    posts: this.infinityModel('post')
-  };
-}
 ```
