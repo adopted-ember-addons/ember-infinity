@@ -2,8 +2,18 @@ import Ember from 'ember';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
 import BoundParamsMixin from 'ember-infinity/mixins/bound-params';
-const { Mixin, computed, get, set, run, A, deprecate, isEmpty } = Ember;
-import { objectAssign, typeOfCheck } from '../utils';
+const { 
+  Mixin, 
+  computed, 
+  get, 
+  set, 
+  run, 
+  A, 
+  deprecate, 
+  isEmpty,
+  typeOf
+} = Ember;
+import { objectAssign, paramsCheck } from '../utils';
 
 /**
   The Ember Infinity Route Mixin enables an application route to load paginated
@@ -96,10 +106,24 @@ const RouteMixin = Mixin.create({
 
     @method infinityModel
     @param {String} modelName The name of the model.
-    @param {Object} options Optional, the perPage and startingPage to load from.
+    @param {Object} options - optional - the perPage and startingPage to load from.
+    @param {Object} boundParamsOrInfinityModel - optional - 
+      params on route to be looked up on every route request or
+      instance of InfinityModel
     @return {Ember.RSVP.Promise}
   */
-  infinityModel(modelName, options, boundParams) {
+  infinityModel(modelName, options, boundParamsOrInfinityModel) {
+
+    let boundParams, ExtendedInfinityModel;
+    if (typeOf(boundParamsOrInfinityModel) === "class") {
+      if (!(boundParamsOrInfinityModel instanceof InfinityModel)) {
+        throw new Ember.Error("Ember Infinity: You must pass an Infinity Model instance as the third argument");
+      }
+      ExtendedInfinityModel = boundParamsOrInfinityModel; 
+    } else if (typeOf(boundParamsOrInfinityModel) === "object") {
+      boundParams = boundParamsOrInfinityModel; 
+    }
+
     if (modelName === undefined) {
       throw new Ember.Error("Ember Infinity: You must pass a Model Name to infinityModel");
     }
@@ -127,9 +151,9 @@ const RouteMixin = Mixin.create({
     const perPage = options.perPage || 25;
 
     // check if user passed in param w/ infinityModel, else check if defined on the route (for backwards compat), else default
-    const perPageParam = typeOfCheck(options.perPageParam, get(this, 'perPageParam'), 'per_page');
-    const pageParam = typeOfCheck(options.pageParam, get(this, 'pageParam'), 'page');
-    const totalPagesParam = options.totalPagesParam || 'meta.total_pages';
+    const perPageParam = paramsCheck(options.perPageParam, get(this, 'perPageParam'), 'per_page');
+    const pageParam = paramsCheck(options.pageParam, get(this, 'pageParam'), 'page');
+    const totalPagesParam = paramsCheck(options.totalPagesParam, get(this, 'totalPagesParam'), 'meta.total_pages');
 
     delete options.startingPage;
     delete options.perPage;
@@ -137,10 +161,18 @@ const RouteMixin = Mixin.create({
     delete options.pageParam;
     delete options.totalPagesParam;
 
-    // if pass boundParams, send to backwards compatible mixin that sets bound params on route
-    // and subsequently looked up when user wants to load next page
+    let InfinityModelFactory;
     let didPassBoundParams = !isEmpty(boundParams);
-    const InfinityModelFactory = didPassBoundParams ? InfinityModel.extend(BoundParamsMixin) : InfinityModel;
+    if (didPassBoundParams) {
+      // if pass boundParamsOrInfinityModel, send to backwards compatible mixin that sets bound params on route
+      // and subsequently looked up when user wants to load next page
+      InfinityModelFactory = InfinityModel.extend(BoundParamsMixin);
+    } else if (ExtendedInfinityModel) {
+      // if custom InfinityModel, then use as base for creating an instance
+      InfinityModelFactory = ExtendedInfinityModel;
+    } else {
+      InfinityModelFactory = InfinityModel;
+    }
 
     let initParams = {
       currentPage,
@@ -175,7 +207,9 @@ const RouteMixin = Mixin.create({
     @return {Ember.Array} returns the new objects
   */
   updateInfinityModel(newObjects) {
-    deprecate('Ember Infinity: this method will be deprecated in the future.');
+    deprecate('Ember Infinity: this method will be deprecated in the future.', {
+      id: 'ember-infinity'
+    });
     return this._doUpdate(newObjects);
   },
 
@@ -281,7 +315,9 @@ const RouteMixin = Mixin.create({
       return;
     }
 
-    deprecate('Ember Infinity: infinityModelUpdated will be deprecated in the future.');
+    deprecate('Ember Infinity: infinityModelUpdated will be deprecated in the future.', {
+      id: 'ember-infinity'
+    });
     run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
       lastPageLoaded: this.get('currentPage'),
       totalPages: this.get('_totalPages'),

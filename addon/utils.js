@@ -22,17 +22,17 @@ export let objectAssign = Object.assign || function objectAssign(target) {
 };
 
 /**
- * determine param to set on infinityModel
- * if user passes null, then don't send query param in request
- * if user does not pass anything for value, then see if defined on route
- * else set to default param
- * @method typeOfCheck
- * @param {String} value - param passed with infinityRoute
- * @param {String} option - property defined on user route
- * @param {String} - default
- * @return {String} 
- */
-export function typeOfCheck(optionParam, routeParam, defaultParam) {
+  determine param to set on infinityModel
+  if user passes null, then don't send query param in request
+  if user does not pass anything for value, then see if defined on route
+  else set to default param
+  @method paramsCheck
+  @param {String} value - param passed with infinityRoute
+  @param {String} option - property defined on user route
+  @param {String} - default
+  @return {String} 
+*/
+export function paramsCheck(optionParam, routeParam, defaultParam) {
   if (typeOf(optionParam) === 'null' || typeOf(routeParam) === 'null') {
     // allow user to set to null if passed into infinityRoute explicitly
     return;
@@ -41,7 +41,9 @@ export function typeOfCheck(optionParam, routeParam, defaultParam) {
     return optionParam;
 
   } else if (routeParam) {
-    deprecate(`Ember Infinity: Please migrate route param - ${routeParam} - to be explicitly passed as second argument to infinityModel`);
+    deprecate(`Ember Infinity: Please migrate route param - ${routeParam} - to be explicitly passed as second argument to infinityModel`, {
+      id: 'ember-infinity'
+    });
     return routeParam;
 
   } else {

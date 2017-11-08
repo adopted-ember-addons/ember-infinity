@@ -7,7 +7,7 @@
 [![Dependency Status](https://david-dm.org/ember-infinity/ember-infinity.svg)](https://david-dm.org/ember-infinity/ember-infinity)
 [![devDependency Status](https://david-dm.org/ember-infinity/ember-infinity/dev-status.svg)](https://david-dm.org/ember-infinity/ember-infinity#info=devDependencies)
 
-***As of v0.1.0, this library officially supports Ember 1.10 through to 2.0+ (Canary), and (aside from a few buggy versions), Ember Data pre-1.0 through to 2.0+ (Canary).  We plan to support 1.10 for the foreseeable future.***
+***As of v1.0-alpha and above, this library officially supports Ember 2.4 and above***
 
 ***Note: We are moving towards a 1-0 release that will allow for the use of multiple infinity models, provide extensibility to the InfinityModel, and generally make the addon easier to reason about.
 Check it out here [1-0](https://github.com/ember-infinity/ember-infinity/tree/1-0)***
@@ -57,6 +57,20 @@ Now, whenever the `infinity-loader` is in view, it will send an action to the ro
 (the one where you initialized the infinityModel) to start loading the next page.
 
 When the new records are loaded, they will automatically be pushed into the Model array.
+
+### Non-Blocking Model Hooks
+
+In the world of optimistic route transitions & skeleton UI, it's necessary to return a POJO or similar primitive to Ember's Route#model hook to ensure the transition is not blocked by promise.
+
+As of 1.0, the infinityModel hook now supports this behavior out of the box:
+
+```js
+model() {
+  return {
+    posts: this.infinityModel('post')
+  };
+}
+```
 
 ## Advanced Usage
 
@@ -169,8 +183,42 @@ return this.infinityModel("product", { perPage: 12, startingPage: 1,
                                        category: "furniture" });
 ```
 
-Bound Parameters has been DEPRECATED as the third argument to `infinityModel`.  
-Please include as second argument to infinityModel.
+**Extending infinityModel**
+
+As of 1.0+, you can override or extend the behavior of Ember Infinity by providing a class that extends InfinityModel as a third argument to the Route#infinityModel hook.
+
+**Note**: This behavior should negate any need for the pre 1.0 "Bound Params" style of work. See [Bound Parameters][Bound Parameters] Section below for more information.
+
+```js
+import InfinityModel from 'ember-infinity/lib/infinity-model';
+
+const ExtendedInfinityModel = InfinityModel.extend({
+  global: service(),
+  buildParams() {
+    let params = this._super(...arguments);
+    params['category_id'] = get(this, 'global.categoryId');
+    return params;
+  }
+});
+
+export default Route.extend({
+  global: service(),
+  categoryId: computed('global.categoryId', function() {
+    return get(this, 'global.categoryId');
+  }),
+  model() {
+    this.infinityModel('product', {}, ExtendedInfinityModel);
+  }
+});
+```
+
+**[DEPRECATED] Bound Parameters** 
+
+As of 1.0+, passing a third parameter to represent Bound Parameters is deprecated. All valid use cases of this feature should now be ported to the [Extended Infinity Model pattern][Extending infinityModel].
+
+Bound Params were introduced as a way of dynamically fetching data over time - the query params passed to the server would be dictated by a property (computed or otherwise) on the route level, that was evaluated at the request time.
+
+This design has always felt a little off - using computed properties on the Route level is an uncommon (and thus non-ergonomic) pattern in Ember. As users have requested more features in Ember Infinity, we've realized it's more important to provide a flexible primitive that can be manipulated and extended in a Ember-esque way. This opens Ember Infinity up to a great deal more use cases, while also providing a path forward to those using the pre 1.0 version of Bound Params.
 
 * **modelPath**
 
