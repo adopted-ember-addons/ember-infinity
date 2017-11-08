@@ -1,7 +1,8 @@
 import Ember from 'ember';
-const { Route, RSVP, run } = Ember;
+const { Route, RSVP, run, get } = Ember;
 import RouteMixin from 'ember-infinity/mixins/route';
 import { module, test, skip } from 'qunit';
+import InfinityModel from 'ember-infinity/lib/infinity-model';
 
 module('RouteMixin');
 
@@ -59,6 +60,29 @@ test('it can not use infinityModel without Ember Data Store', function(assert) {
     route.model();
   } catch(e) {
     assert.equal(e.message, 'Ember Infinity: Store is not available to infinityModel');
+  }
+});
+
+test('it can not use infinityModel that is not an instance of InfinityModel', function (assert) {
+  assert.expect(1);
+
+  const ExtendedEmberObject = Ember.Object.extend({
+    customId: 2,
+    buildParams() {
+      let params = this._super(...arguments);
+      params['custom_id'] = get(this, 'customId');
+      return params;
+    }
+  });
+
+  let item = { id: 1, title: 'The Great Gatsby' };
+  let route = createRoute(['post', { store: 'simpleStore' }, ExtendedEmberObject], 
+    { extra: 'param', simpleStore: createMockStore(EA([item])) });
+
+  try {
+    route.model();
+  } catch(e) {
+    assert.equal(e.message, 'Ember Infinity: You must pass an Infinity Model instance as the third argument', "wat");
   }
 });
 
@@ -294,6 +318,28 @@ test('route accepts bound params and sets on infinity model to be passed on subs
   this.loadMore();
 
   assert.deepEqual(this.model.get('_deprecatedBoundParams'), boundParam, '_deprecatedBoundParams');
+  assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
+});
+
+test('route accepts an instance of InfinityModel as the third argument', function (assert) {
+  assert.expect(3);
+
+  let ExtendedInfinityModel = InfinityModel.extend({
+    customId: 2,
+    buildParams() {
+      let params = this._super(...arguments);
+      params['custom_id'] = get(this, 'customId');
+      return params;
+    }
+  });
+  ExtendedInfinityModel = ExtendedInfinityModel.create();
+  this.createRoute({ extra: 'param' }, ExtendedInfinityModel);
+
+  assert.equal(this.model instanceof InfinityModel, true, 'model is instance of extended infinity model');
+
+  this.loadMore();
+
+  assert.equal(this.model instanceof InfinityModel, true, 'model is instance of extended infinity model');
   assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
 });
 
