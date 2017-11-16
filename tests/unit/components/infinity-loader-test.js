@@ -1,7 +1,6 @@
 import {
   moduleForComponent,
-  test,
-  skip
+  test
 } from 'ember-qunit';
 
 import Ember from 'ember';

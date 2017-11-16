@@ -99,7 +99,7 @@ const InfinityLoaderComponent = Ember.Component.extend(InViewportMixin, {
 
   infinityModelPushed: Ember.observer('infinityModelContent.length', 'viewportEntered', function() {
     if (this.get('viewportEntered')) {
-      Ember.run.scheduleOnce('afterRender', this, this._scheduleScrolledToBottom);
+      run.scheduleOnce('afterRender', this, this._scheduleScrolledToBottom);
     }
   })
 });
