@@ -9,7 +9,7 @@
 
 ***As of v1.0-alpha and above, this library officially supports Ember 2.4 and above***
 
-***Note: We are moving towards a 1-0 release that will allow for the use of multiple infinity models, provide extensibility to the InfinityModel, and generally make the addon easier to reason about.  
+***Note: We are moving towards a 1-0 release that will allow for the use of multiple infinity models, provide extensibility to the InfinityModel, and generally make the addon easier to reason about.
 Check it out here [1-0](https://github.com/hhff/ember-infinity/tree/1-0)***
 
 Demo: [hhff.github.io/ember-infinity/](http://hhff.github.io/ember-infinity/)
@@ -212,7 +212,7 @@ export default Route.extend({
 });
 ```
 
-**[DEPRECATED] Bound Parameters** 
+**[DEPRECATED] Bound Parameters**
 
 As of 1.0+, passing a third parameter to represent Bound Parameters is deprecated. All valid use cases of this feature should now be ported to the [Extended Infinity Model pattern][Extending infinityModel].
 
@@ -359,7 +359,6 @@ Now, when the Infinity Model is fully loaded, the `infinity-loader` will hide it
 
 ***Versions less than 1.0.0 called this property destroyOnInfinity***
 
-
 * **developmentMode**
 
 ```hbs
@@ -411,10 +410,7 @@ component.
 Will install the default `infinity-loader` template into your host app, at
 `app/templates/components/infinity-loader`.
 
-**[DEPRECATED] scrollable** 
-
-You can optionally pass in a jQuery style selector string.  If it's not a string,
-scrollable will default to using the window for the scroll binding.
+* **[DEPRECATED] scrollable**
 
 * **triggerOffset**
 
@@ -422,7 +418,15 @@ scrollable will default to using the window for the scroll binding.
 {{infinity-loader triggerOffset=offset}}
 ```
 
-You can optionally pass an offset value.   This value will be used when calculating if the bottom of the scrollable has been reached.  
+You can optionally pass an offset value.   This value will be used when calculating if the bottom of the scrollable has been reached.
+
+* **eventDebounce**
+
+```hbs
+{{infinity-loader eventDebounce=debounceTimer}}
+```
+
+Default to 10ms.  You can optionally pass a debounce time to delay loading the list when reach bottom of list
 
 ### Use ember-infinity with button
 
@@ -434,7 +438,7 @@ load-more-button.js:
 export default Ember.Component.extend({
   loadText: 'Load more',
   loadedText: 'Loaded',
-  click: function(){    
+  click: function(){
     this.sendAction('action', this.get('infinityModel'));
   }
 });
@@ -447,7 +451,7 @@ load-more-button.hbs:
   <button>{{loadedText}}</button>
 {{else}}
   <button>{{loadText}}</button>
-{{/if}}  
+{{/if}}
 ```
 template.hbs:
 
