@@ -414,7 +414,7 @@ Will install the default `infinity-loader` template into your host app, at
 * **scrollable**
 
 ```hbs
-{{infinity-loader scrollable="#content"}}
+{{infinity-loader}}
 ```
 
 You can optionally pass in a jQuery style selector string.  If it's not a string,
