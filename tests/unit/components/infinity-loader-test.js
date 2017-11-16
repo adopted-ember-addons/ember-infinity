@@ -43,17 +43,18 @@ test('it changes text property', function(assert) {
   assert.equal(componentText, "Infinite Model Entirely Loaded.");
 });
 
-skip('it checks if in view after model is pushed', function(assert) {
-  assert.expect(4);
+test('it checks if in view after model is pushed', function(assert) {
+  assert.expect(3);
 
   let infinityModelStub = Ember.A();
   function pushModel() {
     infinityModelStub.pushObject({});
   }
-  pushModel();
 
   let component = this.subject({ infinityModel: infinityModelStub });
-  component.set('viewportEntered', true);
+  Ember.run(() => {
+    component.set('viewportEntered', true);
+  });
   component.set('_scheduleScrolledToBottom', function() {
     assert.ok(true);
   });
