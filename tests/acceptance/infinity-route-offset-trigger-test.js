@@ -1,3 +1,4 @@
+import Ember from 'ember';
 import { test } from 'qunit';
 import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
 import Pretender from 'pretender';
@@ -51,8 +52,8 @@ function infinityLoader() {
 }
 
 function triggerOffset() {
-  var list = postList();
-  return list.get(0).scrollHeight - list.height();
+  let { top } = document.getElementsByClassName('infinity-loader')[0].getBoundingClientRect()
+  return top - Ember.$(window).height();
 }
 
 function shouldBeItemsOnTheList(assert, amount) {
@@ -80,14 +81,14 @@ test('it should start loading more items when the scroll is on the very bottom '
   andThen(() => {
     shouldBeItemsOnTheList(assert, 25);
     infinityShouldNotBeReached(assert);
-    scrollTo(triggerOffset() - 150);
+    scrollTo(triggerOffset() - 100);
   });
 
   triggerEvent('ul', 'scroll');
 
   andThen(() => {
     shouldBeItemsOnTheList(assert, 25);
-    scrollTo(triggerOffset() + 100);
+    document.getElementsByClassName('infinity-loader')[0].scrollIntoView();
   });
 
   triggerEvent('ul', 'scroll');
@@ -112,7 +113,7 @@ test('it should start loading more items before the scroll is on the very bottom
 
   andThen(() => {
     shouldBeItemsOnTheList(assert, 25);
-    scrollTo(triggerOffset() - 200 + 100);
+    document.getElementsByClassName('infinity-loader')[0].scrollIntoView();
   });
 
   triggerEvent('ul', 'scroll');

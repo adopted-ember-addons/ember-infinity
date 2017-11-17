@@ -10,7 +10,7 @@ module.exports = {
         resolutions: {
           'ember': 'lts-2-4'
         }
-      },
+      }
     },
     {
       name: 'ember-lts-2.8',
