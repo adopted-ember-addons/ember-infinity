@@ -106,7 +106,7 @@ test('it should start loading more items before the scroll is on the very bottom
   andThen(() => {
     shouldBeItemsOnTheList(assert, 25);
     infinityShouldNotBeReached(assert);
-    scrollTo(triggerOffset() - 200 - 150);
+    scrollTo(triggerOffset() - 200 - 100);
   });
 
   triggerEvent('ul', 'scroll');
