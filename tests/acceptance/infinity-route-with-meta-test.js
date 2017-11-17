@@ -32,11 +32,11 @@ test('it works with parameters', function(assert) {
   andThen(() => {
     assertDetails(assert, {
       title: "Listing Posts using Parameters",
-      listLength: 2,
-      reachedInfinity: false
+      listLength: 3,
+      reachedInfinity: true
     });
 
-    var postList = find('ul');
+    let postList = find('ul');
 
     assert.equal(postList.find('li:first-child').text(), "Squarepusher", "First item should be 'Squarepusher'");
   });
