@@ -328,7 +328,7 @@ export default Ember.Route.extend(InfinityRoute, {
 
 ### Custom store
 
-Chances are you'll want to scroll some source other than the default ember-data store to infinity. You can do that by injecting it to the route and specify the store in the infinityModel options:
+Chances are you'll want to scroll some source other than the default ember-data store to infinity. You can do that by injecting your store into the route and specifying the store as a String in the infinityModel options:
 
 ```js
 export default Ember.Route.extend(InfinityRoute, {
@@ -412,6 +412,8 @@ Will install the default `infinity-loader` template into your host app, at
 
 * **[DEPRECATED] scrollable**
 
+Previously ember-infinity used its own logic to bind to the window scroll event.  Now under the hood we use ember-in-viewport addon to provide this functionality.
+
 * **triggerOffset**
 
 ```hbs
@@ -426,7 +428,7 @@ You can optionally pass an offset value.   This value will be used when calculat
 {{infinity-loader eventDebounce=debounceTimer}}
 ```
 
-Default to 10ms.  You can optionally pass a debounce time to delay loading the list when reach bottom of list
+Default is 10ms.  You can optionally pass a debounce time to delay loading the list when reach bottom of list
 
 ### Use ember-infinity with button
 
