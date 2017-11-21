@@ -1,7 +1,8 @@
-import Ember from 'ember';
+import ArrayProxy from "@ember/array/proxy"
+import { computed, get } from '@ember/object';
 import { objectAssign } from '../utils';
+import { typeOf } from '@ember/utils';
 
-const { get, ArrayProxy, computed, typeOf } = Ember;
 
 export default ArrayProxy.extend({
   /**

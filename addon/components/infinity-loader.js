@@ -1,10 +1,12 @@
 import Ember from 'ember';
 import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
 import InViewportMixin from 'ember-in-viewport';
+import { run } from '@ember/runloop';
+import { computed, observer } from '@ember/object';
+import { guidFor } from '@ember/object/internals';
+import Component from '@ember/component';
 
-const { run } = Ember;
-
-const InfinityLoaderComponent = Ember.Component.extend(InViewportMixin, {
+const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   classNames: ["infinity-loader"],
   classNameBindings: ["infinityModelContent.reachedInfinity", "viewportEntered:in-viewport"],
   guid: null,
@@ -19,15 +21,15 @@ const InfinityLoaderComponent = Ember.Component.extend(InViewportMixin, {
 
   willInsertElement() {
     if (this.get('_isInfinityPromiseArray')) {
-      Ember.defineProperty(this, 'infinityModelContent', Ember.computed.alias('infinityModel.content'));
+      Ember.defineProperty(this, 'infinityModelContent', computed.alias('infinityModel.content'));
     } else {
-      Ember.defineProperty(this, 'infinityModelContent', Ember.computed.alias('infinityModel'));
+      Ember.defineProperty(this, 'infinityModelContent', computed.alias('infinityModel'));
     }
   },
 
   didInsertElement() {
     this._super(...arguments);
-    this.set('guid', Ember.guidFor(this));
+    this.set('guid', guidFor(this));
 
     this.setProperties({
       viewportSpy: true,
@@ -45,7 +47,7 @@ const InfinityLoaderComponent = Ember.Component.extend(InViewportMixin, {
     this._cancelTimers();
   },
 
-  _isInfinityPromiseArray: Ember.computed('infinityModel', function() {
+  _isInfinityPromiseArray: computed('infinityModel', function() {
     return (this.get('infinityModel') instanceof InfinityPromiseArray);
   }),
 
@@ -97,7 +99,7 @@ const InfinityLoaderComponent = Ember.Component.extend(InViewportMixin, {
     run.cancel(this._debounceTimer);
   },
 
-  infinityModelPushed: Ember.observer('infinityModelContent.length', 'viewportEntered', function() {
+  infinityModelPushed: observer('infinityModelContent.length', 'viewportEntered', function() {
     if (this.get('viewportEntered')) {
       run.scheduleOnce('afterRender', this, this._scheduleScrolledToBottom);
     }

@@ -1,5 +1,7 @@
-import Ember from 'ember';
-const { Mixin, get, isEmpty } = Ember;
+import Mixin from '@ember/object/mixin';
+import { deprecate } from '@ember/application/deprecations';
+import { get } from '@ember/object';
+import { isEmpty } from '@ember/utils';
 
 export default Mixin.create({
   route: null,
@@ -12,7 +14,7 @@ export default Mixin.create({
     @return {Object}
    */
   buildParams() {
-    Ember.deprecate("Ember Infinity: Bound params are now deprecated. Please pass explicitly as second param to the infinityModel method", {
+    deprecate("Ember Infinity: Bound params are now deprecated. Please pass explicitly as second param to the infinityModel method", {
       id: 'ember-infinity'
     });
 

@@ -2,17 +2,12 @@ import Ember from 'ember';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
 import BoundParamsMixin from 'ember-infinity/mixins/bound-params';
-const {
-  Mixin,
-  computed,
-  get,
-  set,
-  run,
-  A,
-  deprecate,
-  isEmpty,
-  typeOf
-} = Ember;
+import Mixin from '@ember/object/mixin';
+import { A } from '@ember/array';
+import { computed, get, set } from '@ember/object';
+import { deprecate } from '@ember/application/deprecations';
+import { isEmpty, typeOf } from '@ember/utils';
+import { run } from '@ember/runloop';
 import { objectAssign, paramsCheck } from '../utils';
 
 /**
@@ -338,7 +333,7 @@ const RouteMixin = Mixin.create({
     }
 
     const totalPages = this.get('_totalPages');
-    Ember.run.scheduleOnce('afterRender', this, 'infinityModelLoaded', { totalPages: totalPages });
+    run.scheduleOnce('afterRender', this, 'infinityModelLoaded', { totalPages: totalPages });
   }
 });
 
