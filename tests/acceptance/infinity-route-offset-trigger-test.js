@@ -1,4 +1,3 @@
-import Ember from 'ember';
 import { test } from 'qunit';
 import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
 import Pretender from 'pretender';
@@ -8,15 +7,15 @@ let server;
 
 moduleForAcceptance('Acceptance: Infinity Route - offset trigger', {
   beforeEach() {
-    var posts = [];
+    let posts = [];
 
-    for (var i = 0; i < 50; i++) {
+    for (let i = 0; i < 50; i++) {
       posts.push({id: i, name: faker.company.companyName()});
     }
 
     server = new Pretender(function() {
       this.get('/posts', function(request) {
-        var body, subset, perPage, startPage, offset;
+        let body, subset, perPage, startPage, offset;
 
         if (request.queryParams.category) {
           subset = posts.filter(post => {
@@ -28,7 +27,7 @@ moduleForAcceptance('Acceptance: Infinity Route - offset trigger', {
         perPage = parseInt(request.queryParams.per_page, 10);
         startPage = parseInt(request.queryParams.page, 10);
 
-        var pageCount = Math.ceil(subset.length / perPage);
+        let pageCount = Math.ceil(subset.length / perPage);
         offset = perPage * (startPage - 1);
         subset = subset.slice(offset, offset + perPage);
 
@@ -52,8 +51,13 @@ function infinityLoader() {
 }
 
 function triggerOffset() {
+  // find the top of the infinity-loader component
   let { top } = document.getElementsByClassName('infinity-loader')[0].getBoundingClientRect()
-  return top - Ember.$(window).height();
+  return top;
+}
+
+function scrollIntoView() {
+  document.getElementsByClassName('infinity-loader')[0].scrollIntoView();
 }
 
 function shouldBeItemsOnTheList(assert, amount) {
@@ -88,7 +92,7 @@ test('it should start loading more items when the scroll is on the very bottom '
 
   andThen(() => {
     shouldBeItemsOnTheList(assert, 25);
-    document.getElementsByClassName('infinity-loader')[0].scrollIntoView();
+    scrollIntoView();
   });
 
   triggerEvent('ul', 'scroll');
@@ -113,7 +117,14 @@ test('it should start loading more items before the scroll is on the very bottom
 
   andThen(() => {
     shouldBeItemsOnTheList(assert, 25);
-    document.getElementsByClassName('infinity-loader')[0].scrollIntoView();
+    scrollTo(triggerOffset() - 200);
+  });
+
+  triggerEvent('ul', 'scroll');
+
+  andThen(() => {
+    shouldBeItemsOnTheList(assert, 25);
+    scrollIntoView();
   });
 
   triggerEvent('ul', 'scroll');
