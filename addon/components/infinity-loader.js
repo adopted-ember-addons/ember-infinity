@@ -2,7 +2,7 @@ import Ember from 'ember';
 import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
 import InViewportMixin from 'ember-in-viewport';
 import { run } from '@ember/runloop';
-import { computed, observer } from '@ember/object';
+import { computed } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
 import Component from '@ember/component';
 
@@ -73,15 +73,12 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
     this._cancelTimers();
   },
 
-  _scheduleScrolledToBottom() {
-    this._schedulerTimer = run.scheduleOnce('afterRender', this, this._debounceScrolledToBottom);
-  },
-
-<<<<<<< HEAD
   loadedStatusDidChange: Ember.observer('infinityModelContent.reachedInfinity', 'hideOnInfinity', function () {
     if (this.get('infinityModelContent.reachedInfinity') && this.get('hideOnInfinity')) {
       this.set('isVisible', false);
-=======
+    }
+  },
+
   _debounceScrolledToBottom() {
     /*
      This debounce is needed when there is not enough delay between onScrolledToBottom calls.
@@ -89,7 +86,6 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
      */
     function loadMore() {
       this.sendAction('loadMoreAction', this.get('infinityModelContent'));
->>>>>>> 0cb6683e... Replace binding to window with ember-in-viewport
     }
     this._debounceTimer = run.debounce(this, loadMore, this.get('eventDebounce'));
   },
@@ -97,13 +93,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   _cancelTimers() {
     run.cancel(this._schedulerTimer);
     run.cancel(this._debounceTimer);
-  },
-
-  infinityModelPushed: observer('infinityModelContent.length', 'viewportEntered', function() {
-    if (this.get('viewportEntered')) {
-      run.scheduleOnce('afterRender', this, this._scheduleScrolledToBottom);
-    }
-  })
+  }
 });
 
 export default InfinityLoaderComponent;
