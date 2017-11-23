@@ -27,6 +27,11 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
     }
   },
 
+  /**
+   * setup ember-in-viewport properties
+   * 
+   * @method didInsertElement
+   */
   didInsertElement() {
     this._super(...arguments);
     this.set('guid', guidFor(this));
@@ -52,6 +57,8 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   }),
 
   /**
+   * https://github.com/DockYard/ember-in-viewport#didenterviewport-didexitviewport
+   * 
    * @method didEnterViewport
    */
   didEnterViewport() {
@@ -69,6 +76,11 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
     this._debounceScrolledToBottom();
   },
 
+  /**
+   * https://github.com/DockYard/ember-in-viewport#didenterviewport-didexitviewport
+   * 
+   * @method didExitViewport
+   */
   didExitViewport() {
     this._cancelTimers();
   },
