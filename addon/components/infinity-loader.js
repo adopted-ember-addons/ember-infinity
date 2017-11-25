@@ -103,7 +103,6 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   },
 
   _cancelTimers() {
-    run.cancel(this._schedulerTimer);
     run.cancel(this._debounceTimer);
   }
 });
