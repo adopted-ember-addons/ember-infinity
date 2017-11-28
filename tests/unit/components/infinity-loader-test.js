@@ -21,6 +21,35 @@ test('it renders', function(assert) {
   assert.equal(component._state, 'inDOM');
 });
 
+test('it will not destroy on load unless set', function(assert) {
+  assert.expect(3);
+
+  let infinityModelStub = [
+    {id: 1, name: 'Tomato'},
+    {id: 2, name: 'Potato'}
+  ];
+
+  let component = this.subject({ infinityModel: infinityModelStub });
+  this.render();
+
+  assert.equal(component.get('destroyOnInfinity'), false);
+
+  run(function() {
+    component.set('infinityModel.reachedInfinity', true);
+  });
+
+  assert.equal(component._state, 'inDOM');
+
+  run(function() {
+    component.set('destroyOnInfinity', true);
+  });
+
+  // In Ember 2.8, there was an optimization that meant tearing
+  // down views would return them to the preRender state, ready
+  // to be reinserted. See here: https://github.com/emberjs/ember.js/pull/13648#issuecomment-225334352
+  assert.notEqual(component._state, 'inDOM');
+});
+
 test('it changes text property', function(assert) {
   assert.expect(2);
 

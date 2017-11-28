@@ -422,10 +422,10 @@ You can optionally pass an offset value.   This value will be used when calculat
 * **eventDebounce**
 
 ```hbs
-{{infinity-loader eventDebounce=debounceTimer}}
+{{infinity-loader eventDebounce=50}}
 ```
 
-Default is 10ms.  You can optionally pass a debounce time to delay loading the list when reach bottom of list
+Default is 50ms.  You can optionally pass a debounce time to delay loading the list when reach bottom of list
 
 ### Use ember-infinity with button
 

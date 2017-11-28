@@ -2,20 +2,19 @@ import Ember from 'ember';
 import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
 import InViewportMixin from 'ember-in-viewport';
 import { run } from '@ember/runloop';
-import { computed } from '@ember/object';
-import { guidFor } from '@ember/object/internals';
+import { computed, observer } from '@ember/object';
 import Component from '@ember/component';
 
 const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   classNames: ["infinity-loader"],
   classNameBindings: ["infinityModelContent.reachedInfinity", "viewportEntered:in-viewport"],
-  guid: null,
-  eventDebounce: 10,
+  eventDebounce: 50,
   loadMoreAction: 'infinityLoad',
   loadingText: 'Loading Infinite Model...',
   loadedText: 'Infinite Model Entirely Loaded.',
   hideOnInfinity: false,
   developmentMode: false,
+  destroyOnInfinity: false,
   triggerOffset: 0,
   isVisible: true,
 
@@ -34,7 +33,6 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
    */
   didInsertElement() {
     this._super(...arguments);
-    this.set('guid', guidFor(this));
 
     this.setProperties({
       viewportSpy: true,
@@ -104,7 +102,13 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
 
   _cancelTimers() {
     run.cancel(this._debounceTimer);
-  }
+  },
+
+  loadedStatusDidChange: observer('infinityModel.reachedInfinity', 'destroyOnInfinity', function () {
+    if (this.get('infinityModel.reachedInfinity') && this.get('destroyOnInfinity')) {
+      this.destroy();
+    }
+  }),
 });
 
 export default InfinityLoaderComponent;
