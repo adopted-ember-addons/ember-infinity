@@ -407,9 +407,13 @@ component.
 Will install the default `infinity-loader` template into your host app, at
 `app/templates/components/infinity-loader`.
 
-* **[DEPRECATED] scrollable**
+* **scrollable**
 
-Previously ember-infinity used its own logic to bind to the window scroll event.  Now under the hood we use ember-in-viewport addon to provide this functionality.
+```hbs
+{{infinity-loader scrollable="#content"}}
+```
+
+You can optionally pass in a CSS style selector string.  If not present, scrollable will default to using the window.  This is useful for scrollable areas that are constrained in the window.
 
 * **triggerOffset**
 

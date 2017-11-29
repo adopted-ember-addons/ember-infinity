@@ -15,6 +15,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   hideOnInfinity: false,
   developmentMode: false,
   destroyOnInfinity: false,
+  scrollable: null,
   triggerOffset: 0,
   isVisible: true,
 
@@ -41,7 +42,8 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
         right: 0,
         bottom: this.get('triggerOffset'),
         left: 0
-      }
+      },
+      scrollableArea: this.get('scrollable'),
     });
   },
 

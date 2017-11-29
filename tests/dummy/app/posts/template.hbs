@@ -2,9 +2,9 @@
 
 <ul class="test-list" style='height: 100px; overflow: scroll;'>
   {{#each model as |post|}}
-    <li>{{post.name}}</li>
+    <li class="test-list-item">{{post.name}}</li>
   {{/each}}
-  <li id='scollable-list-item'>{{infinity-loader infinityModel=model}}</li>
+  <li id='scollable-list-item'>{{infinity-loader infinityModel=model scrollable=".test-list"}}</li>
 </ul>
 
 
