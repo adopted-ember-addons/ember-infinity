@@ -76,7 +76,7 @@ test('it can not use infinityModel that is not an instance of InfinityModel', fu
   });
 
   let item = { id: 1, title: 'The Great Gatsby' };
-  let route = createRoute(['post', { store: 'simpleStore' }, ExtendedEmberObject], 
+  let route = createRoute(['post', { store: 'simpleStore' }, ExtendedEmberObject],
     { extra: 'param', simpleStore: createMockStore(EA([item])) });
 
   try {
@@ -253,6 +253,18 @@ test('it allows customizations of meta parsing params', function(assert) {
 
   assert.equal(model.get('totalPagesParam'), 'pagination.total', 'totalPagesParam');
   assert.equal(model.get('_totalPages'), 22, '_totalPages');
+});
+
+test('it copies arbitrary model hook meta from route request to the infinityModel', function(assert) {
+  let store = createMockStore(
+    EA([{id: 1, name: 'Walter White'}], { meta: { meaningOfLife: 42 }})
+  );
+
+  let route = createRoute(['item', {}],  { store });
+
+  let model = callModelHook(route);
+
+  assert.equal(model.get('meta.meaningOfLife'), 42, 'meta');
 });
 
 module('RouteMixin - reaching the end', {
