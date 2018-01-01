@@ -31,7 +31,7 @@ Also:
 **Note:** If you're getting an error like `semver is not defined`, you probably did `npm install` instead of `ember install`.  We use [ember-version-is](https://github.com/hhff/ember-version-is) to manage the code for different versions of Ember & Ember Data, which relies on semver.  `npm install` won't run the nested generator that adds semver to your app.
 
 ## Basic Usage
-
+Import the library and extend the route.
 ```js
 import Ember from 'ember';
 import InfinityRoute from "ember-infinity/mixins/route";
