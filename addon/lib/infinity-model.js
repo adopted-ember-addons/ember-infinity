@@ -77,6 +77,15 @@ export default ArrayProxy.extend({
   totalPagesParam: 'meta.total_pages',
 
   /**
+    Arbitrary meta copied over from
+    the HTTP response, to maintain the
+    default behavior of ember-data requests
+    @type objects
+    @default {}
+  */
+  meta: {},
+
+  /**
     @private
     @property _firstPageLoaded
     @type Boolean

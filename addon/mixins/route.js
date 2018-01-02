@@ -2,14 +2,14 @@ import Ember from 'ember';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
 import BoundParamsMixin from 'ember-infinity/mixins/bound-params';
-const { 
-  Mixin, 
-  computed, 
-  get, 
-  set, 
-  run, 
-  A, 
-  deprecate, 
+const {
+  Mixin,
+  computed,
+  get,
+  set,
+  run,
+  A,
+  deprecate,
   isEmpty,
   typeOf
 } = Ember;
@@ -107,7 +107,7 @@ const RouteMixin = Mixin.create({
     @method infinityModel
     @param {String} modelName The name of the model.
     @param {Object} options - optional - the perPage and startingPage to load from.
-    @param {Object} boundParamsOrInfinityModel - optional - 
+    @param {Object} boundParamsOrInfinityModel - optional -
       params on route to be looked up on every route request or
       instance of InfinityModel
     @return {Ember.RSVP.Promise}
@@ -119,9 +119,9 @@ const RouteMixin = Mixin.create({
       if (!(boundParamsOrInfinityModel instanceof InfinityModel)) {
         throw new Ember.Error("Ember Infinity: You must pass an Infinity Model instance as the third argument");
       }
-      ExtendedInfinityModel = boundParamsOrInfinityModel; 
+      ExtendedInfinityModel = boundParamsOrInfinityModel;
     } else if (typeOf(boundParamsOrInfinityModel) === "object") {
-      boundParams = boundParamsOrInfinityModel; 
+      boundParams = boundParamsOrInfinityModel;
     }
 
     if (modelName === undefined) {
@@ -301,6 +301,7 @@ const RouteMixin = Mixin.create({
   _doUpdate(queryObject, infinityModel) {
     const totalPages = queryObject.get(get(infinityModel, 'totalPagesParam'));
     set(infinityModel, '_totalPages', totalPages);
+    set(infinityModel, 'meta', get(queryObject, 'meta'));
     return infinityModel.pushObjects(queryObject.toArray());
   },
 
