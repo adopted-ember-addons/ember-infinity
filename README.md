@@ -349,14 +349,16 @@ export default Ember.Route.extend(InfinityRoute, {
 
 The `infinity-loader` component as some extra options to make working with it easy!
 
-* **destroyOnInfinity**
+* **hideOnInfinity**
 
 ```hbs
-{{infinity-loader infinityModel=model destroyOnInfinity=true}}
+{{infinity-loader infinityModel=model hideOnInfinity=true}}
 ```
 
-Now, when the Infinity Model is fully loaded, the `infinity-loader` will remove itself
-from the page.
+Now, when the Infinity Model is fully loaded, the `infinity-loader` will hide itself.
+
+***Versions less than 1.0.0 called this property destroyOnInfinity***
+
 
 * **developmentMode**
 
