@@ -19,35 +19,6 @@ test('it renders', function(assert) {
   assert.equal(component._state, 'inDOM');
 });
 
-test('it will not destroy on load unless set', function(assert) {
-  assert.expect(3);
-
-  var infinityModelStub = [
-    {id: 1, name: 'Tomato'},
-    {id: 2, name: 'Potato'}
-  ];
-
-  var component = this.subject({ infinityModel: infinityModelStub });
-  this.render();
-
-  assert.equal(component.get('destroyOnInfinity'), false);
-
-  Ember.run(function() {
-    component.set('infinityModel.reachedInfinity', true);
-  });
-
-  assert.equal(component._state, 'inDOM');
-
-  Ember.run(function() {
-    component.set('destroyOnInfinity', true);
-  });
-
-  // In Ember 2.8, there was an optimization that meant tearing
-  // down views would return them to the preRender state, ready
-  // to be reinserted. See here: https://github.com/emberjs/ember.js/pull/13648#issuecomment-225334352
-  assert.notEqual(component._state, 'inDOM');
-});
-
 test('it changes text property', function(assert) {
   assert.expect(2);
 
@@ -190,4 +161,51 @@ test('it checks if in view after model is pushed', function(assert) {
   for (var i = 0; i < 3; i++) {
     setTimeout(pushModelAsynchronously);
   }
+});
+
+test('hideOnInfinity => true : it will hide itself when inifinity is reached', function(assert) {
+  assert.expect(2);
+
+  var infinityModelStub = [
+    {id: 1, name: 'Tomato'},
+    {id: 2, name: 'Potato'}
+  ];
+
+  var component = this.subject({
+    infinityModel: infinityModelStub,
+    hideOnInfinity: true,
+  });
+
+  this.render();
+
+  assert.ok(component.get('isVisible'));
+
+  Ember.run(function() {
+    component.set('infinityModel.reachedInfinity', true);
+    assert.notOk(component.get('isVisible'));
+  });
+});
+
+test('hideOnInfinity : will default to false and not hide the loader', function(assert) {
+  assert.expect(3);
+
+  var infinityModelStub = [
+    {id: 1, name: 'Tomato'},
+    {id: 2, name: 'Potato'}
+  ];
+
+  var component = this.subject({
+    infinityModel: infinityModelStub,
+  });
+
+  this.render();
+
+  assert.ok(component.get('isVisible'));
+
+  assert.notOk(component.get('hideOnInfinity'));
+
+  Ember.run(function() {
+    component.set('infinityModel.reachedInfinity', true);
+    assert.ok(component.get('isVisible'));
+  });
 });
