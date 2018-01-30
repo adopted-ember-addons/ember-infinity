@@ -21,7 +21,7 @@ test('it renders', function(assert) {
   assert.equal(component._state, 'inDOM');
 });
 
-test('it will not destroy on load unless set', function(assert) {
+test('it will not hide on load unless set', function(assert) {
   assert.expect(3);
 
   let infinityModelStub = [
@@ -29,25 +29,17 @@ test('it will not destroy on load unless set', function(assert) {
     {id: 2, name: 'Potato'}
   ];
 
-  let component = this.subject({ infinityModel: infinityModelStub });
+  let component = this.subject({ infinityModel: infinityModelStub, hideOnInfinity: true });
   this.render();
 
-  assert.equal(component.get('destroyOnInfinity'), false);
+  assert.equal(component.get('hideOnInfinity'), true);
+  assert.equal(component.get('isVisible'), true);
 
   run(function() {
     component.set('infinityModel.reachedInfinity', true);
   });
 
-  assert.equal(component._state, 'inDOM');
-
-  run(function() {
-    component.set('destroyOnInfinity', true);
-  });
-
-  // In Ember 2.8, there was an optimization that meant tearing
-  // down views would return them to the preRender state, ready
-  // to be reinserted. See here: https://github.com/emberjs/ember.js/pull/13648#issuecomment-225334352
-  assert.notEqual(component._state, 'inDOM');
+  assert.equal(component.get('isVisible'), false);
 });
 
 test('it changes text property', function(assert) {
@@ -119,7 +111,7 @@ test('hideOnInfinity => true : it will hide itself when inifinity is reached', f
 
   assert.ok(component.get('isVisible'));
 
-  Ember.run(function() {
+  run(function() {
     component.set('infinityModel.reachedInfinity', true);
     assert.notOk(component.get('isVisible'));
   });
@@ -143,7 +135,7 @@ test('hideOnInfinity : will default to false and not hide the loader', function(
 
   assert.notOk(component.get('hideOnInfinity'));
 
-  Ember.run(function() {
+  run(function() {
     component.set('infinityModel.reachedInfinity', true);
     assert.ok(component.get('isVisible'));
   });

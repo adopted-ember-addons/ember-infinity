@@ -29,7 +29,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
 
   /**
    * setup ember-in-viewport properties
-   * 
+   *
    * @method didInsertElement
    */
   didInsertElement() {
@@ -58,7 +58,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
 
   /**
    * https://github.com/DockYard/ember-in-viewport#didenterviewport-didexitviewport
-   * 
+   *
    * @method didEnterViewport
    */
   didEnterViewport() {
@@ -78,18 +78,21 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
 
   /**
    * https://github.com/DockYard/ember-in-viewport#didenterviewport-didexitviewport
-   * 
+   *
    * @method didExitViewport
    */
   didExitViewport() {
     this._cancelTimers();
   },
 
-  loadedStatusDidChange: Ember.observer('infinityModelContent.reachedInfinity', 'hideOnInfinity', function () {
+  /**
+   * @method loadedStatusDidChange
+   */
+  loadedStatusDidChange: observer('infinityModelContent.reachedInfinity', 'hideOnInfinity', function () {
     if (this.get('infinityModelContent.reachedInfinity') && this.get('hideOnInfinity')) {
       this.set('isVisible', false);
     }
-  },
+  }),
 
   _debounceScrolledToBottom() {
     /*
@@ -105,12 +108,6 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   _cancelTimers() {
     run.cancel(this._debounceTimer);
   },
-
-  loadedStatusDidChange: observer('infinityModel.reachedInfinity', 'destroyOnInfinity', function () {
-    if (this.get('infinityModel.reachedInfinity') && this.get('destroyOnInfinity')) {
-      this.destroy();
-    }
-  }),
 });
 
 export default InfinityLoaderComponent;
