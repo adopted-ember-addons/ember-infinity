@@ -14,7 +14,6 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   loadedText: 'Infinite Model Entirely Loaded.',
   hideOnInfinity: false,
   developmentMode: false,
-  destroyOnInfinity: false,
   scrollable: null,
   triggerOffset: 0,
   isVisible: true,
