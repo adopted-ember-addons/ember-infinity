@@ -1,11 +1,14 @@
 import Ember from 'ember';
 import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
+import InViewportMixin from 'ember-in-viewport';
+import { run } from '@ember/runloop';
+import { computed, observer } from '@ember/object';
+import Component from '@ember/component';
 
-const InfinityLoaderComponent = Ember.Component.extend({
+const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   classNames: ["infinity-loader"],
-  classNameBindings: ["infinityModelContent.reachedInfinity"],
-  guid: null,
-  eventDebounce: 10,
+  classNameBindings: ["infinityModelContent.reachedInfinity", "viewportEntered:in-viewport"],
+  eventDebounce: 50,
   loadMoreAction: 'infinityLoad',
   loadingText: 'Loading Infinite Model...',
   loadedText: 'Infinite Model Entirely Loaded.',
@@ -17,91 +20,47 @@ const InfinityLoaderComponent = Ember.Component.extend({
 
   willInsertElement() {
     if (this.get('_isInfinityPromiseArray')) {
-      Ember.defineProperty(this, 'infinityModelContent', Ember.computed.alias('infinityModel.content'));
+      Ember.defineProperty(this, 'infinityModelContent', computed.alias('infinityModel.content'));
     } else {
-      Ember.defineProperty(this, 'infinityModelContent', Ember.computed.alias('infinityModel'));
+      Ember.defineProperty(this, 'infinityModelContent', computed.alias('infinityModel'));
     }
   },
 
+  /**
+   * setup ember-in-viewport properties
+   *
+   * @method didInsertElement
+   */
   didInsertElement() {
     this._super(...arguments);
-    this._setupScrollable();
-    this.set('guid', Ember.guidFor(this));
-    this._bindEvent('scroll');
-    this._bindEvent('resize');
 
-    if (this.get('_isInfinityPromiseArray')) {
-      this.get('infinityModel').then(() => this._loadMoreIfNeeded());
-    } else {
-      this._loadMoreIfNeeded();
-    }
+    this.setProperties({
+      viewportSpy: true,
+      viewportTolerance: {
+        top: 0,
+        right: 0,
+        bottom: this.get('triggerOffset'),
+        left: 0
+      },
+      scrollableArea: this.get('scrollable'),
+    });
   },
 
   willDestroyElement() {
     this._super(...arguments);
-    this._unbindEvent('scroll');
-    this._unbindEvent('resize');
+    this._cancelTimers();
   },
 
-  _isInfinityPromiseArray: Ember.computed('infinityModel', function() {
+  _isInfinityPromiseArray: computed('infinityModel', function() {
     return (this.get('infinityModel') instanceof InfinityPromiseArray);
   }),
 
-  _bindEvent(eventName) {
-    this.get('_scrollable').on(`${eventName}.${this.get('guid')}`, () => {
-      Ember.run.debounce(this, this._loadMoreIfNeeded, this.get('eventDebounce'));
-    });
-  },
-
-  _unbindEvent(eventName) {
-    let scrollable = this.get('_scrollable');
-    if (scrollable) {
-      scrollable.off(`${eventName}.${this.get('guid')}`);
-    }
-  },
-
   /**
-   * determine how far the infinity-loader component is from the top of the
-    scrollable element
-   * @method _selfOffset
-   * @return {Number}
+   * https://github.com/DockYard/ember-in-viewport#didenterviewport-didexitviewport
+   *
+   * @method didEnterViewport
    */
-  _selfOffset() {
-    if (this.get('_customScrollableIsDefined')) {
-      return this.$().offset().top - this.get("_scrollable").offset().top + this.get("_scrollable").scrollTop();
-    } else {
-      return this.$().offset().top;
-    }
-  },
-
-  /**
-   * total pixels where _scrollable's bottom position is from top of screen
-   * @method _bottomOfScrollableOffset
-   * @return {Number}
-   */
-  _bottomOfScrollableOffset() {
-    return this.get('_scrollable').height() + this.get("_scrollable").scrollTop();
-  },
-
-  /**
-   * distance infinity loader is from top of _scrollable/window's top position
-    less the buffer amount specified by triggerOffset
-   * @method _triggerOffset
-   * @return {Number}
-   */
-  _triggerOffset() {
-    return this._selfOffset() - this.get('triggerOffset');
-  },
-
-  /**
-   * is _scrollable's bottom position greater than the distance from the
-    infinity-loader component to _scrollable's top
-   * in other words if at top of page and _scrollable's height is 100px and
-    infinity loader is 200px from the top, has the scrollable traversed 101px to trigger loading more records
-   * @method _shouldLoadMore
-   * @return {Boolean}
-   */
-  _shouldLoadMore() {
+  didEnterViewport() {
     const consideredReady = !this.get('_isInfinityPromiseArray') || this.get('infinityModel.isFulfilled');
     if (
       this.get('developmentMode') ||
@@ -112,45 +71,42 @@ const InfinityLoaderComponent = Ember.Component.extend({
     ) {
       return false;
     }
-    return this._bottomOfScrollableOffset() > this._triggerOffset();
+
+    this._debounceScrolledToBottom();
   },
 
-  _loadMoreIfNeeded() {
-    const infinityModel = this.get('infinityModelContent');
-    if (this._shouldLoadMore() && infinityModel) {
-      this.sendAction('loadMoreAction', infinityModel);
-    }
+  /**
+   * https://github.com/DockYard/ember-in-viewport#didenterviewport-didexitviewport
+   *
+   * @method didExitViewport
+   */
+  didExitViewport() {
+    this._cancelTimers();
   },
 
-  _setupScrollable() {
-    var scrollable = this.get('scrollable');
-    if (Ember.typeOf(scrollable) === 'string') {
-      var items = Ember.$(scrollable);
-      if (items.length === 1) {
-        this.set('_scrollable', items.eq(0));
-      } else if (items.length > 1) {
-        throw new Ember.Error("Ember Infinity: Multiple scrollable elements found for: " + scrollable);
-      } else {
-        throw new Ember.Error("Ember Infinity: No scrollable element found for: " + scrollable);
-      }
-      this.set('_customScrollableIsDefined', true);
-    } else if (scrollable === undefined || scrollable === null) {
-      this.set('_scrollable', Ember.$(window));
-      this.set('_customScrollableIsDefined', false);
-    } else {
-      throw new Ember.Error("Ember Infinity: Scrollable must either be a css selector string or left empty to default to window");
-    }
-  },
-
-  loadedStatusDidChange: Ember.observer('infinityModelContent.reachedInfinity', 'hideOnInfinity', function () {
+  /**
+   * @method loadedStatusDidChange
+   */
+  loadedStatusDidChange: observer('infinityModelContent.reachedInfinity', 'hideOnInfinity', function () {
     if (this.get('infinityModelContent.reachedInfinity') && this.get('hideOnInfinity')) {
       this.set('isVisible', false);
     }
   }),
 
-  infinityModelPushed: Ember.observer('infinityModelContent.length', function() {
-    Ember.run.scheduleOnce('afterRender', this, this._loadMoreIfNeeded);
-  })
+  _debounceScrolledToBottom() {
+    /*
+     This debounce is needed when there is not enough delay between onScrolledToBottom calls.
+     Without this debounce, all rows will be rendered causing immense performance problems
+     */
+    function loadMore() {
+      this.sendAction('loadMoreAction', this.get('infinityModelContent'));
+    }
+    this._debounceTimer = run.debounce(this, loadMore, this.get('eventDebounce'));
+  },
+
+  _cancelTimers() {
+    run.cancel(this._debounceTimer);
+  },
 });
 
 export default InfinityLoaderComponent;
