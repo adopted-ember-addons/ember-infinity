@@ -11,10 +11,10 @@
     "doc": "doc",
     "test": "tests"
   },
-  "repository": "https://github.com/hhff/ember-infinity",
+  "repository": "https://github.com/ember-infinity/ember-infinity",
   "scripts": {
     "build": "ember build",
-    "start": "ember server",
+    "start": "ember serve",
     "test": "ember try:each"
   },
   "repository": "https://github.com/ember-infinity/ember-infinity",
