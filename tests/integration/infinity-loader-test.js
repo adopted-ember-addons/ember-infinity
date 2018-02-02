@@ -10,9 +10,7 @@ test('it renders loading text if no block given', function(assert) {
   this.send = function () {};
   this.on('infinityLoad', function () {});
 
-  this.render(hbs`
-              {{infinity-loader}}
-              `);
+  this.render(hbs`{{infinity-loader}}`);
   assert.equal(this.$('.infinity-loader > span').text(), "Loading Infinite Model...");
 });
 

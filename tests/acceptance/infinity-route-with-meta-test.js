@@ -36,8 +36,9 @@ test('it works with parameters', function(assert) {
       reachedInfinity: false
     });
 
-    var postList = find('ul');
+    let postList = find('ul');
 
     assert.equal(postList.find('li:first-child').text(), "Squarepusher", "First item should be 'Squarepusher'");
+    assert.equal(postList.find('li').length, 2, "List length is 2");
   });
 });

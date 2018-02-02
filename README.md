@@ -17,9 +17,6 @@ Demo: [hhff.github.io/ember-infinity/](http://hhff.github.io/ember-infinity/)
 Simple, flexible infinite scrolling for Ember CLI Apps.  Works out of the box
 with the [Kaminari Gem](https://github.com/amatsuda/kaminari.git).
 
-Inspired by @bantic's [Ember Infinite Scroll](https://github.com/bantic/ember-infinite-scroll)
-repo, but without using controllers, in preparation for Ember 2.0.
-
 Also:
 
 ![Fastbootable](https://s3.amazonaws.com/f.cl.ly/items/392o0m1N0R2515091z25/ember-infinity.gif?v=13181cd7)
@@ -212,7 +209,7 @@ export default Route.extend({
 });
 ```
 
-**[DEPRECATED] Bound Parameters** 
+**[DEPRECATED] Bound Parameters**
 
 As of 1.0+, passing a third parameter to represent Bound Parameters is deprecated. All valid use cases of this feature should now be ported to the [Extended Infinity Model pattern][Extending infinityModel].
 
@@ -328,7 +325,7 @@ export default Ember.Route.extend(InfinityRoute, {
 
 ### Custom store
 
-Chances are you'll want to scroll some source other than the default ember-data store to infinity. You can do that by injecting it to the route and specify the store in the infinityModel options:
+Chances are you'll want to scroll some source other than the default ember-data store to infinity. You can do that by injecting your store into the route and specifying the store as a String in the infinityModel options:
 
 ```js
 export default Ember.Route.extend(InfinityRoute, {
@@ -358,7 +355,6 @@ The `infinity-loader` component as some extra options to make working with it ea
 Now, when the Infinity Model is fully loaded, the `infinity-loader` will hide itself.
 
 ***Versions less than 1.0.0 called this property destroyOnInfinity***
-
 
 * **developmentMode**
 
@@ -417,8 +413,7 @@ Will install the default `infinity-loader` template into your host app, at
 {{infinity-loader scrollable="#content"}}
 ```
 
-You can optionally pass in a jQuery style selector string.  If it's not a string,
-scrollable will default to using the window for the scroll binding.
+You can optionally pass in a CSS style selector string.  If not present, scrollable will default to using the window.  This is useful for scrollable areas that are constrained in the window.
 
 * **triggerOffset**
 
@@ -427,6 +422,15 @@ scrollable will default to using the window for the scroll binding.
 ```
 
 You can optionally pass an offset value.   This value will be used when calculating if the bottom of the scrollable has been reached.
+
+* **eventDebounce**
+
+```hbs
+{{infinity-loader eventDebounce=50}}
+```
+
+Default is 50ms.  You can optionally pass a debounce time to delay loading the list when reach bottom of list
+>>>>>>> a2c68afb... Replace with ember-in-viewport (#242)
 
 ### Use ember-infinity with button
 

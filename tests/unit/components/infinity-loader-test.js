@@ -1,10 +1,12 @@
 import {
   moduleForComponent,
-  test
+  test,
+  skip
 } from 'ember-qunit';
 
-import Ember from 'ember';
-import $ from 'jquery';
+import { run } from '@ember/runloop';
+import { A } from '@ember/array';
+import $ from "jquery";
 
 moduleForComponent('infinity-loader', {
   unit: true
@@ -13,28 +15,48 @@ moduleForComponent('infinity-loader', {
 test('it renders', function(assert) {
   assert.expect(2);
 
-  var component = this.subject();
+  let component = this.subject();
   assert.equal(component._state, 'preRender');
   this.render();
   assert.equal(component._state, 'inDOM');
 });
 
-test('it changes text property', function(assert) {
-  assert.expect(2);
+test('it will not hide on load unless set', function(assert) {
+  assert.expect(3);
 
-  var infinityModelStub = [
+  let infinityModelStub = [
     {id: 1, name: 'Tomato'},
     {id: 2, name: 'Potato'}
   ];
 
-  var componentText;
-  var component = this.subject({ infinityModel: infinityModelStub });
+  let component = this.subject({ infinityModel: infinityModelStub, hideOnInfinity: true });
   this.render();
 
-  componentText = $.trim(component.$().text());
+  assert.equal(component.get('hideOnInfinity'), true);
+  assert.equal(component.get('isVisible'), true);
+
+  run(function() {
+    component.set('infinityModel.reachedInfinity', true);
+  });
+
+  assert.equal(component.get('isVisible'), false);
+});
+
+test('it changes text property', function(assert) {
+  assert.expect(2);
+
+  let infinityModelStub = [
+    {id: 1, name: 'Tomato'},
+    {id: 2, name: 'Potato'}
+  ];
+
+  let component = this.subject({ infinityModel: infinityModelStub });
+  this.render();
+
+  let componentText = $.trim(component.$().text());
   assert.equal(componentText, "Loading Infinite Model...");
 
-  Ember.run(function() {
+  run(function() {
     component.set('infinityModel.reachedInfinity', true);
   });
 
@@ -42,123 +64,32 @@ test('it changes text property', function(assert) {
   assert.equal(componentText, "Infinite Model Entirely Loaded.");
 });
 
-test('it uses the window as the scrollable element', function(assert) {
-  assert.expect(1);
-  var component = this.subject();
-  this.render();
-  var scrollable = component.get("_scrollable");
-  assert.equal(scrollable[0], window);
-});
+skip('it checks if in view after model is pushed', function(assert) {
+  assert.expect(3);
 
-test('it uses the provided scrollable element', function(assert) {
-  assert.expect(1);
-  $(document.body).append("<div id='content'/>");
-  var component = this.subject({scrollable: "#content"});
-  this.render();
-  var scrollable = component.get("_scrollable");
-  assert.equal(scrollable[0], $("#content")[0]);
-});
-
-test('it throws error when scrollable element is not found', function(assert) {
-  assert.expect(1);
-
-  const component = this.subject({scrollable: "#nonexistent"});
-  try {
-    component.didInsertElement();
-  } catch(e) {
-    return assert.ok(e.message.indexOf('Ember Infinity: No scrollable element found for') > -1);
-  }
-});
-
-test('it throws error when multiple scrollable elements are found', function(assert) {
-  assert.expect(1);
-  $(document.body).append("<div class='hello'><div/>");
-  $(document.body).append("<div class='hello'><div/>");
-
-  const component = this.subject({scrollable: ".hello"});
-  try {
-    component.didInsertElement();
-  } catch(e) {
-    return assert.ok(e.message.indexOf('Ember Infinity: Multiple scrollable elements found for') > -1);
-  }
-});
-
-test('it throws error when scrollable is something other than nothing or string', function(assert) {
-  assert.expect(1);
-  $(document.body).append("<div id='content'/>");
-  const component = this.subject({scrollable: $("#content")});
-
-  try {
-    component.didInsertElement();
-  } catch(e) {
-    return assert.ok(e.message.indexOf('Ember Infinity: Scrollable must either be a css selector string or left empty to default to window') > -1);
-  }
-});
-
-test('it checks if in view on the scroll event', function(assert) {
-  assert.expect(1);
-  var done = assert.async();
-
-  var component = this.subject();
-
-  var isAfterRender = false;
-  component.set('_loadMoreIfNeeded', function() {
-    if (isAfterRender) {
-      assert.ok(true);
-      done();
-    }
-  });
-
-  this.render();
-
-  isAfterRender = true;
-  $(window).trigger('scroll');
-});
-
-test('it checks if in view on the resize event', function(assert) {
-  assert.expect(1);
-  var done = assert.async();
-
-  var component = this.subject();
-
-  var isAfterRender = false;
-  component.set('_loadMoreIfNeeded', function() {
-    if (isAfterRender) {
-      assert.ok(true);
-      done();
-    }
-  });
-
-  this.render();
-
-  isAfterRender = true;
-  $(window).trigger('resize');
-});
-
-test('it checks if in view after model is pushed', function(assert) {
-  assert.expect(4);
-
-  var infinityModelStub = Ember.A();
+  let infinityModelStub = A();
   function pushModel() {
     infinityModelStub.pushObject({});
   }
-  pushModel();
 
-  var component = this.subject({ infinityModel: infinityModelStub });
-  component.set('_loadMoreIfNeeded', function() {
+  let component = this.subject({ infinityModel: infinityModelStub });
+  run(() => {
+    component.set('viewportEntered', true);
+  });
+  component.set('_scheduleScrolledToBottom', function() {
     assert.ok(true);
   });
   this.render();
 
-  var done = assert.async();
-  var count = 3;
-  var pushModelAsynchronously = () => {
-    Ember.run(pushModel);
+  let done = assert.async();
+  let count = 3;
+  let pushModelAsynchronously = () => {
+    run(pushModel);
     if (!--count) {
       done();
     }
   };
-  for (var i = 0; i < 3; i++) {
+  for (let i = 0; i < 3; i++) {
     setTimeout(pushModelAsynchronously);
   }
 });
@@ -180,7 +111,7 @@ test('hideOnInfinity => true : it will hide itself when inifinity is reached', f
 
   assert.ok(component.get('isVisible'));
 
-  Ember.run(function() {
+  run(function() {
     component.set('infinityModel.reachedInfinity', true);
     assert.notOk(component.get('isVisible'));
   });
@@ -204,7 +135,7 @@ test('hideOnInfinity : will default to false and not hide the loader', function(
 
   assert.notOk(component.get('hideOnInfinity'));
 
-  Ember.run(function() {
+  run(function() {
     component.set('infinityModel.reachedInfinity', true);
     assert.ok(component.get('isVisible'));
   });
