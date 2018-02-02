@@ -1,5 +1,5 @@
 {
-  "name": "ember-infinity",
+  "name": "@ember-infinity/ember-infinity",
   "version": "0.2.8",
   "description": "Simple, flexible infinite scroll for Ember CLI Apps.",
   "directories": {
@@ -11,7 +11,7 @@
     "start": "ember server",
     "test": "ember try:testall"
   },
-  "repository": "https://github.com/hhff/ember-infinity",
+  "repository": "https://github.com/ember-infinity/ember-infinity",
   "engines": {
     "node": ">= 0.10.0"
   },

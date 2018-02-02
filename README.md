@@ -1,16 +1,16 @@
 # Ember Infinity
-[![Build Status](https://travis-ci.org/hhff/ember-infinity.svg)](https://travis-ci.org/hhff/ember-infinity)
+[![Build Status](https://travis-ci.org/ember-infinity/ember-infinity.svg)](https://travis-ci.org/ember-infinity/ember-infinity)
 [![npm version](https://badge.fury.io/js/ember-infinity.svg)](http://badge.fury.io/js/ember-infinity)
 [![Ember Observer Score](http://emberobserver.com/badges/ember-infinity.svg)](http://emberobserver.com/addons/ember-infinity)
 
-[![Code Climate](https://codeclimate.com/github/hhff/ember-infinity/badges/gpa.svg)](https://codeclimate.com/github/hhff/ember-infinity)
-[![Dependency Status](https://david-dm.org/hhff/ember-infinity.svg)](https://david-dm.org/hhff/ember-infinity)
-[![devDependency Status](https://david-dm.org/hhff/ember-infinity/dev-status.svg)](https://david-dm.org/hhff/ember-infinity#info=devDependencies)
+[![Code Climate](https://codeclimate.com/github/ember-infinity/ember-infinity/badges/gpa.svg)](https://codeclimate.com/github/ember-infinity/ember-infinity)
+[![Dependency Status](https://david-dm.org/ember-infinity/ember-infinity.svg)](https://david-dm.org/ember-infinity/ember-infinity)
+[![devDependency Status](https://david-dm.org/ember-infinity/ember-infinity/dev-status.svg)](https://david-dm.org/ember-infinity/ember-infinity#info=devDependencies)
 
 ***As of v0.1.0, this library officially supports Ember 1.10 through to 2.0+ (Canary), and (aside from a few buggy versions), Ember Data pre-1.0 through to 2.0+ (Canary).  We plan to support 1.10 for the foreseeable future.***
 
-***Note: We are moving towards a 1-0 release that will allow for the use of multiple infinity models, provide extensibility to the InfinityModel, and generally make the addon easier to reason about.  
-Check it out here [1-0](https://github.com/hhff/ember-infinity/tree/1-0)***
+***Note: We are moving towards a 1-0 release that will allow for the use of multiple infinity models, provide extensibility to the InfinityModel, and generally make the addon easier to reason about.
+Check it out here [1-0](https://github.com/ember-infinity/ember-infinity/tree/1-0)***
 
 Demo: [hhff.github.io/ember-infinity/](http://hhff.github.io/ember-infinity/)
 
@@ -410,7 +410,7 @@ scrollable will default to using the window for the scroll binding.
 {{infinity-loader triggerOffset=offset}}
 ```
 
-You can optionally pass an offset value.   This value will be used when calculating if the bottom of the scrollable has been reached.  
+You can optionally pass an offset value.   This value will be used when calculating if the bottom of the scrollable has been reached.
 
 ### Use ember-infinity with button
 
@@ -422,7 +422,7 @@ load-more-button.js:
 export default Ember.Component.extend({
   loadText: 'Load more',
   loadedText: 'Loaded',
-  click: function(){    
+  click: function(){
     this.sendAction('action', this.get('infinityModel'));
   }
 });
@@ -435,7 +435,7 @@ load-more-button.hbs:
   <button>{{loadedText}}</button>
 {{else}}
   <button>{{loadText}}</button>
-{{/if}}  
+{{/if}}
 ```
 template.hbs:
 
