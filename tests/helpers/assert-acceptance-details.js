@@ -1,7 +1,7 @@
 export default function assertDetails(assert, {title, listLength, reachedInfinity}) {
-  var postsTitle     = find('#posts-title');
-  var postList       = find('ul');
-  var infinityLoader = find('.infinity-loader');
+  let postsTitle     = find('#posts-title');
+  let postList       = find('ul');
+  let infinityLoader = find('.infinity-loader');
 
   assert.equal(postsTitle.text(), title);
   assert.equal(postList.find('li').length, listLength);

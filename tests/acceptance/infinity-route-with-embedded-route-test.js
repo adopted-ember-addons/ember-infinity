@@ -2,30 +2,31 @@ import { test } from 'qunit';
 import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
 import buildServer from '../helpers/fake-album-server';
 
-let server;
-
 moduleForAcceptance('Acceptance: Infinity Route', {
   beforeEach() {
-    server = buildServer();
+    this.server = buildServer();
   },
   afterEach() {
-    server.shutdown();
+    this.server.shutdown();
   }
 });
 
 test('it works when embedded route is refreshed', function(assert) {
   visit('/posts/1');
+
+  andThen(() => {
+    assert.equal(find('ul.test-list').find('li.test-list-item').length, 1);
+  });
+
   click('button.refreshRoute');
 
   andThen(() => {
-    assert.equal(find('ul').find('li').length, 2);
+    document.getElementsByClassName('infinity-loader')[0].scrollIntoView();
+  });
 
-    var testList = find('ul');
-    testList.scrollTop(2000);
-    triggerEvent('ul', 'scroll');
+  triggerEvent('ul.test-list', 'scroll');
 
-    andThen(() => {
-      assert.equal(find('ul').find('li').length > 2, true);
-    });
+  andThen(() => {
+    assert.equal(find('ul.test-list').find('li.test-list-item').length, 2);
   });
 });

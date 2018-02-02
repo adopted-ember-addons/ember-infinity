@@ -1,6 +1,6 @@
 import Pretender from 'pretender';
 
-var posts = [
+let posts = [
   { id: 1, name: "Squarepusher", category: "a" },
   { id: 2, name: "Aphex Twin", category: "b" },
   { id: 3, name: "Universal Indicator", category: "a" },
@@ -12,7 +12,7 @@ var posts = [
 export default function () {
   return new Pretender(function() {
     this.get('/posts', function(request) {
-      var body, subset, perPage, startPage, offset;
+      let body, subset, perPage, startPage, offset;
 
       if (request.queryParams.category) {
         subset = posts.filter(post => {
@@ -24,7 +24,7 @@ export default function () {
       perPage = parseInt(request.queryParams.per_page, 10);
       startPage = parseInt(request.queryParams.page, 10);
 
-      var pageCount = Math.ceil(subset.length / perPage);
+      let pageCount = Math.ceil(subset.length / perPage);
       offset = perPage * (startPage - 1);
       subset = subset.slice(offset, offset + perPage);
 

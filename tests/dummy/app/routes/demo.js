@@ -6,8 +6,8 @@ import json from '../helpers/json';
 
 
 function generateFakeData(qty) {
-  var data = [];
-  for (var i = 0; i < qty; i++) {
+  let data = [];
+  for (let i = 0; i < qty; i++) {
     data.push({id: i, name: faker.company.companyName()});
   }
   return data;
@@ -15,17 +15,17 @@ function generateFakeData(qty) {
 
 
 export default Ember.Route.extend(InfinityRoute, {
-  init: function () {
+  init() {
     if (this._super.init) {
       this._super.init.apply(this, arguments);
     }
-    var fakeData = generateFakeData(104);
+    let fakeData = generateFakeData(104);
     this.set('pretender', new Pretender());
     this.get('pretender').get('/posts', request => {
-      var fd = fakeData;
-      var page = parseInt(request.queryParams.page, 10);
-      var per =  parseInt(request.queryParams.per_page, 10);
-      var payload = {
+      let fd = fakeData;
+      let page = parseInt(request.queryParams.page, 10);
+      let per =  parseInt(request.queryParams.per_page, 10);
+      let payload = {
         posts: fd.slice((page - 1) * per, Math.min((page) * per, fd.length)),
         meta: {
           total_pages: Math.ceil(fd.length/per)
@@ -36,9 +36,9 @@ export default Ember.Route.extend(InfinityRoute, {
     }, 500 /*ms*/);
   },
 
-  tearDownPretender: Ember.observer('deactivate', function () {
+  deactivate() {
     this.set('pretender', undefined);
-  }),
+  },
 
   model() {
     return this.infinityModel('post');
