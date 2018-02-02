@@ -1,5 +1,5 @@
 {
-  "name": "@ember-infinity/ember-infinity",
+  "name": "ember-infinity",
   "version": "1.0.0-alpha.4",
   "description": "Simple, flexible infinite scroll for Ember CLI Apps.",
   "keywords": [
