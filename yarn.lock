@@ -2525,9 +2525,9 @@ ember-getowner-polyfill@^2.0.0:
     ember-cli-version-checker "^2.1.0"
     ember-factory-for-polyfill "^1.3.1"
 
-"ember-in-viewport@https://github.com/snewcomer/ember-in-viewport.git#intersection-observer":
+ember-in-viewport@DockYard/ember-in-viewport:
   version "2.1.1"
-  resolved "https://github.com/snewcomer/ember-in-viewport.git#a62996dce68436d84014d04c551168b1d505910d"
+  resolved "https://codeload.github.com/DockYard/ember-in-viewport/tar.gz/b0de1918aa5d76c771c016718a0423e980481e13"
   dependencies:
     ember-cli-babel "^6.6.0"
     ember-getowner-polyfill "^2.0.0"
