@@ -430,7 +430,6 @@ You can optionally pass an offset value.   This value will be used when calculat
 ```
 
 Default is 50ms.  You can optionally pass a debounce time to delay loading the list when reach bottom of list
->>>>>>> a2c68afb... Replace with ember-in-viewport (#242)
 
 ### Use ember-infinity with button
 
