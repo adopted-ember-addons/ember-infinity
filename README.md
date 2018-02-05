@@ -9,9 +9,6 @@
 
 ***As of v1.0-alpha and above, this library officially supports Ember 2.4 and above***
 
-***Note: We are moving towards a 1-0 release that will allow for the use of multiple infinity models, provide extensibility to the InfinityModel, and generally make the addon easier to reason about.
-Check it out here [1-0](https://github.com/ember-infinity/ember-infinity/tree/1-0)***
-
 Demo: [hhff.github.io/ember-infinity/](http://hhff.github.io/ember-infinity/)
 
 Simple, flexible infinite scrolling for Ember CLI Apps.  Works out of the box
