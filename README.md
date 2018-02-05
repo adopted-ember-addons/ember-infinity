@@ -9,7 +9,7 @@
 
 ***As of v1.0-alpha and above, this library officially supports Ember 2.4 and above***
 
-Demo: [hhff.github.io/ember-infinity/](http://hhff.github.io/ember-infinity/)
+Demo: [ember-infinity.github.io/ember-infinity/](https://ember-infinity.github.io/ember-infinity/)
 
 Simple, flexible infinite scrolling for Ember CLI Apps.  Works out of the box
 with the [Kaminari Gem](https://github.com/amatsuda/kaminari.git).
