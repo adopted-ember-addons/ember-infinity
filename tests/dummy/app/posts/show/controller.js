@@ -1,10 +1,4 @@
-import Ember from 'ember';
+import Controller from '@ember/controller';
 
-
-export default Ember.Controller.extend({
-  actions: {
-    refreshRoute: function() {
-      this.get('target.router').refresh();
-    }
-  }
+export default Controller.extend({
 });

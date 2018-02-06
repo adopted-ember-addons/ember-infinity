@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
+import EmberError from '@ember/error';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
 import BoundParamsMixin from 'ember-infinity/mixins/bound-params';
@@ -26,7 +27,7 @@ const RouteMixin = Mixin.create({
   _infinityModel: computed('_infinityModels.[]', function() {
     return get(this, '_infinityModels.firstObject');
   }).readOnly(),
-  currentPage: computed.alias('_infinityModel.currentPage').readOnly(),
+  currentPage: alias('_infinityModel.currentPage').readOnly(),
 
   actions: {
     /**
@@ -73,7 +74,7 @@ const RouteMixin = Mixin.create({
   */
   _ensureCompatibility() {
     if (isEmpty(this.get(this._store)) || isEmpty(this.get(this._store)[this._storeFindMethod])){
-      throw new Ember.Error("Ember Infinity: Store is not available to infinityModel");
+      throw new EmberError("Ember Infinity: Store is not available to infinityModel");
     }
   },
 
@@ -86,12 +87,12 @@ const RouteMixin = Mixin.create({
   */
   _ensureCustomStoreCompatibility(options) {
     if (typeof options.store !== 'string') {
-      throw new Ember.Error("Ember Infinity: Must pass custom data store as a string");
+      throw new EmberError("Ember Infinity: Must pass custom data store as a string");
     }
 
     const store = this.get(options.store);
     if (!store[this.get('_storeFindMethod')]) {
-      throw new Ember.Error("Ember Infinity: Custom data store must specify query method");
+      throw new EmberError("Ember Infinity: Custom data store must specify query method");
     }
   },
 
@@ -112,7 +113,7 @@ const RouteMixin = Mixin.create({
     let boundParams, ExtendedInfinityModel;
     if (typeOf(boundParamsOrInfinityModel) === "class") {
       if (!(boundParamsOrInfinityModel instanceof InfinityModel)) {
-        throw new Ember.Error("Ember Infinity: You must pass an Infinity Model instance as the third argument");
+        throw new EmberError("Ember Infinity: You must pass an Infinity Model instance as the third argument");
       }
       ExtendedInfinityModel = boundParamsOrInfinityModel;
     } else if (typeOf(boundParamsOrInfinityModel) === "object") {
@@ -120,7 +121,7 @@ const RouteMixin = Mixin.create({
     }
 
     if (modelName === undefined) {
-      throw new Ember.Error("Ember Infinity: You must pass a Model Name to infinityModel");
+      throw new EmberError("Ember Infinity: You must pass a Model Name to infinityModel");
     }
 
     if (!this._infinityModels) {
@@ -202,8 +203,9 @@ const RouteMixin = Mixin.create({
     @return {Ember.Array} returns the new objects
   */
   updateInfinityModel(newObjects) {
-    deprecate('Ember Infinity: this method will be deprecated in the future.', {
-      id: 'ember-infinity'
+    deprecate('Ember Infinity: this method will be deprecated in the future.', false, {
+      id: 'ember-infinity',
+      until: '1.0.0'
     });
     return this._doUpdate(newObjects);
   },
@@ -311,8 +313,9 @@ const RouteMixin = Mixin.create({
       return;
     }
 
-    deprecate('Ember Infinity: infinityModelUpdated will be deprecated in the future.', {
-      id: 'ember-infinity'
+    deprecate('Ember Infinity: infinityModelUpdated will be deprecated in the future.', false, {
+      id: 'ember-infinity',
+      until: '1.0.0'
     });
     run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
       lastPageLoaded: this.get('currentPage'),

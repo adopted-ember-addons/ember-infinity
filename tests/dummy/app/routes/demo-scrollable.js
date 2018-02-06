@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { observer } from '@ember/object';
+import Route from '@ember/routing/route';
 import InfinityRoute from 'ember-infinity/mixins/route';
 import Pretender from 'pretender';
 import faker from 'faker';
@@ -14,7 +15,7 @@ function generateFakeData(qty) {
 }
 
 
-export default Ember.Route.extend(InfinityRoute, {
+export default Route.extend(InfinityRoute, {
   init: function () {
     if (this._super.init) {
       this._super.init.apply(this, arguments);
@@ -36,7 +37,7 @@ export default Ember.Route.extend(InfinityRoute, {
     }, 500 /*ms*/);
   },
 
-  tearDownPretender: Ember.observer('deactivate', function () {
+  tearDownPretender: observer('deactivate', function () {
     this.set('pretender', undefined);
   }),
 

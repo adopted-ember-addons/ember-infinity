@@ -1,8 +1,8 @@
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
 import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
 import InViewportMixin from 'ember-in-viewport';
 import { run } from '@ember/runloop';
-import { computed, observer } from '@ember/object';
+import { computed, observer, defineProperty } from '@ember/object';
 import Component from '@ember/component';
 
 const InfinityLoaderComponent = Component.extend(InViewportMixin, {
@@ -20,9 +20,9 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
 
   willInsertElement() {
     if (this.get('_isInfinityPromiseArray')) {
-      Ember.defineProperty(this, 'infinityModelContent', computed.alias('infinityModel.content'));
+      defineProperty(this, 'infinityModelContent', alias('infinityModel.content'));
     } else {
-      Ember.defineProperty(this, 'infinityModelContent', computed.alias('infinityModel'));
+      defineProperty(this, 'infinityModelContent', alias('infinityModel'));
     }
   },
 

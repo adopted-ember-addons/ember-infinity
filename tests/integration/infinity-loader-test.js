@@ -1,28 +1,35 @@
 import hbs from 'htmlbars-inline-precompile';
-import { test, moduleForComponent } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 
-moduleForComponent('infinity-loader', {
-  integration: true
-});
+module('infinity-loader', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('it renders loading text if no block given', function(assert) {
-  assert.expect(1);
-  this.send = function () {};
-  this.on('infinityLoad', function () {});
+  hooks.beforeEach(function() {
+    this.actions = {};
+    this.send = (actionName, ...args) => this.actions[actionName].apply(this, args);
+  });
 
-  this.render(hbs`{{infinity-loader}}`);
-  assert.equal(this.$('.infinity-loader > span').text(), "Loading Infinite Model...");
-});
+  test('it renders loading text if no block given', async function(assert) {
+    assert.expect(1);
+    this.send = function () {};
+    this.actions.infinityLoad = function () {};
 
-test('it yields to the block if given', function(assert) {
-  assert.expect(1);
-  this.send = function () {};
-  this.on('infinityLoad', function () {});
+    await render(hbs`{{infinity-loader}}`);
+    assert.equal(this.$('.infinity-loader > span').text(), "Loading Infinite Model...");
+  });
 
-  this.render(hbs`
-              {{#infinity-loader}}
-                <span>My custom block</span>
-              {{/infinity-loader}}
-              `);
-  assert.equal(this.$('.infinity-loader > span').text(), "My custom block");
+  test('it yields to the block if given', async function(assert) {
+    assert.expect(1);
+    this.send = function () {};
+    this.actions.infinityLoad = function () {};
+
+    await render(hbs`
+                {{#infinity-loader}}
+                  <span>My custom block</span>
+                {{/infinity-loader}}
+                `);
+    assert.equal(this.$('.infinity-loader > span').text(), "My custom block");
+  });
 });

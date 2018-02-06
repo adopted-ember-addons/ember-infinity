@@ -1,2 +1,3 @@
-import Ember from 'ember';
-export default Ember.ArrayProxy.extend(Ember.PromiseProxyMixin);
+import PromiseProxyMixin from '@ember/object/promise-proxy-mixin';
+import ArrayProxy from '@ember/array/proxy';
+export default ArrayProxy.extend(PromiseProxyMixin);
