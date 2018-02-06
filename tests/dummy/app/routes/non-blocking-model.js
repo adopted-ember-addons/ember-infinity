@@ -1,7 +1,5 @@
-import Ember from 'ember';
+import Route from '@ember/routing/route';
 import InfinityRoute from 'ember-infinity/mixins/route';
-
-const { Route } = Ember;
 
 export default Route.extend(InfinityRoute, {
   model: function() {

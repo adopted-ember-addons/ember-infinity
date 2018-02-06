@@ -1,5 +1,5 @@
-import Ember from 'ember';
-const { Route, inject: { service } } = Ember;
+import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
 import InfinityRoute from 'ember-infinity/mixins/route';
 
 export default Route.extend(InfinityRoute, {

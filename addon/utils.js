@@ -1,5 +1,5 @@
-import Ember from 'ember';
-const { typeOf, deprecate } = Ember;
+import { typeOf } from '@ember/utils';
+import { deprecate } from '@ember/application/deprecations';
 
 export let objectAssign = Object.assign || function objectAssign(target) {
   'use strict';

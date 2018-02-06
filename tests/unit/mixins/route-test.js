@@ -1,15 +1,18 @@
-import Ember from 'ember';
-const { Route, RSVP, run, get } = Ember;
+import { A } from '@ember/array';
+import ArrayProxy from '@ember/array/proxy';
+import { assign } from '@ember/polyfills';
+import Route from '@ember/routing/route';
+import RSVP from 'rsvp';
+import { run } from '@ember/runloop';
+import EmberObject, { get } from '@ember/object';
 import RouteMixin from 'ember-infinity/mixins/route';
 import { module, test, skip } from 'qunit';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 
 module('RouteMixin');
 
-const assign = Ember.assign || Ember.merge;
-
 let EA = function (content, meta={}) {
-  return Ember.ArrayProxy.create(assign({ content: Ember.A(content) }, meta));
+  return ArrayProxy.create(assign({ content: A(content) }, meta));
 };
 
 test('it works', function(assert) {
@@ -48,7 +51,7 @@ function callModelHook(route) {
     });
   });
 
-  route.set('controller', Ember.Object.create({ model }));
+  route.set('controller', EmberObject.create({ model }));
 
   return model;
 }
@@ -66,7 +69,7 @@ test('it can not use infinityModel without Ember Data Store', function(assert) {
 test('it can not use infinityModel that is not an instance of InfinityModel', function (assert) {
   assert.expect(1);
 
-  const ExtendedEmberObject = Ember.Object.extend({
+  const ExtendedEmberObject = EmberObject.extend({
     customId: 2,
     buildParams() {
       let params = this._super(...arguments);
@@ -195,7 +198,7 @@ test('it sets state before it reaches the end', function(assert) {
   assert.equal(model.get('_totalPages'), 31, '_totalPages');
   assert.equal(model.get('currentPage'), 1, 'currentPage');
   assert.equal(model.get('_canLoadMore'), true, '_canLoadMore');
-  assert.ok(Ember.$.isEmptyObject(route.get('_extraParams')), 'extra params are empty');
+  assert.notOk(route.get('_extraParams'), 'extra params are empty');
   assert.ok(!model.get('reachedInfinity'), 'Should not reach infinity');
 });
 
@@ -299,7 +302,6 @@ test('it sets state when it reaches the end', function (assert) {
   assert.equal(this.model.get('_totalPages'), 2, '_totalPages');
   assert.equal(this.model.get('currentPage'), 2, 'currentPage');
   assert.equal(this.model.get('_canLoadMore'), false, '_canLoadMore');
-  // assert.ok(Ember.$.isEmptyObject(this.route.get('_extraParams')), '_extraParams');
   assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
 });
 
