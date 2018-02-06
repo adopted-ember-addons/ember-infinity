@@ -203,8 +203,9 @@ const RouteMixin = Mixin.create({
     @return {Ember.Array} returns the new objects
   */
   updateInfinityModel(newObjects) {
-    deprecate('Ember Infinity: this method will be deprecated in the future.', {
-      id: 'ember-infinity'
+    deprecate('Ember Infinity: this method will be deprecated in the future.', false, {
+      id: 'ember-infinity',
+      until: '1.0.0'
     });
     return this._doUpdate(newObjects);
   },
@@ -312,8 +313,9 @@ const RouteMixin = Mixin.create({
       return;
     }
 
-    deprecate('Ember Infinity: infinityModelUpdated will be deprecated in the future.', {
-      id: 'ember-infinity'
+    deprecate('Ember Infinity: infinityModelUpdated will be deprecated in the future.', false, {
+      id: 'ember-infinity',
+      until: '1.0.0'
     });
     run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
       lastPageLoaded: this.get('currentPage'),

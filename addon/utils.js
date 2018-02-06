@@ -30,7 +30,7 @@ export let objectAssign = Object.assign || function objectAssign(target) {
   @param {String} value - param passed with infinityRoute
   @param {String} option - property defined on user route
   @param {String} - default
-  @return {String} 
+  @return {String}
 */
 export function paramsCheck(optionParam, routeParam, defaultParam) {
   if (typeOf(optionParam) === 'null' || typeOf(routeParam) === 'null') {
@@ -41,9 +41,14 @@ export function paramsCheck(optionParam, routeParam, defaultParam) {
     return optionParam;
 
   } else if (routeParam) {
-    deprecate(`Ember Infinity: Please migrate route param - ${routeParam} - to be explicitly passed as second argument to infinityModel`, {
-      id: 'ember-infinity'
-    });
+    deprecate(
+      `Ember Infinity: Please migrate route param - ${routeParam} - to be explicitly passed as second argument to infinityModel`,
+      false,
+      {
+        id: 'ember-infinity',
+        until: '1.0.0'
+      }
+    );
     return routeParam;
 
   } else {

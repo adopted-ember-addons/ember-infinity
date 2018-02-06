@@ -9,14 +9,19 @@ export default Mixin.create({
 
   /**
     get bound param off of route and include in params
-   
+
     @method buildParams
     @return {Object}
    */
   buildParams() {
-    deprecate("Ember Infinity: Bound params are now deprecated. Please pass explicitly as second param to the infinityModel method", {
-      id: 'ember-infinity'
-    });
+    deprecate(
+      "Ember Infinity: Bound params are now deprecated. Please pass explicitly as second param to the infinityModel method",
+      false,
+      {
+        id: 'ember-infinity',
+        until: '1.0.0'
+      }
+    );
 
     let params = this._super(...arguments);
     let boundParams = get(this, '_deprecatedBoundParams');
