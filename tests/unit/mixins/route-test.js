@@ -275,8 +275,8 @@ module('RouteMixin', function() {
     hooks.beforeEach(function() {
       this.store = createMockStore(EA([{id: 1, name: 'Test'}], { meta: { total_pages: 2 } }));
 
-      this.createRoute = (extras, boundParams) => {
-        this.route = createRoute(['item', extras, boundParams],
+      this.createRoute = (extras, boundParamsOrInfinityModel) => {
+        this.route = createRoute(['item', extras, boundParamsOrInfinityModel],
           { store: this.store }
         );
 
@@ -346,7 +346,6 @@ module('RouteMixin', function() {
           return params;
         }
       });
-      ExtendedInfinityModel = ExtendedInfinityModel.create();
       this.createRoute({ extra: 'param' }, ExtendedInfinityModel);
 
       assert.equal(this.model instanceof InfinityModel, true, 'model is instance of extended infinity model');
