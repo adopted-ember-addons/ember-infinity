@@ -112,7 +112,7 @@ const RouteMixin = Mixin.create({
 
     let boundParams, ExtendedInfinityModel;
     if (typeOf(boundParamsOrInfinityModel) === "class") {
-      if (!(boundParamsOrInfinityModel instanceof InfinityModel)) {
+      if (!(boundParamsOrInfinityModel.prototype instanceof InfinityModel)) {
         throw new EmberError("Ember Infinity: You must pass an Infinity Model instance as the third argument");
       }
       ExtendedInfinityModel = boundParamsOrInfinityModel;
