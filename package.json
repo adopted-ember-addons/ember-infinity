@@ -21,7 +21,8 @@
     "node": "^4.5 || 6.* || >= 7.*"
   },
   "dependencies": {
-    "ember-cli-babel": "^6.6.0"
+    "ember-cli-babel": "^6.6.0",
+    "ember-in-viewport": "^2.2.0"
   },
   "devDependencies": {
     "broccoli-asset-rev": "^2.4.5",
@@ -41,7 +42,6 @@
     "ember-disable-prototype-extensions": "^1.1.2",
     "ember-export-application-global": "^2.0.0",
     "ember-faker": "^1.1.2",
-    "ember-in-viewport": "^2.2.0",
     "ember-load-initializers": "^1.0.0",
     "ember-resolver": "^4.0.0",
     "ember-route-action-helper": "^2.0.6",
