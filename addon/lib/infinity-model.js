@@ -15,6 +15,14 @@ export default ArrayProxy.extend({
 
   /**
     @private
+    @property firstPage
+    @type Integer
+    @default 0
+  */
+  firstPage: 0,
+
+  /**
+    @private
     @property currentPage
     @type Integer
     @default 0
@@ -96,6 +104,16 @@ export default ArrayProxy.extend({
 
   /**
     @private
+    @property _increment
+    @type Integer
+    @default 1
+  */
+  _increment: 1,
+
+  /**
+    determines if can load next page or previous page (if applicable)
+
+    @private
     @property _canLoadMore
     @type Boolean
     @default false
@@ -103,7 +121,14 @@ export default ArrayProxy.extend({
   _canLoadMore: computed('_totalPages', 'currentPage', function() {
     const totalPages  = get(this, '_totalPages');
     const currentPage = get(this, 'currentPage');
-    return (totalPages && currentPage !== undefined) ? (currentPage < totalPages) : false;
+    const _increment = get(this, '_increment');
+    if (_increment === 1) {
+      // load next page
+      return (totalPages && currentPage !== undefined) ? (currentPage < totalPages) : false;
+    } else if (get(this, 'firstPage') > 1) {
+      // load previous page
+      return totalPages ? get(this, 'firstPage') > 1 : false;
+    }
   }).readOnly(),
 
   /**
@@ -113,15 +138,15 @@ export default ArrayProxy.extend({
     @method buildParams
     @return {Object} The query params for the next page of results
    */
-  buildParams() {
+  buildParams(increment) {
     const pageParams = {};
     const perPageParam = get(this, 'perPageParam');
     const pageParam = get(this, 'pageParam');
     if (typeOf(perPageParam) === 'string') {
       pageParams[perPageParam] = get(this, 'perPage');
     }
-    if (typeOf(pageParam) === 'string') {
-      pageParams[pageParam] = get(this, 'currentPage') + 1;
+    if (typeOf(pageParam) === 'string' ) {
+      pageParams[pageParam] = get(this, 'currentPage') + increment;
     }
 
     return objectAssign(pageParams, get(this, 'extraParams'));
