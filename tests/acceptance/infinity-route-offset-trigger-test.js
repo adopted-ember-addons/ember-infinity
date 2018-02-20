@@ -1,12 +1,17 @@
-import { test } from 'qunit';
-import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
+import { module, test } from 'qunit';
+import { visit, find, triggerEvent} from '@ember/test-helpers';
+import { setupApplicationTest } from 'ember-qunit';
 import Pretender from 'pretender';
 import faker from 'faker';
 
 let server;
 
-moduleForAcceptance('Acceptance: Infinity Route - offset trigger', {
-  beforeEach() {
+module('Acceptance: Infinity Route - offset trigger', function(hooks) {
+  setupApplicationTest(hooks);
+
+  hooks.beforeEach(function() {
+    document.getElementById('ember-testing-container').scrollTop = 0;
+
     let posts = [];
 
     for (let i = 0; i < 50; i++) {
@@ -36,100 +41,87 @@ moduleForAcceptance('Acceptance: Infinity Route - offset trigger', {
         return [200, {"Content-Type": "application/json"}, JSON.stringify(body)];
       });
     });
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(function() {
     server.shutdown();
+  });
+
+  function postList() {
+    return find('ul');
   }
-});
 
-function postList() {
-  return find('ul');
-}
+  function infinityLoader() {
+    return find('.infinity-loader');
+  }
 
-function infinityLoader() {
-  return find('.infinity-loader');
-}
+  function triggerOffset() {
+    // find the top of the infinity-loader component
+    let { top } = document.getElementsByClassName('infinity-loader')[0].getBoundingClientRect()
+    return top;
+  }
 
-function triggerOffset() {
-  // find the top of the infinity-loader component
-  let { top } = document.getElementsByClassName('infinity-loader')[0].getBoundingClientRect()
-  return top;
-}
+  function scrollIntoView() {
+    document.getElementsByClassName('infinity-loader')[0].scrollIntoView();
+  }
 
-function scrollIntoView() {
-  document.getElementsByClassName('infinity-loader')[0].scrollIntoView();
-}
+  function shouldBeItemsOnTheList(assert, amount) {
+    assert.equal(postList().querySelectorAll('li').length, amount, `${amount} items should be in the list`);
+  }
 
-function shouldBeItemsOnTheList(assert, amount) {
-  assert.equal(postList().find('li').length, amount, `${amount} items should be in the list`);
-}
+  function scrollTo(offset) {
+    postList.scrollTop = offset;
+  }
 
-function scrollTo(offset) {
-  postList().scrollTop(offset);
-}
+  function infinityShouldNotBeReached(assert) {
+    assert.equal(infinityLoader().classList.contains('reached-infinity'), false, "Infinity should not yet have been reached");
+    assert.equal(find('span').textContent, 'loading');
+  }
 
-function infinityShouldNotBeReached(assert) {
-  assert.equal(infinityLoader().hasClass('reached-infinity'), false, "Infinity should not yet have been reached");
-  assert.equal(find('span').text(), 'loading');
-}
+  function infinityShouldBeReached(assert) {
+    assert.equal(infinityLoader().classList.contains('reached-infinity'), true, "Infinity should have been reached");
+    assert.equal(find('span').textContent, 'loaded');
+  }
 
-function infinityShouldBeReached(assert) {
-  assert.equal(infinityLoader().hasClass('reached-infinity'), true, "Infinity should have been reached");
-  assert.equal(find('span').text(), 'loaded');
-}
+  test('it should start loading more items when the scroll is on the very bottom ' +
+    'when triggerOffset is not set', async function(assert) {
+    await visit('/test-scrollable');
 
-test('it should start loading more items when the scroll is on the very bottom ' +
-  'when triggerOffset is not set', function(assert) {
-  visit('/test-scrollable');
-
-  andThen(() => {
     shouldBeItemsOnTheList(assert, 25);
     infinityShouldNotBeReached(assert);
     scrollTo(triggerOffset() - 100);
-  });
 
-  triggerEvent('ul', 'scroll');
+    await triggerEvent('ul', 'scroll');
 
-  andThen(() => {
     shouldBeItemsOnTheList(assert, 25);
     scrollIntoView();
-  });
 
-  triggerEvent('ul', 'scroll');
+    await triggerEvent('ul', 'scroll');
 
-  andThen(() => {
     shouldBeItemsOnTheList(assert, 50);
     infinityShouldBeReached(assert);
   });
-});
 
-test('it should start loading more items before the scroll is on the very bottom ' +
-  'when triggerOffset is set', function(assert) {
-  visit('/test-scrollable?triggerOffset=200');
+  test('it should start loading more items before the scroll is on the very bottom ' +
+    'when triggerOffset is set', async function(assert) {
+    await visit('/test-scrollable?triggerOffset=200');
 
-  andThen(() => {
     shouldBeItemsOnTheList(assert, 25);
     infinityShouldNotBeReached(assert);
     scrollTo(triggerOffset() - 200 - 100);
-  });
 
-  triggerEvent('ul', 'scroll');
+    await triggerEvent('ul', 'scroll');
 
-  andThen(() => {
     shouldBeItemsOnTheList(assert, 25);
     scrollTo(triggerOffset() - 200);
-  });
 
-  triggerEvent('ul', 'scroll');
+    await triggerEvent('ul', 'scroll');
 
-  andThen(() => {
     shouldBeItemsOnTheList(assert, 25);
     scrollIntoView();
-  });
 
-  triggerEvent('ul', 'scroll');
+    await triggerEvent('ul', 'scroll');
 
-  andThen(() => {
     shouldBeItemsOnTheList(assert, 50);
     infinityShouldBeReached(assert);
   });

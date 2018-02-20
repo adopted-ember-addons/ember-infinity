@@ -1,22 +1,25 @@
-import { test } from 'qunit';
-import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
+import { module, test } from 'qunit';
+import { visit } from '@ember/test-helpers';
+import { setupApplicationTest } from 'ember-qunit';
 import buildServer from '../helpers/fake-album-server';
 import assertDetails from '../helpers/assert-acceptance-details';
 
 let server;
-moduleForAcceptance('Acceptance: Infinity Route - non blocking model route', {
-  beforeEach() {
+
+module('Acceptance: Infinity Route - non blocking model route', function(hooks) {
+  setupApplicationTest(hooks);
+
+  hooks.beforeEach(function() {
     server = buildServer();
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(function() {
     server.shutdown();
-  }
-});
+  });
 
-test('it renders items with non-blocking model', function(assert) {
-  visit('/non-blocking-model');
+  test('it renders items with non-blocking model', async function(assert) {
+    await visit('/non-blocking-model');
 
-  andThen(() => {
     assertDetails(assert, {
       title: 'Non Blocking Model Test',
       listLength: 6,

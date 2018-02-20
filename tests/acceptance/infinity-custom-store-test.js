@@ -1,28 +1,30 @@
-import { test } from 'qunit';
-import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
+import { module, test } from 'qunit';
+import { visit } from '@ember/test-helpers';
+import { setupApplicationTest } from 'ember-qunit';
 import buildServer from '../helpers/fake-album-server';
 import assertDetails from '../helpers/assert-acceptance-details';
 
 let server;
 
-moduleForAcceptance('Acceptance: Infinity Route - custom store route', {
-  beforeEach() {
+module('Acceptance: Infinity Route - custom store route', function(hooks) {
+  setupApplicationTest(hooks);
+
+  hooks.beforeEach(function() {
     server = buildServer();
-    this.customStore = this.application.__container__.lookup('service:custom-store');
+    this.customStore = this.owner.lookup('service:custom-store');
     for (let x = 0; x <= 5; x++) {
       this.customStore.push('custom-model', { id: x });
     }
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(function() {
     server.shutdown();
     delete this.customStore;
-  }
-});
+  });
 
-test('it works with custom store', function(assert) {
-  visit('/custom-store');
+  test('it works with custom store', async function(assert) {
+    await visit('/custom-store');
 
-  andThen(() => {
     assertDetails(assert, {
       title: 'Listing Posts',
       listLength: 6,
