@@ -1,32 +1,30 @@
-import { test } from 'qunit';
-import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
+import { module, test } from 'qunit';
+import { visit, click, triggerEvent, find } from '@ember/test-helpers';
+import { setupApplicationTest } from 'ember-qunit';
 import buildServer from '../helpers/fake-album-server';
 
-moduleForAcceptance('Acceptance: Infinity Route', {
-  beforeEach() {
+module('Acceptance: Infinity Route', function(hooks) {
+  setupApplicationTest(hooks);
+
+  hooks.beforeEach(function() {
     this.server = buildServer();
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(function() {
     this.server.shutdown();
-  }
-});
-
-test('it works when embedded route is refreshed', function(assert) {
-  visit('/posts/1');
-
-  andThen(() => {
-    assert.equal(find('ul.test-list').find('li.test-list-item').length, 1);
   });
 
-  click('button.refreshRoute');
+  test('it works when embedded route is refreshed', async function(assert) {
+    await visit('/posts/1');
 
-  andThen(() => {
+    assert.equal(find('ul.test-list').querySelectorAll('li.test-list-item').length, 1);
+
+    await click('button.refreshRoute');
+
     document.getElementsByClassName('infinity-loader')[0].scrollIntoView();
-  });
 
-  triggerEvent('ul.test-list', 'scroll');
+    await triggerEvent('ul.test-list', 'scroll');
 
-  andThen(() => {
-    assert.equal(find('ul.test-list').find('li.test-list-item').length, 2);
+    assert.equal(find('ul.test-list').querySelectorAll('li.test-list-item').length, 2);
   });
 });

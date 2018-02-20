@@ -1,13 +1,16 @@
-import { test } from 'qunit';
-import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
+import { module, test } from 'qunit';
+import { visit } from '@ember/test-helpers';
+import { setupApplicationTest } from 'ember-qunit';
 import Pretender from 'pretender';
 import assertDetails from '../helpers/assert-acceptance-details';
 import json from '../helpers/json';
 
 let server;
 
-moduleForAcceptance('Acceptance: Infinity Route', {
-  beforeEach() {
+module('Acceptance: Infinity Route', function(hooks) {
+  setupApplicationTest(hooks);
+
+  hooks.beforeEach(function() {
     server = new Pretender(function() {
       this.get('/posts', () => {
         var posts = [
@@ -17,16 +20,15 @@ moduleForAcceptance('Acceptance: Infinity Route', {
         return json(200, {posts});
       });
     });
-  },
-  afterEach() {
+  });
+
+  hooks.afterEach(function() {
     server.shutdown();
-  }
-});
+  });
 
-test('it works when meta is not present in payload', function(assert) {
-  visit('/test');
+  test('it works when meta is not present in payload', async function(assert) {
+    await visit('/test');
 
-  andThen(() => {
     assertDetails(assert, {
       title: 'Listing Posts',
       listLength: 2,
