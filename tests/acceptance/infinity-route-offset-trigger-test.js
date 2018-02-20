@@ -10,6 +10,8 @@ module('Acceptance: Infinity Route - offset trigger', function(hooks) {
   setupApplicationTest(hooks);
 
   hooks.beforeEach(function() {
+    document.getElementById('ember-testing-container').scrollTop = 0;
+
     let posts = [];
 
     for (let i = 0; i < 50; i++) {

@@ -11,6 +11,7 @@ module('Acceptance: Infinity Route', function(hooks) {
 
   hooks.beforeEach(function() {
     server = buildServer();
+    document.getElementById('ember-testing-container').scrollTop = 0;
   });
 
   hooks.afterEach(function() {
