@@ -1,7 +1,7 @@
 import Route from '@ember/routing/route';
 
 export default Route.extend({
-  model: function(params) {
+  model(params) {
     return this.store.find('post', params.post);
   },
   actions: {

@@ -147,7 +147,7 @@ const RouteMixin = Mixin.create({
     // default is to start at 0, request next page and increment
     const currentPage = options.startingPage === undefined ? 0 : options.startingPage - 1;
     // sets first page when route is loaded
-    const firstPage = currentPage === 0 ? 1 : currentPage;
+    const firstPage = currentPage === 0 ? 1 : currentPage + 1;
     // chunk requests by indicated perPage param
     const perPage = options.perPage || 25;
 
@@ -318,6 +318,7 @@ const RouteMixin = Mixin.create({
     if (infinityModel.get('_increment') === 1) {
       return infinityModel.pushObjects(queryObject.toArray());
     } else {
+      // TODO: this will lead to problems b/c unshift will focus viewport to first item after unshift
       return infinityModel.unshiftObjects(queryObject.toArray());
     }
   },

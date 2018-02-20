@@ -14,6 +14,8 @@ export default ArrayProxy.extend({
   perPage: 25,
 
   /**
+    Used as a marker for the page the route starts on
+
     @private
     @property firstPage
     @type Integer
@@ -22,6 +24,8 @@ export default ArrayProxy.extend({
   firstPage: 0,
 
   /**
+    Increases or decreases depending on scroll direction
+
     @private
     @property currentPage
     @type Integer
@@ -126,9 +130,10 @@ export default ArrayProxy.extend({
       // load next page
       return (totalPages && currentPage !== undefined) ? (currentPage < totalPages) : false;
     } else if (get(this, 'firstPage') > 1) {
-      // load previous page
+      // load previous page if starting page was not 1.  Otherwise ignore this block
       return totalPages ? get(this, 'firstPage') > 1 : false;
     }
+    return false;
   }).readOnly(),
 
   /**

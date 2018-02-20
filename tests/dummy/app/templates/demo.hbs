@@ -11,12 +11,6 @@
   </div>
 
   <ul class="demo-items">
-    {{infinity-loader
-      infinityModel=content
-      loadPrevious=true
-      loadedText=null
-      loadingText=null}}
-
     {{#each content as |item|}}
       <li>{{item.id}}. {{item.name}}</li>
     {{/each}}

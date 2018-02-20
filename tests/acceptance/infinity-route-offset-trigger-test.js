@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { visit, find, triggerEvent} from '@ember/test-helpers';
+import { visit, find, findAll, triggerEvent} from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import Pretender from 'pretender';
 import faker from 'faker';
@@ -10,7 +10,6 @@ module('Acceptance: Infinity Route - offset trigger', function(hooks) {
   setupApplicationTest(hooks);
 
   hooks.beforeEach(function() {
-    document.getElementById('ember-testing-container').scrollTop = 0;
 
     let posts = [];
 
@@ -38,9 +37,11 @@ module('Acceptance: Infinity Route - offset trigger', function(hooks) {
 
         body = { posts: subset, meta: { total_pages: pageCount } };
 
-        return [200, {"Content-Type": "application/json"}, JSON.stringify(body)];
+        return [200, {'Content-Type': 'application/json'}, JSON.stringify(body)];
       });
     });
+
+    document.getElementById('ember-testing-container').scrollTop = 0;
   });
 
   hooks.afterEach(function() {
@@ -52,7 +53,7 @@ module('Acceptance: Infinity Route - offset trigger', function(hooks) {
   }
 
   function infinityLoader() {
-    return find('.infinity-loader');
+    return findAll('.infinity-loader')[0];
   }
 
   function triggerOffset() {
@@ -74,13 +75,13 @@ module('Acceptance: Infinity Route - offset trigger', function(hooks) {
   }
 
   function infinityShouldNotBeReached(assert) {
-    assert.equal(infinityLoader().classList.contains('reached-infinity'), false, "Infinity should not yet have been reached");
-    assert.equal(find('span').textContent, 'loading');
+    assert.equal(infinityLoader().classList.contains('reached-infinity'), false, 'Infinity should not yet have been reached');
+    assert.equal(infinityLoader().querySelector('span').textContent, 'loading');
   }
 
   function infinityShouldBeReached(assert) {
-    assert.equal(infinityLoader().classList.contains('reached-infinity'), true, "Infinity should have been reached");
-    assert.equal(find('span').textContent, 'loaded');
+    assert.equal(infinityLoader().classList.contains('reached-infinity'), true, 'Infinity should have been reached');
+    assert.equal(infinityLoader().querySelector('span').textContent, 'loaded');
   }
 
   test('it should start loading more items when the scroll is on the very bottom ' +
