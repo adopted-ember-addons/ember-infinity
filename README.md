@@ -24,6 +24,8 @@ Also:
 
 ## Basic Usage
 
+Importing the ember-infinity Route Mixin and extend your route will give you access to this.infinifyModel in your model hook.
+
 ```js
 import Route from '@ember/routing/route';
 import InfinityRoute from "ember-infinity/mixins/route";
