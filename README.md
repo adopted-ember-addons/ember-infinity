@@ -23,7 +23,7 @@ Also:
 `ember install ember-infinity`
 
 ## Basic Usage
-
+Import the library and extend the route.
 ```js
 import Ember from 'ember';
 import InfinityRoute from "ember-infinity/mixins/route";
