@@ -506,7 +506,7 @@ template.hbs:
 
 The basic idea here is to:
 1. Place an infinity-loader component above and below your content.
-2. Ensure loadPrevious is set to true
+2. Ensure loadPrevious is set to true on the infinity-loader above the content.
 
 If your route loads on page 3, it will fetch page 2 on load.  As the user scrolls up, it will fetch page 1 and stop loading from there.  If you are already on page 1, no actions will be fired to fetch the previous page.
 

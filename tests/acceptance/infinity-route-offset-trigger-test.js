@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { visit, find, triggerEvent} from '@ember/test-helpers';
+import { visit, find, triggerEvent, currentURL, waitUntil } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import Pretender from 'pretender';
 import faker from 'faker';
@@ -10,32 +10,24 @@ module('Acceptance: Infinity Route - offset trigger', function(hooks) {
   setupApplicationTest(hooks);
 
   hooks.beforeEach(function() {
-
-    let posts = [];
+    this.posts = [];
 
     for (let i = 0; i < 50; i++) {
-      posts.push({id: i, name: faker.company.companyName()});
+      this.posts.push({id: i, name: faker.company.companyName()});
     }
 
+    let posts = this.posts;
     server = new Pretender(function() {
       this.get('/posts', function(request) {
-        let body, subset, perPage, startPage, offset;
-
-        if (request.queryParams.category) {
-          subset = posts.filter(post => {
-            return post.category === request.queryParams.category;
-          });
-        } else {
-          subset = posts;
-        }
-        perPage = parseInt(request.queryParams.per_page, 10);
-        startPage = parseInt(request.queryParams.page, 10);
+        let subset = posts;
+        let perPage = parseInt(request.queryParams.per_page, 10);
+        let startPage = parseInt(request.queryParams.page, 10);
 
         let pageCount = Math.ceil(subset.length / perPage);
-        offset = perPage * (startPage - 1);
+        let offset = perPage * (startPage - 1);
         subset = subset.slice(offset, offset + perPage);
 
-        body = { posts: subset, meta: { total_pages: pageCount } };
+        let body = { posts: subset, meta: { total_pages: pageCount } };
 
         return [200, {'Content-Type': 'application/json'}, JSON.stringify(body)];
       });
@@ -132,5 +124,47 @@ module('Acceptance: Infinity Route - offset trigger', function(hooks) {
 
     shouldBeItemsOnTheList(assert, 50);
     assert.equal(document.querySelectorAll('ul.test-list li')[25].offsetTop, 12500, 'scrollable list has elements above (each 250px high * 25)');
+  });
+
+  module('Acceptance: Infinity Route - multiple pages fetched', function(hooks) {
+    hooks.beforeEach(function() {
+      for (let i = 0; i < 25; i++) {
+        this.posts.push({id: i, name: faker.company.companyName()});
+      }
+      let posts = this.posts;
+      // another pretender instance is needed b/c this test has 3 fetches (others have 2)
+      // thus once exhausted, need to setup another one
+      server = new Pretender(function() {
+        this.get('/posts', function(request) {
+          let subset = posts;
+          let perPage = parseInt(request.queryParams.per_page, 10);
+          let startPage = parseInt(request.queryParams.page, 10);
+
+          let pageCount = Math.ceil(subset.length / perPage);
+          let offset = perPage * (startPage - 1);
+          subset = subset.slice(offset, offset + perPage);
+
+          let body = { posts: subset, meta: { total_pages: pageCount } };
+
+          return [200, {'Content-Type': 'application/json'}, JSON.stringify(body)];
+        });
+      });
+    });
+    test('it should load previous elements when start on page three and scroll up', async function(assert) {
+      await visit('/test-scrollable?page=3');
+
+      shouldBeItemsOnTheList(assert, 50);
+      assert.equal(currentURL(), '/test-scrollable?page=3');
+
+      await triggerEvent('ul', 'scroll');
+
+      document.getElementsByClassName('infinity-loader-above')[0].scrollIntoView(false);
+
+      await waitUntil(() => {
+        return postList().querySelectorAll('li').length === 75;
+      });
+
+      shouldBeItemsOnTheList(assert, 75);
+    });
   });
 });
