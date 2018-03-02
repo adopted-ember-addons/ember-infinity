@@ -429,6 +429,12 @@ You can optionally pass in a CSS style selector string.  If not present, scrolla
 
 ```hbs
 {{infinity-loader loadPrevious=true}}
+
+<ul>...</ul>
+
+{{infinity-loader}}
+
+To load elements above your list on load, place an infinity-loader component above the list with `loadPrevious=true`.
 ```
 
 * **triggerOffset**

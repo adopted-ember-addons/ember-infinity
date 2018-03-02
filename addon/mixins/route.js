@@ -8,7 +8,7 @@ import { A } from '@ember/array';
 import { computed, get, set } from '@ember/object';
 import { deprecate } from '@ember/application/deprecations';
 import { isEmpty, typeOf } from '@ember/utils';
-import { run } from '@ember/runloop';
+import { scheduleOnce } from '@ember/runloop';
 import { objectAssign, paramsCheck } from '../utils';
 
 /**
@@ -41,12 +41,21 @@ const RouteMixin = Mixin.create({
     infinityLoad(infinityModel, increment = 1) {
       let matchingInfinityModel = this._infinityModels.find(model => model === infinityModel);
       if (matchingInfinityModel) {
+        set(infinityModel, '_increment', increment);
         this._infinityLoad(matchingInfinityModel, increment);
       } else {
         return true;
       }
     }
   },
+
+  /**
+    @private
+    @property _previousScrollHeight
+    @type Integer
+    @default 0
+  */
+  _previousScrollHeight: 0,
   /**
     @private
     @property _store
@@ -254,6 +263,7 @@ const RouteMixin = Mixin.create({
 
   /**
     load the next page from the adapter and update the model
+    set current height of elements.  If loadPrevious, we will use this value to scroll back down the page
 
     @private
     @method _loadNextPage
@@ -263,7 +273,7 @@ const RouteMixin = Mixin.create({
    */
   _loadNextPage(infinityModel, increment = 1) {
     set(infinityModel, '_loadingMore', true);
-    set(infinityModel, '_increment', increment);
+    set(this, '_previousScrollHeight', this._calculateHeight(infinityModel));
 
     const modelName = get(infinityModel, '_infinityModelName');
     const params    = infinityModel.buildParams(increment);
@@ -276,15 +286,46 @@ const RouteMixin = Mixin.create({
           // scroll down to load next page
           infinityModel.incrementProperty('currentPage');
         } else {
+          let viewportElem = get(infinityModel, '_scrollable') ? document.querySelector(get(infinityModel, '_scrollable')) : window;
+          scheduleOnce('afterRender', this, '_updateScrollTop', { infinityModel, viewportElem });
           // scrolled up to load previous page
           infinityModel.decrementProperty('currentPage');
         }
         set(infinityModel, '_firstPageLoaded', true);
-        const canLoadMore = get(infinityModel, '_canLoadMore');
+        let canLoadMore = get(infinityModel, '_canLoadMore');
         set(infinityModel, 'reachedInfinity', !canLoadMore);
         if (!canLoadMore) { this._notifyInfinityModelLoaded(); }
         return infinityModel;
       }).finally(() => set(infinityModel, '_loadingMore', false));
+  },
+
+  /**
+    @private
+    @method _calculateHeight
+    @param {Object} infinityModel
+    @return Integer
+   */
+  _calculateHeight(infinityModel) {
+    let viewportElem = get(infinityModel, '_scrollable') ? document.querySelector(get(infinityModel, '_scrollable')) : window;
+    return get(infinityModel, '_scrollable') ? viewportElem.scrollHeight : viewportElem.innerHeight;
+  },
+
+  /**
+    This method calculates the difference if loadPrevious=true
+    The browser by default will scroll to the top of the element list when the previous page
+    loads.  As a result, we need to scroll back down the page.
+    The math behind this is as follows:
+    (height after loading previous elems) - (old height)
+    So 150px - 100px === 150px
+    178px - 100px = 78px
+    120px - 10px = 110px
+    @private
+    @method _updateScrollTop
+    @return Integer
+   */
+  _updateScrollTop({ infinityModel, viewportElem }) {
+    let scrollDiff = this._calculateHeight(infinityModel) - get(this, '_previousScrollHeight');
+    viewportElem.scrollTop += scrollDiff;
   },
 
   /**
@@ -338,7 +379,7 @@ const RouteMixin = Mixin.create({
       id: 'ember-infinity',
       until: '1.0.0'
     });
-    run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
+    scheduleOnce('afterRender', this, 'infinityModelUpdated', {
       lastPageLoaded: get(this, 'currentPage'),
       totalPages: get(this, '_totalPages'),
       newObjects: newObjects
@@ -357,7 +398,7 @@ const RouteMixin = Mixin.create({
     }
 
     const totalPages = get(this, '_totalPages');
-    run.scheduleOnce('afterRender', this, 'infinityModelLoaded', { totalPages: totalPages });
+    scheduleOnce('afterRender', this, 'infinityModelLoaded', { totalPages: totalPages });
   }
 });
 

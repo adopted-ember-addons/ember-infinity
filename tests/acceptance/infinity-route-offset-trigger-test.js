@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { visit, find, findAll, triggerEvent} from '@ember/test-helpers';
+import { visit, find, triggerEvent} from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import Pretender from 'pretender';
 import faker from 'faker';
@@ -53,17 +53,17 @@ module('Acceptance: Infinity Route - offset trigger', function(hooks) {
   }
 
   function infinityLoader() {
-    return findAll('.infinity-loader')[0];
+    return find('.infinity-loader-bottom');
   }
 
   function triggerOffset() {
-    // find the top of the infinity-loader component
-    let { top } = document.getElementsByClassName('infinity-loader')[0].getBoundingClientRect()
+    // find the top of the infinity-loader-bottom component
+    let { top } = document.getElementsByClassName('infinity-loader-bottom')[0].getBoundingClientRect()
     return top;
   }
 
   function scrollIntoView() {
-    document.getElementsByClassName('infinity-loader')[0].scrollIntoView();
+    document.getElementsByClassName('infinity-loader-bottom')[0].scrollIntoView(false);
   }
 
   function shouldBeItemsOnTheList(assert, amount) {
@@ -125,5 +125,12 @@ module('Acceptance: Infinity Route - offset trigger', function(hooks) {
 
     shouldBeItemsOnTheList(assert, 50);
     infinityShouldBeReached(assert);
+  });
+
+  test('it should load previous elements when start on page two', async function(assert) {
+    await visit('/test-scrollable?page=2');
+
+    shouldBeItemsOnTheList(assert, 50);
+    assert.equal(document.querySelectorAll('ul.test-list li')[25].offsetTop, 12500, 'scrollable list has elements above (each 250px high * 25)');
   });
 });

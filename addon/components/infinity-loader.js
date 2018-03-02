@@ -98,6 +98,8 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   didInsertElement() {
     this._super(...arguments);
 
+    let scrollableArea = get(this, 'scrollable');
+
     this.setProperties({
       viewportSpy: true,
       viewportTolerance: {
@@ -106,8 +108,12 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
         bottom: get(this, 'triggerOffset'),
         left: 0
       },
-      scrollableArea: get(this, 'scrollable'),
+      scrollableArea,
     });
+    let infinityModel = get(this, 'infinityModelContent');
+    if (infinityModel) {
+      set(infinityModel, '_scrollable', scrollableArea);
+    }
   },
 
   willDestroyElement() {

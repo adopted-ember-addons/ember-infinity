@@ -115,6 +115,16 @@ export default ArrayProxy.extend({
   _increment: 1,
 
   /**
+    simply used for previous page scrolling abilities and passed from
+    infinity-loader component and set on infinityModel
+    @private
+    @property _scrollable
+    @type Integer
+    @default null
+  */
+  _scrollable: null,
+
+  /**
     determines if can load next page or previous page (if applicable)
 
     @private
@@ -122,7 +132,7 @@ export default ArrayProxy.extend({
     @type Boolean
     @default false
   */
-  _canLoadMore: computed('_totalPages', 'currentPage', function() {
+  _canLoadMore: computed('_totalPages', 'currentPage', '_increment', function() {
     const totalPages  = get(this, '_totalPages');
     const currentPage = get(this, 'currentPage');
     const _increment = get(this, '_increment');
