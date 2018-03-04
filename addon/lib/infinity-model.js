@@ -1,5 +1,5 @@
 import ArrayProxy from "@ember/array/proxy"
-import { computed, get } from '@ember/object';
+import { computed, get, getProperties } from '@ember/object';
 import { objectAssign } from '../utils';
 import { typeOf } from '@ember/utils';
 
@@ -133,15 +133,15 @@ export default ArrayProxy.extend({
     @default false
   */
   _canLoadMore: computed('_totalPages', 'currentPage', '_increment', function() {
-    const totalPages  = get(this, '_totalPages');
-    const currentPage = get(this, 'currentPage');
-    const _increment = get(this, '_increment');
-    if (_increment === 1) {
-      // load next page
-      return (totalPages && currentPage !== undefined) ? (currentPage < totalPages) : false;
-    } else if (get(this, 'firstPage') > 1) {
-      // load previous page if starting page was not 1.  Otherwise ignore this block
-      return totalPages ? get(this, 'firstPage') > 1 : false;
+    let { _totalPages , currentPage, _increment } = getProperties(this, '_totalPages', 'currentPage', '_increment');
+    if (_totalPages) {
+      if (_increment === 1 && currentPage !== undefined) {
+        // load next page
+        return (currentPage < _totalPages) ? true : false;
+      } else if (get(this, 'firstPage') > 1) {
+        // load previous page if starting page was not 1.  Otherwise ignore this block
+        return get(this, 'firstPage') > 1 ? true : false;
+      }
     }
     return false;
   }).readOnly(),
@@ -155,8 +155,7 @@ export default ArrayProxy.extend({
    */
   buildParams(increment) {
     const pageParams = {};
-    const perPageParam = get(this, 'perPageParam');
-    const pageParam = get(this, 'pageParam');
+    let { perPageParam, pageParam } = getProperties(this, 'perPageParam', 'pageParam');
     if (typeOf(perPageParam) === 'string') {
       pageParams[perPageParam] = get(this, 'perPage');
     }
