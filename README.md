@@ -196,7 +196,6 @@ As of 1.0+, you can override or extend the behavior of Ember Infinity by providi
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 
 const ExtendedInfinityModel = InfinityModel.extend({
-  global: service(),
   buildParams() {
     let params = this._super(...arguments);
     params['category_id'] = get(this, 'global.categoryId');
@@ -210,7 +209,8 @@ export default Route.extend({
     return get(this, 'global.categoryId');
   }),
   model() {
-    this.infinityModel('product', {}, ExtendedInfinityModel);
+    let global = get(this, 'global');
+    this.infinityModel('product', {}, ExtendedInfinityModel.extend({ global }));
   }
 });
 ```
