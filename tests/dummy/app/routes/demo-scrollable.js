@@ -10,7 +10,6 @@ import { inject as service } from '@ember/service';
 const ExtendedInfinityModel =  InfinityModel.extend({
   buildParams() {
     let params = this._super(...arguments);
-    debugger;
     params['categoryId'] = get(this, 'global').categoryId;
     return params;
   }
