@@ -195,6 +195,7 @@ As of 1.0+, you can override or extend the behavior of Ember Infinity by providi
 **Note**: This behavior should negate any need for the pre 1.0 "Bound Params" style of work. See [Bound Parameters][Bound Parameters] Section below for more information.
 
 ```js
+import InfinityRoute from 'ember-infinity/mixins/route';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 
 const ExtendedInfinityModel = InfinityModel.extend({
@@ -205,7 +206,7 @@ const ExtendedInfinityModel = InfinityModel.extend({
   }
 });
 
-export default Route.extend({
+export default Route.extend(InfinityRoute, {
   global: service(),
   categoryId: computed('global.categoryId', function() {
     return get(this, 'global.categoryId');
