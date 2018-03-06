@@ -25,10 +25,10 @@ Also:
 ## Basic Usage
 
 ```js
-import Ember from 'ember';
+import Route from '@ember/routing/route';
 import InfinityRoute from "ember-infinity/mixins/route";
 
-export default Ember.Route.extend(InfinityRoute, {
+export default Route.extend(InfinityRoute, {
   model() {
     /* Load pages of the Product Model, starting from page 1, in groups of 12. */
     return this.infinityModel("product", { perPage: 12, startingPage: 1 });
@@ -51,6 +51,8 @@ Now, whenever the `infinity-loader` is in view, it will send an action to the ro
 (the one where you initialized the infinityModel) to start loading the next page.
 
 When the new records are loaded, they will automatically be pushed into the Model array.
+
+Lastly, by default, ember-infinity expects the server response to contained something about how many total pages it can expect to fetch. ember-infinity defaults to looking for something like `meta: { total_pages: 20 }` in your response.  See [Advanced Usage](#Advanced Usage).
 
 ### Non-Blocking Model Hooks
 
@@ -92,19 +94,26 @@ and will expect to receive metadata in the response payload via a `total_pages` 
 
 If you wish to customize some aspects of the JSON contract for pagination, you may do so via your routes. For example, you may want to customize the following:
 
-- perPageParam: "per",              // instead of "per_page"
-- pageParam: "pg",                  // instead of "page"
-- totalPagesParam: "meta.total",    // instead of "meta.total_pages"
+Default:
+- perPageParam: "per_page",
+- pageParam: "page",
+- totalPagesParam: "meta.total_pages",
+
+Example Customization shown below:
+- perPageParam: "per",
+- pageParam: "pg",
+- totalPagesParam: "meta.total",
 
 ```js
-import Ember from 'ember';
+import Route from '@ember/routing/route';
 import InfinityRoute from "ember-infinity/mixins/route";
 
-export default Ember.Route.extend(InfinityRoute, {
+export default Route.extend(InfinityRoute, {
 
   model() {
     /* Load pages of the Product Model, starting from page 1, in groups of 12. Also set query params by handing off to infinityModel */
-    return this.infinityModel("product", { perPage: 12, startingPage: 1, perPageParam: "per", pageParam: "pg", totalPagesParam: "meta.total" });
+    return this.infinityModel("product", { perPage: 12, startingPage: 1,
+      perPageParam: "per", pageParam: "pg", totalPagesParam: "meta.total" });
   }
 });
 ```
