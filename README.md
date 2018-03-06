@@ -36,7 +36,7 @@ export default Route.extend(InfinityRoute, {
 });
 ```
 
-Then, you'll need to add the Infinity Loader component to your template, like so:
+Then, you'll need to add the Infinity Loader component to your template, like so, in which `model` is an instance of InfinityModel returned from your model hook.
 
 ```hbs
 {{#each model as |product|}}
@@ -52,7 +52,7 @@ Now, whenever the `infinity-loader` is in view, it will send an action to the ro
 
 When the new records are loaded, they will automatically be pushed into the Model array.
 
-Lastly, by default, ember-infinity expects the server response to contained something about how many total pages it can expect to fetch. ember-infinity defaults to looking for something like `meta: { total_pages: 20 }` in your response.  See [Advanced Usage](#Advanced Usage).
+Lastly, by default, ember-infinity expects the server response to contain something about how many total pages it can expect to fetch. ember-infinity defaults to looking for something like `meta: { total_pages: 20 }` in your response.  See [Advanced Usage](#Advanced Usage).
 
 ### Non-Blocking Model Hooks
 
