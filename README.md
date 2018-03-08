@@ -52,7 +52,7 @@ Now, whenever the `infinity-loader` is in view, it will send an action to the ro
 
 When the new records are loaded, they will automatically be pushed into the Model array.
 
-Lastly, by default, ember-infinity expects the server response to contain something about how many total pages it can expect to fetch. ember-infinity defaults to looking for something like `meta: { total_pages: 20 }` in your response.  See [Advanced Usage](#Advanced Usage).
+Lastly, by default, ember-infinity expects the server response to contain something about how many total pages it can expect to fetch. ember-infinity defaults to looking for something like `meta: { total_pages: 20 }` in your response.  See [Advanced Usage](#AdvancedUsage).
 
 ### Non-Blocking Model Hooks
 
@@ -68,7 +68,7 @@ model() {
 }
 ```
 
-## Advanced Usage
+## Advanced Usage<a name="AdvancedUsage"></a>
 
 ### JSON Request/Response Customization
 
@@ -196,7 +196,6 @@ As of 1.0+, you can override or extend the behavior of Ember Infinity by providi
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 
 const ExtendedInfinityModel = InfinityModel.extend({
-  global: service(),
   buildParams() {
     let params = this._super(...arguments);
     params['category_id'] = get(this, 'global.categoryId');
@@ -210,7 +209,8 @@ export default Route.extend({
     return get(this, 'global.categoryId');
   }),
   model() {
-    this.infinityModel('product', {}, ExtendedInfinityModel);
+    let global = get(this, 'global');
+    this.infinityModel('product', {}, ExtendedInfinityModel.extend({ global }));
   }
 });
 ```

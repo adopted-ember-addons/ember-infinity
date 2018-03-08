@@ -1,14 +1,23 @@
-import { observer } from '@ember/object';
 import Route from '@ember/routing/route';
 import InfinityRoute from 'ember-infinity/mixins/route';
+import InfinityModel from 'ember-infinity/lib/infinity-model';
 import Pretender from 'pretender';
 import faker from 'faker';
 import json from '../helpers/json';
+import { get, set } from '@ember/object';
+import { inject as service } from '@ember/service';
 
+const ExtendedInfinityModel =  InfinityModel.extend({
+  buildParams() {
+    let params = this._super(...arguments);
+    params['categoryId'] = get(this, 'global').categoryId;
+    return params;
+  }
+});
 
 function generateFakeData(qty) {
-  var data = [];
-  for (var i = 0; i < qty; i++) {
+  let data = [];
+  for (let i = 0; i < qty; i++) {
     data.push({id: i, name: faker.company.companyName()});
   }
   return data;
@@ -16,17 +25,17 @@ function generateFakeData(qty) {
 
 
 export default Route.extend(InfinityRoute, {
-  init: function () {
-    if (this._super.init) {
-      this._super.init.apply(this, arguments);
-    }
-    var fakeData = generateFakeData(104);
-    this.set('pretender', new Pretender());
-    this.get('pretender').get('/posts', request => {
-      var fd = fakeData;
-      var page = parseInt(request.queryParams.page, 10);
-      var per =  parseInt(request.queryParams.per_page, 10);
-      var payload = {
+  global: service(),
+
+  init() {
+    this._super(...arguments);
+    let fakeData = generateFakeData(104);
+    set(this, 'pretender', new Pretender());
+    get(this, 'pretender').get('/posts', request => {
+      let fd = fakeData;
+      let page = parseInt(request.queryParams.page, 10);
+      let per =  parseInt(request.queryParams.per_page, 10);
+      let payload = {
         posts: fd.slice((page - 1) * per, Math.min((page) * per, fd.length)),
         meta: {
           total_pages: Math.ceil(fd.length/per)
@@ -37,11 +46,16 @@ export default Route.extend(InfinityRoute, {
     }, 500 /*ms*/);
   },
 
-  tearDownPretender: observer('deactivate', function () {
-    this.set('pretender', undefined);
-  }),
+  deactivate() {
+    set(this, 'pretender', undefined);
+  },
 
   model() {
-    return this.infinityModel('post');
+    let global = get(this, 'global');
+    return this.infinityModel(
+      'post',
+      {},
+      ExtendedInfinityModel.extend({ global })
+    )
   }
 });

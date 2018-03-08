@@ -356,6 +356,23 @@ module('RouteMixin', function() {
       assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
     });
 
+    test('route accepts an instance of InfinityModel as the third argument with passed in param', function (assert) {
+      assert.expect(2);
+
+      let ExtendedInfinityModel = InfinityModel.extend({
+        buildParams() {
+          let params = this._super(...arguments);
+          params['custom_id'] = get(this, 'custom.id');
+          assert.equal(params['custom_id'], 2);
+          return params;
+        }
+      });
+      // imagine 'custom' being some type of service that holds state
+      this.createRoute({ extra: 'param' }, ExtendedInfinityModel.extend({ custom: { id : 2 } }));
+
+      this.loadMore();
+    });
+
     test('route does not detect boundParams when no boundParams passed', function (assert) {
       assert.expect(1);
 
