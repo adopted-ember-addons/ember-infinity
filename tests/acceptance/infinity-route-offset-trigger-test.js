@@ -134,6 +134,7 @@ module('Acceptance: Infinity Route - offset trigger', function(hooks) {
       let posts = this.posts;
       // another pretender instance is needed b/c this test has 3 fetches (others have 2)
       // thus once exhausted, need to setup another one
+      // Don't yet know why is happening.  I thought I figured it out, but forgot.
       server = new Pretender(function() {
         this.get('/posts', function(request) {
           let subset = posts;

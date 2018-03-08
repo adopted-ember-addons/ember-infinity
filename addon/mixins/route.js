@@ -286,7 +286,7 @@ const RouteMixin = Mixin.create({
           // scroll down to load next page
           infinityModel.incrementProperty('currentPage');
         } else {
-          let viewportElem = get(infinityModel, '_scrollable') ? document.querySelector(get(infinityModel, '_scrollable')) : window;
+          let viewportElem = get(infinityModel, '_scrollable') ? document.querySelector(get(infinityModel, '_scrollable')) : document.documentElement;
           scheduleOnce('afterRender', this, '_updateScrollTop', { infinityModel, viewportElem });
           // scrolled up to load previous page
           infinityModel.decrementProperty('currentPage');
@@ -306,8 +306,8 @@ const RouteMixin = Mixin.create({
     @return Integer
    */
   _calculateHeight(infinityModel) {
-    let viewportElem = get(infinityModel, '_scrollable') ? document.querySelector(get(infinityModel, '_scrollable')) : window;
-    return get(infinityModel, '_scrollable') ? viewportElem.scrollHeight : viewportElem.innerHeight;
+    let viewportElem = get(infinityModel, '_scrollable') ? document.querySelector(get(infinityModel, '_scrollable')) : document.documentElement;
+    return get(infinityModel, '_scrollable') ? viewportElem.scrollHeight : viewportElem.scrollHeight;
   },
 
   /**
@@ -359,7 +359,6 @@ const RouteMixin = Mixin.create({
     if (infinityModel.get('_increment') === 1) {
       return infinityModel.pushObjects(queryObject.toArray());
     } else {
-      // TODO: this will lead to problems b/c unshift will focus viewport to first item after unshift
       return infinityModel.unshiftObjects(queryObject.toArray());
     }
   },
