@@ -1,5 +1,20 @@
 # Change Log
 
+## [1.0.0-alpha.*](https://github.com/ember-infinity/ember-infinity/tree/1.0.0-alpha.9) (2018-03-07)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.8...1.0.0-alpha.9)
+
+**Closed issues:**
+
+- missing ember-in-viewport [#256](https://github.com/ember-infinity/ember-infinity/issues/256)
+
+**Merged pull requests:**
+
+- InfinityModel used to store query params [#231](https://github.com/ember-infinity/ember-infinity/commit/f48626454a736a3474586d6739c1ac0674af46b2)
+- Non Blocking Model hooks support [#232](https://github.com/ember-infinity/ember-infinity/commit/408ea7f7dcabde15b38b0f9b5b98f85c143e05fc)
+- Ability to extend the InfinityModel [#236](https://github.com/ember-infinity/ember-infinity/commit/7f6671c6feedac13bc34011f78f08a08161fe0bb)
+- Replace scroll logic with ember-in-viewport [#242](https://github.com/ember-infinity/ember-infinity/commit/b0b653490be928e586d9b5e0a2024b0dfd4b7571) [258](https://github.com/ember-infinity/ember-infinity/commit/163efac3667bb0de2e61371b97134fcd6bb46d68)
+- Ember and Ember-Data and Ember-CLI 3.0 [#260](https://github.com/ember-infinity/ember-infinity/commit/ed0de5002ef8a529abe25f432495714415254069)
+
 ## [0.2.8](https://github.com/hhff/ember-infinity/tree/0.2.8) (2017-01-03)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.7...0.2.8)
 
