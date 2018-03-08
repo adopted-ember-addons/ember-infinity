@@ -1,7 +1,6 @@
 import { alias } from '@ember/object/computed';
 import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
 import InViewportMixin from 'ember-in-viewport';
-import { run } from '@ember/runloop';
 import { computed, observer, defineProperty } from '@ember/object';
 import Component from '@ember/component';
 
@@ -48,7 +47,6 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
 
   willDestroyElement() {
     this._super(...arguments);
-    this._cancelTimers();
   },
 
   _isInfinityPromiseArray: computed('infinityModel', function() {
@@ -72,16 +70,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
       return false;
     }
 
-    this._debounceScrolledToBottom();
-  },
-
-  /**
-   * https://github.com/DockYard/ember-in-viewport#didenterviewport-didexitviewport
-   *
-   * @method didExitViewport
-   */
-  didExitViewport() {
-    this._cancelTimers();
+    this.sendAction('loadMoreAction', this.get('infinityModelContent'));
   },
 
   /**
@@ -92,21 +81,6 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
       this.set('isVisible', false);
     }
   }),
-
-  _debounceScrolledToBottom() {
-    /*
-     This debounce is needed when there is not enough delay between onScrolledToBottom calls.
-     Without this debounce, all rows will be rendered causing immense performance problems
-     */
-    function loadMore() {
-      this.sendAction('loadMoreAction', this.get('infinityModelContent'));
-    }
-    this._debounceTimer = run.debounce(this, loadMore, this.get('eventDebounce'));
-  },
-
-  _cancelTimers() {
-    run.cancel(this._debounceTimer);
-  },
 });
 
 export default InfinityLoaderComponent;
