@@ -286,10 +286,12 @@ const RouteMixin = Mixin.create({
           // scroll down to load next page
           infinityModel.incrementProperty('currentPage');
         } else {
-          let viewportElem = get(infinityModel, '_scrollable') ? document.querySelector(get(infinityModel, '_scrollable')) : document.documentElement;
-          scheduleOnce('afterRender', this, '_updateScrollTop', { infinityModel, viewportElem });
-          // scrolled up to load previous page
-          infinityModel.decrementProperty('currentPage');
+          if (typeof FastBoot === 'undefined') {
+            let viewportElem = get(infinityModel, '_scrollable') ? document.querySelector(get(infinityModel, '_scrollable')) : document.documentElement;
+            scheduleOnce('afterRender', this, '_updateScrollTop', { infinityModel, viewportElem });
+            // scrolled up to load previous page
+            infinityModel.decrementProperty('currentPage');
+          }
         }
         set(infinityModel, '_firstPageLoaded', true);
         let canLoadMore = get(infinityModel, '_canLoadMore');
@@ -306,8 +308,10 @@ const RouteMixin = Mixin.create({
     @return Integer
    */
   _calculateHeight(infinityModel) {
-    let viewportElem = get(infinityModel, '_scrollable') ? document.querySelector(get(infinityModel, '_scrollable')) : document.documentElement;
-    return get(infinityModel, '_scrollable') ? viewportElem.scrollHeight : viewportElem.scrollHeight;
+    if (typeof FastBoot === 'undefined') {
+      let viewportElem = get(infinityModel, '_scrollable') ? document.querySelector(get(infinityModel, '_scrollable')) : document.documentElement;
+      return get(infinityModel, '_scrollable') ? viewportElem.scrollHeight : viewportElem.scrollHeight;
+    }
   },
 
   /**
