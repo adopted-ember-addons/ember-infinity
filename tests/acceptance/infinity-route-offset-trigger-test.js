@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { visit, find, triggerEvent} from '@ember/test-helpers';
+import { visit, find, triggerEvent, currentURL, waitUntil } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import Pretender from 'pretender';
 import faker from 'faker';
@@ -10,37 +10,30 @@ module('Acceptance: Infinity Route - offset trigger', function(hooks) {
   setupApplicationTest(hooks);
 
   hooks.beforeEach(function() {
-    document.getElementById('ember-testing-container').scrollTop = 0;
-
-    let posts = [];
+    this.posts = [];
 
     for (let i = 0; i < 50; i++) {
-      posts.push({id: i, name: faker.company.companyName()});
+      this.posts.push({id: i, name: faker.company.companyName()});
     }
 
+    let posts = this.posts;
     server = new Pretender(function() {
       this.get('/posts', function(request) {
-        let body, subset, perPage, startPage, offset;
-
-        if (request.queryParams.category) {
-          subset = posts.filter(post => {
-            return post.category === request.queryParams.category;
-          });
-        } else {
-          subset = posts;
-        }
-        perPage = parseInt(request.queryParams.per_page, 10);
-        startPage = parseInt(request.queryParams.page, 10);
+        let subset = posts;
+        let perPage = parseInt(request.queryParams.per_page, 10);
+        let startPage = parseInt(request.queryParams.page, 10);
 
         let pageCount = Math.ceil(subset.length / perPage);
-        offset = perPage * (startPage - 1);
+        let offset = perPage * (startPage - 1);
         subset = subset.slice(offset, offset + perPage);
 
-        body = { posts: subset, meta: { total_pages: pageCount } };
+        let body = { posts: subset, meta: { total_pages: pageCount } };
 
-        return [200, {"Content-Type": "application/json"}, JSON.stringify(body)];
+        return [200, {'Content-Type': 'application/json'}, JSON.stringify(body)];
       });
     });
+
+    document.getElementById('ember-testing-container').scrollTop = 0;
   });
 
   hooks.afterEach(function() {
@@ -52,17 +45,17 @@ module('Acceptance: Infinity Route - offset trigger', function(hooks) {
   }
 
   function infinityLoader() {
-    return find('.infinity-loader');
+    return find('.infinity-loader-bottom');
   }
 
   function triggerOffset() {
-    // find the top of the infinity-loader component
-    let { top } = document.getElementsByClassName('infinity-loader')[0].getBoundingClientRect()
+    // find the top of the infinity-loader-bottom component
+    let { top } = document.getElementsByClassName('infinity-loader-bottom')[0].getBoundingClientRect()
     return top;
   }
 
   function scrollIntoView() {
-    document.getElementsByClassName('infinity-loader')[0].scrollIntoView();
+    document.getElementsByClassName('infinity-loader-bottom')[0].scrollIntoView(false);
   }
 
   function shouldBeItemsOnTheList(assert, amount) {
@@ -74,13 +67,13 @@ module('Acceptance: Infinity Route - offset trigger', function(hooks) {
   }
 
   function infinityShouldNotBeReached(assert) {
-    assert.equal(infinityLoader().classList.contains('reached-infinity'), false, "Infinity should not yet have been reached");
-    assert.equal(find('span').textContent, 'loading');
+    assert.equal(infinityLoader().classList.contains('reached-infinity'), false, 'Infinity should not yet have been reached');
+    assert.equal(infinityLoader().querySelector('span').textContent, 'loading');
   }
 
   function infinityShouldBeReached(assert) {
-    assert.equal(infinityLoader().classList.contains('reached-infinity'), true, "Infinity should have been reached");
-    assert.equal(find('span').textContent, 'loaded');
+    assert.equal(infinityLoader().classList.contains('reached-infinity'), true, 'Infinity should have been reached');
+    assert.equal(infinityLoader().querySelector('span').textContent, 'loaded');
   }
 
   test('it should start loading more items when the scroll is on the very bottom ' +
@@ -124,5 +117,54 @@ module('Acceptance: Infinity Route - offset trigger', function(hooks) {
 
     shouldBeItemsOnTheList(assert, 50);
     infinityShouldBeReached(assert);
+  });
+
+  test('it should load previous elements when start on page two', async function(assert) {
+    await visit('/test-scrollable?page=2');
+
+    shouldBeItemsOnTheList(assert, 50);
+    assert.equal(document.querySelectorAll('ul.test-list li')[25].offsetTop, 12500, 'scrollable list has elements above (each 250px high * 25)');
+  });
+
+  module('Acceptance: Infinity Route - multiple pages fetched', function(hooks) {
+    hooks.beforeEach(function() {
+      for (let i = 0; i < 25; i++) {
+        this.posts.push({id: i, name: faker.company.companyName()});
+      }
+      let posts = this.posts;
+      // another pretender instance is needed in order to ensure infinity is reached in previous scenarios
+      // need to reduce code duplication.
+      server = new Pretender(function() {
+        this.get('/posts', function(request) {
+          let subset = posts;
+          let perPage = parseInt(request.queryParams.per_page, 10);
+          let startPage = parseInt(request.queryParams.page, 10);
+
+          let pageCount = Math.ceil(subset.length / perPage);
+          let offset = perPage * (startPage - 1);
+          subset = subset.slice(offset, offset + perPage);
+
+          let body = { posts: subset, meta: { total_pages: pageCount } };
+
+          return [200, {'Content-Type': 'application/json'}, JSON.stringify(body)];
+        });
+      });
+    });
+    test('it should load previous elements when start on page three and scroll up', async function(assert) {
+      await visit('/test-scrollable?page=3');
+
+      shouldBeItemsOnTheList(assert, 50);
+      assert.equal(currentURL(), '/test-scrollable?page=3');
+
+      await triggerEvent('ul', 'scroll');
+
+      document.getElementsByClassName('infinity-loader-above')[0].scrollIntoView(false);
+
+      await waitUntil(() => {
+        return postList().querySelectorAll('li').length === 75;
+      });
+
+      shouldBeItemsOnTheList(assert, 75);
+    });
   });
 });

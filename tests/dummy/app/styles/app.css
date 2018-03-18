@@ -54,6 +54,7 @@ body {
 .test-list-scrollable {
   overflow: scroll;
   height: 500px;
+  border: 1px solid black;
   position: relative;
 }
 

@@ -24,6 +24,8 @@ Also:
 
 ## Basic Usage
 
+Importing the ember-infinity Route Mixin and extend your route will give you access to this.infinifyModel in your model hook.
+
 ```js
 import Route from '@ember/routing/route';
 import InfinityRoute from "ember-infinity/mixins/route";
@@ -193,6 +195,7 @@ As of 1.0+, you can override or extend the behavior of Ember Infinity by providi
 **Note**: This behavior should negate any need for the pre 1.0 "Bound Params" style of work. See [Bound Parameters][Bound Parameters] Section below for more information.
 
 ```js
+import InfinityRoute from 'ember-infinity/mixins/route';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 
 const ExtendedInfinityModel = InfinityModel.extend({
@@ -203,7 +206,7 @@ const ExtendedInfinityModel = InfinityModel.extend({
   }
 });
 
-export default Route.extend({
+export default Route.extend(InfinityRoute, {
   global: service(),
   categoryId: computed('global.categoryId', function() {
     return get(this, 'global.categoryId');
@@ -350,7 +353,9 @@ export default Ember.Route.extend(InfinityRoute, {
 
 ### infinity-loader
 
-The `infinity-loader` component as some extra options to make working with it easy!
+The `infinity-loader` component as some extra options to make working with it easy!  It is based on the IntersectionObserver API.  In essence, instead of basing your scrolling on Events (synchronous), it instead behaves asynchronously, thus not blocking the main thread.
+
+https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
 
 * **hideOnInfinity**
 
@@ -421,6 +426,18 @@ Will install the default `infinity-loader` template into your host app, at
 
 You can optionally pass in a CSS style selector string.  If not present, scrollable will default to using the window.  This is useful for scrollable areas that are constrained in the window.
 
+* **loadPrevious**
+
+```hbs
+{{infinity-loader loadPrevious=true}}
+
+<ul>...</ul>
+
+{{infinity-loader}}
+
+To load elements above your list on load, place an infinity-loader component above the list with `loadPrevious=true`.
+```
+
 * **triggerOffset**
 
 ```hbs
@@ -486,11 +503,40 @@ template.hbs:
 {{/if}}
 ```
 
+## Load Previous Pages
+
+The basic idea here is to:
+1. Place an infinity-loader component above and below your content.
+2. Ensure loadPrevious is set to true on the infinity-loader above the content.
+
+If your route loads on page 3, it will fetch page 2 on load.  As the user scrolls up, it will fetch page 1 and stop loading from there.  If you are already on page 1, no actions will be fired to fetch the previous page.
+
+```hbs
+<ul>
+{{infinity-loader
+  infinityModel=content
+  loadPrevious=true
+  loadedText=null
+  loadingText=null}}
+
+{{#each content as |item|}}
+  <li>{{item.id}}. {{item.name}}</li>
+{{/each}}
+
+{{infinity-loader
+  infinityModel=content
+  loadingText="Loading more awesome records..."
+  loadedText="Loaded all the records!"
+  triggerOffset=500
+}}
+</ul>
+```
+
 ## Testing
 
 Testing can be a breeze once you have an example.  So here is an example!  Note this is using Ember's new testing APIs.
 
-```
+```hbs
 import { find, findAll, visit, waitFor, waitUntil } from '@ember/test-helpers';
 
 test('fetches more data when scrolled into viewport', async function(assert) {

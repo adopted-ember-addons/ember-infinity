@@ -17,7 +17,7 @@ module('infinity-loader', function(hooks) {
     this.actions.infinityLoad = function () {};
 
     await render(hbs`{{infinity-loader}}`);
-    assert.equal(this.$('.infinity-loader > span').text(), "Loading Infinite Model...");
+    assert.equal(this.element.querySelector('.infinity-loader > span').textContent, "Loading Infinite Model...");
   });
 
   test('it yields to the block if given', async function(assert) {
@@ -30,6 +30,6 @@ module('infinity-loader', function(hooks) {
                   <span>My custom block</span>
                 {{/infinity-loader}}
                 `);
-    assert.equal(this.$('.infinity-loader > span').text(), "My custom block");
+    assert.equal(this.element.querySelector('.infinity-loader > span').textContent, "My custom block");
   });
 });

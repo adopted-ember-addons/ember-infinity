@@ -8,7 +8,7 @@ import { A } from '@ember/array';
 import { computed, get, set } from '@ember/object';
 import { deprecate } from '@ember/application/deprecations';
 import { isEmpty, typeOf } from '@ember/utils';
-import { run } from '@ember/runloop';
+import { scheduleOnce } from '@ember/runloop';
 import { objectAssign, paramsCheck } from '../utils';
 
 /**
@@ -35,17 +35,27 @@ const RouteMixin = Mixin.create({
       return boolean to tell infinity-loader component if it should make another request
       @method infinityLoad
       @param {Object} infinityModel
+      @param {Integer} increment - to increase page by 1 or -1. Default to increase by one page
       @return {Boolean}
      */
-    infinityLoad(infinityModel) {
+    infinityLoad(infinityModel, increment = 1) {
       let matchingInfinityModel = this._infinityModels.find(model => model === infinityModel);
       if (matchingInfinityModel) {
-        this._infinityLoad(matchingInfinityModel);
+        set(infinityModel, '_increment', increment);
+        this._infinityLoad(matchingInfinityModel, increment);
       } else {
         return true;
       }
     }
   },
+
+  /**
+    @private
+    @property _previousScrollHeight
+    @type Integer
+    @default 0
+  */
+  _previousScrollHeight: 0,
   /**
     @private
     @property _store
@@ -73,7 +83,7 @@ const RouteMixin = Mixin.create({
     @method _ensureCompatibility
   */
   _ensureCompatibility() {
-    if (isEmpty(this.get(this._store)) || isEmpty(this.get(this._store)[this._storeFindMethod])){
+    if (isEmpty(get(this, this._store)) || isEmpty(get(this, this._store)[this._storeFindMethod])){
       throw new EmberError("Ember Infinity: Store is not available to infinityModel");
     }
   },
@@ -90,8 +100,8 @@ const RouteMixin = Mixin.create({
       throw new EmberError("Ember Infinity: Must pass custom data store as a string");
     }
 
-    const store = this.get(options.store);
-    if (!store[this.get('_storeFindMethod')]) {
+    const store = get(this, options.store);
+    if (!store[get(this, '_storeFindMethod')]) {
       throw new EmberError("Ember Infinity: Custom data store must specify query method");
     }
   },
@@ -132,18 +142,22 @@ const RouteMixin = Mixin.create({
 
     if (options.store) {
       if (options.storeFindMethod) {
-        this.set('_storeFindMethod', options.storeFindMethod);
+        set(this, '_storeFindMethod', options.storeFindMethod);
       }
 
       this._ensureCustomStoreCompatibility(options);
 
-      this.set('_store', options.store);
+      set(this, '_store', options.store);
 
       delete options.store;
       delete options.storeFindMethod;
     }
 
-    const currentPage = options.startingPage === undefined ? 0 : options.startingPage-1;
+    // default is to start at 0, request next page and increment
+    const currentPage = options.startingPage === undefined ? 0 : options.startingPage - 1;
+    // sets first page when route is loaded
+    const firstPage = currentPage === 0 ? 1 : currentPage + 1;
+    // chunk requests by indicated perPage param
     const perPage = options.perPage || 25;
 
     // check if user passed in param w/ infinityModel, else check if defined on the route (for backwards compat), else default
@@ -172,6 +186,7 @@ const RouteMixin = Mixin.create({
 
     let initParams = {
       currentPage,
+      firstPage,
       perPage,
       perPageParam,
       pageParam,
@@ -236,40 +251,85 @@ const RouteMixin = Mixin.create({
     @private
     @method _infinityLoad
     @param {Ember.ArrayProxy} infinityModel
+    @param {Integer} increment - to increase page by 1 or -1
    */
-  _infinityLoad(infinityModel) {
+  _infinityLoad(infinityModel, increment) {
     if (get(infinityModel, '_loadingMore') || !get(infinityModel, '_canLoadMore')) {
       return;
     }
 
-    this._loadNextPage(infinityModel);
+    this._loadNextPage(infinityModel, increment);
   },
 
   /**
     load the next page from the adapter and update the model
+    set current height of elements.  If loadPrevious, we will use this value to scroll back down the page
 
     @private
     @method _loadNextPage
     @param {Ember.ArrayProxy} infinityModel
+    @param {Integer} increment - to increase page by 1 or -1. Default to increase by one page
     @return {Ember.RSVP.Promise} A Promise that resolves the model
    */
-  _loadNextPage(infinityModel) {
+  _loadNextPage(infinityModel, increment = 1) {
     set(infinityModel, '_loadingMore', true);
+    set(this, '_previousScrollHeight', this._calculateHeight(infinityModel));
 
     const modelName = get(infinityModel, '_infinityModelName');
-    const params    = infinityModel.buildParams();
+    const params    = infinityModel.buildParams(increment);
 
     return this._requestNextPage(modelName, params)
       .then(newObjects => this._afterInfinityModel(this)(newObjects, infinityModel))
       .then(newObjects => this._doUpdate(newObjects, infinityModel))
       .then(infinityModel => {
-        infinityModel.incrementProperty('currentPage');
+        if (increment === 1) {
+          // scroll down to load next page
+          infinityModel.incrementProperty('currentPage');
+        } else {
+          if (typeof FastBoot === 'undefined') {
+            let viewportElem = get(infinityModel, '_scrollable') ? document.querySelector(get(infinityModel, '_scrollable')) : document.documentElement;
+            scheduleOnce('afterRender', this, '_updateScrollTop', { infinityModel, viewportElem });
+            // scrolled up to load previous page
+            infinityModel.decrementProperty('currentPage');
+          }
+        }
         set(infinityModel, '_firstPageLoaded', true);
-        const canLoadMore = get(infinityModel, '_canLoadMore');
+        let canLoadMore = get(infinityModel, '_canLoadMore');
         set(infinityModel, 'reachedInfinity', !canLoadMore);
         if (!canLoadMore) { this._notifyInfinityModelLoaded(); }
         return infinityModel;
       }).finally(() => set(infinityModel, '_loadingMore', false));
+  },
+
+  /**
+    @private
+    @method _calculateHeight
+    @param {Object} infinityModel
+    @return Integer
+   */
+  _calculateHeight(infinityModel) {
+    if (typeof FastBoot === 'undefined') {
+      let viewportElem = get(infinityModel, '_scrollable') ? document.querySelector(get(infinityModel, '_scrollable')) : document.documentElement;
+      return get(infinityModel, '_scrollable') ? viewportElem.scrollHeight : viewportElem.scrollHeight;
+    }
+  },
+
+  /**
+    This method calculates the difference if loadPrevious=true
+    The browser by default will scroll to the top of the element list when the previous page
+    loads.  As a result, we need to scroll back down the page.
+    The math behind this is as follows:
+    (height after loading previous elems) - (old height)
+    So 150px - 100px === 150px
+    178px - 100px = 78px
+    120px - 10px = 110px
+    @private
+    @method _updateScrollTop
+    @return Integer
+   */
+  _updateScrollTop({ infinityModel, viewportElem }) {
+    let scrollDiff = this._calculateHeight(infinityModel) - get(this, '_previousScrollHeight');
+    viewportElem.scrollTop += scrollDiff;
   },
 
   /**
@@ -282,12 +342,12 @@ const RouteMixin = Mixin.create({
     @returns {Ember.RSVP.Promise} A Promise that resolves the next page of objects
    */
   _requestNextPage(modelName, params) {
-    return this.get(this._store)[this._storeFindMethod](modelName, params);
+    return get(this, this._store)[this._storeFindMethod](modelName, params);
   },
 
   /**
     set _totalPages param on infinityModel
-    Update the infinity model with new objects
+    Update the infinity model with new objects with either adding to end or start of Array of objects
 
     @private
     @method _doUpdate
@@ -299,7 +359,12 @@ const RouteMixin = Mixin.create({
     const totalPages = queryObject.get(get(infinityModel, 'totalPagesParam'));
     set(infinityModel, '_totalPages', totalPages);
     set(infinityModel, 'meta', get(queryObject, 'meta'));
-    return infinityModel.pushObjects(queryObject.toArray());
+
+    if (infinityModel.get('_increment') === 1) {
+      return infinityModel.pushObjects(queryObject.toArray());
+    } else {
+      return infinityModel.unshiftObjects(queryObject.toArray());
+    }
   },
 
   /**
@@ -317,9 +382,9 @@ const RouteMixin = Mixin.create({
       id: 'ember-infinity',
       until: '1.0.0'
     });
-    run.scheduleOnce('afterRender', this, 'infinityModelUpdated', {
-      lastPageLoaded: this.get('currentPage'),
-      totalPages: this.get('_totalPages'),
+    scheduleOnce('afterRender', this, 'infinityModelUpdated', {
+      lastPageLoaded: get(this, 'currentPage'),
+      totalPages: get(this, '_totalPages'),
       newObjects: newObjects
     });
   },
@@ -335,8 +400,8 @@ const RouteMixin = Mixin.create({
       return;
     }
 
-    const totalPages = this.get('_totalPages');
-    run.scheduleOnce('afterRender', this, 'infinityModelLoaded', { totalPages: totalPages });
+    const totalPages = get(this, '_totalPages');
+    scheduleOnce('afterRender', this, 'infinityModelLoaded', { totalPages: totalPages });
   }
 });
 
