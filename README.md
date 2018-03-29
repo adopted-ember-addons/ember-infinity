@@ -296,7 +296,11 @@ Triggered on the route whenever new objects are pushed into the infinityModel.
 
 **Args:**
 
+* lastPageLoaded
+
 * totalPages
+
+* infinityModel
 
 **infinityModelLoaded**
 
@@ -304,11 +308,7 @@ Triggered on the route when the infinityModel is fully loaded.
 
 **Args:**
 
-* lastPageLoaded
-
 * totalPages
-
-* infinityModel
 
 
 ```js
@@ -323,10 +323,11 @@ export default Ember.Route.extend(InfinityRoute, {
     return this.infinityModel("product", { perPage: 12, startingPage: 1 });
   },
 
-  infinityModelUpdated({ lastPageLoaded, totalPages, newObjects }) {
+  infinityModelUpdated(lastPageLoaded, totalPages, infinityModel) {
     Ember.Logger.debug('updated with more items');
   },
-  infinityModelLoaded({ totalPages }) {
+  
+  infinityModelLoaded(totalPages) {
     Ember.Logger.info('no more items to load');
   }
 }
