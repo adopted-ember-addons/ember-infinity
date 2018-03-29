@@ -18,6 +18,7 @@ Router.map(function() {
     this.route('show', { path: '/:post' });
   });
   this.route('load-previous');
+  this.route('component-list');
 });
 
 export default Router;
