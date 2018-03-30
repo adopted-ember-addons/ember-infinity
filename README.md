@@ -296,19 +296,20 @@ Triggered on the route whenever new objects are pushed into the infinityModel.
 
 **Args:**
 
-* totalPages
 
 **infinityModelLoaded**
-
-Triggered on the route when the infinityModel is fully loaded.
-
-**Args:**
 
 * lastPageLoaded
 
 * totalPages
 
 * infinityModel
+
+Triggered on the route when the infinityModel is fully loaded.
+
+**Args:**
+
+* totalPages
 
 
 ```js
