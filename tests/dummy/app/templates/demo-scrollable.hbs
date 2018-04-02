@@ -8,11 +8,11 @@
     <h2 id="title">ember-infinity</h2>
   </div>
   <ul id="demo-items-scrollable" class="demo-items">
-    {{#each content as |item|}}
+    {{#each model as |item|}}
       <li>{{item.id}}. {{item.name}}</li>
     {{/each}}
     {{infinity-loader
-      infinityModel=content
+      infinityModel=model
       loadingText="Loading more awesome records..."
       loadedText="Loaded all the records!"
       triggerOffset=500
