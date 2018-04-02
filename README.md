@@ -514,17 +514,17 @@ If your route loads on page 3, it will fetch page 2 on load.  As the user scroll
 ```hbs
 <ul>
 {{infinity-loader
-  infinityModel=content
+  infinityModel=model
   loadPrevious=true
   loadedText=null
   loadingText=null}}
 
-{{#each content as |item|}}
+{{#each model as |item|}}
   <li>{{item.id}}. {{item.name}}</li>
 {{/each}}
 
 {{infinity-loader
-  infinityModel=content
+  infinityModel=model
   loadingText="Loading more awesome records..."
   loadedText="Loaded all the records!"
   triggerOffset=500
