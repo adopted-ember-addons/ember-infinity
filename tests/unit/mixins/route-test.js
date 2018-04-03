@@ -8,8 +8,9 @@ import EmberObject, { get } from '@ember/object';
 import RouteMixin from 'ember-infinity/mixins/route';
 import { module, test, skip } from 'qunit';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
+import { setupTest } from 'ember-qunit';
 
-module('RouteMixin', function() {
+module('RouteMixin', function(hooks) {
   let EA = function (content, meta={}) {
     return ArrayProxy.create(assign({ content: A(content) }, meta));
   };
@@ -17,6 +18,7 @@ module('RouteMixin', function() {
   let createRoute = (infinityModelArgs, routeProperties={}) => {
     let RouteObject = Route.extend(RouteMixin, assign(routeProperties, {
       model() {
+        debugger;
         return this.infinityModel(...infinityModelArgs);
       }
     }));
@@ -49,7 +51,7 @@ module('RouteMixin', function() {
     return model;
   }
 
-  module('basics', function() {
+  module('scott basics', function() {
     test('it works', function(assert) {
       let RouteObject = Route.extend(RouteMixin);
       let route = RouteObject.create();
@@ -57,7 +59,16 @@ module('RouteMixin', function() {
     });
 
     test('it can not use infinityModel without Ember Data Store', function(assert) {
-      let route = createRoute(['post'], {store: null});
+      // this.owner.register('route:infinity',
+      //   Route.extend(RouteMixin, {
+      //     store: null,
+      //     model() {
+      //       return this.infinityModel('post');
+      //     }
+      //   })
+      // );
+      // let route = this.owner.lookup('route:infinity');
+      let route = createRoute(['post'], { store: null });
 
       try {
         route.model();
@@ -464,7 +475,7 @@ module('RouteMixin', function() {
 
       this.expectedPageNumber = 3;
 
-      const infinityModel = this.route._infinityModels.objectAt(0);
+      const infinityModel = this.route.get('infinityLoader.infinityModels').objectAt(0);
       run(() => {
         this.route._infinityLoad(infinityModel);
       });

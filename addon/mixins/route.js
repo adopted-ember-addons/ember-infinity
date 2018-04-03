@@ -1,10 +1,11 @@
-import { alias } from '@ember/object/computed';
+import { readOnly } from '@ember/object/computed';
 import EmberError from '@ember/error';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
 import BoundParamsMixin from 'ember-infinity/mixins/bound-params';
 import Mixin from '@ember/object/mixin';
 import { A } from '@ember/array';
+import { inject as service } from '@ember/service';
 import { computed, get, set } from '@ember/object';
 import { deprecate } from '@ember/application/deprecations';
 import { isEmpty, typeOf } from '@ember/utils';
@@ -23,11 +24,15 @@ import { objectAssign, paramsCheck } from '../utils';
 */
 const RouteMixin = Mixin.create({
 
+  infinityLoader: service(),
+
+  _infinityModels: readOnly('infinityLoader.infinityModels'),
+
   // these are here for backwards compat
-  _infinityModel: computed('_infinityModels.[]', function() {
+  _infinityModel: computed('_infinityModels.[]', '_infinityModels', function() {
     return get(this, '_infinityModels.firstObject');
   }).readOnly(),
-  currentPage: alias('_infinityModel.currentPage').readOnly(),
+  currentPage: readOnly('_infinityModel.currentPage'),
 
   actions: {
     /**
@@ -39,7 +44,7 @@ const RouteMixin = Mixin.create({
       @return {Boolean}
      */
     infinityLoad(infinityModel, increment = 1) {
-      let matchingInfinityModel = this._infinityModels.find(model => model === infinityModel);
+      let matchingInfinityModel = get(this, '_infinityModels').find(model => model === infinityModel);
       if (matchingInfinityModel) {
         set(infinityModel, '_increment', increment);
         this._infinityLoad(matchingInfinityModel, increment);
@@ -134,8 +139,9 @@ const RouteMixin = Mixin.create({
       throw new EmberError("Ember Infinity: You must pass a Model Name to infinityModel");
     }
 
-    if (!this._infinityModels) {
-      this._infinityModels = A();
+    let service = get(this, 'infinityLoader');
+    if (!get(service, 'infinityModels')) {
+      set(service, 'infinityModels', A());
     }
 
     options = options ? objectAssign({}, options) : {};
@@ -203,7 +209,7 @@ const RouteMixin = Mixin.create({
 
     const infinityModel = InfinityModelFactory.create(initParams);
     this._ensureCompatibility();
-    this._infinityModels.pushObject(infinityModel);
+    get(this, 'infinityLoader.infinityModels').pushObject(infinityModel);
 
     return InfinityPromiseArray.create({ promise: this._loadNextPage(infinityModel) });
   },
