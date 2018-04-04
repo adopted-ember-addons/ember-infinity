@@ -24,6 +24,13 @@ Also:
 
 ## Basic Usage
 
+ember-infinity exposes 3 consumable items for your application.
+
+· Route Mixin
+· infinity-loader component
+· infinity-loader service
+
+
 Importing the ember-infinity Route Mixin and extend your route will give you access to this.infinifyModel in your model hook.
 
 ```js

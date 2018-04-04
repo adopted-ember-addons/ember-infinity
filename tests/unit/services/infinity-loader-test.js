@@ -1,96 +1,91 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { A } from '@ember/array';
+import ArrayProxy from '@ember/array/proxy';
+import InfinityModel from 'ember-infinity/lib/infinity-model';
 
 module('Unit | Service | infinity-loader', function(hooks) {
   setupTest(hooks);
 
+  hooks.beforeEach(function() {
+    this.EA = (content) => {
+      return ArrayProxy.create({ content: A(content) });
+    };
+    this.item = { id: 1, title: 'The Great Gatsby' };
+  });
+
   test('it works with empty pushObjects', function(assert) {
     let service = this.owner.lookup('service:infinity-loader');
-
-    let originalArray = A();
-    let newArray = A();
-    assert.deepEqual(service.pushObjects(originalArray, newArray), []);
+    let originalArray = InfinityModel.create({ content: A() });
+    let newArray = this.EA();
+    let result = service.pushObjects(originalArray, newArray);
+    assert.equal(result.get('length'), 0);
   });
 
-  test('it works with pushObjects', function(assert) {
+  test('pushObjects: it works with empty array', function(assert) {
     let service = this.owner.lookup('service:infinity-loader');
-
-    let originalArray = A([1]);
-    let newArray = A();
-    assert.deepEqual(service.pushObjects(originalArray, newArray), [1]);
+    let originalArray = InfinityModel.create({ content: A() });
+    let newArray = this.EA([this.item]);
+    let result = service.pushObjects(originalArray, newArray);
+    assert.equal(result.get('length'), 1);
   });
 
-  test('it works with pushObjects again', function(assert) {
+  test('pushObjects: it works with non empty array', function(assert) {
     let service = this.owner.lookup('service:infinity-loader');
-
-    let originalArray = A([1]);
-    let newArray = A([1]);
-    assert.deepEqual(service.pushObjects(originalArray, newArray), [1,1]);
+    let originalArray = InfinityModel.create({ content: A([this.item]) });
+    let newArray = this.EA([this.item]);
+    let result = service.pushObjects(originalArray, newArray);
+    assert.equal(result.get('length'), 2);
   });
 
-  test('it works with empty unshiftObjects', function(assert) {
+  test('unshiftObjects: it works with empty original array', function(assert) {
     let service = this.owner.lookup('service:infinity-loader');
-
-    let originalArray = A();
-    let newArray = A();
-    assert.deepEqual(service.unshiftObjects(originalArray, newArray), []);
+    let originalArray = InfinityModel.create({ content: A() });
+    let newArray = this.EA();
+    let result = service.unshiftObjects(originalArray, newArray);
+    assert.equal(result.get('length'), 0);
   });
 
-  test('it works with unshiftObjects', function(assert) {
+  test('unshiftObjects: it works', function(assert) {
     let service = this.owner.lookup('service:infinity-loader');
-
-    let originalArray = A([1]);
-    let newArray = A();
-    assert.deepEqual(service.unshiftObjects(originalArray, newArray), [1]);
+    let originalArray = InfinityModel.create({ content: A([this.item]) });
+    let newArray = this.EA();
+    let result = service.unshiftObjects(originalArray, newArray);
+    assert.equal(result.get('length'), 1);
   });
 
-  test('it works with unshiftObjects again', function(assert) {
+  test('unshiftObjects: it works non empty new array', function(assert) {
     let service = this.owner.lookup('service:infinity-loader');
-
-    let originalArray = A([1]);
-    let newArray = A([1]);
-    assert.deepEqual(service.unshiftObjects(originalArray, newArray), [1,1]);
+    let originalArray = InfinityModel.create({ content: A([this.item]) });
+    let newArray = this.EA([{id: 'wat'}]);
+    let result = service.unshiftObjects(originalArray, newArray);
+    assert.equal(result.get('length'), 2);
+    assert.equal(result.get('firstObject').id, 'wat');
   });
 
-  test('it works with unshiftObjects again', function(assert) {
+  test('replace: it works', function(assert) {
     let service = this.owner.lookup('service:infinity-loader');
-
-    let originalArray = A([1]);
-    let newArray = A([3, 2]);
-    assert.deepEqual(service.unshiftObjects(originalArray, newArray), [3,2,1]);
+    let originalArray = InfinityModel.create({ content: A([this.item]) });
+    let newArray = this.EA([{id: 'wat'}]);
+    let result = service.replace(originalArray, newArray);
+    assert.equal(result.get('length'), 1);
+    assert.equal(result.get('firstObject').id, 'wat');
   });
 
-  test('it works with empty array', function(assert) {
+  test('replace: it works with empty array', function(assert) {
     let service = this.owner.lookup('service:infinity-loader');
-
-    let originalArray = A();
-    let newArray = A();
-    assert.deepEqual(service.replace(originalArray, newArray), []);
+    let originalArray = InfinityModel.create({ content: A([this.item]) });
+    let newArray = this.EA();
+    let result = service.replace(originalArray, newArray);
+    assert.equal(result.get('length'), 0);
   });
 
-  test('can clear out array', function(assert) {
+  test('flush: it clears array', function(assert) {
     let service = this.owner.lookup('service:infinity-loader');
-
-    let originalArray = A([1, 2]);
-    let newArray = A();
-    assert.deepEqual(service.replace(originalArray, newArray), []);
-  });
-
-  test('it works with original array and new array', function(assert) {
-    let service = this.owner.lookup('service:infinity-loader');
-
-    let originalArray = A([1, 2]);
-    let newArray = A([1]);
-    assert.deepEqual(service.replace(originalArray, newArray), [1]);
-  });
-
-  test('it works with empty original array', function(assert) {
-    let service = this.owner.lookup('service:infinity-loader');
-
-    let originalArray = A([]);
-    let newArray = A([1]);
-    assert.deepEqual(service.replace(originalArray, newArray), [1]);
+    let originalArray = InfinityModel.create({ content: A([this.item]) });
+    let newArray = this.EA();
+    let result = service.flush(originalArray, newArray);
+    assert.equal(result.get('length'), 0);
   });
 });
 

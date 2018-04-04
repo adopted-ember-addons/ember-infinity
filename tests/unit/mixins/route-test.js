@@ -63,7 +63,7 @@ module('RouteMixin', function(hooks) {
       assert.ok(route);
     });
 
-    test('scott it can not use infinityModel without Ember Data Store', function(assert) {
+    test('it can not use infinityModel without Ember Data Store', function(assert) {
       let route = this.createRoute(['post'], { store: null });
 
       try {

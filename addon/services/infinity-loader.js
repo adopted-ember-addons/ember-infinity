@@ -1,24 +1,37 @@
 import Service from '@ember/service';
+import InfinityModel from 'ember-infinity/lib/infinity-model';
+import EmberError from '@ember/error';
+
+let checkInstanceOf = (infinityModel) => {
+  if (!(infinityModel instanceof InfinityModel)) {
+    throw new EmberError("Ember Infinity: You must pass an Infinity Model instance as the first argument");
+  }
+  return true;
+}
 
 export default Service.extend({
   infinityModels: null,
 
   /**
     @method pushObjects
-    @param
+    @param {ArrayProxy} infinityModel
     @param {Array} queryObject - list of Store models
    */
   pushObjects(infinityModel, queryObject) {
-    return infinityModel.pushObjects(queryObject.toArray());
+    if (checkInstanceOf(infinityModel)) {
+      return infinityModel.pushObjects(queryObject.toArray());
+    }
   },
 
   /**
     @method unshiftObjects
-    @param
+    @param {ArrayProxy} infinityModel
     @param {Array} queryObject - list of Store models
    */
   unshiftObjects(infinityModel, queryObject) {
-    return infinityModel.unshiftObjects(queryObject.toArray());
+    if (checkInstanceOf(infinityModel)) {
+      return infinityModel.unshiftObjects(queryObject.toArray());
+    }
   },
 
   /**
@@ -31,7 +44,24 @@ export default Service.extend({
     @param newInfinityModel - Ember Data (or similar store) response
    */
   replace(infinityModel, newInfinityModel) {
-    let len = infinityModel.get('length');
-    return infinityModel.replace(0, len, newInfinityModel.toArray());
+    if (checkInstanceOf(infinityModel)) {
+      let len = infinityModel.get('length');
+      infinityModel.replace(0, len, newInfinityModel.toArray());
+      return infinityModel;
+    }
+  },
+
+  /**
+    Useful for clearing out the collection
+
+    @method flush
+    @param {ArrayProxy} infinityModel
+   */
+  flush(infinityModel) {
+    if (checkInstanceOf(infinityModel)) {
+      let len = infinityModel.get('length');
+      infinityModel.replace(0, len, []);
+      return infinityModel;
+    }
   },
 });
