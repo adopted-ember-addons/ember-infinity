@@ -18,8 +18,17 @@ export default Controller.extend({
     /**
       Use service to replace the current collection with a new collection
 
+      @method infinityFilterPosts
+      @param {String} query
+     */
+    infinityFilterPosts(query) {
+      this.send('infinityFilterPosts', query);
+    },
+    /**
+      Use service to replace the current collection with a new collection
+
       @method filterPosts
-      @param {ArrayProxy} - posts - example payload from this.store.query('post', { name: 'Allen' })
+      @param {ArrayProxy} posts - example payload from this.store.query('post', { name: 'Allen' })
      */
     filterPosts(posts) {
       let arr = posts.toArray();
