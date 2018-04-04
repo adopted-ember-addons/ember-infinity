@@ -1,4 +1,5 @@
 <ul class="demo-items">
+  <button onclick={{action filterPosts model}}>Filter Posts</button>
   {{#each model as |item|}}
     <li>{{item.id}}. {{item.name}}</li>
   {{/each}}
