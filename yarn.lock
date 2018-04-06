@@ -2553,9 +2553,9 @@ ember-getowner-polyfill@^2.0.0:
     ember-cli-version-checker "^2.1.0"
     ember-factory-for-polyfill "^1.3.1"
 
-ember-in-viewport@~3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/ember-in-viewport/-/ember-in-viewport-3.0.0.tgz#2dec3fbbb70e3290b8dcedd2f1946d2362d12758"
+ember-in-viewport@~3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/ember-in-viewport/-/ember-in-viewport-3.0.1.tgz#df85977a27824e8355bd3a2571db3d6a9a0dc3be"
   dependencies:
     ember-cli-babel "^6.6.0"
 

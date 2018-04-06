@@ -59,32 +59,6 @@ const RouteMixin = Mixin.create({
   },
 
   /**
-    @private
-    @property _previousScrollHeight
-    @type Integer
-    @default 0
-  */
-  _previousScrollHeight: 0,
-  /**
-    @private
-    @property _store
-    @type String
-    @default 'store'
-  */
-  _store: 'store',
-
-  /**
-    The supported findMethod name for
-    the developers Ember Data version.
-    Provided here for backwards compat.
-    @private
-    @property _storeFindMethod
-    @type {String}
-    @default "query"
-   */
-  _storeFindMethod: 'query',
-
-  /**
     Use the infinityModel method in the place of `this.store.query('model')` to
     initialize the Infinity Model for your route.
 
@@ -121,19 +95,18 @@ const RouteMixin = Mixin.create({
 
     if (options.store) {
       if (options.storeFindMethod) {
-        set(this, '_storeFindMethod', options.storeFindMethod);
+        set(service, '_storeFindMethod', options.storeFindMethod);
       }
 
-      get(this, 'infinityLoader._ensureCustomStoreCompatibility')(options, get(this, options.store), get(this, '_storeFindMethod'));
+      get(this, 'infinityLoader._ensureCustomStoreCompatibility')(options, get(this, options.store), get(service, '_storeFindMethod'));
 
-      set(this, '_store', options.store);
+      set(service, '_store', options.store);
 
       delete options.store;
       delete options.storeFindMethod;
     }
 
-    set(service, 'store', get(this, this._store));
-    set(service, 'storeFindMethod', get(this, '_storeFindMethod'));
+    set(service, 'store', get(this, get(service, '_store')));
     set(service, 'infinityModelLoaded', get(this, 'infinityModelLoaded'));
 
     // default is to start at 0, request next page and increment
@@ -185,7 +158,7 @@ const RouteMixin = Mixin.create({
     }
 
     const infinityModel = InfinityModelFactory.create(initParams);
-    get(this, 'infinityLoader._ensureCompatibility')(get(this, this._store), get(this, '_storeFindMethod'));
+    get(this, 'infinityLoader._ensureCompatibility')(get(service, 'store'), get(service, '_storeFindMethod'));
     get(this, 'infinityLoader.infinityModels').pushObject(infinityModel);
 
     return InfinityPromiseArray.create({ promise: service['_loadNextPage'](infinityModel) });

@@ -23,6 +23,31 @@ export default Service.extend({
   infinityModels: null,
 
   /**
+    @private
+    @property _previousScrollHeight
+    @type Integer
+    @default 0
+  */
+  _previousScrollHeight: 0,
+  /**
+    @private
+    @property _store
+    @type String
+    @default 'store'
+  */
+  _store: 'store',
+  /**
+    The supported findMethod name for
+    the developers Ember Data version.
+    Provided here for backwards compat.
+    @private
+    @property _storeFindMethod
+    @type {String}
+    @default "query"
+   */
+  _storeFindMethod: 'query',
+
+  /**
     @method pushObjects
     @param {ArrayProxy} infinityModel
     @param {Array} queryObject - list of Store models
@@ -197,7 +222,7 @@ export default Service.extend({
     @returns {Ember.RSVP.Promise} A Promise that resolves the next page of objects
    */
   _requestNextPage(modelName, params) {
-    return get(this, 'store')[this.storeFindMethod](modelName, params);
+    return get(this, 'store')[this._storeFindMethod](modelName, params);
   },
 
   /**

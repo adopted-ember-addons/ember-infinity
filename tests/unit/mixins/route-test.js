@@ -115,7 +115,7 @@ module('RouteMixin', function(hooks) {
 
       try {
         route.model();
-        assert.ok(route.get(route._store).query, 'custom store works');
+        assert.ok(route.get('infinityLoader.store').query, 'custom store works');
       } catch(e) {
         assert.ok(false, 'something failed');
       }
