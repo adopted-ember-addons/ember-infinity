@@ -270,12 +270,8 @@ export default Service.extend({
     @param {Option} options
   */
   _ensureCustomStoreCompatibility(options, store, storeFindMethod) {
-    if (typeof options.store !== 'string') {
-      throw new EmberError("Ember Infinity: Must pass custom data store as a string");
-    }
-
     if (!store[storeFindMethod]) {
-      throw new EmberError("Ember Infinity: Custom data store must specify query method");
+      throw new EmberError('Ember Infinity: Custom data store must specify query method');
     }
   },
 
@@ -288,7 +284,7 @@ export default Service.extend({
   */
   _ensureCompatibility(store, storeFindMethod) {
     if (isEmpty(store) || isEmpty(store[storeFindMethod])){
-      throw new EmberError("Ember Infinity: Store is not available to infinityModel");
+      throw new EmberError('Ember Infinity: Store is not available to infinityModel');
     }
   }
 

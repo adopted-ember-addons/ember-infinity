@@ -98,6 +98,9 @@ const RouteMixin = Mixin.create({
         set(service, '_storeFindMethod', options.storeFindMethod);
       }
 
+      if (typeof options.store !== 'string') {
+        throw new EmberError('Ember Infinity: Must pass custom data store as a string');
+      }
       get(this, 'infinityLoader._ensureCustomStoreCompatibility')(options, get(this, options.store), get(service, '_storeFindMethod'));
 
       set(service, '_store', options.store);

@@ -157,7 +157,7 @@ module('RouteMixin', function(hooks) {
     });
 
     test('it can not use infinityModel without passing a string for custom data store', function(assert) {
-      let route = this.createRoute(['post', { store: '23' }]);
+      let route = this.createRoute(['post', { store: 23 }]);
 
       try {
         route.model();
