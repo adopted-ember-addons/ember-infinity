@@ -27,11 +27,13 @@ Also:
 ember-infinity exposes 3 consumable items for your application.
 
 · Route Mixin
+
 · infinity-loader component
+
 · infinity-loader service
 
 
-Importing the ember-infinity Route Mixin and extend your route will give you access to this.infinifyModel in your model hook.
+Importing the `ember-infinity` Route Mixin and extend your route will give you access to `this.infinifyModel` in your model hook.
 
 ```js
 import Route from '@ember/routing/route';
@@ -45,7 +47,7 @@ export default Route.extend(InfinityRoute, {
 });
 ```
 
-Then, you'll need to add the Infinity Loader component to your template, like so, in which `model` is an instance of InfinityModel returned from your model hook.
+Then, you'll need to add the `infinity-loader` component to your template, like so, in which `model` is an instance of InfinityModel returned from your model hook.
 
 ```hbs
 {{#each model as |product|}}
@@ -56,7 +58,7 @@ Then, you'll need to add the Infinity Loader component to your template, like so
 {{infinity-loader infinityModel=model}}
 ```
 
-Now, whenever the `infinity-loader` component is in view, it will send an action to the route or to your specific `loadMoreProduct` action.
+Now, whenever the `infinity-loader` component is in view, it will send an action to the route or to your specific `loadMoreProduct` action
 (the one where you initialized the infinityModel) to start loading the next page.
 
 When the new records are loaded, they will automatically be pushed into the Model array.
@@ -111,7 +113,7 @@ export default Route.extend(InfinityRoute, {
 {{infinity-loader infinityModel=model infinityLoad=(action "loadMoreProduct")}}
 ```
 
-Note - this method uses Controllers.  Despite what you may have heard, controllers are a great primitive in Ember's ecosystem.  Their singleton nature is great for handling queryParams and handling actions propagated from somewhere in your component tree.
+The ability to use closure actions will be available in the `1.0.0-beta` series.  Also, this method uses Controllers.  Despite what you may have heard, controllers are a great primitive in Ember's ecosystem.  Their singleton nature is great for handling queryParams and handling actions propagated from somewhere in your component tree.
 
 
 ### Non-Blocking Model Hooks
