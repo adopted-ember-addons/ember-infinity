@@ -8,6 +8,10 @@ module('Acceptance: Infinity Route - closure action', function(hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
+  hooks.beforeEach(function() {
+    document.getElementById('ember-testing-container').scrollTop = 0;
+  });
+
   function postList() {
     return find('ul');
   }
@@ -44,7 +48,7 @@ module('Acceptance: Infinity Route - closure action', function(hooks) {
   //   assert.equal(infinityLoader().querySelector('span').textContent, 'loaded');
   // }
 
-  test('scott load more with closure actions works', async function(assert) {
+  test('load more with closure actions works', async function(assert) {
     defaultScenario(this.server);
     await visit('/nested');
 
