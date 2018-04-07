@@ -27,15 +27,6 @@ export default Controller.extend({
     /**
       Use service to replace the current collection with a new collection
 
-      @method infinityFilterPosts
-      @param {String} query
-     */
-    infinityFilterPosts(query) {
-      this.send('infinityFilterPosts', query);
-    },
-    /**
-      Use service to replace the current collection with a new collection
-
       @method filterPosts
       @param {ArrayProxy} posts - example payload from this.store.query('post', { name: 'Allen' })
      */
@@ -43,6 +34,15 @@ export default Controller.extend({
       let arr = posts.toArray();
       let splitPosts = arr.filter(x => x.get('name').includes('a'));
       get(this, 'infinityLoader').replace(get(this, 'model'), splitPosts);
+    },
+    /**
+      Use service to replace the current collection with a new collection
+
+      @method flushPosts
+      @param {ArrayProxy} posts - example payload from this.store.query('post', { name: 'Allen' })
+     */
+    flushPosts(posts) {
+      get(this, 'infinityLoader').flush(posts);
     }
   }
 });

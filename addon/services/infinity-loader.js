@@ -23,6 +23,14 @@ export default Service.extend({
   infinityModels: null,
 
   /**
+    Data fetching/caching service pull off of user's route
+
+    @public
+    @property store
+    @type Ember.Service
+  */
+  store: null,
+  /**
     @private
     @property _previousScrollHeight
     @type Integer

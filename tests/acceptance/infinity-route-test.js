@@ -1,11 +1,15 @@
 import { module, test } from 'qunit';
-import { visit, find, triggerEvent, currentURL, waitUntil } from '@ember/test-helpers';
+import { visit, click, find, triggerEvent, currentURL, waitUntil } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Acceptance: Infinity Route - infinity routes', function(hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
+
+  hooks.beforeEach(function() {
+    document.getElementById('ember-testing-container').scrollTop = 0;
+  });
 
   function postList() {
     return find('ul');
@@ -117,8 +121,8 @@ module('Acceptance: Infinity Route - infinity routes', function(hooks) {
     });
   });
 
-  module('Acceptance: Infinity Route - nested', function(/*hooks*/) {
-    test('scott load more with closure actions works', async function(assert) {
+  module('Acceptance: Infinity Route - nested with closure actions', function(/*hooks*/) {
+    test('load more with closure actions works', async function(assert) {
       this.server.createList('post', 50);
       await visit('/nested');
 
@@ -137,7 +141,28 @@ module('Acceptance: Infinity Route - infinity routes', function(hooks) {
 
       assert.equal(find('ul').querySelectorAll('li').length, 50, `${50} items should be in the list`);
       assert.equal(find('.infinity-loader').classList.contains('reached-infinity'), true, 'Infinity should have been reached');
-      // infinityShouldBeReached(assert);
+    });
+
+    test('infinity-loader #replace', async function(assert) {
+      this.server.createList('post', 25);
+      await visit('/nested');
+
+      assert.equal(find('ul').querySelectorAll('li').length, 25, `${25} items should be in the list`);
+
+      await click('.filter-posts');
+
+      assert.ok(find('ul').querySelectorAll('li').length < 25, `replace method works`);
+    });
+
+    test('infinity-loader #flush', async function(assert) {
+      this.server.createList('post', 25);
+      await visit('/nested');
+
+      assert.equal(find('ul').querySelectorAll('li').length, 25, `${25} items should be in the list`);
+
+      await click('.flush-posts');
+
+      assert.equal(find('ul').querySelectorAll('li').length, 0, `flush method works`);
     });
   });
 });
