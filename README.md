@@ -67,9 +67,9 @@ When the new records are loaded, they will automatically be pushed into the Mode
 Lastly, by default, ember-infinity expects the server response to contain something about how many total pages it can expect to fetch. `ember-infinity` defaults to looking for something like `meta: { total_pages: 20 }` in your response.  See [Advanced Usage](#AdvancedUsage).
 
 
-## Closure Actions<a name="ClosureActions"></a>
+### Closure Actions<a name="ClosureActions"></a>
 
-If you want to use closure actions with `ember-infinity`, you need to be a little bit more explicit.  No more secret bubbling of an `infinityLoad` action up to your route.  This is how your code will look like with controller actions.
+If you want to use closure actions with `ember-infinity` and the `infinity-loader` component, you need to be a little bit more explicit.  No more secret bubbling of an `infinityLoad` action up to your route.  This is how your code will look like with controller actions.
 
 See the Ember docs on passing actions to components [here](https://guides.emberjs.com/v3.0.0/components/triggering-changes-with-actions/#toc_passing-the-action-to-the-component).
 
@@ -114,7 +114,7 @@ export default Route.extend(InfinityRoute, {
 {{infinity-loader infinityModel=model infinityLoad=(action "loadMoreProduct")}}
 ```
 
-The ability to use closure actions will be available in the `1.0.0-beta` series.  Also, this method uses Controllers.  Despite what you may have heard, controllers are a great primitive in Ember's ecosystem.  Their singleton nature is great for handling queryParams and actions propagated from somewhere in your component tree.
+The ability to use closure actions will be available in the `1.0.0-beta` series.  Also, this method uses Controllers.  Despite what you may have heard, Controllers are a great primitive in Ember's ecosystem.  Their singleton nature is great for handling queryParams and actions propagated from somewhere in your component tree.
 
 
 ### Non-Blocking Model Hooks
@@ -415,14 +415,18 @@ export default Ember.Route.extend(InfinityRoute, {
 
 ### infinity-loader
 
-The `infinity-loader` component as some extra options to make working with it easy!  It is based on the IntersectionObserver API.  In essence, instead of basing your scrolling on Events (synchronous), it instead behaves asynchronously, thus not blocking the main thread.
+The `infinity-loader` component as some extra options to make working with it easy!  It is based on the IntersectionObserver API.  In essence, instead of basing your scrolling on Events (synchronous), it instead behaves asynchronously, thus not blocking the main thread.  Also note that closure actions can be passed to this component as of the `1.0.0-beta` series.
 
 https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
 
 * **hideOnInfinity**
+* **hideOnInfinity**
 
 ```hbs
-{{infinity-loader infinityModel=model hideOnInfinity=true}}
+{{infinity-loader
+  infinityModel=model
+  infinityLoad=(action "loadMoreProducts")
+  hideOnInfinity=true}}
 ```
 
 Now, when the Infinity Model is fully loaded, the `infinity-loader` will hide itself.
@@ -432,7 +436,10 @@ Now, when the Infinity Model is fully loaded, the `infinity-loader` will hide it
 * **developmentMode**
 
 ```hbs
-{{infinity-loader infinityModel=model developmentMode=true}}
+{{infinity-loader
+  infinityModel=model
+  infinityLoad=(action "loadMoreProducts")
+  developmentMode=true}}
 ```
 
 This simply stops the `infinity-loader` from fetching triggering loads, so that
@@ -441,7 +448,11 @@ you can work on its appearance.
 * **loadingText & loadedText**
 
 ```hbs
-{{infinity-loader infinityModel=model loadingText="Loading..." loadedText="Loaded!"}}
+{{infinity-loader
+  infinityModel=model
+  infinityLoad=(action "loadMoreProducts")
+  loadingText="Loading..."
+  loadedText="Loaded!"}}
 ```
 
 By default, the `infinity-loader` will just output a `span` showing its status.
@@ -449,7 +460,7 @@ By default, the `infinity-loader` will just output a `span` showing its status.
 * **Providing a block**
 
 ```hbs
-{{#infinity-loader infinityModel=model}}
+{{#infinity-loader infinityModel=model infinityLoad=(action "infinityLoad")}}
   <img src="loading-spinner.gif" />
 {{/infinity-loader}}
 ```
