@@ -142,27 +142,5 @@ module('Acceptance: Infinity Route - infinity routes', function(hooks) {
       assert.equal(find('ul').querySelectorAll('li').length, 50, `${50} items should be in the list`);
       assert.equal(find('.infinity-loader').classList.contains('reached-infinity'), true, 'Infinity should have been reached');
     });
-
-    test('infinity-loader #replace', async function(assert) {
-      this.server.createList('post', 25);
-      await visit('/nested');
-
-      assert.equal(find('ul').querySelectorAll('li').length, 25, `${25} items should be in the list`);
-
-      await click('.filter-posts');
-
-      assert.ok(find('ul').querySelectorAll('li').length < 25, `replace method works`);
-    });
-
-    test('infinity-loader #flush', async function(assert) {
-      this.server.createList('post', 25);
-      await visit('/nested');
-
-      assert.equal(find('ul').querySelectorAll('li').length, 25, `${25} items should be in the list`);
-
-      await click('.flush-posts');
-
-      assert.equal(find('ul').querySelectorAll('li').length, 0, `flush method works`);
-    });
   });
 });
