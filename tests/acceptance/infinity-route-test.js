@@ -118,7 +118,7 @@ module('Acceptance: Infinity Route - infinity routes', function(hooks) {
   });
 
   module('Acceptance: Infinity Route - nested', function(/*hooks*/) {
-    test('load more with closure actions works', async function(assert) {
+    test('scott load more with closure actions works', async function(assert) {
       this.server.createList('post', 50);
       await visit('/nested');
 

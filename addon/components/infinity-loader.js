@@ -6,8 +6,8 @@ import { get, set, computed, observer, defineProperty } from '@ember/object';
 import Component from '@ember/component';
 
 const InfinityLoaderComponent = Component.extend(InViewportMixin, {
-  classNames: ["infinity-loader"],
-  classNameBindings: ["infinityModelContent.reachedInfinity", "viewportEntered:in-viewport"],
+  classNames: ['infinity-loader'],
+  classNameBindings: ['infinityModelContent.reachedInfinity', 'viewportEntered:in-viewport'],
   /**
    * @public
    * @property eventDebounce
