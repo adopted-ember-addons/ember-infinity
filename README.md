@@ -415,11 +415,20 @@ export default Ember.Route.extend(InfinityRoute, {
 
 ### infinity-loader
 
-The `infinity-loader` component as some extra options to make working with it easy!  It is based on the IntersectionObserver API.  In essence, instead of basing your scrolling on Events (synchronous), it instead behaves asynchronously, thus not blocking the main thread.  Also note that closure actions can be passed to this component as of the `1.0.0-beta` series.
+The `infinity-loader` component as some extra options to make working with it easy!  It is based on the IntersectionObserver API.  In essence, instead of basing your scrolling on Events (synchronous), it instead behaves asynchronously, thus not blocking the main thread.
 
 https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
 
-* **hideOnInfinity**
+* **infinityLoad**
+
+Closure actions are enabled in the `1.0.0-beta` series.
+
+```hbs
+{{infinity-loader
+  infinityModel=model
+  infinityLoad=(action "loadMoreProducts")}}
+```
+
 * **hideOnInfinity**
 
 ```hbs
