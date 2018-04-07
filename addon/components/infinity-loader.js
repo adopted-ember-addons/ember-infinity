@@ -179,7 +179,13 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
     const infinityModelContent = get(this, 'infinityModelContent');
 
     function loadPreviousPage() {
-      this.sendAction('loadPreviousAction', infinityModelContent, -1);
+      if (typeof(get(this, 'infinityLoad')) === 'function') {
+        // closure action
+        return get(this, 'infinityLoad')(infinityModelContent, -1);
+      } else {
+        // old action
+        this.sendAction('loadPreviousAction', infinityModelContent, -1);
+      }
     }
 
     if (get(infinityModelContent, 'firstPage') > 1 && get(infinityModelContent, 'currentPage') > 0) {
@@ -196,7 +202,16 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
      Without this debounce, all rows will be rendered causing immense performance problems
      */
     function loadMore() {
-      this.sendAction('loadMoreAction', get(this, 'infinityModelContent'));
+      let infinityModelContent = get(this, 'infinityModelContent');
+
+      if (typeof(get(this, 'infinityLoad')) === 'function') {
+        // closure action
+        return get(this, 'infinityLoad')(infinityModelContent);
+      } else {
+        // old action
+        this.sendAction('loadMoreAction', infinityModelContent);
+      }
+
     }
     this._debounceTimer = run.debounce(this, loadMore, get(this, 'eventDebounce'));
   },

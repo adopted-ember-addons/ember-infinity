@@ -47,15 +47,23 @@ const RouteMixin = Mixin.create({
       let matchingInfinityModel = get(this, '_infinityModels').find(model => model === infinityModel);
       if (matchingInfinityModel) {
         set(infinityModel, '_increment', increment);
-        this._infinityLoad(matchingInfinityModel, increment);
+        this.infinityLoad(matchingInfinityModel, increment);
       } else {
         return true;
       }
     }
   },
 
-  _infinityLoad(matchingInfinityModel, increment) {
-    return get(this, 'infinityLoader')['_infinityLoad'](matchingInfinityModel, increment);
+  /**
+    Proxy to underlying service
+
+    @method infinityLoad
+    @param {Ember.ArrayProxy} infinityModel
+    @param {Integer} increment - to increase page by 1 or -1
+    @return {Ember.RSVP.Promise}
+  */
+  infinityLoad(matchingInfinityModel, increment) {
+    return get(this, 'infinityLoader')['infinityLoad'](matchingInfinityModel, increment);
   },
 
   /**
@@ -164,7 +172,7 @@ const RouteMixin = Mixin.create({
     get(this, 'infinityLoader._ensureCompatibility')(get(service, 'store'), get(service, '_storeFindMethod'));
     get(this, 'infinityLoader.infinityModels').pushObject(infinityModel);
 
-    return InfinityPromiseArray.create({ promise: service['_loadNextPage'](infinityModel) });
+    return InfinityPromiseArray.create({ promise: service['loadNextPage'](infinityModel) });
   },
 
   /**

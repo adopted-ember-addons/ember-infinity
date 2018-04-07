@@ -18,7 +18,7 @@ Router.map(function() {
     this.route('show', { path: '/:post' });
   });
   this.route('load-previous');
-  this.route('component-list');
+  this.route('nested');
 });
 
 export default Router;

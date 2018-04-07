@@ -56,12 +56,63 @@ Then, you'll need to add the Infinity Loader component to your template, like so
 {{infinity-loader infinityModel=model}}
 ```
 
-Now, whenever the `infinity-loader` is in view, it will send an action to the route
+Now, whenever the `infinity-loader` component is in view, it will send an action to the route or to your specific `loadMoreProduct` action.
 (the one where you initialized the infinityModel) to start loading the next page.
 
 When the new records are loaded, they will automatically be pushed into the Model array.
 
-Lastly, by default, ember-infinity expects the server response to contain something about how many total pages it can expect to fetch. ember-infinity defaults to looking for something like `meta: { total_pages: 20 }` in your response.  See [Advanced Usage](#AdvancedUsage).
+Lastly, by default, ember-infinity expects the server response to contain something about how many total pages it can expect to fetch. `ember-infinity` defaults to looking for something like `meta: { total_pages: 20 }` in your response.  See [Advanced Usage](#AdvancedUsage).
+
+
+### Closure Actions
+
+If you want to use closure actions with `ember-infinity`, you need to be a little bit more explicit.  No more secret bubbling of an `infinityLoad` action up to your route.
+
+See the Ember docs on passing actions to components [here](https://guides.emberjs.com/v3.0.0/components/triggering-changes-with-actions/#toc_passing-the-action-to-the-component).
+
+```js
+import Controller from '@ember/routing/route';
+import { inject as service } from '@ember/service';
+
+export default Controller.extend({
+  infinityLoader: service(),
+
+  actions: {
+    /**
+      Note this must be handled by you.  An action will be called with the result of your Route model hook from the infinityLoader component, similar to this:
+      // closure action in infinity-loader component
+      get(this, 'infinityLoad')(infinityModelContent);
+    */
+    loadMoreProduct(products) {
+      get(this, 'infinityLoader').loadNextPage(products);
+    }
+  }
+});
+```
+
+```js
+import Route from '@ember/routing/route';
+import InfinityRoute from "ember-infinity/mixins/route";
+
+export default Route.extend(InfinityRoute, {
+  model() {
+    /* Load pages of the Product Model, starting from page 1, in groups of 12. */
+    return this.infinityModel("product", { perPage: 12, startingPage: 1 });
+  }
+});
+```
+
+```hbs
+{{#each model as |product|}}
+  <h1>{{product.name}}</h1>
+  <h2>{{product.description}}</h2>
+{{/each}}
+
+{{infinity-loader infinityModel=model infinityLoad=(action "loadMoreProduct")}}
+```
+
+Note - this method uses Controllers.  Despite what you may have heard, controllers are a great primitive in Ember's ecosystem.  Their singleton nature is great for handling queryParams and handling actions propagated from somewhere in your component tree.
+
 
 ### Non-Blocking Model Hooks
 

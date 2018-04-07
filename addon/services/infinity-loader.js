@@ -126,30 +126,30 @@ export default Service.extend({
   /**
     Trigger a load of the next page of results.
 
-    @private
-    @method _infinityLoad
+    @public
+    @method infinityLoad
     @param {Ember.ArrayProxy} infinityModel
     @param {Integer} increment - to increase page by 1 or -1
    */
-  _infinityLoad(infinityModel, increment) {
+  infinityLoad(infinityModel, increment) {
     if (get(infinityModel, '_loadingMore') || !get(infinityModel, '_canLoadMore')) {
       return;
     }
 
-    this._loadNextPage(infinityModel, increment);
+    return this.loadNextPage(infinityModel, increment);
   },
 
   /**
     load the next page from the adapter and update the model
     set current height of elements.  If loadPrevious, we will use this value to scroll back down the page
 
-    @private
-    @method _loadNextPage
+    @public
+    @method loadNextPage
     @param {Ember.ArrayProxy} infinityModel
     @param {Integer} increment - to increase page by 1 or -1. Default to increase by one page
     @return {Ember.RSVP.Promise} A Promise that resolves the model
    */
-  _loadNextPage(infinityModel, increment = 1) {
+  loadNextPage(infinityModel, increment = 1) {
     set(infinityModel, '_loadingMore', true);
     set(this, '_previousScrollHeight', this._calculateHeight(infinityModel));
 

@@ -13,7 +13,16 @@ export default Controller.extend({
       @param {ArrayProxy} - posts - existing infinityModels
      */
     loadMorePosts(posts) {
-      this.send('infinityLoad', posts);
+      get(this, 'infinityLoader').loadNextPage(posts);
+    },
+    /**
+      Use service to load more posts if you can't get at the route
+
+      @method loadMorePostsPrevious
+      @param {ArrayProxy} - posts - existing infinityModels
+     */
+    loadMorePostsPrevious(posts, increment) {
+      get(this, 'infinityLoader').loadNextPage(posts, increment);
     },
     /**
       Use service to replace the current collection with a new collection
