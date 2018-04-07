@@ -26,11 +26,11 @@ Also:
 
 ember-infinity exposes 3 consumable items for your application.
 
-· Route Mixin
+· **Route Mixin**
 
-· infinity-loader component
+· **infinity-loader component**
 
-· infinity-loader service
+· **infinity-loader service**
 
 
 Importing the `ember-infinity` Route Mixin and extend your route will give you access to `this.infinifyModel` in your model hook.
@@ -59,16 +59,17 @@ Then, you'll need to add the `infinity-loader` component to your template, like 
 ```
 
 Now, whenever the `infinity-loader` component is in view, it will send an action to the route or to your specific `loadMoreProduct` action
-(the one where you initialized the infinityModel) to start loading the next page.
+(the one where you initialized the infinityModel) to start loading the next page.  This method uses action bubbling, which may not be the preferred way of passing data around your application.  See [Closure Actions](#ClosureActions).
+
 
 When the new records are loaded, they will automatically be pushed into the Model array.
 
 Lastly, by default, ember-infinity expects the server response to contain something about how many total pages it can expect to fetch. `ember-infinity` defaults to looking for something like `meta: { total_pages: 20 }` in your response.  See [Advanced Usage](#AdvancedUsage).
 
 
-### Closure Actions
+## Closure Actions<a name="ClosureActions"></a>
 
-If you want to use closure actions with `ember-infinity`, you need to be a little bit more explicit.  No more secret bubbling of an `infinityLoad` action up to your route.
+If you want to use closure actions with `ember-infinity`, you need to be a little bit more explicit.  No more secret bubbling of an `infinityLoad` action up to your route.  This is how your code will look like with controller actions.
 
 See the Ember docs on passing actions to components [here](https://guides.emberjs.com/v3.0.0/components/triggering-changes-with-actions/#toc_passing-the-action-to-the-component).
 
@@ -113,7 +114,7 @@ export default Route.extend(InfinityRoute, {
 {{infinity-loader infinityModel=model infinityLoad=(action "loadMoreProduct")}}
 ```
 
-The ability to use closure actions will be available in the `1.0.0-beta` series.  Also, this method uses Controllers.  Despite what you may have heard, controllers are a great primitive in Ember's ecosystem.  Their singleton nature is great for handling queryParams and handling actions propagated from somewhere in your component tree.
+The ability to use closure actions will be available in the `1.0.0-beta` series.  Also, this method uses Controllers.  Despite what you may have heard, controllers are a great primitive in Ember's ecosystem.  Their singleton nature is great for handling queryParams and actions propagated from somewhere in your component tree.
 
 
 ### Non-Blocking Model Hooks
