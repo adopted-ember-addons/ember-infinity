@@ -24,7 +24,7 @@ Also:
 
 ## Basic Usage
 
-ember-infinity exposes 3 consumable items for your application.
+`ember-infinity` exposes 3 consumable items for your application.
 
 · **Route Mixin**
 
@@ -33,7 +33,7 @@ ember-infinity exposes 3 consumable items for your application.
 · **infinity-loader service**
 
 
-Importing the `ember-infinity` Route Mixin and extend your route will give you access to `this.infinifyModel` in your model hook.
+Importing the `ember-infinity` Route Mixin and extending your route will give you access to `this.infinifyModel` in your model hook.
 
 ```js
 import Route from '@ember/routing/route';
@@ -184,6 +184,60 @@ export default Route.extend(InfinityRoute, {
 
 The ability to use closure actions will be available in the `1.0.0-beta` series.  Also, this method uses Controllers.  Despite what you may have heard, Controllers are a great primitive in Ember's ecosystem.  Their singleton nature is great for handling queryParams and actions propagated from somewhere in your component tree.
 
+
+### Service Methods
+
+The infinity-loader service exposes 4 methods:
+
+1. replace
+2. flush
+3. pushObjects
+3. unshiftObjects
+
+Let's see an example of using `replace`.
+
+```js
+import Controller from '@ember/routing/route';
+import { inject as service } from '@ember/service';
+
+export default Controller.extend({
+  infinityLoader: service(),
+
+  actions: {
+    /**
+      @method filterProducts
+      @param {String} query
+    */
+    async filterProducts(query) {
+      let products = await this.store.query('product', { query });
+      // model is the collection returned from the route model hook
+      get(this, 'infinityLoader').replace(get(this, 'model'), products);
+    }
+  }
+});
+```
+
+```js
+import Route from '@ember/routing/route';
+import InfinityRoute from "ember-infinity/mixins/route";
+
+export default Route.extend(InfinityRoute, {
+  model() {
+    return this.infinityModel("product");
+  }
+});
+```
+
+```hbs
+<input type="search" placeholder="Search Products" oninput={{action "filterProducts"}} />
+
+{{#each model as |product|}}
+  <h1>{{product.name}}</h1>
+  <h2>{{product.description}}</h2>
+{{/each}}
+
+{{infinity-loader infinityModel=model infinityLoad=(action "loadMoreProduct")}}
+```
 
 ### Non-Blocking Model Hooks
 
