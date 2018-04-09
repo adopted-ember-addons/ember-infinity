@@ -117,6 +117,8 @@ export default Route.extend(InfinityRoute, {
 {{infinity-loader infinityModel=model infinityLoad=(action "loadMoreProduct")}}
 ```
 
+### Multiple Infinity Models in one Route
+
 Let's look at a more complicated example using multiple infinity models in a route.
 
 ```js
