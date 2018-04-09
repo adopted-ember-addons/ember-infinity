@@ -132,7 +132,7 @@ export default Service.extend({
   },
 
   /**
-    Trigger a load of the next page of results.
+    Trigger a load of the next page of results while also checking if it can load more
 
     @public
     @method infinityLoad

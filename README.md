@@ -85,9 +85,12 @@ export default Controller.extend({
       Note this must be handled by you.  An action will be called with the result of your Route model hook from the infinityLoader component, similar to this:
       // closure action in infinity-loader component
       get(this, 'infinityLoad')(infinityModelContent);
+
+      @method loadMoreProduct
+      @param {InfinityModel} products
     */
     loadMoreProduct(products) {
-      get(this, 'infinityLoader').loadNextPage(products);
+      get(this, 'infinityLoader').infinityLoad(products);
     }
   }
 });
@@ -99,19 +102,82 @@ import InfinityRoute from "ember-infinity/mixins/route";
 
 export default Route.extend(InfinityRoute, {
   model() {
-    /* Load pages of the Product Model, starting from page 1, in groups of 12. */
-    return this.infinityModel("product", { perPage: 12, startingPage: 1 });
+    return this.infinityModel("product");
   }
 });
 ```
 
 ```hbs
+{{!-- some nested component in your template file where action bubbling does not reach your route --}}
 {{#each model as |product|}}
   <h1>{{product.name}}</h1>
   <h2>{{product.description}}</h2>
 {{/each}}
 
 {{infinity-loader infinityModel=model infinityLoad=(action "loadMoreProduct")}}
+```
+
+Let's look at a more complicated example using multiple infinity models in a route.
+
+```js
+import Controller from '@ember/routing/route';
+import { inject as service } from '@ember/service';
+
+export default Controller.extend({
+  infinityLoader: service(),
+
+  actions: {
+    /**
+      Note this must be handled by you.  An action will be called with the result of your Route model hook from the infinityLoader component, similar to this:
+      // closure action in infinity-loader component
+      get(this, 'infinityLoad')(infinityModelContent);
+
+      @method loadMoreProduct
+      @param {InfinityModel} products
+    */
+    loadMoreProduct(products) {
+      get(this, 'infinityLoader').infinityLoad(products);
+    }
+    /**
+      @method loadMoreUsers
+      @param {InfinityModel} users
+    */
+    loadMoreUsers(users) {
+      get(this, 'infinityLoader').infinityLoad(users);
+    }
+  }
+});
+```
+
+```js
+import Route from '@ember/routing/route';
+import RSVP from 'rsvp';
+import InfinityRoute from "ember-infinity/mixins/route";
+
+export default Route.extend(InfinityRoute, {
+  model() {
+    return RSVP.hash({
+      products: this.infinityModel("product"),
+      users: this.infinityModel("user")
+    });
+  }
+});
+```
+
+```hbs
+{{!-- templates/products.hbs --}}
+{{#each model.products as |product|}}
+  <h1>{{product.name}}</h1>
+  <h2>{{product.description}}</h2>
+{{/each}}
+
+{{infinity-loader infinityModel=model.products infinityLoad=(action "loadMoreProduct")}}
+
+{{#each model.users as |user|}}
+  <h1>{{user.username}}</h1>
+{{/each}}
+
+{{infinity-loader infinityModel=model.users infinityLoad=(action "loadMoreUsers")}}
 ```
 
 The ability to use closure actions will be available in the `1.0.0-beta` series.  Also, this method uses Controllers.  Despite what you may have heard, Controllers are a great primitive in Ember's ecosystem.  Their singleton nature is great for handling queryParams and actions propagated from somewhere in your component tree.
