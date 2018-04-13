@@ -1,43 +1,15 @@
 import { module, test } from 'qunit';
 import { visit, find, triggerEvent } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
-import Pretender from 'pretender';
-import faker from 'faker';
-
-let server;
+import defaultScenario from '../../mirage/scenarios/default';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Acceptance: Infinity Route - load previous', function(hooks) {
   setupApplicationTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    this.posts = [];
-
-    for (let i = 0; i < 50; i++) {
-      this.posts.push({id: i, name: faker.company.companyName()});
-    }
-
-    let posts = this.posts;
-    server = new Pretender(function() {
-      this.get('/posts', function(request) {
-        let subset = posts;
-        let perPage = parseInt(request.queryParams.per_page, 10);
-        let startPage = parseInt(request.queryParams.page, 10);
-
-        let pageCount = Math.ceil(subset.length / perPage);
-        let offset = perPage * (startPage - 1);
-        subset = subset.slice(offset, offset + perPage);
-
-        let body = { posts: subset, meta: { total_pages: pageCount } };
-
-        return [200, {'Content-Type': 'application/json'}, JSON.stringify(body)];
-      });
-    });
-
     document.getElementById('ember-testing-container').scrollTop = 0;
-  });
-
-  hooks.afterEach(function() {
-    server.shutdown();
   });
 
   function postList() {
@@ -73,6 +45,7 @@ module('Acceptance: Infinity Route - load previous', function(hooks) {
 
   test('it should start loading more items when the scroll is on the very bottom ' +
     'when triggerOffset is not set', async function(assert) {
+    defaultScenario(this.server);
     await visit('/load-previous');
 
     shouldBeItemsOnTheList(assert, 25);
@@ -90,6 +63,7 @@ module('Acceptance: Infinity Route - load previous', function(hooks) {
   });
 
   test('it should load previous elements when start on page two', async function(assert) {
+    defaultScenario(this.server);
     await visit('/load-previous?page=2');
 
     shouldBeItemsOnTheList(assert, 50);

@@ -8,46 +8,53 @@ import EmberObject, { get } from '@ember/object';
 import RouteMixin from 'ember-infinity/mixins/route';
 import { module, test, skip } from 'qunit';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
+import { setupTest } from 'ember-qunit';
 
-module('RouteMixin', function() {
-  let EA = function (content, meta={}) {
-    return ArrayProxy.create(assign({ content: A(content) }, meta));
-  };
+module('RouteMixin', function(hooks) {
+  setupTest(hooks);
 
-  let createRoute = (infinityModelArgs, routeProperties={}) => {
-    let RouteObject = Route.extend(RouteMixin, assign(routeProperties, {
-      model() {
-        return this.infinityModel(...infinityModelArgs);
-      }
-    }));
-
-    return RouteObject.create();
-  }
-
-  let createMockStore = (resolution, assertion) => {
-    return {
-      query() {
-        if (assertion) {
-          assertion.apply(this, arguments);
-        }
-
-        return RSVP.resolve(resolution);
-      }
+  hooks.beforeEach(function() {
+    this.EA = (content, meta={}) => {
+      return ArrayProxy.create(assign({ content: A(content) }, meta));
     };
-  }
 
-  let callModelHook = (route) => {
-    let model;
-    run(() => {
-      route.model().then(result => {
-        model = result;
+    let infinityLoader = this.owner.lookup('service:infinity-loader');
+    this.createRoute = (infinityModelArgs, routeProperties={}) => {
+      let RouteObject = Route.extend(RouteMixin, assign(routeProperties, {
+        infinityLoader,
+        model() {
+          return this.infinityModel(...infinityModelArgs);
+        }
+      }));
+
+      return RouteObject.create();
+    }
+
+    this.createMockStore = (resolution, assertion) => {
+      return {
+        query() {
+          if (assertion) {
+            assertion.apply(this, arguments);
+          }
+
+          return RSVP.resolve(resolution);
+        }
+      };
+    }
+
+    this.callModelHook = (route) => {
+      let model;
+      run(() => {
+        route.model().then(result => {
+          model = result;
+        });
       });
-    });
 
-    route.set('controller', EmberObject.create({ model }));
+      route.set('controller', EmberObject.create({ model }));
 
-    return model;
-  }
+      return model;
+    }
+  });
 
   module('basics', function() {
     test('it works', function(assert) {
@@ -57,7 +64,7 @@ module('RouteMixin', function() {
     });
 
     test('it can not use infinityModel without Ember Data Store', function(assert) {
-      let route = createRoute(['post'], {store: null});
+      let route = this.createRoute(['post'], { store: null });
 
       try {
         route.model();
@@ -79,8 +86,8 @@ module('RouteMixin', function() {
       });
 
       let item = { id: 1, title: 'The Great Gatsby' };
-      let route = createRoute(['post', { store: 'simpleStore' }, ExtendedEmberObject],
-        { extra: 'param', simpleStore: createMockStore(EA([item])) });
+      let route = this.createRoute(['post', { store: 'simpleStore' }, ExtendedEmberObject],
+        { extra: 'param', simpleStore: this.createMockStore(this.EA([item])) });
 
       try {
         route.model();
@@ -91,7 +98,7 @@ module('RouteMixin', function() {
 
     // not sure how to test deps
     skip('it throws deprecate warning for passing bound params', function(assert) {
-      let route = createRoute(['post', { store: 23 }, { country: 'Ukraine' } ]);
+      let route = this.createRoute(['post', { store: 23 }, { country: 'Ukraine' } ]);
 
       try {
         route.model();
@@ -102,20 +109,21 @@ module('RouteMixin', function() {
 
     test('it can use infinityModel with a custom data store', function(assert) {
       let item = { id: 1, title: 'The Great Gatsby' };
-      let route = createRoute(['post', { store: 'simpleStore' }], {
-        simpleStore: createMockStore(EA([item]))
+      let route = this.createRoute(['post', { store: 'simpleStore' }], {
+        simpleStore: this.createMockStore(this.EA([item]))
       });
 
       try {
         route.model();
-        assert.ok(route.get(route._store).query, 'custom store works');
+        assert.ok(route.get('infinityLoader.store').query, 'custom store works');
       } catch(e) {
         assert.ok(false, 'something failed');
       }
     });
 
     test('custom data store can specify custom query method', function(assert) {
-      let route = createRoute(['post', { store: 'simpleStore', storeFindMethod: 'findAll' }], {
+      let EA = this.EA;
+      let route = this.createRoute(['post', { store: 'simpleStore', storeFindMethod: 'findAll' }], {
         simpleStore: {
           findAll() {
             let item = { id: 1, title: 'The Great Gatsby' };
@@ -133,7 +141,7 @@ module('RouteMixin', function() {
     });
 
     test('custom data store must specify custom query method', function(assert) {
-      let route = createRoute(['post', { store: 'simpleStore' }], {
+      let route = this.createRoute(['post', { store: 'simpleStore' }], {
         simpleStore: {
           findAll() {
             return RSVP.resolve();
@@ -149,7 +157,7 @@ module('RouteMixin', function() {
     });
 
     test('it can not use infinityModel without passing a string for custom data store', function(assert) {
-      let route = createRoute(['post', { store: 23 }]);
+      let route = this.createRoute(['post', { store: 23 }]);
 
       try {
         route.model();
@@ -159,7 +167,7 @@ module('RouteMixin', function() {
     });
 
     test('it can not use infinityModel without the Store Property having the appropriate finder method', function(assert) {
-      let route = createRoute(['post'], {
+      let route = this.createRoute(['post'], {
         store: {
           notQuery() {
             return null;
@@ -175,7 +183,7 @@ module('RouteMixin', function() {
     });
 
     test('it can not use infinityModel without a Model Name', function(assert) {
-      let route = createRoute([], {
+      let route = this.createRoute([], {
         store: {
           query() {}
         }
@@ -189,11 +197,11 @@ module('RouteMixin', function() {
     });
 
     test('it sets state before it reaches the end', function(assert) {
-      let route = createRoute(['item'], {
-        store: createMockStore(EA([{id: 1, name: 'Test'}], { meta: { total_pages: 31 } } ))
+      let route = this.createRoute(['item'], {
+        store: this.createMockStore(this.EA([{id: 1, name: 'Test'}], { meta: { total_pages: 31 } } ))
       });
 
-      let model = callModelHook(route);
+      let model = this.callModelHook(route);
 
       assert.equal(model.get('_totalPages'), 31, '_totalPages');
       assert.equal(model.get('currentPage'), 1, 'currentPage');
@@ -203,69 +211,69 @@ module('RouteMixin', function() {
     });
 
     test('it allows customizations of request params', function(assert) {
-      let store = createMockStore(
-        EA([]),
+      let store = this.createMockStore(
+        this.EA([]),
         (modelType, findQuery) => {
           assert.deepEqual(findQuery, { per: 25, p: 1 }, 'findQuery');
         }
       );
 
-      let route = createRoute(['item', {
+      let route = this.createRoute(['item', {
         perPageParam: 'per', pageParam: 'p'
       }], { store });
 
-      callModelHook(route);
+      this.callModelHook(route);
     });
 
     test('It allows to set startingPage as 0', function(assert) {
-      let store = createMockStore( EA([{id: 1, name: 'Test'}], { total_pages: 1 }) );
-      let route = createRoute(['item', {
+      let store = this.createMockStore( this.EA([{id: 1, name: 'Test'}], { total_pages: 1 }) );
+      let route = this.createRoute(['item', {
         startingPage: 0
       }], { store });
 
-      let model = callModelHook(route);
+      let model = this.callModelHook(route);
 
       assert.equal(route.get('currentPage'), 0);
       assert.equal(model.get('_canLoadMore'), false);
     });
 
     test('it skips request params when set to null', function(assert) {
-      let store = createMockStore(
-        EA([]),
+      let store = this.createMockStore(
+        this.EA([]),
         (modelType, findQuery) => {
           assert.deepEqual(findQuery, {}, 'findQuery');
       });
 
-      let route = createRoute(['item', {
+      let route = this.createRoute(['item', {
         perPageParam: null, pageParam: null
       }], { store });
 
-      callModelHook(route);
+      this.callModelHook(route);
     });
 
     test('it allows customizations of meta parsing params', function(assert) {
-      let store = createMockStore(
-        EA([{id: 1, name: 'Walter White'}], { pagination: { total: 22 } })
+      let store = this.createMockStore(
+        this.EA([{id: 1, name: 'Walter White'}], { pagination: { total: 22 } })
       );
 
-      let route = createRoute(['item', {
+      let route = this.createRoute(['item', {
         totalPagesParam: 'pagination.total',
       }], { store });
 
-      let model = callModelHook(route);
+      let model = this.callModelHook(route);
 
       assert.equal(model.get('totalPagesParam'), 'pagination.total', 'totalPagesParam');
       assert.equal(model.get('_totalPages'), 22, '_totalPages');
     });
 
     test('it copies arbitrary model hook meta from route request to the infinityModel', function(assert) {
-      let store = createMockStore(
-        EA([{id: 1, name: 'Walter White'}], { meta: { meaningOfLife: 42 }})
+      let store = this.createMockStore(
+        this.EA([{id: 1, name: 'Walter White'}], { meta: { meaningOfLife: 42 }})
       );
 
-      let route = createRoute(['item', {}],  { store });
+      let route = this.createRoute(['item', {}],  { store });
 
-      let model = callModelHook(route);
+      let model = this.callModelHook(route);
 
       assert.equal(model.get('meta.meaningOfLife'), 42, 'meta');
     });
@@ -273,23 +281,23 @@ module('RouteMixin', function() {
 
   module('RouteMixin - reaching the end', function(hooks) {
     hooks.beforeEach(function() {
-      this.store = createMockStore(EA([{id: 1, name: 'Test'}], { meta: { total_pages: 2 } }));
+      this.store = this.createMockStore(this.EA([{id: 1, name: 'Test'}], { meta: { total_pages: 2 } }));
 
-      this.createRoute = (extras, boundParamsOrInfinityModel) => {
-        this.route = createRoute(['item', extras, boundParamsOrInfinityModel],
+      this.createRouteWithStore = (extras, boundParamsOrInfinityModel) => {
+        this.route = this.createRoute(['item', extras, boundParamsOrInfinityModel],
           { store: this.store }
         );
 
-        this.callModelHook();
+        this.callModelHookWithStore();
       };
 
-      this.callModelHook = () => {
-        this.model = callModelHook(this.route);
+      this.callModelHookWithStore = () => {
+        this.model = this.callModelHook(this.route);
       };
 
       this.loadMore = () => {
         run(() => {
-          this.route._infinityLoad(this.model);
+          this.route.infinityLoad(this.model);
         });
       };
     });
@@ -297,7 +305,7 @@ module('RouteMixin', function() {
     test('it sets state when it reaches the end', function (assert) {
       assert.expect(4);
 
-      this.createRoute({ startingPage: 2 });
+      this.createRouteWithStore({ startingPage: 2 });
 
       assert.equal(this.model.get('_totalPages'), 2, '_totalPages');
       assert.equal(this.model.get('currentPage'), 2, 'currentPage');
@@ -308,7 +316,7 @@ module('RouteMixin', function() {
     test('it uses extra params when loading more data', function (assert) {
       assert.expect(4);
 
-      this.createRoute({ extra: 'param' });
+      this.createRouteWithStore({ extra: 'param' });
 
       // assert.equal(this.model.get('_extraParams.extra'), 'param', '_extraParams.extra');
       assert.equal(this.model.get('_canLoadMore'), true, '_canLoadMore');
@@ -325,7 +333,7 @@ module('RouteMixin', function() {
       assert.expect(3);
 
       const boundParam = { category: 'myCategory' };
-      this.createRoute({ extra: 'param' }, boundParam);
+      this.createRouteWithStore({ extra: 'param' }, boundParam);
 
       assert.deepEqual(this.model.get('_deprecatedBoundParams'), boundParam, '_deprecatedBoundParams');
 
@@ -346,7 +354,7 @@ module('RouteMixin', function() {
           return params;
         }
       });
-      this.createRoute({ extra: 'param' }, ExtendedInfinityModel);
+      this.createRouteWithStore({ extra: 'param' }, ExtendedInfinityModel);
 
       assert.equal(this.model instanceof InfinityModel, true, 'model is instance of extended infinity model');
 
@@ -368,7 +376,7 @@ module('RouteMixin', function() {
         }
       });
       // imagine 'custom' being some type of service that holds state
-      this.createRoute({ extra: 'param' }, ExtendedInfinityModel.extend({ custom: { id : 2 } }));
+      this.createRouteWithStore({ extra: 'param' }, ExtendedInfinityModel.extend({ custom: { id : 2 } }));
 
       this.loadMore();
     });
@@ -376,7 +384,7 @@ module('RouteMixin', function() {
     test('route does not detect boundParams when no boundParams passed', function (assert) {
       assert.expect(1);
 
-      this.createRoute({ extra: 'param' });
+      this.createRouteWithStore({ extra: 'param' });
 
       assert.equal(this.model.get('_deprecatedBoundParams'), undefined, 'bound params is not detected');
     });
@@ -384,7 +392,7 @@ module('RouteMixin', function() {
     test("It doesn't request more pages once _canLoadMore is false", function (assert) {
       assert.expect(6);
 
-      this.createRoute();
+      this.createRouteWithStore();
 
       assert.ok(this.model.get('_canLoadMore'), 'can load more');
       assert.equal(this.model.get('currentPage'), 1, 'currentPage');
@@ -403,19 +411,19 @@ module('RouteMixin', function() {
     test("It resets the currentPage when the model hook is called again", function (assert) {
       assert.expect(5);
 
-      this.createRoute();
+      this.createRouteWithStore();
 
       assert.ok(this.model.get('_canLoadMore'), 'can load more');
       assert.equal(this.model.get('currentPage'), 1, 'currentPage');
 
-      this.callModelHook();
+      this.callModelHookWithStore();
       assert.equal(this.model.get('currentPage'), 1, 'currentPage');
 
       this.loadMore();
 
       assert.equal(this.model.get('currentPage'), 2, 'currentPage');
 
-      this.callModelHook();
+      this.callModelHookWithStore();
 
       assert.equal(this.model.get('currentPage'), 1, 'currentPage');
     });
@@ -423,9 +431,9 @@ module('RouteMixin', function() {
 
   module('RouteMixin - loading more data', function(hooks) {
     hooks.beforeEach(function(assert) {
-      let store = createMockStore(
+      let store = this.createMockStore(
         // return response for model hook
-        EA([{id: 1, name: 'Test'}, {id: 2, name: 'Test 2'}], { meta: { testTotalPages: 3 } }),
+        this.EA([{id: 1, name: 'Test'}, {id: 2, name: 'Test 2'}], { meta: { testTotalPages: 3 } }),
         // for query method in model hook
         (modelType, findQuery) => {
           assert.equal(findQuery.testPerPage, 1);
@@ -433,7 +441,7 @@ module('RouteMixin', function() {
         }
       );
 
-      this.route = createRoute(
+      this.route = this.createRoute(
         ['item', {
           // explicit params passed to infinityModel hook
           perPage: 1, startingPage: 2,
@@ -447,7 +455,7 @@ module('RouteMixin', function() {
 
       this.expectedPageNumber = 2;
 
-      this.model = callModelHook(this.route);
+      this.model = this.callModelHook(this.route);
     });
 
     test('it uses overridden params when loading more data', function (assert) {
@@ -464,9 +472,9 @@ module('RouteMixin', function() {
 
       this.expectedPageNumber = 3;
 
-      const infinityModel = this.route._infinityModels.objectAt(0);
+      const infinityModel = this.route.get('infinityLoader.infinityModels').objectAt(0);
       run(() => {
-        this.route._infinityLoad(infinityModel);
+        this.route.infinityLoad(infinityModel);
       });
 
       assert.equal(this.model.get('_canLoadMore'), false, '_canLoadMore');
@@ -478,12 +486,12 @@ module('RouteMixin', function() {
   module('RouteMixin.afterInfinityModel', function(hooks) {
     hooks.beforeEach(function() {
       let item = { id: 1, title: 'The Great Gatsby' };
-      this.route = createRoute(['item'], {
-        store: createMockStore(EA([item]))
+      this.route = this.createRoute(['item'], {
+        store: this.createMockStore(this.EA([item]))
       });
 
       this.assertAfterInfinityWorks = function (assert) {
-        let model = callModelHook(this.route);
+        let model = this.callModelHook(this.route);
 
         assert.equal(
           model.get('content.firstObject.author'),
@@ -494,7 +502,7 @@ module('RouteMixin', function() {
     });
 
     test('it calls the afterInfinityModel method on objects fetched from the store', function (assert) {
-      this.route.afterInfinityModel = (items) => {
+      this.route.infinityLoader.afterInfinityModel = (items) => {
         return items.setEach('author', 'F. Scott Fitzgerald');
       };
 
@@ -502,7 +510,7 @@ module('RouteMixin', function() {
     });
 
     test('it does not require a return value to work', function (assert) {
-      this.route.afterInfinityModel = (items) => {
+      this.route.infinityLoader.afterInfinityModel = (items) => {
         items.setEach('author', 'F. Scott Fitzgerald');
       };
 
@@ -510,7 +518,7 @@ module('RouteMixin', function() {
     });
 
     test('it resolves a promise returned from afterInfinityModel', function (assert) {
-      this.route.afterInfinityModel = (items) => {
+      this.route.infinityLoader.afterInfinityModel = (items) => {
         return new RSVP.Promise(function (resolve) {
           resolve(items.setEach('author', 'F. Scott Fitzgerald'));
         });
