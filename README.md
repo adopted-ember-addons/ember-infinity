@@ -168,18 +168,23 @@ export default Route.extend(InfinityRoute, {
 
 ```hbs
 {{!-- templates/products.hbs --}}
-{{#each model.products as |product|}}
-  <h1>{{product.name}}</h1>
-  <h2>{{product.description}}</h2>
-{{/each}}
 
-{{infinity-loader infinityModel=model.products infinityLoad=(action "loadMoreProduct")}}
+<aside>
+  {{#each model.users as |user|}}
+    <h1>{{user.username}}</h1>
+  {{/each}}
 
-{{#each model.users as |user|}}
-  <h1>{{user.username}}</h1>
-{{/each}}
+  {{infinity-loader infinityModel=model.users infinityLoad=(action "loadMoreUsers")}}
+</aside>
 
-{{infinity-loader infinityModel=model.users infinityLoad=(action "loadMoreUsers")}}
+<section>
+  {{#each model.products as |product|}}
+    <h1>{{product.name}}</h1>
+    <h2>{{product.description}}</h2>
+  {{/each}}
+
+  {{infinity-loader infinityModel=model.products infinityLoad=(action "loadMoreProduct")}}
+<section>
 ```
 
 The ability to use closure actions will be available in the `1.0.0-beta` series.  Also, this method uses Controllers.  Despite what you may have heard, Controllers are a great primitive in Ember's ecosystem.  Their singleton nature is great for handling queryParams and actions propagated from somewhere in your component tree.
