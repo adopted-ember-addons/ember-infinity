@@ -98,7 +98,14 @@ module('Acceptance: Infinity Route - infinity routes', function(hooks) {
     await visit('/test-scrollable?page=2');
 
     shouldBeItemsOnTheList(assert, 50);
-    assert.equal(document.querySelectorAll('ul.test-list li')[25].offsetTop, 12500, 'scrollable list has elements above (each 250px high * 25)');
+    assert.equal(document.querySelectorAll('ul.test-list-scrollable li')[25].offsetTop, 1250, 'scrollable list has elements above (each 250px high * 25)');
+  });
+
+  test('it should load elements until page is filled', async function(assert) {
+    this.server.createList('post', 50);
+    await visit('/test-scrollable?perPage=5');
+
+    shouldBeItemsOnTheList(assert, 50);
   });
 
   module('Acceptance: Infinity Route - multiple pages fetched', function(/*hooks*/) {
