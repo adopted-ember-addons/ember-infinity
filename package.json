@@ -15,19 +15,20 @@
   "scripts": {
     "build": "ember build",
     "start": "ember serve",
-    "test": "ember try:each"
+    "test": "ember test",
+    "test:all": "ember try:each"
   },
   "engines": {
     "node": "^4.5 || 6.* || >= 7.*"
   },
   "dependencies": {
     "ember-cli-babel": "^6.6.0",
-    "ember-in-viewport": "~3.0.1"
+    "ember-in-viewport": "~3.0.2"
   },
   "devDependencies": {
     "@ember/test-helpers": "^0.7.18",
     "broccoli-asset-rev": "^2.4.5",
-    "ember-cli": "~3.0.0",
+    "ember-cli": "~3.1.2",
     "ember-cli-dependency-checker": "^2.0.0",
     "ember-cli-eslint": "^4.2.1",
     "ember-cli-htmlbars": "^2.0.1",
@@ -48,7 +49,7 @@
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-resolver": "^4.0.0",
     "ember-route-action-helper": "^2.0.6",
-    "ember-source": "~3.0.0",
+    "ember-source": "~3.1.0",
     "ember-source-channel-url": "^1.0.1",
     "ember-try": "^0.2.23",
     "loader.js": "^4.2.3"
