@@ -184,12 +184,21 @@ export default Service.extend({
         set(infinityModel, 'reachedInfinity', !canLoadMore);
         if (!canLoadMore) {
           this._notifyInfinityModelLoaded();
+        } else if (increment == 1) {
+          // if list still needs to populate the screen only if we are loading the next page (not previous pages)
+          let infinityLoaderElem = document.querySelector('.infinity-loader');
+          if (infinityLoaderElem && this._viewportHeight(infinityModel) > infinityLoaderElem.offsetTop) {
+            // load again
+            this.loadNextPage(infinityModel, increment);
+          }
         }
         return infinityModel;
       }).finally(() => set(infinityModel, '_loadingMore', false));
   },
 
   /**
+    calculate the height of the scrollable viewport
+
     @private
     @method _calculateHeight
     @param {Object} infinityModel
@@ -197,8 +206,25 @@ export default Service.extend({
    */
   _calculateHeight(infinityModel) {
     if (typeof FastBoot === 'undefined') {
-      let viewportElem = get(infinityModel, '_scrollable') ? document.querySelector(get(infinityModel, '_scrollable')) : document.documentElement;
-      return get(infinityModel, '_scrollable') ? viewportElem.scrollHeight : viewportElem.scrollHeight;
+      let isScrollable = !!get(infinityModel, '_scrollable');
+      let viewportElem = isScrollable ? document.querySelector(get(infinityModel, '_scrollable')) : document.documentElement;
+      return viewportElem.scrollHeight;
+    }
+  },
+
+  /**
+    calculate the height of the viewport
+
+    @private
+    @method _scrollableHeight
+    @param {Object} infinityModel
+    @return Integer
+   */
+  _viewportHeight(infinityModel) {
+    if (typeof FastBoot === 'undefined') {
+      let isScrollable = !!get(infinityModel, '_scrollable');
+      let viewportElem = isScrollable ? document.querySelector(get(infinityModel, '_scrollable')) : window;
+      return isScrollable ? viewportElem.clientHeight : viewportElem.innerHeight;
     }
   },
 
