@@ -59,7 +59,7 @@ module('Acceptance: Infinity Route - load previous', function(hooks) {
 
     await triggerEvent(window, 'scroll');
 
-    shouldBeItemsOnTheList(assert, 50);
+    shouldBeItemsOnTheList(assert, 104);
   });
 
   test('it should load previous elements when start on page two', async function(assert) {
