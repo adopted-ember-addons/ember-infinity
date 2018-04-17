@@ -9,6 +9,10 @@
 
 ***As of v1.0-alpha and above, this library officially supports Ember 2.4 and above***
 
+***We are currently in the v1.0.0-beta series (stable) and will be releasing 1.0 by the end of May 2018***
+
+See this [issue](https://github.com/ember-infinity/ember-infinity/issues/281) for the remaining items to release 1.0.
+
 Demo: [ember-infinity.github.io/ember-infinity/](https://ember-infinity.github.io/ember-infinity/)
 
 Simple, flexible infinite scrolling for Ember CLI Apps.  Works out of the box
@@ -58,13 +62,11 @@ Then, you'll need to add the `infinity-loader` component to your template, like 
 {{infinity-loader infinityModel=model}}
 ```
 
-Now, whenever the `infinity-loader` component is in view, it will send an action to the route or to your specific `loadMoreProduct` action
-(the one where you initialized the infinityModel) to start loading the next page.  This method uses action bubbling, which may not be the preferred way of passing data around your application.  See [Closure Actions](#ClosureActions).
-
+Now, whenever the `infinity-loader` component is in view, it will send an action to the route.  This method uses action bubbling, which may not be the preferred way of passing data around your application.  See [Closure Actions](#ClosureActions).
 
 When the new records are loaded, they will automatically be pushed into the Model array.
 
-Lastly, by default, ember-infinity expects the server response to contain something about how many total pages it can expect to fetch. `ember-infinity` defaults to looking for something like `meta: { total_pages: 20 }` in your response.  See [Advanced Usage](#AdvancedUsage).
+Lastly, by default, `ember-infinity` expects the server response to contain something about how many total pages it can expect to fetch. `ember-infinity` defaults to looking for something like `meta: { total_pages: 20 }` in your response.  This can be configured based on your server pagination.  See [Advanced Usage](#AdvancedUsage).
 
 
 ### Closure Actions<a name="ClosureActions"></a>
@@ -76,6 +78,7 @@ See the Ember docs on passing actions to components [here](https://guides.emberj
 ```js
 import Controller from '@ember/routing/route';
 import { inject as service } from '@ember/service';
+import { get } from '@ember/object';
 
 export default Controller.extend({
   infinityLoader: service(),
@@ -124,6 +127,7 @@ Let's look at a more complicated example using multiple infinity models in a rou
 ```js
 import Controller from '@ember/routing/route';
 import { inject as service } from '@ember/service';
+import { get } from '@ember/object';
 
 export default Controller.extend({
   infinityLoader: service(),
@@ -204,6 +208,7 @@ Let's see an example of using `replace`.
 ```js
 import Controller from '@ember/routing/route';
 import { inject as service } from '@ember/service';
+import { get } from '@ember/object';
 
 export default Controller.extend({
   infinityLoader: service(),
