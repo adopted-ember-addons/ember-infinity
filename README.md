@@ -34,7 +34,7 @@ Also:
 
 · **infinity-loader component**
 
-· **infinity-loader service**
+· **infinity service**
 
 
 Importing the `ember-infinity` Route Mixin and extending your route will give you access to `this.infinifyModel` in your model hook.
@@ -81,11 +81,11 @@ import { inject as service } from '@ember/service';
 import { get } from '@ember/object';
 
 export default Controller.extend({
-  infinityLoader: service(),
+  infinity: service(),
 
   actions: {
     /**
-      Note this must be handled by you.  An action will be called with the result of your Route model hook from the infinityLoader component, similar to this:
+      Note this must be handled by you.  An action will be called with the result of your Route model hook from the `infinity-loader` component, similar to this:
       // closure action in infinity-loader component
       get(this, 'infinityLoad')(infinityModelContent);
 
@@ -93,7 +93,7 @@ export default Controller.extend({
       @param {InfinityModel} products
     */
     loadMoreProduct(products) {
-      get(this, 'infinityLoader').infinityLoad(products);
+      get(this, 'infinity').infinityLoad(products);
     }
   }
 });
@@ -130,11 +130,11 @@ import { inject as service } from '@ember/service';
 import { get } from '@ember/object';
 
 export default Controller.extend({
-  infinityLoader: service(),
+  infinity: service(),
 
   actions: {
     /**
-      Note this must be handled by you.  An action will be called with the result of your Route model hook from the infinityLoader component, similar to this:
+      Note this must be handled by you.  An action will be called with the result of your Route model hook from the `infinity-loader` component, similar to this:
       // closure action in infinity-loader component
       get(this, 'infinityLoad')(infinityModelContent);
 
@@ -142,14 +142,14 @@ export default Controller.extend({
       @param {InfinityModel} products
     */
     loadMoreProduct(products) {
-      get(this, 'infinityLoader').infinityLoad(products);
+      get(this, 'infinity').infinityLoad(products);
     }
     /**
       @method loadMoreUsers
       @param {InfinityModel} users
     */
     loadMoreUsers(users) {
-      get(this, 'infinityLoader').infinityLoad(users);
+      get(this, 'infinity').infinityLoad(users);
     }
   }
 });
@@ -211,7 +211,7 @@ import { inject as service } from '@ember/service';
 import { get } from '@ember/object';
 
 export default Controller.extend({
-  infinityLoader: service(),
+  infinity: service(),
 
   actions: {
     /**
@@ -221,7 +221,7 @@ export default Controller.extend({
     async filterProducts(query) {
       let products = await this.store.query('product', { query });
       // model is the collection returned from the route model hook
-      get(this, 'infinityLoader').replace(get(this, 'model'), products);
+      get(this, 'infinity').replace(get(this, 'model'), products);
     }
   }
 });

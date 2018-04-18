@@ -24,9 +24,9 @@ import { objectAssign, paramsCheck } from '../utils';
 */
 const RouteMixin = Mixin.create({
 
-  infinityLoader: service(),
+  infinity: service(),
 
-  _infinityModels: readOnly('infinityLoader.infinityModels'),
+  _infinityModels: readOnly('infinity.infinityModels'),
 
   // these are here for backwards compat
   _infinityModel: computed('_infinityModels.[]', '_infinityModels', function() {
@@ -63,7 +63,7 @@ const RouteMixin = Mixin.create({
     @return {Ember.RSVP.Promise}
   */
   infinityLoad(matchingInfinityModel, increment) {
-    return get(this, 'infinityLoader')['infinityLoad'](matchingInfinityModel, increment);
+    return get(this, 'infinity')['infinityLoad'](matchingInfinityModel, increment);
   },
 
   /**
@@ -94,7 +94,7 @@ const RouteMixin = Mixin.create({
       throw new EmberError("Ember Infinity: You must pass a Model Name to infinityModel");
     }
 
-    let service = get(this, 'infinityLoader');
+    let service = get(this, 'infinity');
     if (!get(service, 'infinityModels')) {
       set(service, 'infinityModels', A());
     }
@@ -109,7 +109,7 @@ const RouteMixin = Mixin.create({
       if (typeof options.store !== 'string') {
         throw new EmberError('Ember Infinity: Must pass custom data store as a string');
       }
-      get(this, 'infinityLoader._ensureCustomStoreCompatibility')(options, get(this, options.store), get(service, '_storeFindMethod'));
+      get(this, 'infinity._ensureCustomStoreCompatibility')(options, get(this, options.store), get(service, '_storeFindMethod'));
 
       set(service, '_store', options.store);
 
@@ -169,8 +169,8 @@ const RouteMixin = Mixin.create({
     }
 
     const infinityModel = InfinityModelFactory.create(initParams);
-    get(this, 'infinityLoader._ensureCompatibility')(get(service, 'store'), get(service, '_storeFindMethod'));
-    get(this, 'infinityLoader.infinityModels').pushObject(infinityModel);
+    get(this, 'infinity._ensureCompatibility')(get(service, 'store'), get(service, '_storeFindMethod'));
+    get(this, 'infinity.infinityModels').pushObject(infinityModel);
 
     return InfinityPromiseArray.create({ promise: service['loadNextPage'](infinityModel) });
   },
