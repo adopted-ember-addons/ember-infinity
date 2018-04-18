@@ -66,7 +66,7 @@ Now, whenever the `infinity-loader` component is in view, it will send an action
 
 When the new records are loaded, they will automatically be pushed into the Model array.
 
-Lastly, by default, `ember-infinity` expects the server response to contain something about how many total pages it can expect to fetch. `ember-infinity` defaults to looking for something like `meta: { total_pages: 20 }` in your response.  This can be configured based on your server pagination.  See [Advanced Usage](#AdvancedUsage).
+Lastly, by default, `ember-infinity` expects the server response to contain something about how many total pages it can expect to fetch. `ember-infinity` defaults to looking for something like `meta: { total_pages: 20 }` in your response.  See [Advanced Usage](#AdvancedUsage).
 
 
 ### Closure Actions<a name="ClosureActions"></a>
@@ -267,7 +267,7 @@ model() {
 
 ### JSON Request/Response Customization
 
-By default, ember-infinity will send pagination parameters as part of a GET request as follows
+By default, `ember-infinity` will send pagination parameters as part of a GET request as follows
 
 ```
 /items?per_page=5&page=1
@@ -319,7 +319,7 @@ This will result in request query params being sent out as follows
 /items?per=5&pg=1
 ```
 
-and ember-infinity will be set up to parse the total number of pages from a JSON response like this:
+and `ember-infinity` will be set up to parse the total number of pages from a JSON response like this:
 
 ```js
 {
@@ -668,7 +668,7 @@ You can optionally pass an offset value.   This value will be used when calculat
 
 Default is 50ms.  You can optionally pass a debounce time to delay loading the list when reach bottom of list
 
-### Use ember-infinity with button
+### Use `ember-infinity` with button
 
 You can use the route loading magic of Ember Infinity without using the InfinityLoader component.
 
