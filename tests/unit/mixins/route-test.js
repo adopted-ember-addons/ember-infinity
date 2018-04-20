@@ -18,10 +18,10 @@ module('RouteMixin', function(hooks) {
       return ArrayProxy.create(assign({ content: A(content) }, meta));
     };
 
-    let infinityLoader = this.owner.lookup('service:infinity-loader');
+    let infinity = this.owner.lookup('service:infinity');
     this.createRoute = (infinityModelArgs, routeProperties={}) => {
       let RouteObject = Route.extend(RouteMixin, assign(routeProperties, {
-        infinityLoader,
+        infinity,
         model() {
           return this.infinityModel(...infinityModelArgs);
         }
@@ -115,7 +115,7 @@ module('RouteMixin', function(hooks) {
 
       try {
         route.model();
-        assert.ok(route.get('infinityLoader.store').query, 'custom store works');
+        assert.ok(route.get('infinity.store').query, 'custom store works');
       } catch(e) {
         assert.ok(false, 'something failed');
       }
@@ -472,7 +472,7 @@ module('RouteMixin', function(hooks) {
 
       this.expectedPageNumber = 3;
 
-      const infinityModel = this.route.get('infinityLoader.infinityModels').objectAt(0);
+      const infinityModel = this.route.get('infinity.infinityModels').objectAt(0);
       run(() => {
         this.route.infinityLoad(infinityModel);
       });
@@ -502,7 +502,7 @@ module('RouteMixin', function(hooks) {
     });
 
     test('it calls the afterInfinityModel method on objects fetched from the store', function (assert) {
-      this.route.infinityLoader.afterInfinityModel = (items) => {
+      this.route.infinity.afterInfinityModel = (items) => {
         return items.setEach('author', 'F. Scott Fitzgerald');
       };
 
@@ -510,7 +510,7 @@ module('RouteMixin', function(hooks) {
     });
 
     test('it does not require a return value to work', function (assert) {
-      this.route.infinityLoader.afterInfinityModel = (items) => {
+      this.route.infinity.afterInfinityModel = (items) => {
         items.setEach('author', 'F. Scott Fitzgerald');
       };
 
@@ -518,7 +518,7 @@ module('RouteMixin', function(hooks) {
     });
 
     test('it resolves a promise returned from afterInfinityModel', function (assert) {
-      this.route.infinityLoader.afterInfinityModel = (items) => {
+      this.route.infinity.afterInfinityModel = (items) => {
         return new RSVP.Promise(function (resolve) {
           resolve(items.setEach('author', 'F. Scott Fitzgerald'));
         });

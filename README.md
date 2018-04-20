@@ -34,7 +34,7 @@ Also:
 
 · **infinity-loader component**
 
-· **infinity-loader service**
+· **infinity service**
 
 
 Importing the `ember-infinity` Route Mixin and extending your route will give you access to `this.infinifyModel` in your model hook.
@@ -66,7 +66,7 @@ Now, whenever the `infinity-loader` component is in view, it will send an action
 
 When the new records are loaded, they will automatically be pushed into the Model array.
 
-Lastly, by default, `ember-infinity` expects the server response to contain something about how many total pages it can expect to fetch. `ember-infinity` defaults to looking for something like `meta: { total_pages: 20 }` in your response.  This can be configured based on your server pagination.  See [Advanced Usage](#AdvancedUsage).
+Lastly, by default, `ember-infinity` expects the server response to contain something about how many total pages it can expect to fetch. `ember-infinity` defaults to looking for something like `meta: { total_pages: 20 }` in your response.  See [Advanced Usage](#AdvancedUsage).
 
 
 ### Closure Actions<a name="ClosureActions"></a>
@@ -81,11 +81,11 @@ import { inject as service } from '@ember/service';
 import { get } from '@ember/object';
 
 export default Controller.extend({
-  infinityLoader: service(),
+  infinity: service(),
 
   actions: {
     /**
-      Note this must be handled by you.  An action will be called with the result of your Route model hook from the infinityLoader component, similar to this:
+      Note this must be handled by you.  An action will be called with the result of your Route model hook from the `infinity-loader` component, similar to this:
       // closure action in infinity-loader component
       get(this, 'infinityLoad')(infinityModelContent);
 
@@ -93,7 +93,7 @@ export default Controller.extend({
       @param {InfinityModel} products
     */
     loadMoreProduct(products) {
-      get(this, 'infinityLoader').infinityLoad(products);
+      get(this, 'infinity').infinityLoad(products);
     }
   }
 });
@@ -130,11 +130,11 @@ import { inject as service } from '@ember/service';
 import { get } from '@ember/object';
 
 export default Controller.extend({
-  infinityLoader: service(),
+  infinity: service(),
 
   actions: {
     /**
-      Note this must be handled by you.  An action will be called with the result of your Route model hook from the infinityLoader component, similar to this:
+      Note this must be handled by you.  An action will be called with the result of your Route model hook from the `infinity-loader` component, similar to this:
       // closure action in infinity-loader component
       get(this, 'infinityLoad')(infinityModelContent);
 
@@ -142,14 +142,14 @@ export default Controller.extend({
       @param {InfinityModel} products
     */
     loadMoreProduct(products) {
-      get(this, 'infinityLoader').infinityLoad(products);
+      get(this, 'infinity').infinityLoad(products);
     }
     /**
       @method loadMoreUsers
       @param {InfinityModel} users
     */
     loadMoreUsers(users) {
-      get(this, 'infinityLoader').infinityLoad(users);
+      get(this, 'infinity').infinityLoad(users);
     }
   }
 });
@@ -211,7 +211,7 @@ import { inject as service } from '@ember/service';
 import { get } from '@ember/object';
 
 export default Controller.extend({
-  infinityLoader: service(),
+  infinity: service(),
 
   actions: {
     /**
@@ -221,7 +221,7 @@ export default Controller.extend({
     async filterProducts(query) {
       let products = await this.store.query('product', { query });
       // model is the collection returned from the route model hook
-      get(this, 'infinityLoader').replace(get(this, 'model'), products);
+      get(this, 'infinity').replace(get(this, 'model'), products);
     }
   }
 });
@@ -267,7 +267,7 @@ model() {
 
 ### JSON Request/Response Customization
 
-By default, ember-infinity will send pagination parameters as part of a GET request as follows
+By default, `ember-infinity` will send pagination parameters as part of a GET request as follows
 
 ```
 /items?per_page=5&page=1
@@ -319,7 +319,7 @@ This will result in request query params being sent out as follows
 /items?per=5&pg=1
 ```
 
-and ember-infinity will be set up to parse the total number of pages from a JSON response like this:
+and `ember-infinity` will be set up to parse the total number of pages from a JSON response like this:
 
 ```js
 {
@@ -668,7 +668,7 @@ You can optionally pass an offset value.   This value will be used when calculat
 
 Default is 50ms.  You can optionally pass a debounce time to delay loading the list when reach bottom of list
 
-### Use ember-infinity with button
+### Use `ember-infinity` with button
 
 You can use the route loading magic of Ember Infinity without using the InfinityLoader component.
 

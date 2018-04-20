@@ -3,7 +3,7 @@ import { get } from '@ember/object';
 import { inject as service } from '@ember/service';
 
 export default Controller.extend({
-  infinityLoader: service(),
+  infinity: service(),
 
   actions: {
     /**
@@ -13,7 +13,7 @@ export default Controller.extend({
       @param {ArrayProxy} - posts - existing infinityModels
      */
     loadMorePosts(posts) {
-      get(this, 'infinityLoader').loadNextPage(posts);
+      get(this, 'infinity').loadNextPage(posts);
     },
     /**
       Use service to load more posts if you can't get at the route
@@ -22,7 +22,7 @@ export default Controller.extend({
       @param {ArrayProxy} - posts - existing infinityModels
      */
     loadMorePostsPrevious(posts, increment) {
-      get(this, 'infinityLoader').loadNextPage(posts, increment);
+      get(this, 'infinity').loadNextPage(posts, increment);
     },
     /**
       Use service to replace the current collection with a new collection
@@ -33,7 +33,7 @@ export default Controller.extend({
     filterPosts(posts) {
       let arr = posts.toArray();
       let splitPosts = arr.filter(x => x.get('name').includes('a'));
-      get(this, 'infinityLoader').replace(get(this, 'model'), splitPosts);
+      get(this, 'infinity').replace(get(this, 'model'), splitPosts);
     },
     /**
       Use service to replace the current collection with a new collection
@@ -42,7 +42,7 @@ export default Controller.extend({
       @param {ArrayProxy} posts - example payload from this.store.query('post', { name: 'Allen' })
      */
     flushPosts(posts) {
-      get(this, 'infinityLoader').flush(posts);
+      get(this, 'infinity').flush(posts);
     }
   }
 });
