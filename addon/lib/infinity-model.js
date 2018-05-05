@@ -128,11 +128,11 @@ export default ArrayProxy.extend({
     determines if can load next page or previous page (if applicable)
 
     @private
-    @property _canLoadMore
+    @property canLoadMore
     @type Boolean
     @default false
   */
-  _canLoadMore: computed('_totalPages', 'currentPage', '_increment', function() {
+  canLoadMore: computed('_totalPages', 'currentPage', '_increment', function() {
     let { _totalPages , currentPage, _increment } = getProperties(this, '_totalPages', 'currentPage', '_increment');
     if (_totalPages) {
       if (_increment === 1 && currentPage !== undefined) {

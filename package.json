@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "ember-cli-babel": "^6.6.0",
-    "ember-in-viewport": "~3.0.2"
+    "ember-in-viewport": "~3.0.3"
   },
   "devDependencies": {
     "@ember/test-helpers": "^0.7.18",
@@ -49,7 +49,7 @@
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-resolver": "^4.0.0",
     "ember-route-action-helper": "^2.0.6",
-    "ember-source": "~3.1.0",
+    "ember-source": "~3.1.1",
     "ember-source-channel-url": "^1.0.1",
     "ember-try": "^0.2.23",
     "loader.js": "^4.2.3"

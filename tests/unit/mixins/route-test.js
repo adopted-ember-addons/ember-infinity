@@ -205,7 +205,7 @@ module('RouteMixin', function(hooks) {
 
       assert.equal(model.get('_totalPages'), 31, '_totalPages');
       assert.equal(model.get('currentPage'), 1, 'currentPage');
-      assert.equal(model.get('_canLoadMore'), true, '_canLoadMore');
+      assert.equal(model.get('canLoadMore'), true, 'canLoadMore');
       assert.notOk(route.get('_extraParams'), 'extra params are empty');
       assert.ok(!model.get('reachedInfinity'), 'Should not reach infinity');
     });
@@ -234,7 +234,7 @@ module('RouteMixin', function(hooks) {
       let model = this.callModelHook(route);
 
       assert.equal(route.get('currentPage'), 0);
-      assert.equal(model.get('_canLoadMore'), false);
+      assert.equal(model.get('canLoadMore'), false);
     });
 
     test('it skips request params when set to null', function(assert) {
@@ -309,7 +309,7 @@ module('RouteMixin', function(hooks) {
 
       assert.equal(this.model.get('_totalPages'), 2, '_totalPages');
       assert.equal(this.model.get('currentPage'), 2, 'currentPage');
-      assert.equal(this.model.get('_canLoadMore'), false, '_canLoadMore');
+      assert.equal(this.model.get('canLoadMore'), false, 'canLoadMore');
       assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
     });
 
@@ -319,12 +319,12 @@ module('RouteMixin', function(hooks) {
       this.createRouteWithStore({ extra: 'param' });
 
       // assert.equal(this.model.get('_extraParams.extra'), 'param', '_extraParams.extra');
-      assert.equal(this.model.get('_canLoadMore'), true, '_canLoadMore');
+      assert.equal(this.model.get('canLoadMore'), true, 'canLoadMore');
 
       this.loadMore();
 
       // assert.equal(this.model.get('_extraParams.extra'), 'param', '_extraParams.extra');
-      assert.equal(this.model.get('_canLoadMore'), false, '_canLoadMore');
+      assert.equal(this.model.get('canLoadMore'), false, 'canLoadMore');
       assert.equal(this.model.get('currentPage'), 2, 'currentPage');
       assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
     });
@@ -389,22 +389,22 @@ module('RouteMixin', function(hooks) {
       assert.equal(this.model.get('_deprecatedBoundParams'), undefined, 'bound params is not detected');
     });
 
-    test("It doesn't request more pages once _canLoadMore is false", function (assert) {
+    test("It doesn't request more pages once canLoadMore is false", function (assert) {
       assert.expect(6);
 
       this.createRouteWithStore();
 
-      assert.ok(this.model.get('_canLoadMore'), 'can load more');
+      assert.ok(this.model.get('canLoadMore'), 'can load more');
       assert.equal(this.model.get('currentPage'), 1, 'currentPage');
 
       this.loadMore();
 
-      assert.notOk(this.model.get('_canLoadMore'), 'can load more');
+      assert.notOk(this.model.get('canLoadMore'), 'can load more');
       assert.equal(this.model.get('currentPage'), 2, 'currentPage');
 
       this.loadMore();
 
-      assert.notOk(this.model.get('_canLoadMore'), 'can load more');
+      assert.notOk(this.model.get('canLoadMore'), 'can load more');
       assert.equal(this.model.get('currentPage'), 2, 'currentPage');
     });
 
@@ -413,7 +413,7 @@ module('RouteMixin', function(hooks) {
 
       this.createRouteWithStore();
 
-      assert.ok(this.model.get('_canLoadMore'), 'can load more');
+      assert.ok(this.model.get('canLoadMore'), 'can load more');
       assert.equal(this.model.get('currentPage'), 1, 'currentPage');
 
       this.callModelHookWithStore();
@@ -463,7 +463,7 @@ module('RouteMixin', function(hooks) {
 
       this.expectedPageNumber = 2;
 
-      assert.equal(this.model.get('_canLoadMore'), true, '_canLoadMore');
+      assert.equal(this.model.get('canLoadMore'), true, 'canLoadMore');
       assert.equal(this.model.get('currentPage'), 2, 'currentPage');
     });
 
@@ -477,7 +477,7 @@ module('RouteMixin', function(hooks) {
         this.route.infinityLoad(infinityModel);
       });
 
-      assert.equal(this.model.get('_canLoadMore'), false, '_canLoadMore');
+      assert.equal(this.model.get('canLoadMore'), false, 'canLoadMore');
       assert.equal(this.model.get('currentPage'), 3, 'currentPage');
       assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
     });

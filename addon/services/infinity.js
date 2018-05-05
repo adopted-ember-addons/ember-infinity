@@ -140,7 +140,7 @@ export default Service.extend({
     @param {Integer} increment - to increase page by 1 or -1
    */
   infinityLoad(infinityModel, increment) {
-    if (get(infinityModel, '_loadingMore') || !get(infinityModel, '_canLoadMore')) {
+    if (get(infinityModel, '_loadingMore') || !get(infinityModel, 'canLoadMore')) {
       return;
     }
 
@@ -180,7 +180,7 @@ export default Service.extend({
           }
         }
         set(infinityModel, '_firstPageLoaded', true);
-        let canLoadMore = get(infinityModel, '_canLoadMore');
+        let canLoadMore = get(infinityModel, 'canLoadMore');
         set(infinityModel, 'reachedInfinity', !canLoadMore);
         if (!canLoadMore) {
           this._notifyInfinityModelLoaded();
