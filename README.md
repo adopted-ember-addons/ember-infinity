@@ -196,7 +196,7 @@ The ability to use closure actions will be available in the `1.0.0-beta` series.
 
 ### Service Methods
 
-The infinity-loader service exposes 4 methods:
+The infinity service exposes 4 methods:
 
 1. replace
 2. flush
