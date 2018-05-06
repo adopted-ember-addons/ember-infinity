@@ -127,7 +127,7 @@ export default ArrayProxy.extend({
   /**
     determines if can load next page or previous page (if applicable)
 
-    @private
+    @public
     @property canLoadMore
     @type Boolean
     @default false
