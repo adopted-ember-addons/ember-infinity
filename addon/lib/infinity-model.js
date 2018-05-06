@@ -1,5 +1,6 @@
 import ArrayProxy from "@ember/array/proxy"
-import { computed, get, getProperties } from '@ember/object';
+import { alias } from '@ember/object/computed';
+import { computed, get, set, getProperties } from '@ember/object';
 import { objectAssign } from '../utils';
 import { typeOf } from '@ember/utils';
 
@@ -127,23 +128,37 @@ export default ArrayProxy.extend({
   /**
     determines if can load next page or previous page (if applicable)
 
+    @private
+    @property _canLoadMore
+    @type Boolean
+  */
+  _canLoadMore: alias('canLoadMore'),
+
+  /**
+    determines if can load next page or previous page (if applicable)
+
     @public
     @property canLoadMore
     @type Boolean
     @default false
   */
-  canLoadMore: computed('_totalPages', 'currentPage', '_increment', function() {
-    let { _totalPages , currentPage, _increment } = getProperties(this, '_totalPages', 'currentPage', '_increment');
-    if (_totalPages) {
-      if (_increment === 1 && currentPage !== undefined) {
-        // load next page
-        return (currentPage < _totalPages) ? true : false;
-      } else if (get(this, 'firstPage') > 1) {
-        // load previous page if starting page was not 1.  Otherwise ignore this block
-        return get(this, 'firstPage') > 1 ? true : false;
+  canLoadMore: computed('_totalPages', 'currentPage', '_increment', {
+    get() {
+      let { _totalPages , currentPage, _increment } = getProperties(this, '_totalPages', 'currentPage', '_increment');
+      if (_totalPages) {
+        if (_increment === 1 && currentPage !== undefined) {
+          // load next page
+          return (currentPage < _totalPages) ? true : false;
+        } else if (get(this, 'firstPage') > 1) {
+          // load previous page if starting page was not 1.  Otherwise ignore this block
+          return get(this, 'firstPage') > 1 ? true : false;
+        }
       }
+      return false;
+    },
+    set(key, value) {
+      set(this, '_canLoadMore', value);
     }
-    return false;
   }),
 
   /**
