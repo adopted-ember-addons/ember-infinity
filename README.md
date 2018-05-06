@@ -350,7 +350,6 @@ To do this, implement the `afterInfinityModel` hook as follows:
 export default Ember.Route.extend(InfinityRoute, {
   _minId: undefined,
   _minUpdatedAt: undefined,
-  _canLoadMore: true,
 
   model() {
     return this.infinityModel("post", {}, {
@@ -361,7 +360,7 @@ export default Ember.Route.extend(InfinityRoute, {
 
   afterInfinityModel(posts) {
     loadedAny = posts.get('length') > 0;
-    this.set('_canLoadMore', loadedAny);
+    posts.set('canLoadMore', loadedAny);
 
     this.set('_minId', posts.get('lastObject.id'));
     this.set('_minUpdatedAt', posts.get('lastObject.updated_at').toISOString());
