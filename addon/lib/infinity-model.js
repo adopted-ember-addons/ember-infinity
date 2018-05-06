@@ -144,7 +144,7 @@ export default ArrayProxy.extend({
       }
     }
     return false;
-  }).readOnly(),
+  }),
 
   /**
     build the params for the next page request
