@@ -112,26 +112,6 @@ export default Service.extend({
   },
 
   /**
-    Call additional functions after finding the infinityModel in the Ember store.
-    @private
-    @method _afterInfinityModel
-    @param {Function} infinityModelPromise The resolved result of the Ember store find method. Passed in automatically.
-    @return {Ember.RSVP.Promise}
-  */
-  _afterInfinityModel(_this) {
-    return function(infinityModelPromiseResult, infinityModel) {
-      if (typeof _this.afterInfinityModel === 'function') {
-        let result = _this.afterInfinityModel(infinityModelPromiseResult, infinityModel);
-        if (result) {
-          return result;
-        }
-      }
-
-      return infinityModelPromiseResult;
-    };
-  },
-
-  /**
     Trigger a load of the next page of results while also checking if it can load more
 
     @public
@@ -165,7 +145,7 @@ export default Service.extend({
     const params    = infinityModel.buildParams(increment);
 
     return this._requestNextPage(modelName, params)
-      .then(newObjects => this._afterInfinityModel(this)(newObjects, infinityModel))
+      .then(newObjects => this._afterInfinityModel(newObjects, infinityModel))
       .then(newObjects => this._doUpdate(newObjects, infinityModel))
       .then(infinityModel => {
         if (increment === 1) {
@@ -294,6 +274,24 @@ export default Service.extend({
 
     const totalPages = get(this, '_totalPages');
     scheduleOnce('afterRender', this, 'infinityModelLoaded', { totalPages: totalPages });
+  },
+
+  /**
+    finish the loading cycle by notifying that infinity has been reached
+
+    @private
+    @method _afterInfinityModel
+   */
+  _afterInfinityModel(newObjects, infinityModel) {
+    if (!this.afterInfinityModel) {
+      return newObjects;
+    }
+
+    let result = this.afterInfinityModel(newObjects, infinityModel);
+    if (result) {
+      return result;
+    }
+    return newObjects;
   },
 
   /**
