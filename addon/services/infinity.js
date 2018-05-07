@@ -277,13 +277,13 @@ export default Service.extend({
   },
 
   /**
-    finish the loading cycle by notifying that infinity has been reached
+    hook to modify results from response
 
     @private
     @method _afterInfinityModel
    */
   _afterInfinityModel(newObjects, infinityModel) {
-    if (!this.afterInfinityModel) {
+    if (!this.afterInfinityModel || typeof this.afterInfinityModel !== 'function') {
       return newObjects;
     }
 
