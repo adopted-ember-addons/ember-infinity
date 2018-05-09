@@ -119,6 +119,7 @@ const RouteMixin = Mixin.create({
 
     set(service, 'store', get(this, get(service, '_store')));
     set(service, 'infinityModelLoaded', get(this, 'infinityModelLoaded'));
+    set(service, 'afterInfinityModel', get(this, 'afterInfinityModel'));
 
     // default is to start at 0, request next page and increment
     const currentPage = options.startingPage === undefined ? 0 : options.startingPage - 1;

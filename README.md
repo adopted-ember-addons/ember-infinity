@@ -358,9 +358,9 @@ export default Ember.Route.extend(InfinityRoute, {
     });
   },
 
-  afterInfinityModel(posts) {
-    loadedAny = posts.get('length') > 0;
-    posts.set('canLoadMore', loadedAny);
+  afterInfinityModel(posts, infinityModel) {
+    let loadedAny = posts.get('length') > 0;
+    infinityModel.set('canLoadMore', loadedAny);
 
     this.set('_minId', posts.get('lastObject.id'));
     this.set('_minUpdatedAt', posts.get('lastObject.updated_at').toISOString());
