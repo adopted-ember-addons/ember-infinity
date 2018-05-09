@@ -1,5 +1,5 @@
 import ArrayProxy from "@ember/array/proxy"
-import { alias } from '@ember/object/computed';
+import { oneWay } from '@ember/object/computed';
 import { computed, get, set, getProperties } from '@ember/object';
 import { objectAssign } from '../utils';
 import { typeOf } from '@ember/utils';
@@ -132,7 +132,7 @@ export default ArrayProxy.extend({
     @property _canLoadMore
     @type Boolean
   */
-  _canLoadMore: alias('canLoadMore'),
+  _canLoadMore: oneWay('canLoadMore'),
 
   /**
     determines if can load next page or previous page (if applicable)
