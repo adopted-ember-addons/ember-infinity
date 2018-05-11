@@ -5,10 +5,20 @@
 
 **Closed issues:**
 
+- Cursor based, API without count key [#285](https://github.com/ember-infinity/ember-infinity/issues/285)
+- Doesn't keep fetching more on page load if view port is smaller than the window [#278](https://github.com/ember-infinity/ember-infinity/issues/278)
+- Hook to update InfinityModel [#272](https://github.com/ember-infinity/ember-infinity/issues/272)
+- Add items to model is not working [#270](https://github.com/ember-infinity/ember-infinity/issues/270)
+- Unable to extend InfinityModel following README.md [#263](https://github.com/ember-infinity/ember-infinity/issues/263)
 - missing ember-in-viewport [#256](https://github.com/ember-infinity/ember-infinity/issues/256)
 
 **Merged pull requests:**
 
+- fix after model hook [#288](https://github.com/ember-infinity/ember-infinity/commit/10b2c377c63dad02eced516e0b9ff5e46b7e49e1)
+- improve cursor based docs + fix a bug in setting canLoadMore [#286](https://github.com/ember-infinity/ember-infinity/commit/b12d9746f4168c98f42212fe84163a233c5ca327)
+- Rename infinity loader service to `infinity` [#283](https://github.com/ember-infinity/ember-infinity/commit/7ddb8cf6fdab2625c70ada6a8e99db2d37df8a5c)
+- InfinityModels managed by service + closure actions [#271](https://github.com/ember-infinity/ember-infinity/commit/90b905f7814a47b72b0deedfd1bf72eeb3887bf8)
+- Load Previous pages [#259](https://github.com/ember-infinity/ember-infinity/commit/bf60f6856b5d928eac4b349b2c97bc1fb9eb4736)
 - InfinityModel used to store query params [#231](https://github.com/ember-infinity/ember-infinity/commit/f48626454a736a3474586d6739c1ac0674af46b2)
 - Non Blocking Model hooks support [#232](https://github.com/ember-infinity/ember-infinity/commit/408ea7f7dcabde15b38b0f9b5b98f85c143e05fc)
 - Ability to extend the InfinityModel [#236](https://github.com/ember-infinity/ember-infinity/commit/7f6671c6feedac13bc34011f78f08a08161fe0bb)
