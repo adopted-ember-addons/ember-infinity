@@ -132,12 +132,22 @@ export default Service.extend({
     @param {Ember.ArrayProxy} infinityModel
     @param {Integer} increment - to increase page by 1 or -1
    */
-  infinityLoad(infinityModel, increment) {
-    if (get(infinityModel, '_loadingMore') || !get(infinityModel, '_canLoadMore')) {
+  infinityLoad(infinityModel, increment = 1) {
+    if (!infinityModel) {
       return;
     }
 
-    return this.loadNextPage(infinityModel, increment);
+    infinityModel = get(this, 'infinityModels').find(model => model === infinityModel);
+    if (infinityModel) {
+      if (get(infinityModel, '_loadingMore') || !get(infinityModel, '_canLoadMore')) {
+        return;
+      }
+
+      set(infinityModel, '_increment', increment);
+      return this.loadNextPage(infinityModel, increment);
+    } else {
+      return true;
+    }
   },
 
   /**

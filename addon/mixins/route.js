@@ -67,7 +67,6 @@ const RouteMixin = Mixin.create({
     @return {Ember.RSVP.Promise}
   */
   infinityModel(modelName, options, boundParamsOrInfinityModel) {
-
     let boundParams, ExtendedInfinityModel;
     if (typeOf(boundParamsOrInfinityModel) === "class") {
       if (!(boundParamsOrInfinityModel.prototype instanceof InfinityModel)) {

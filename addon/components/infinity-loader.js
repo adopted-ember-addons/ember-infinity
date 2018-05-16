@@ -4,8 +4,11 @@ import InViewportMixin from 'ember-in-viewport';
 import { run } from '@ember/runloop';
 import { get, set, computed, observer, defineProperty } from '@ember/object';
 import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 
 const InfinityLoaderComponent = Component.extend(InViewportMixin, {
+  infinity: service(),
+
   classNames: ['infinity-loader'],
   classNameBindings: ['infinityModelContent.reachedInfinity', 'viewportEntered:in-viewport'],
   /**
@@ -209,7 +212,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
         return get(this, 'infinityLoad')(infinityModelContent);
       } else {
         // old action
-        this.sendAction('loadMoreAction', infinityModelContent);
+        this.infinity.infinityLoad(infinityModelContent);
       }
 
     }
