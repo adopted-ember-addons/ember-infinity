@@ -297,7 +297,7 @@ module('RouteMixin', function(hooks) {
 
       this.loadMore = () => {
         run(() => {
-          this.route.infinityLoad(this.model);
+          this.route.infinity.infinityLoad(this.model);
         });
       };
     });
@@ -474,7 +474,7 @@ module('RouteMixin', function(hooks) {
 
       const infinityModel = this.route.get('infinity.infinityModels').objectAt(0);
       run(() => {
-        this.route.infinityLoad(infinityModel);
+        this.route.infinity.infinityLoad(infinityModel);
       });
 
       assert.equal(this.model.get('canLoadMore'), false, 'canLoadMore');

@@ -46,24 +46,12 @@ const RouteMixin = Mixin.create({
     infinityLoad(infinityModel, increment = 1) {
       let matchingInfinityModel = get(this, '_infinityModels').find(model => model === infinityModel);
       if (matchingInfinityModel) {
-        set(infinityModel, '_increment', increment);
-        this.infinityLoad(matchingInfinityModel, increment);
+        set(matchingInfinityModel, '_increment', increment);
+        get(this, 'infinity')['infinityLoad'](matchingInfinityModel, increment);
       } else {
         return true;
       }
     }
-  },
-
-  /**
-    Proxy to underlying service
-
-    @method infinityLoad
-    @param {Ember.ArrayProxy} infinityModel
-    @param {Integer} increment - to increase page by 1 or -1
-    @return {Ember.RSVP.Promise}
-  */
-  infinityLoad(matchingInfinityModel, increment) {
-    return get(this, 'infinity')['infinityLoad'](matchingInfinityModel, increment);
   },
 
   /**
