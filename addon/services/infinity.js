@@ -1,9 +1,14 @@
 import Service from '@ember/service';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
+import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
+import BoundParamsMixin from 'ember-infinity/mixins/bound-params';
 import EmberError from '@ember/error';
-import { isEmpty } from '@ember/utils';
+import { A } from '@ember/array';
+import { isEmpty, typeOf } from '@ember/utils';
 import { scheduleOnce } from '@ember/runloop';
 import { get, set } from '@ember/object';
+import { objectAssign, paramsCheck } from '../utils';
+import { inject as service } from '@ember/service';
 
 let checkInstanceOf = (infinityModel) => {
   if (!(infinityModel instanceof InfinityModel)) {
@@ -20,8 +25,6 @@ let convertToArray = (queryObject) => {
 };
 
 export default Service.extend({
-  infinityModels: null,
-
   /**
     Data fetching/caching service pull off of user's route
 
@@ -29,7 +32,17 @@ export default Service.extend({
     @property store
     @type Ember.Service
   */
-  store: null,
+  store: service(),
+
+  /**
+    Data fetching/caching service pull off of user's route
+
+    @public
+    @property infinityModels
+    @type Ember.Service
+  */
+  infinityModels: null,
+
   /**
     @private
     @property _previousScrollHeight
@@ -125,6 +138,111 @@ export default Service.extend({
     }
 
     return this.loadNextPage(infinityModel, increment);
+  },
+
+  /**
+    Use the infinityModel method in the place of `this.store.query('model')` to
+    initialize the Infinity Model for your route.
+
+    @method model
+    @param {String} modelName The name of the model.
+    @param {Object} options - optional - the perPage and startingPage to load from.
+    @param {Object} boundParamsOrInfinityModel - optional -
+      params on route to be looked up on every route request or
+      instance of InfinityModel
+    @return {Ember.RSVP.Promise}
+  */
+  model(modelName, options, boundParamsOrInfinityModel) {
+
+    let boundParams, ExtendedInfinityModel;
+    if (typeOf(boundParamsOrInfinityModel) === "class") {
+      if (!(boundParamsOrInfinityModel.prototype instanceof InfinityModel)) {
+        throw new EmberError("Ember Infinity: You must pass an Infinity Model instance as the third argument");
+      }
+      ExtendedInfinityModel = boundParamsOrInfinityModel;
+    } else if (typeOf(boundParamsOrInfinityModel) === "object") {
+      boundParams = boundParamsOrInfinityModel;
+    }
+
+    if (modelName === undefined) {
+      throw new EmberError("Ember Infinity: You must pass a Model Name to infinityModel");
+    }
+
+    if (!get(this, 'infinityModels')) {
+      set(this, 'infinityModels', A());
+    }
+
+    options = options ? objectAssign({}, options) : {};
+
+    if (options.store) {
+      if (options.storeFindMethod) {
+        set(this, '_storeFindMethod', options.storeFindMethod);
+      }
+
+      get(this, '_ensureCustomStoreCompatibility')(options, options.store, get(this, '_storeFindMethod'));
+
+      set(this, 'store', options.store);
+
+      delete options.store;
+      delete options.storeFindMethod;
+    }
+
+    set(this, 'infinityModelLoaded', get(this, 'infinityModelLoaded'));
+    set(this, 'afterInfinityModel', get(this, 'afterInfinityModel'));
+
+    // default is to start at 0, request next page and increment
+    const currentPage = options.startingPage === undefined ? 0 : options.startingPage - 1;
+    // sets first page when route is loaded
+    const firstPage = currentPage === 0 ? 1 : currentPage + 1;
+    // chunk requests by indicated perPage param
+    const perPage = options.perPage || 25;
+
+    // check if user passed in param w/ infinityModel, else check if defined on the route (for backwards compat), else default
+    const perPageParam = paramsCheck(options.perPageParam, get(this, 'perPageParam'), 'per_page');
+    const pageParam = paramsCheck(options.pageParam, get(this, 'pageParam'), 'page');
+    const totalPagesParam = paramsCheck(options.totalPagesParam, get(this, 'totalPagesParam'), 'meta.total_pages');
+
+    delete options.startingPage;
+    delete options.perPage;
+    delete options.perPageParam;
+    delete options.pageParam;
+    delete options.totalPagesParam;
+
+    let InfinityModelFactory;
+    let didPassBoundParams = !isEmpty(boundParams);
+    if (didPassBoundParams) {
+      // if pass boundParamsOrInfinityModel, send to backwards compatible mixin that sets bound params on route
+      // and subsequently looked up when user wants to load next page
+      InfinityModelFactory = InfinityModel.extend(BoundParamsMixin);
+    } else if (ExtendedInfinityModel) {
+      // if custom InfinityModel, then use as base for creating an instance
+      InfinityModelFactory = ExtendedInfinityModel;
+    } else {
+      InfinityModelFactory = InfinityModel;
+    }
+
+    let initParams = {
+      currentPage,
+      firstPage,
+      perPage,
+      perPageParam,
+      pageParam,
+      totalPagesParam,
+      _infinityModelName: modelName,
+      extraParams: options,
+      content: A()
+    };
+
+    if (didPassBoundParams) {
+      initParams._deprecatedBoundParams = boundParams;
+      initParams.route = this;
+    }
+
+    const infinityModel = InfinityModelFactory.create(initParams);
+    get(this, '_ensureCompatibility')(get(this, 'store'), get(this, '_storeFindMethod'));
+    get(this, 'infinityModels').pushObject(infinityModel);
+
+    return InfinityPromiseArray.create({ promise: this['loadNextPage'](infinityModel) });
   },
 
   /**

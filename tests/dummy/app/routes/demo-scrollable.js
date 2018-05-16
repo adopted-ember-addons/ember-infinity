@@ -14,10 +14,11 @@ const ExtendedInfinityModel =  InfinityModel.extend({
 
 export default Route.extend(InfinityRoute, {
   global: service(),
+  infinity: service(),
 
   model() {
     let global = get(this, 'global');
-    return this.infinityModel(
+    return this.infinity.model(
       'post',
       {},
       ExtendedInfinityModel.extend({ global })

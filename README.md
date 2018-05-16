@@ -30,12 +30,33 @@ Also:
 
 `ember-infinity` exposes 3 consumable items for your application.
 
-· **Route Mixin**
+· **infinity service**
 
 · **infinity-loader component**
 
-· **infinity service**
+· **Route Mixin** (optional)
 
+
+### Option 1 (recommended)
+
+#### Service Oriented Approach
+
+Ember Infinity has moved to a service based approach wherein your application is viewed as an interaction between your components (ephemeral state) and service (long term state)
+
+As a result of this new approach, we can intelligently store your route state to provide you the ability to cache and invalidate your cache when you need to.
+
+```hbs
+{{#each model as |product|}}
+  <h1>{{product.name}}</h1>
+  <h2>{{product.description}}</h2>
+{{/each}}
+
+{{infinity-loader infinityModel=model collectionName="products"}}
+```
+
+### Option 2
+
+#### Route Mixin Approach
 
 Importing the `ember-infinity` Route Mixin and extending your route will give you access to `this.infinifyModel` in your model hook.
 
