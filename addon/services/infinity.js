@@ -10,6 +10,20 @@ import { get, set } from '@ember/object';
 import { objectAssign, paramsCheck } from '../utils';
 import { inject as service } from '@ember/service';
 
+let findElem = (context) => {
+  let elem;
+  if (
+    context.nodeType === Node.ELEMENT_NODE ||
+    context.nodeType === Node.DOCUMENT_NODE
+  ) {
+    elem = context
+  } else {
+    elem = document.querySelector(context);
+  }
+
+  return elem;
+};
+
 let checkInstanceOf = (infinityModel) => {
   if (!(infinityModel instanceof InfinityModel)) {
     throw new EmberError("Ember Infinity: You must pass an Infinity Model instance as the first argument");
@@ -132,7 +146,7 @@ export default Service.extend({
     @param {Ember.ArrayProxy} infinityModel
     @param {Integer} increment - to increase page by 1 or -1
    */
-  infinityLoad(infinityModel, increment = 1) {
+  infinityLoad(infinityModel, increment = 1, infinityLoaderElem) {
     if (!infinityModel) {
       return;
     }
@@ -144,7 +158,7 @@ export default Service.extend({
       }
 
       set(infinityModel, '_increment', increment);
-      return this.loadNextPage(infinityModel, increment);
+      return this.loadNextPage(infinityModel, increment, infinityLoaderElem);
     } else {
       return true;
     }
@@ -265,7 +279,7 @@ export default Service.extend({
     @param {Integer} increment - to increase page by 1 or -1. Default to increase by one page
     @return {Ember.RSVP.Promise} A Promise that resolves the model
    */
-  loadNextPage(infinityModel, increment = 1) {
+  loadNextPage(infinityModel, increment = 1, infinityLoaderElem = '.infinity-loader') {
     set(infinityModel, '_loadingMore', true);
     set(this, '_previousScrollHeight', this._calculateHeight(infinityModel));
 
@@ -294,7 +308,7 @@ export default Service.extend({
           this._notifyInfinityModelLoaded();
         } else if (increment == 1) {
           // if list still needs to populate the screen only if we are loading the next page (not previous pages)
-          let infinityLoaderElem = document.querySelector('.infinity-loader');
+          infinityLoaderElem = findElem(infinityLoaderElem);
           if (infinityLoaderElem && this._viewportHeight(infinityModel) > infinityLoaderElem.offsetTop) {
             // load again
             this.loadNextPage(infinityModel, increment);

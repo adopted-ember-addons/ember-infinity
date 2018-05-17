@@ -208,11 +208,11 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
       let infinityModelContent = get(this, 'infinityModelContent');
 
       if (typeof(get(this, 'infinityLoad')) === 'function') {
-        // closure action
+        // closure action (if you need to perform some other logic)
         return get(this, 'infinityLoad')(infinityModelContent);
       } else {
-        // old action
-        get(this, 'infinity').infinityLoad(infinityModelContent);
+        // service action
+        get(this, 'infinity').infinityLoad(infinityModelContent, 1, this.element);
       }
 
     }
