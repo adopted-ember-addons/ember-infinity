@@ -45,6 +45,8 @@ Ember Infinity has moved to a service based approach wherein your application is
 
 As a result of this new approach, we can intelligently store your route state to provide you the ability to cache and invalidate your cache when you need to.
 
+Note: You do not need to pass an action into infinity-loader.  We handle that internally now.  You can still pass a closure action `infinityLoad` if you must do so.
+
 ```hbs
 {{#each model as |product|}}
   <h1>{{product.name}}</h1>
@@ -217,7 +219,7 @@ The ability to use closure actions will be available in the `1.0.0-beta` series.
 
 ### Service Methods
 
-The infinity service exposes 4 methods:
+The infinity service also exposes 4 methods to mutate your collection:
 
 1. replace
 2. flush

@@ -145,6 +145,7 @@ export default Service.extend({
     @method infinityLoad
     @param {Ember.ArrayProxy} infinityModel
     @param {Integer} increment - to increase page by 1 or -1
+    @param {Node} infinityLoaderElem - important when have multiple infinity loader elements on the page
    */
   infinityLoad(infinityModel, increment = 1, infinityLoaderElem) {
     if (!infinityModel) {
@@ -157,6 +158,7 @@ export default Service.extend({
         return;
       }
 
+      // this is duplicated if this method is called from the route.
       set(infinityModel, '_increment', increment);
       return this.loadNextPage(infinityModel, increment, infinityLoaderElem);
     } else {
@@ -165,7 +167,7 @@ export default Service.extend({
   },
 
   /**
-    Use the infinityModel method in the place of `this.store.query('model')` to
+    Use the model method in the place of `this.store.query('model')` to
     initialize the Infinity Model for your route.
 
     @method model
@@ -177,7 +179,6 @@ export default Service.extend({
     @return {Ember.RSVP.Promise}
   */
   model(modelName, options, boundParamsOrInfinityModel) {
-
     let boundParams, ExtendedInfinityModel;
     if (typeOf(boundParamsOrInfinityModel) === "class") {
       if (!(boundParamsOrInfinityModel.prototype instanceof InfinityModel)) {
@@ -205,6 +206,7 @@ export default Service.extend({
 
       get(this, '_ensureCustomStoreCompatibility')(options, options.store, get(this, '_storeFindMethod'));
 
+      // override `store: inject.service()` on infinity service
       set(this, 'store', options.store);
 
       delete options.store;
@@ -277,6 +279,7 @@ export default Service.extend({
     @method loadNextPage
     @param {Ember.ArrayProxy} infinityModel
     @param {Integer} increment - to increase page by 1 or -1. Default to increase by one page
+    @param {Node} infinityLoaderElem - important when have multiple infinity loader elements on the page
     @return {Ember.RSVP.Promise} A Promise that resolves the model
    */
   loadNextPage(infinityModel, increment = 1, infinityLoaderElem = '.infinity-loader') {
