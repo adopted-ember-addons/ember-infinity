@@ -18,7 +18,7 @@ export default Route.extend(InfinityRoute, {
 
   model() {
     let global = get(this, 'global');
-    return this.infinity.model(
+    return get(this, 'infinity').model(
       'post',
       {},
       ExtendedInfinityModel.extend({ global })

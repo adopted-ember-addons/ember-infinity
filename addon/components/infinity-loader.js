@@ -212,7 +212,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
         return get(this, 'infinityLoad')(infinityModelContent);
       } else {
         // old action
-        this.infinity.infinityLoad(infinityModelContent);
+        get(this, 'infinity').infinityLoad(infinityModelContent);
       }
 
     }
