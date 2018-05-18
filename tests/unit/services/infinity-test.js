@@ -92,7 +92,6 @@ module('Unit | Service | infinity', function(hooks) {
   test('model hook will always return promise when no cache in options', function(assert) {
     let service = this.owner.lookup('service:infinity');
     service.loadNextPage = () => new RSVP.Promise((resolve) => { resolve(); });
-    let date = Date.now() + 3600;
     let model = service.model('post');
     assert.ok(typeof(model.then) === 'function');
     assert.deepEqual(service.get('_cachedCollection'), {}, 'default of _cachedCollection');
