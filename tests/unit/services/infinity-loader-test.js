@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { A } from '@ember/array';
+import RSVP from 'rsvp';
 import ArrayProxy from '@ember/array/proxy';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 
@@ -86,6 +87,19 @@ module('Unit | Service | infinity', function(hooks) {
     let newArray = this.EA();
     let result = service.flush(originalArray, newArray);
     assert.equal(result.get('length'), 0);
+  });
+
+  test('model hook can return cached infinity model if pass "cache" with future timestamp', function(assert) {
+    let service = this.owner.lookup('service:infinity');
+    service.loadNextPage = () => new RSVP.Promise((resolve) => { resolve(); });
+    let date = Date.now() + 3600;
+    let model = service.model('post', { cache: date });
+    assert.ok(typeof(model.then) === 'function');
+    assert.ok(service.get('_cachedCollection')['post'][date], 'returns promise');
+    model = service.model('post', { cache: date });
+    assert.ok(model instanceof InfinityModel, 'returns cached model');
+    model = service.model('post', { cache: date });
+    assert.ok(model instanceof InfinityModel, 'returns cached model again');
   });
 });
 

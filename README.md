@@ -47,13 +47,23 @@ As a result of this new approach, we can intelligently store your route state to
 
 Note: You do not need to pass an action into infinity-loader.  We handle that internally now.  You can still pass a closure action `infinityLoad` if you must do so.
 
+```js
+import Route from '@ember/routing/route';
+import InfinityRoute from "ember-infinity/mixins/route";
+
+export default Route.extend(InfinityRoute, {
+  model() {
+    return this.infinity.model('product', { cache: future_timestamp });
+  }
+});
+```
 ```hbs
 {{#each model as |product|}}
   <h1>{{product.name}}</h1>
   <h2>{{product.description}}</h2>
 {{/each}}
 
-{{infinity-loader infinityModel=model collectionName="products"}}
+{{infinity-loader infinityModel=model}}
 ```
 
 ### Option 2
@@ -116,6 +126,7 @@ export default Controller.extend({
       @param {InfinityModel} products
     */
     loadMoreProduct(products) {
+      // Perform other logic ....
       get(this, 'infinity').infinityLoad(products);
     }
   }
@@ -145,38 +156,7 @@ export default Route.extend(InfinityRoute, {
 
 ### Multiple Infinity Models in one Route
 
-Let's look at a more complicated example using multiple infinity models in a route.
-
-```js
-import Controller from '@ember/routing/route';
-import { inject as service } from '@ember/service';
-import { get } from '@ember/object';
-
-export default Controller.extend({
-  infinity: service(),
-
-  actions: {
-    /**
-      Note this must be handled by you.  An action will be called with the result of your Route model hook from the `infinity-loader` component, similar to this:
-      // closure action in infinity-loader component
-      get(this, 'infinityLoad')(infinityModelContent);
-
-      @method loadMoreProduct
-      @param {InfinityModel} products
-    */
-    loadMoreProduct(products) {
-      get(this, 'infinity').infinityLoad(products);
-    }
-    /**
-      @method loadMoreUsers
-      @param {InfinityModel} users
-    */
-    loadMoreUsers(users) {
-      get(this, 'infinity').infinityLoad(users);
-    }
-  }
-});
-```
+Let's look at a more complicated example using multiple infinity models in a route.  Super easy!
 
 ```js
 import Route from '@ember/routing/route';
@@ -201,7 +181,7 @@ export default Route.extend(InfinityRoute, {
     <h1>{{user.username}}</h1>
   {{/each}}
 
-  {{infinity-loader infinityModel=model.users infinityLoad=(action "loadMoreUsers")}}
+  {{infinity-loader infinityModel=model.users}}
 </aside>
 
 <section>
@@ -210,21 +190,47 @@ export default Route.extend(InfinityRoute, {
     <h2>{{product.description}}</h2>
   {{/each}}
 
-  {{infinity-loader infinityModel=model.products infinityLoad=(action "loadMoreProduct")}}
+  {{infinity-loader infinityModel=model.products}}
 <section>
 ```
 
-The ability to use closure actions will be available in the `1.0.0-beta` series.  Also, this method uses Controllers.  Despite what you may have heard, Controllers are a great primitive in Ember's ecosystem.  Their singleton nature is great for handling queryParams and actions propagated from somewhere in your component tree.
+The ability to use closure actions will be available in the `1.0.0-beta` series.
 
 
 ### Service Methods
 
-The infinity service also exposes 4 methods to mutate your collection:
+The infinity service also exposes 5 methods to mutate your collection:
 
+0. model
 1. replace
 2. flush
 3. pushObjects
 3. unshiftObjects
+
+Let's see an example of using `model`.
+
+```js
+import Route from '@ember/routing/route';
+import InfinityRoute from "ember-infinity/mixins/route";
+
+export default Route.extend(InfinityRoute, {
+  model() {
+    return this.infinity.model('product');
+  }
+});
+```
+
+Moreover, if you want to intelligently cache your infinity model, pass `{ cache: timestamp }` and we will return the cached collection if the future timestamp is less than the current time (in ms) your users revisit the same route.
+```js
+import Route from '@ember/routing/route';
+import InfinityRoute from "ember-infinity/mixins/route";
+
+export default Route.extend(InfinityRoute, {
+  model() {
+    return this.infinity.model('product', { cache: 36000 }); // timestamp expiry of 10 minutes
+  }
+});
+```
 
 Let's see an example of using `replace`.
 
@@ -256,7 +262,7 @@ import InfinityRoute from "ember-infinity/mixins/route";
 
 export default Route.extend(InfinityRoute, {
   model() {
-    return this.infinityModel("product");
+    return this.infinity.model('product');
   }
 });
 ```
