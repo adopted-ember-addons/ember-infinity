@@ -36,6 +36,7 @@ Also:
 
 · **Route Mixin** (optional)
 
+As of 1.0, you can either use the `infinityModel` Route mixin hook or the infinity service `model` hook.  We will be moving forward with the service based approach.
 
 ### Option 1 (recommended)
 
@@ -45,7 +46,7 @@ Ember Infinity has moved to a service based approach wherein your application is
 
 As a result of this new approach, we can intelligently store your route state to provide you the ability to cache and invalidate your cache when you need to.
 
-Note: You do not need to pass an action into infinity-loader.  We handle that internally now.  You can still pass a closure action `infinityLoad` if you must do so.
+Note: You do not need to pass an action into infinity-loader component anymore.  We handle that internally now.  You can still pass a closure action `infinityLoad` if you must do so.
 
 ```js
 import Route from '@ember/routing/route';
@@ -53,7 +54,7 @@ import InfinityRoute from "ember-infinity/mixins/route";
 
 export default Route.extend(InfinityRoute, {
   model() {
-    return this.infinity.model('product', { cache: future_timestamp });
+    return this.infinity.model('product', { cache: 36000 }); // in milliseconds - cache the product infinity model for 10 minutes
   }
 });
 ```
@@ -79,7 +80,7 @@ import InfinityRoute from "ember-infinity/mixins/route";
 export default Route.extend(InfinityRoute, {
   model() {
     /* Load pages of the Product Model, starting from page 1, in groups of 12. */
-    return this.infinityModel("product", { perPage: 12, startingPage: 1 });
+    return this.infinityModel('product', { perPage: 12, startingPage: 1 });
   }
 });
 ```
@@ -139,7 +140,7 @@ import InfinityRoute from "ember-infinity/mixins/route";
 
 export default Route.extend(InfinityRoute, {
   model() {
-    return this.infinityModel("product");
+    return this.infinityModel('product');
   }
 });
 ```
@@ -166,8 +167,8 @@ import InfinityRoute from "ember-infinity/mixins/route";
 export default Route.extend(InfinityRoute, {
   model() {
     return RSVP.hash({
-      products: this.infinityModel("product"),
-      users: this.infinityModel("user")
+      products: this.infinity.model('product'),
+      users: this.infinity.model("user")
     });
   }
 });
@@ -199,7 +200,7 @@ The ability to use closure actions will be available in the `1.0.0-beta` series.
 
 ### Service Methods
 
-The infinity service also exposes 5 methods to mutate your collection:
+The infinity service also exposes 5 methods to fetch & mutate your collection:
 
 0. model
 1. replace
@@ -220,14 +221,14 @@ export default Route.extend(InfinityRoute, {
 });
 ```
 
-Moreover, if you want to intelligently cache your infinity model, pass `{ cache: timestamp }` and we will return the cached collection if the future timestamp is less than the current time (in ms) your users revisit the same route.
+Moreover, if you want to intelligently cache your infinity model, pass `{ cache: timestamp }` and we will return the cached collection if the future timestamp is less than the current time (in ms) if your users revisit the same route.
 ```js
 import Route from '@ember/routing/route';
 import InfinityRoute from "ember-infinity/mixins/route";
 
 export default Route.extend(InfinityRoute, {
   model() {
-    return this.infinity.model('product', { cache: 36000 }); // timestamp expiry of 10 minutes
+    return this.infinity.model('product', { cache: 36000 }); // timestamp expiry of 10 minutes (in ms)
   }
 });
 ```
@@ -275,14 +276,12 @@ export default Route.extend(InfinityRoute, {
   <h2>{{product.description}}</h2>
 {{/each}}
 
-{{infinity-loader infinityModel=model infinityLoad=(action "loadMoreProduct")}}
+{{infinity-loader infinityModel=model}}
 ```
 
 ### Non-Blocking Model Hooks
 
 In the world of optimistic route transitions & skeleton UI, it's necessary to return a POJO or similar primitive to Ember's Route#model hook to ensure the transition is not blocked by promise.
-
-As of 1.0, the infinityModel hook now supports this behavior out of the box:
 
 ```js
 model() {
@@ -336,7 +335,7 @@ export default Route.extend(InfinityRoute, {
 
   model() {
     /* Load pages of the Product Model, starting from page 1, in groups of 12. Also set query params by handing off to infinityModel */
-    return this.infinityModel("product", { perPage: 12, startingPage: 1,
+    return this.infinityModel('product', { perPage: 12, startingPage: 1,
       perPageParam: "per", pageParam: "pg", totalPagesParam: "meta.total" });
   }
 });
@@ -405,7 +404,7 @@ pagination params. For instance, in the following example a `category`
 parameter is added:
 
 ```js
-return this.infinityModel("product", { perPage: 12, startingPage: 1,
+return this.infinityModel('product', { perPage: 12, startingPage: 1,
                                        category: "furniture" });
 ```
 
@@ -454,7 +453,7 @@ or when your model is on different location than `controller.model`.
 
 ```js
 model() {
-  return this.infinityModel("product", {
+  return this.infinityModel('product', {
     perPage: 12,
     startingPage: 1,
     modelPath: 'controller.products'
@@ -542,7 +541,7 @@ export default Ember.Route.extend(InfinityRoute, {
 
   model() {
     /* Load pages of the Product Model, starting from page 1, in groups of 12. */
-    return this.infinityModel("product", { perPage: 12, startingPage: 1 });
+    return this.infinityModel('product', { perPage: 12, startingPage: 1 });
   },
 
   infinityModelUpdated({ lastPageLoaded, totalPages, newObjects }) {
@@ -563,7 +562,7 @@ export default Ember.Route.extend(InfinityRoute, {
   customStore: Ember.inject.service('my-custom-store'),
 
   model(params) {
-    return this.infinityModel('product', {
+    return this.infinity.model('product', {
       perPage: 12,
       startingPage: 1,
       store: 'customStore', // custom ember-data store or ember-redux / ember-cli-simple-store / your own hand rolled store (see dummy app)
@@ -594,7 +593,6 @@ Closure actions are enabled in the `1.0.0-beta` series.
 ```hbs
 {{infinity-loader
   infinityModel=model
-  infinityLoad=(action "loadMoreProducts")
   hideOnInfinity=true}}
 ```
 
