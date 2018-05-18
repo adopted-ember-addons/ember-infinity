@@ -38,13 +38,13 @@ Also:
 
 As of 1.0, you can either use the `infinityModel` Route mixin hook or the infinity service `model` hook.  We will be moving forward with the service based approach.
 
-### Option 1 (recommended)
+### · Option 1 (recommended)
 
 #### Service Oriented Approach
 
 Ember Infinity has moved to a service based approach wherein your application is viewed as an interaction between your components (ephemeral state) and service (long term state)
 
-As a result of this new approach, we can intelligently store your route state to provide you the ability to cache and invalidate your cache when you need to.
+As a result of this new approach, we can intelligently store your model state to provide you the ability to cache and invalidate your cache when you need to.  If you provide an optional `cache` value, the infinity service model hook will return the existing collection (and not make a network request) if the timestamp has not yet expired.
 
 Note: You do not need to pass an action into infinity-loader component anymore.  We handle that internally now.  You can still pass a closure action `infinityLoad` if you must do so.
 
@@ -67,7 +67,7 @@ export default Route.extend(InfinityRoute, {
 {{infinity-loader infinityModel=model}}
 ```
 
-### Option 2
+### · Option 2
 
 #### Route Mixin Approach
 
@@ -96,16 +96,15 @@ Then, you'll need to add the `infinity-loader` component to your template, like 
 {{infinity-loader infinityModel=model}}
 ```
 
-Now, whenever the `infinity-loader` component is in view, it will send an action to the route.  This method uses action bubbling, which may not be the preferred way of passing data around your application.  See [Closure Actions](#ClosureActions).
 
-When the new records are loaded, they will automatically be pushed into the Model array.
+In both cases, whenever the `infinity-loader` component is in view, we will fetch the next page for you.
 
 Lastly, by default, `ember-infinity` expects the server response to contain something about how many total pages it can expect to fetch. `ember-infinity` defaults to looking for something like `meta: { total_pages: 20 }` in your response.  See [Advanced Usage](#AdvancedUsage).
 
 
 ### Closure Actions<a name="ClosureActions"></a>
 
-If you want to use closure actions with `ember-infinity` and the `infinity-loader` component, you need to be a little bit more explicit.  No more secret bubbling of an `infinityLoad` action up to your route.  This is how your code will look like with controller actions.
+If you want to use closure actions with `ember-infinity` and the `infinity-loader` component, you need to be a little bit more explicit.  Generally you should let the infinity service handle fetching records for you, but if you have a special case, this is how you would do it:
 
 See the Ember docs on passing actions to components [here](https://guides.emberjs.com/v3.0.0/components/triggering-changes-with-actions/#toc_passing-the-action-to-the-component).
 
@@ -195,20 +194,18 @@ export default Route.extend(InfinityRoute, {
 <section>
 ```
 
-The ability to use closure actions will be available in the `1.0.0-beta` series.
-
 
 ### Service Methods
 
 The infinity service also exposes 5 methods to fetch & mutate your collection:
 
-0. model
-1. replace
-2. flush
-3. pushObjects
-3. unshiftObjects
+1. model
+2. replace
+3. flush
+4. pushObjects
+5. unshiftObjects
 
-Let's see an example of using `model`.
+The `model` hook (similar to the Route Mixin `infinityModel` hook) will fetch the first page you request and pass the result to your template.
 
 ```js
 import Route from '@ember/routing/route';
@@ -287,6 +284,7 @@ In the world of optimistic route transitions & skeleton UI, it's necessary to re
 model() {
   return {
     posts: this.infinityModel('post')
+    // or posts: this.infinity.model('post')
   };
 }
 ```

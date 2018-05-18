@@ -89,6 +89,18 @@ module('Unit | Service | infinity', function(hooks) {
     assert.equal(result.get('length'), 0);
   });
 
+  test('model hook will always return promise when no cache in options', function(assert) {
+    let service = this.owner.lookup('service:infinity');
+    service.loadNextPage = () => new RSVP.Promise((resolve) => { resolve(); });
+    let date = Date.now() + 3600;
+    let model = service.model('post');
+    assert.ok(typeof(model.then) === 'function');
+    assert.deepEqual(service.get('_cachedCollection'), {}, 'default of _cachedCollection');
+    model = service.model('post');
+    assert.ok(typeof(model.then) === 'function');
+    assert.notOk(model instanceof InfinityModel, 'returns cached model');
+  });
+
   test('model hook can return cached infinity model if pass "cache" with future timestamp', function(assert) {
     let service = this.owner.lookup('service:infinity');
     service.loadNextPage = () => new RSVP.Promise((resolve) => { resolve(); });
