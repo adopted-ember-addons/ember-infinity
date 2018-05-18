@@ -38,6 +38,22 @@ let convertToArray = (queryObject) => {
   return queryObject;
 };
 
+/**
+ * contains an array of Array Proxies
+ * @method hashifyInfinityCollection
+ * @param Map
+ * @param Ember.Array
+ * @param String
+ * @return Map
+ */
+let hashifyInfinityCollection = (_cachedCollection, infinityModel, label) => {
+  if (_cachedCollection && _cachedCollection.get(label)) {
+    return _cachedCollection.set(label, infinityModel);
+  }
+  _cachedCollection = new Map();
+  return _cachedCollection.set(label, infinityModel);
+};
+
 export default Service.extend({
   /**
     Data fetching/caching service pull off of user's route
@@ -47,6 +63,14 @@ export default Service.extend({
     @type Ember.Service
   */
   store: service(),
+
+  /**
+    hashed k-v pairs
+    @private
+    @property _cachedCollection
+    @type Map
+  */
+  _cachedCollection: null,
 
   /**
     Data fetching/caching service pull off of user's route
@@ -266,7 +290,19 @@ export default Service.extend({
 
     const infinityModel = InfinityModelFactory.create(initParams);
     get(this, '_ensureCompatibility')(get(this, 'store'), get(this, '_storeFindMethod'));
+    // route specific (for backwards compat)
     get(this, 'infinityModels').pushObject(infinityModel);
+
+    // internal service specific - TODO: hash instead of modelName
+    if (options.hashify) {
+      let _cachedCollection = get(this, '_cachedCollection');
+      if (!_cachedCollection) {
+        let _cachedCollection = hashifyInfinityCollection(get(this, '_cachedCollection'), infinityModel, modelName);
+        set(this, '_cachedCollection', _cachedCollection);
+      } else {
+        return _cachedCollection.get(modelName);
+      }
+    }
 
     return InfinityPromiseArray.create({ promise: this['loadNextPage'](infinityModel) });
   },
