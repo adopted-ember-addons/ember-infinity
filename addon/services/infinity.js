@@ -9,6 +9,7 @@ import { scheduleOnce } from '@ember/runloop';
 import { get, set } from '@ember/object';
 import { objectAssign, paramsCheck } from '../utils';
 import { inject as service } from '@ember/service';
+import { assert } from '@ember/debug';
 
 let findElem = (context) => {
   let elem;
@@ -49,7 +50,7 @@ let convertToArray = (queryObject) => {
  */
 let hashifyInfinityCollection = (_cachedCollection, infinityModel, identifier, timestamp) => {
   if (_cachedCollection && _cachedCollection[identifier]) {
-    // 1. first clear out elements from object
+    // 1. first clear out elements from object since we are expired
     _cachedCollection[identifier] = {};
     // 2. Set new timestamp for identifier
     return _cachedCollection[identifier] = { [timestamp]: infinityModel };
@@ -300,6 +301,7 @@ export default Service.extend({
 
     // internal service specific
     if (options.cache) {
+      assert('timestamp must be a positive integer in milliseconds', options.cache > 0);
       let label = options.label || '';
       let identifier = modelName + label;
       let _cachedCollection = get(this, '_cachedCollection');

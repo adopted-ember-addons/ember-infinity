@@ -127,5 +127,16 @@ module('Unit | Service | infinity', function(hooks) {
     model = service.model('post', { cache: date, label: 'posts-main' });
     assert.ok(model instanceof InfinityModel, 'returns cached model again');
   });
+
+  test('model hook can break cache', function(assert) {
+    let service = this.owner.lookup('service:infinity');
+    service.loadNextPage = () => new RSVP.Promise((resolve) => { resolve(); });
+    let date = Date.now() + 1;
+    let model = service.model('post', { cache: date });
+    assert.ok(typeof(model.then) === 'function');
+    assert.ok(service.get('_cachedCollection')['post'][date], 'returns promise');
+    model = service.model('post', { cache: date });
+    assert.ok(typeof(model.then) === 'function');
+  });
 });
 
