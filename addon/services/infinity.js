@@ -42,21 +42,24 @@ let convertToArray = (queryObject) => {
 /**
  * { 'products': { future_timestamp: infinityModel } }
  * contains an array of Array Proxies
+ * only called when need to re-hashify the collection
+ *
  * @method hashifyInfinityCollection
- * @param Object
- * @param Ember.Array
- * @param String
+ * @param Ember.Array _cachedCollection
+ * @param Object infinityModel
+ * @param String identifier
+ * @param String timestamp
  * @return Object
  */
 let hashifyInfinityCollection = (_cachedCollection, infinityModel, identifier, timestamp) => {
   if (_cachedCollection && _cachedCollection[identifier]) {
     // 1. first clear out elements from object since we are expired
     _cachedCollection[identifier] = {};
-    // 2. Set new timestamp for identifier
-    return _cachedCollection[identifier] = { [timestamp]: infinityModel };
   }
 
-  return _cachedCollection[identifier] = { [timestamp]: infinityModel };
+  // 2. Set new timestamp for identifier
+  let future_timestamp = Date.now() + timestamp;
+  return _cachedCollection[identifier] = { [future_timestamp]: infinityModel };
 };
 
 export default Service.extend({
@@ -166,6 +169,7 @@ export default Service.extend({
 
   /**
     Trigger a load of the next page of results while also checking if it can load more
+    Subsequent fetching.  Not used for initial request
 
     @public
     @method infinityLoad
@@ -195,6 +199,7 @@ export default Service.extend({
   /**
     Use the model method in the place of `this.store.query('model')` to
     initialize the Infinity Model for your route.
+    Main method used for initial load of infinity collection in route or top level component
 
     @method model
     @param {String} modelName The name of the model.
@@ -302,18 +307,23 @@ export default Service.extend({
     // internal service specific
     if (options.cache) {
       assert('timestamp must be a positive integer in milliseconds', options.cache > 0);
+
+      // 1. create identifier for storage in _cachedCollection
       let label = options.label || '';
       let identifier = modelName + label;
       let _cachedCollection = get(this, '_cachedCollection');
       let cachedModel = _cachedCollection[identifier];
       if (cachedModel) {
-        // get timestamp and compare to now
-        let timestamp = Object.keys(cachedModel)[0];
-        if (timestamp > Date.now()) {
-          return cachedModel[timestamp];
+        // 2. If cachedModel, get future_timestamp (ms since 1970) and compare to now
+        let future_timestamp = Object.keys(cachedModel)[0];
+        if (future_timestamp > Date.now()) {
+          return cachedModel[future_timestamp];
+        } else {
+          // 3. cache collection based on new timestamp
+          hashifyInfinityCollection(_cachedCollection, infinityModel, identifier, options.cache);
         }
       } else {
-        // if we are expired, cache a new infinityModel + future timestamp
+        // 2. if we are expired (future_timestamp < Date.now()) or cachedModel doesn't exist, cache a new infinityModel + future timestamp
         hashifyInfinityCollection(_cachedCollection, infinityModel, identifier, options.cache);
       }
     }

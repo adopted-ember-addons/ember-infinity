@@ -7,7 +7,7 @@
 [![Dependency Status](https://david-dm.org/ember-infinity/ember-infinity.svg)](https://david-dm.org/ember-infinity/ember-infinity)
 [![devDependency Status](https://david-dm.org/ember-infinity/ember-infinity/dev-status.svg)](https://david-dm.org/ember-infinity/ember-infinity#info=devDependencies)
 
-***As of v1.0-alpha and above, this library officially supports Ember 2.4 and above***
+***As of v1.0-alpha, this library officially supports Ember 2.4 and above***
 
 ***We are currently in the v1.0.0-beta series (stable) and will be releasing 1.0 by the end of May 2018***
 
@@ -45,6 +45,8 @@ As of 1.0-beta, you can either use the infinity service `model` hook or the `inf
 Ember Infinity has moved to a service based approach wherein your application is viewed as an interaction between your components (ephemeral state) and service (long term state)
 
 As a result of this new approach, we can intelligently store your model state to provide you the ability to cache and invalidate your cache when you need to.  If you provide an optional `cache` timestamp (in ms), the infinity service `model` hook will return the existing collection (and not make a network request) if the timestamp has not yet expired.
+
+Moreover, you are not restricted to fetching items in the route.  Fetch away in any top-level component!
 
 Note: You do not need to pass an action into infinity-loader component anymore.  We handle that internally now.  You can still pass a closure action `infinityLoad` if you must do so.
 
