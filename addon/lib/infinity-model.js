@@ -1,4 +1,5 @@
-import ArrayProxy from "@ember/array/proxy"
+import { RSVP: { resolve } } from 'ember';
+import ArrayProxy from "@ember/array/proxy";
 import { oneWay } from '@ember/object/computed';
 import { computed, get, set, getProperties } from '@ember/object';
 import { objectAssign } from '../utils';
@@ -179,5 +180,50 @@ export default ArrayProxy.extend({
     }
 
     return objectAssign(pageParams, get(this, 'extraParams'));
+  },
+
+  /**
+    orchestrate after-model hooks, local to the class, or configured on the route
+
+    @private
+    @method _afterInfinityModel
+    @return {Ember.RSVP.Promise} A Promise that resolves the new objects
+    @return {Ember.Array} the new objects
+   */
+  _afterInfinityModel(newObjects, infinityModel) {
+    let result = this.afterInfinityModel(newObjects, infinityModel);
+
+    if(!this._routeAfterInfinityModel || typeof this._routeAfterInfinityModel !== 'function') {
+      return result || newObjects;
+    } else {
+      return result.then((result) => { return this._routeAfterInfinityModel(result || newObjects, infinityModel) || newObjects });
+    }
+  }
+
+  /**
+    abstract after-model hook, can be overridden in subclasses
+
+    @method afterInfinityModel
+    @param {Ember.Array} newObjects the new objects added to the model
+    @param {Ember.ArrayProxy} infinityModel (self)
+    @return {Ember.RSVP.Promise} A Promise that resolves the new objects
+    @return {Ember.Array} the new objects
+   */
+  afterInfinityModel(newObjects, infinityModel) {
+    // override in your subclass to customize
+    return resolve(newObjects);
+  },
+
+  _infinityModelLoaded(data) {
+    const result = resolve(data).then(this.infinityModelLoaded)
+    if(!this._routeInfinityModelLoaded || typeof this._routeInfinityModelLoaded !== 'function') {
+      return result.then(this._routeInfinityModelLoaded);
+    } else {
+      return result;
+    }
+  }
+
+  infinityModelLoaded(data) {
+    // override in your subclass to customize
   }
 });
