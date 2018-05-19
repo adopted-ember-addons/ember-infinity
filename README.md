@@ -219,6 +219,7 @@ export default Route.extend(InfinityRoute, {
 ```
 
 Moreover, if you want to intelligently cache your infinity model, pass `{ cache: timestamp }` and we will return the cached collection if the future timestamp is less than the current time (in ms) if your users revisit the same route.
+
 ```js
 import Route from '@ember/routing/route';
 import InfinityRoute from "ember-infinity/mixins/route";
@@ -228,6 +229,19 @@ export default Route.extend(InfinityRoute, {
     return this.infinity.model('product', { cache: 36000 }); // timestamp expiry of 10 minutes (in ms)
   }
 });
+
+Additionally, if you have multiple routes requesting the same model type, in order to intelligently cache your records, you can pass a `label` property.
+
+```js
+import Route from '@ember/routing/route';
+import InfinityRoute from "ember-infinity/mixins/route";
+
+export default Route.extend(InfinityRoute, {
+  model() {
+    return this.infinity.model('product', { cache: 36000, label: 'products-main' }); // label to uniquely identify this collection vs another product collection
+  }
+});
+
 ```
 
 Let's see an example of using `replace`.
@@ -410,7 +424,7 @@ return this.infinityModel('product', { perPage: 12, startingPage: 1,
 
 As of 1.0+, you can override or extend the behavior of Ember Infinity by providing a class that extends InfinityModel as a third argument to the Route#infinityModel hook.
 
-**Note**: This behavior should negate any need for the pre 1.0 "Bound Params" style of work. See [Bound Parameters][Bound Parameters] Section below for more information.
+**Note**: This behavior should negate any need for the pre 1.0 "Bound Params" style of work. See [Bound Parameters](#Bound Parameters) Section below for more information.
 
 ```js
 import InfinityRoute from 'ember-infinity/mixins/route';

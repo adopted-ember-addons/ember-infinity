@@ -112,5 +112,20 @@ module('Unit | Service | infinity', function(hooks) {
     model = service.model('post', { cache: date });
     assert.ok(model instanceof InfinityModel, 'returns cached model again');
   });
+
+  test('model hook can return cached infinity model with label', function(assert) {
+    let service = this.owner.lookup('service:infinity');
+    service.loadNextPage = () => new RSVP.Promise((resolve) => { resolve(); });
+    let date = Date.now() + 3600;
+    let model = service.model('post', { cache: date, label: 'posts-main' });
+    assert.ok(typeof(model.then) === 'function');
+    assert.ok(service.get('_cachedCollection')['postposts-main'][date], 'returns promise');
+    model = service.model('post', { cache: date, label: 'posts-main' });
+    assert.ok(model instanceof InfinityModel, 'returns cached model');
+    model = service.model('post', { cache: date, label: 'diff-label' });
+    assert.ok(typeof(model.then) === 'function', 'diff label will return thennable');
+    model = service.model('post', { cache: date, label: 'posts-main' });
+    assert.ok(model instanceof InfinityModel, 'returns cached model again');
+  });
 });
 
