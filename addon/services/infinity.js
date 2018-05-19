@@ -252,12 +252,14 @@ export default Service.extend({
     const perPageParam = paramsCheck(options.perPageParam, get(this, 'perPageParam'), 'per_page');
     const pageParam = paramsCheck(options.pageParam, get(this, 'pageParam'), 'page');
     const totalPagesParam = paramsCheck(options.totalPagesParam, get(this, 'totalPagesParam'), 'meta.total_pages');
+    const countParam = paramsCheck(options.countParam, get(this, 'countParam'), 'meta.count');
 
     delete options.startingPage;
     delete options.perPage;
     delete options.perPageParam;
     delete options.pageParam;
     delete options.totalPagesParam;
+    delete options.countParam;
 
     let InfinityModelFactory;
     let didPassBoundParams = !isEmpty(boundParams);
@@ -279,6 +281,7 @@ export default Service.extend({
       perPageParam,
       pageParam,
       totalPagesParam,
+      countParam,
       _infinityModelName: modelName,
       extraParams: options,
       content: A()
@@ -430,7 +433,7 @@ export default Service.extend({
   },
 
   /**
-    set _totalPages param on infinityModel
+    set _totalPages && count param on infinityModel
     Update the infinity model with new objects with either adding to end or start of Array of objects
 
     @private
@@ -441,7 +444,9 @@ export default Service.extend({
    */
   _doUpdate(queryObject, infinityModel) {
     const totalPages = queryObject.get(get(infinityModel, 'totalPagesParam'));
+    const count = queryObject.get(get(infinityModel, 'countParam'));
     set(infinityModel, '_totalPages', totalPages);
+    set(infinityModel, '_count', count);
     set(infinityModel, 'meta', get(queryObject, 'meta'));
 
     if (infinityModel.get('_increment') === 1) {

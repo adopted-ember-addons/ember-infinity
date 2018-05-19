@@ -10,7 +10,7 @@ import { module, test, skip } from 'qunit';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 import { setupTest } from 'ember-qunit';
 
-module('RouteMixin', function(hooks) {
+module('Unit | RouteMixin', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
@@ -210,6 +210,20 @@ module('RouteMixin', function(hooks) {
       assert.ok(!model.get('reachedInfinity'), 'Should not reach infinity');
     });
 
+    test('it sets count state before it reaches the end', function(assert) {
+      let route = this.createRoute(['item'], {
+        store: this.createMockStore(this.EA([{id: 1, name: 'Test'}], { meta: { count: 31 } } ))
+      });
+
+      let model = this.callModelHook(route);
+
+      assert.equal(model.get('_count'), 31, '_count');
+      assert.equal(model.get('currentPage'), 1, 'currentPage');
+      assert.equal(model.get('canLoadMore'), true, 'canLoadMore');
+      assert.notOk(route.get('_extraParams'), 'extra params are empty');
+      assert.ok(!model.get('reachedInfinity'), 'Should not reach infinity');
+    });
+
     test('it allows customizations of request params', function(assert) {
       let store = this.createMockStore(
         this.EA([]),
@@ -264,6 +278,21 @@ module('RouteMixin', function(hooks) {
 
       assert.equal(model.get('totalPagesParam'), 'pagination.total', 'totalPagesParam');
       assert.equal(model.get('_totalPages'), 22, '_totalPages');
+    });
+
+    test('it allows customizations of meta count params', function(assert) {
+      let store = this.createMockStore(
+        this.EA([{id: 1, name: 'Walter White'}], { pagination: { records: 22 } })
+      );
+
+      let route = this.createRoute(['item', {
+        countParam: 'pagination.records',
+      }], { store });
+
+      let model = this.callModelHook(route);
+
+      assert.equal(model.get('countParam'), 'pagination.records', 'countParam');
+      assert.equal(model.get('_count'), 22, '_count');
     });
 
     test('it copies arbitrary model hook meta from route request to the infinityModel', function(assert) {

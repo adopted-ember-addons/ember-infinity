@@ -119,12 +119,14 @@ const RouteMixin = Mixin.create({
     const perPageParam = paramsCheck(options.perPageParam, get(this, 'perPageParam'), 'per_page');
     const pageParam = paramsCheck(options.pageParam, get(this, 'pageParam'), 'page');
     const totalPagesParam = paramsCheck(options.totalPagesParam, get(this, 'totalPagesParam'), 'meta.total_pages');
+    const countParam = paramsCheck(options.countParam, get(this, 'countParam'), 'meta.count');
 
     delete options.startingPage;
     delete options.perPage;
     delete options.perPageParam;
     delete options.pageParam;
     delete options.totalPagesParam;
+    delete options.countParam;
 
     let InfinityModelFactory;
     let didPassBoundParams = !isEmpty(boundParams);
@@ -146,6 +148,7 @@ const RouteMixin = Mixin.create({
       perPageParam,
       pageParam,
       totalPagesParam,
+      countParam,
       _infinityModelName: modelName,
       extraParams: options,
       content: A()

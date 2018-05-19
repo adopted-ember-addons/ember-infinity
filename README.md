@@ -333,11 +333,13 @@ Default:
 - perPageParam: "per_page",
 - pageParam: "page",
 - totalPagesParam: "meta.total_pages",
+- countParam: "meta.count",
 
 Example Customization shown below:
 - perPageParam: "per",
 - pageParam: "pg",
 - totalPagesParam: "meta.total",
+- countParam: "meta.records",
 
 ```js
 import Route from '@ember/routing/route';
@@ -348,7 +350,7 @@ export default Route.extend(InfinityRoute, {
   model() {
     /* Load pages of the Product Model, starting from page 1, in groups of 12. Also set query params by handing off to infinityModel */
     return this.infinityModel('product', { perPage: 12, startingPage: 1,
-      perPageParam: "per", pageParam: "pg", totalPagesParam: "meta.total" });
+      perPageParam: 'per', pageParam: 'pg', totalPagesParam: 'meta.total', countParam: 'meta.records' });
   }
 });
 ```
