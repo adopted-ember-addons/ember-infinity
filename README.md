@@ -36,7 +36,7 @@ Also:
 
 · **Route Mixin** (optional)
 
-As of 1.0, you can either use the `infinityModel` Route mixin hook or the infinity service `model` hook.  We will be moving forward with the service based approach.
+As of 1.0-beta, you can either use the infinity service `model` hook or the `infinityModel` Route mixin hook.  We will be moving forward with the service based approach.
 
 ### · Option 1 (recommended)
 
@@ -44,7 +44,7 @@ As of 1.0, you can either use the `infinityModel` Route mixin hook or the infini
 
 Ember Infinity has moved to a service based approach wherein your application is viewed as an interaction between your components (ephemeral state) and service (long term state)
 
-As a result of this new approach, we can intelligently store your model state to provide you the ability to cache and invalidate your cache when you need to.  If you provide an optional `cache` value, the infinity service model hook will return the existing collection (and not make a network request) if the timestamp has not yet expired.
+As a result of this new approach, we can intelligently store your model state to provide you the ability to cache and invalidate your cache when you need to.  If you provide an optional `cache` timestamp (in ms), the infinity service `model` hook will return the existing collection (and not make a network request) if the timestamp has not yet expired.
 
 Note: You do not need to pass an action into infinity-loader component anymore.  We handle that internally now.  You can still pass a closure action `infinityLoad` if you must do so.
 
@@ -229,6 +229,7 @@ export default Route.extend(InfinityRoute, {
     return this.infinity.model('product', { cache: 36000 }); // timestamp expiry of 10 minutes (in ms)
   }
 });
+```
 
 Additionally, if you have multiple routes requesting the same model type, in order to intelligently cache your records, you can pass a `label` property.
 
@@ -241,7 +242,6 @@ export default Route.extend(InfinityRoute, {
     return this.infinity.model('product', { cache: 36000, label: 'products-main' }); // label to uniquely identify this collection vs another product collection
   }
 });
-
 ```
 
 Let's see an example of using `replace`.
