@@ -145,7 +145,7 @@ export default Service.extend({
     const params    = infinityModel.buildParams(increment);
 
     return this._requestNextPage(modelName, params)
-      .then(newObjects => this._afterInfinityModel(newObjects, infinityModel))
+      .then(newObjects => infinityModel._afterInfinityModel(newObjects, infinityModel))
       .then(newObjects => this._doUpdate(newObjects, infinityModel))
       .then(infinityModel => {
         if (increment === 1) {
@@ -163,7 +163,7 @@ export default Service.extend({
         let canLoadMore = get(infinityModel, '_canLoadMore');
         set(infinityModel, 'reachedInfinity', !canLoadMore);
         if (!canLoadMore) {
-          this._notifyInfinityModelLoaded();
+          this._notifyInfinityModelLoaded(infinityModel);
         } else if (increment == 1) {
           // if list still needs to populate the screen only if we are loading the next page (not previous pages)
           let infinityLoaderElem = document.querySelector('.infinity-loader');
@@ -267,31 +267,13 @@ export default Service.extend({
     @private
     @method _notifyInfinityModelLoaded
    */
-  _notifyInfinityModelLoaded() {
+  _notifyInfinityModelLoaded(infinityModel) {
     if (!this.infinityModelLoaded) {
       return;
     }
 
     const totalPages = get(this, '_totalPages');
-    scheduleOnce('afterRender', this, 'infinityModelLoaded', { totalPages: totalPages });
-  },
-
-  /**
-    hook to modify results from response
-
-    @private
-    @method _afterInfinityModel
-   */
-  _afterInfinityModel(newObjects, infinityModel) {
-    if (!this.afterInfinityModel || typeof this.afterInfinityModel !== 'function') {
-      return newObjects;
-    }
-
-    let result = this.afterInfinityModel(newObjects, infinityModel);
-    if (result) {
-      return result;
-    }
-    return newObjects;
+    scheduleOnce('afterRender', infinityModel, '_infinityModelLoaded', { totalPages: totalPages });
   },
 
   /**
