@@ -109,6 +109,7 @@ export default Service.extend({
   init() {
     this._super(...arguments);
     this._cachedCollection = {};
+    set(this, 'infinityModels', A());
   },
 
   /**
@@ -222,10 +223,6 @@ export default Service.extend({
 
     if (modelName === undefined) {
       throw new EmberError("Ember Infinity: You must pass a Model Name to infinityModel");
-    }
-
-    if (!get(this, 'infinityModels')) {
-      set(this, 'infinityModels', A());
     }
 
     options = options ? objectAssign({}, options) : {};
