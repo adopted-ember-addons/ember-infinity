@@ -38,9 +38,7 @@ Also:
 
 As of 1.0-beta, you can either use the infinity service `model` hook or the `infinityModel` Route mixin hook.  We will be moving forward with the service based approach.
 
-### · Option 1 (recommended)
-
-#### Service Oriented Approach
+### Option 1 - Service Oriented Approach (recommended)
 
 Ember Infinity has moved to a service based approach wherein your application is viewed as an interaction between your components (ephemeral state) and service (long term state)
 
@@ -69,9 +67,7 @@ export default Route.extend(InfinityRoute, {
 {{infinity-loader infinityModel=model}}
 ```
 
-### · Option 2
-
-#### Route Mixin Approach (deprecated)
+### Option 2 - Route Mixin Approach (deprecated)
 
 Importing the `ember-infinity` Route Mixin and extending your route will give you access to `this.infinityModel` in your model hook.
 
