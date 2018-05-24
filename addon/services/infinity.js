@@ -11,6 +11,11 @@ import { objectAssign, paramsCheck } from '../utils';
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
 
+/**
+ * @method findElem
+ * @param {Node|String}
+ * @return {Node}
+ */
 let findElem = (context) => {
   let elem;
   if (
@@ -42,16 +47,16 @@ let convertToArray = (queryObject) => {
 /**
  * { 'products': { future_timestamp: infinityModel } }
  * contains an array of Array Proxies
- * only called when need to re-hashify the collection
+ * only called when need to re-cache the collection
  *
- * @method hashifyInfinityCollection
+ * @method cacheInfinityCollection
  * @param Ember.Array _cachedCollection
  * @param Object infinityModel
  * @param String identifier
  * @param String timestamp
  * @return Object
  */
-let hashifyInfinityCollection = (_cachedCollection, infinityModel, identifier, timestamp) => {
+let cacheInfinityCollection = (_cachedCollection, infinityModel, identifier, timestamp) => {
   if (_cachedCollection && _cachedCollection[identifier]) {
     // 1. first clear out elements from object since we are expired
     _cachedCollection[identifier] = {};
@@ -257,6 +262,10 @@ export default Service.extend({
     const totalPagesParam = paramsCheck(options.totalPagesParam, get(this, 'totalPagesParam'), 'meta.total_pages');
     const countParam = paramsCheck(options.countParam, get(this, 'countParam'), 'meta.count');
     const infinityCache = paramsCheck(options.infinityCache);
+    let identifier = '';
+    Object.keys(options).forEach((key) => {
+      identifier += '' + options[key];
+    });
 
     delete options.startingPage;
     delete options.perPage;
@@ -308,10 +317,9 @@ export default Service.extend({
       assert('timestamp must be a positive integer in milliseconds', infinityCache > 0);
 
       // 1. create identifier for storage in _cachedCollection
-      let label = options.label || '';
-      let identifier = modelName + label;
+      let uniqueIdentifier = modelName += identifier;
       let _cachedCollection = get(this, '_cachedCollection');
-      let cachedModel = _cachedCollection[identifier];
+      let cachedModel = _cachedCollection[uniqueIdentifier];
       if (cachedModel) {
         // 2. If cachedModel, get future_timestamp (ms since 1970) and compare to now
         let future_timestamp = Object.keys(cachedModel)[0];
@@ -319,11 +327,11 @@ export default Service.extend({
           return cachedModel[future_timestamp];
         } else {
           // 3. cache collection based on new timestamp
-          hashifyInfinityCollection(_cachedCollection, infinityModel, identifier, infinityCache);
+          cacheInfinityCollection(_cachedCollection, infinityModel, uniqueIdentifier, infinityCache);
         }
       } else {
         // 2. if we are expired (future_timestamp < Date.now()) or cachedModel doesn't exist, cache a new infinityModel + future timestamp
-        hashifyInfinityCollection(_cachedCollection, infinityModel, identifier, infinityCache);
+        cacheInfinityCollection(_cachedCollection, infinityModel, uniqueIdentifier, infinityCache);
       }
     }
 

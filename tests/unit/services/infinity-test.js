@@ -106,25 +106,25 @@ module('Unit | Service | infinity', function(hooks) {
     let date = 3600;
     let model = service.model('post', { infinityCache: date });
     assert.ok(typeof(model.then) === 'function');
-    assert.ok(Object.keys(service.get('_cachedCollection')['post'])[0] > Date.now(), 'collection has correct key');
+    assert.ok(Object.keys(service.get('_cachedCollection')['post3600'])[0] > Date.now(), 'collection has correct key');
     model = service.model('post', { infinityCache: date });
     assert.ok(model instanceof InfinityModel, 'returns cached model');
     model = service.model('post', { infinityCache: date });
     assert.ok(model instanceof InfinityModel, 'returns cached model again');
   });
 
-  test('model hook can return cached infinity model with label', function(assert) {
+  test('model hook can return cached infinity model with unique identifier', function(assert) {
     let service = this.owner.lookup('service:infinity');
     service.loadNextPage = () => new RSVP.Promise((resolve) => { resolve(); });
     let date = 3600;
-    let model = service.model('post', { infinityCache: date, label: 'posts-main' });
+    let model = service.model('post', { infinityCache: date, startingPage: 3 });
     assert.ok(typeof(model.then) === 'function');
-    assert.ok(Object.keys(service.get('_cachedCollection')['postposts-main'])[0] > Date.now(), 'collection has correct key');
-    model = service.model('post', { infinityCache: date, label: 'posts-main' });
+    assert.ok(Object.keys(service.get('_cachedCollection')['post36003'])[0] > Date.now(), 'collection has correct key');
+    model = service.model('post', { infinityCache: date, startingPage: 3 });
     assert.ok(model instanceof InfinityModel, 'returns cached model');
-    model = service.model('post', { infinityCache: date, label: 'diff-label' });
-    assert.ok(typeof(model.then) === 'function', 'diff label will return thennable');
-    model = service.model('post', { infinityCache: date, label: 'posts-main' });
+    model = service.model('post', { infinityCache: date, startingPage: 10 });
+    assert.ok(typeof(model.then) === 'function', 'diff identifier will return thennable');
+    model = service.model('post', { infinityCache: date, startingPage: 3 });
     assert.ok(model instanceof InfinityModel, 'returns cached model again');
   });
 

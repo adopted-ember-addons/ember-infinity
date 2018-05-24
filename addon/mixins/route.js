@@ -67,6 +67,11 @@ const RouteMixin = Mixin.create({
     @return {Ember.RSVP.Promise}
   */
   infinityModel(modelName, options, boundParamsOrInfinityModel) {
+    deprecate('Ember Infinity: Route Mixin will be deprecated in the future.', false, {
+      id: 'ember-infinity',
+      until: '1.1.0'
+    });
+
     let boundParams, ExtendedInfinityModel;
     if (typeOf(boundParamsOrInfinityModel) === "class") {
       if (!(boundParamsOrInfinityModel.prototype instanceof InfinityModel)) {

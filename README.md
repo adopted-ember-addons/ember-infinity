@@ -34,7 +34,7 @@ Also:
 
 · **infinity-loader component**
 
-· **Route Mixin** (optional)
+· **Route Mixin** (deprecated)
 
 As of 1.0-beta, you can either use the infinity service `model` hook or the `infinityModel` Route mixin hook.  We will be moving forward with the service based approach.
 
@@ -71,9 +71,9 @@ export default Route.extend(InfinityRoute, {
 
 ### · Option 2
 
-#### Route Mixin Approach
+#### Route Mixin Approach (deprecated)
 
-Importing the `ember-infinity` Route Mixin and extending your route will give you access to `this.infinifyModel` in your model hook.
+Importing the `ember-infinity` Route Mixin and extending your route will give you access to `this.infinityModel` in your model hook.
 
 ```js
 import Route from '@ember/routing/route';
@@ -98,11 +98,11 @@ Then, you'll need to add the `infinity-loader` component to your template, like 
 {{infinity-loader infinityModel=model}}
 ```
 
-
 In both cases, whenever the `infinity-loader` component is in view, we will fetch the next page for you.
 
-Lastly, by default, `ember-infinity` expects the server response to contain something about how many total pages it can expect to fetch. `ember-infinity` defaults to looking for something like `meta: { total_pages: 20 }` in your response.  See [Advanced Usage](#AdvancedUsage).
+### Response Meta Expectations
 
+By default, `ember-infinity` expects the server response to contain something about how many total pages it can expect to fetch. `ember-infinity` defaults to looking for something like `meta: { total_pages: 20 }` in your response.  See [Advanced Usage](#AdvancedUsage).
 
 ### Closure Actions<a name="ClosureActions"></a>
 
@@ -229,19 +229,6 @@ import InfinityRoute from "ember-infinity/mixins/route";
 export default Route.extend(InfinityRoute, {
   model() {
     return this.infinity.model('product', { infinityCache: 36000 }); // timestamp expiry of 10 minutes (in ms)
-  }
-});
-```
-
-Additionally, if you have multiple routes requesting the same model type, in order to intelligently cache your records, you can pass a `label` property.
-
-```js
-import Route from '@ember/routing/route';
-import InfinityRoute from "ember-infinity/mixins/route";
-
-export default Route.extend(InfinityRoute, {
-  model() {
-    return this.infinity.model('product', { infinityCache: 36000, label: 'products-main' }); // label to uniquely identify this collection vs another product collection
   }
 });
 ```
