@@ -127,6 +127,7 @@ const RouteMixin = Mixin.create({
     delete options.pageParam;
     delete options.totalPagesParam;
     delete options.countParam;
+    delete options.infinityCache;
 
     let InfinityModelFactory;
     let didPassBoundParams = !isEmpty(boundParams);

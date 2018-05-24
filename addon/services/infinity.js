@@ -256,6 +256,7 @@ export default Service.extend({
     const pageParam = paramsCheck(options.pageParam, get(this, 'pageParam'), 'page');
     const totalPagesParam = paramsCheck(options.totalPagesParam, get(this, 'totalPagesParam'), 'meta.total_pages');
     const countParam = paramsCheck(options.countParam, get(this, 'countParam'), 'meta.count');
+    const infinityCache = paramsCheck(options.infinityCache);
 
     delete options.startingPage;
     delete options.perPage;
@@ -263,6 +264,7 @@ export default Service.extend({
     delete options.pageParam;
     delete options.totalPagesParam;
     delete options.countParam;
+    delete options.infinityCache;
 
     let InfinityModelFactory;
     let didPassBoundParams = !isEmpty(boundParams);
@@ -302,8 +304,8 @@ export default Service.extend({
     get(this, 'infinityModels').pushObject(infinityModel);
 
     // internal service specific
-    if (options.cache) {
-      assert('timestamp must be a positive integer in milliseconds', options.cache > 0);
+    if (infinityCache) {
+      assert('timestamp must be a positive integer in milliseconds', infinityCache > 0);
 
       // 1. create identifier for storage in _cachedCollection
       let label = options.label || '';
@@ -317,11 +319,11 @@ export default Service.extend({
           return cachedModel[future_timestamp];
         } else {
           // 3. cache collection based on new timestamp
-          hashifyInfinityCollection(_cachedCollection, infinityModel, identifier, options.cache);
+          hashifyInfinityCollection(_cachedCollection, infinityModel, identifier, infinityCache);
         }
       } else {
         // 2. if we are expired (future_timestamp < Date.now()) or cachedModel doesn't exist, cache a new infinityModel + future timestamp
-        hashifyInfinityCollection(_cachedCollection, infinityModel, identifier, options.cache);
+        hashifyInfinityCollection(_cachedCollection, infinityModel, identifier, infinityCache);
       }
     }
 

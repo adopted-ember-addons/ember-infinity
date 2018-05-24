@@ -44,7 +44,7 @@ As of 1.0-beta, you can either use the infinity service `model` hook or the `inf
 
 Ember Infinity has moved to a service based approach wherein your application is viewed as an interaction between your components (ephemeral state) and service (long term state)
 
-As a result of this new approach, we can intelligently store your model state to provide you the ability to cache and invalidate your cache when you need to.  If you provide an optional `cache` timestamp (in ms), the infinity service `model` hook will return the existing collection (and not make a network request) if the timestamp has not yet expired.
+As a result of this new approach, we can intelligently store your model state to provide you the ability to cache and invalidate your cache when you need to.  If you provide an optional `infinityCache` timestamp (in ms), the infinity service `model` hook will return the existing collection (and not make a network request) if the timestamp has not yet expired.
 
 Moreover, you are not restricted to fetching items in the route.  Fetch away in any top-level component!
 
@@ -56,7 +56,7 @@ import InfinityRoute from "ember-infinity/mixins/route";
 
 export default Route.extend(InfinityRoute, {
   model() {
-    return this.infinity.model('product', { cache: 36000 }); // in milliseconds - cache the product infinity model for 10 minutes
+    return this.infinity.model('product', { infinityCache: 36000 }); // in milliseconds - cache the product infinity model for 10 minutes
   }
 });
 ```
@@ -220,7 +220,7 @@ export default Route.extend(InfinityRoute, {
 });
 ```
 
-Moreover, if you want to intelligently cache your infinity model, pass `{ cache: timestamp }` and we will return the cached collection if the future timestamp is less than the current time (in ms) if your users revisit the same route.
+Moreover, if you want to intelligently cache your infinity model, pass `{ infinityCache: timestamp }` and we will return the cached collection if the future timestamp is less than the current time (in ms) if your users revisit the same route.
 
 ```js
 import Route from '@ember/routing/route';
@@ -228,7 +228,7 @@ import InfinityRoute from "ember-infinity/mixins/route";
 
 export default Route.extend(InfinityRoute, {
   model() {
-    return this.infinity.model('product', { cache: 36000 }); // timestamp expiry of 10 minutes (in ms)
+    return this.infinity.model('product', { infinityCache: 36000 }); // timestamp expiry of 10 minutes (in ms)
   }
 });
 ```
@@ -241,7 +241,7 @@ import InfinityRoute from "ember-infinity/mixins/route";
 
 export default Route.extend(InfinityRoute, {
   model() {
-    return this.infinity.model('product', { cache: 36000, label: 'products-main' }); // label to uniquely identify this collection vs another product collection
+    return this.infinity.model('product', { infinityCache: 36000, label: 'products-main' }); // label to uniquely identify this collection vs another product collection
   }
 });
 ```

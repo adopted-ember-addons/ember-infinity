@@ -104,12 +104,12 @@ module('Unit | Service | infinity', function(hooks) {
     let service = this.owner.lookup('service:infinity');
     service.loadNextPage = () => new RSVP.Promise((resolve) => { resolve(); });
     let date = 3600;
-    let model = service.model('post', { cache: date });
+    let model = service.model('post', { infinityCache: date });
     assert.ok(typeof(model.then) === 'function');
     assert.ok(Object.keys(service.get('_cachedCollection')['post'])[0] > Date.now(), 'collection has correct key');
-    model = service.model('post', { cache: date });
+    model = service.model('post', { infinityCache: date });
     assert.ok(model instanceof InfinityModel, 'returns cached model');
-    model = service.model('post', { cache: date });
+    model = service.model('post', { infinityCache: date });
     assert.ok(model instanceof InfinityModel, 'returns cached model again');
   });
 
@@ -117,14 +117,14 @@ module('Unit | Service | infinity', function(hooks) {
     let service = this.owner.lookup('service:infinity');
     service.loadNextPage = () => new RSVP.Promise((resolve) => { resolve(); });
     let date = 3600;
-    let model = service.model('post', { cache: date, label: 'posts-main' });
+    let model = service.model('post', { infinityCache: date, label: 'posts-main' });
     assert.ok(typeof(model.then) === 'function');
     assert.ok(Object.keys(service.get('_cachedCollection')['postposts-main'])[0] > Date.now(), 'collection has correct key');
-    model = service.model('post', { cache: date, label: 'posts-main' });
+    model = service.model('post', { infinityCache: date, label: 'posts-main' });
     assert.ok(model instanceof InfinityModel, 'returns cached model');
-    model = service.model('post', { cache: date, label: 'diff-label' });
+    model = service.model('post', { infinityCache: date, label: 'diff-label' });
     assert.ok(typeof(model.then) === 'function', 'diff label will return thennable');
-    model = service.model('post', { cache: date, label: 'posts-main' });
+    model = service.model('post', { infinityCache: date, label: 'posts-main' });
     assert.ok(model instanceof InfinityModel, 'returns cached model again');
   });
 
@@ -133,10 +133,10 @@ module('Unit | Service | infinity', function(hooks) {
     service.loadNextPage = () => new RSVP.Promise((resolve) => { resolve(); });
     // let past_timestamp = Date.now();
     let date = 1;
-    let model = service.model('post', { cache: date });
+    let model = service.model('post', { infinityCache: date });
     assert.ok(typeof(model.then) === 'function');
     // assert.ok(Object.keys(service.get('_cachedCollection')['post'])[0] >= past_timestamp, 'collection has updated timestamp');
-    model = service.model('post', { cache: date });
+    model = service.model('post', { infinityCache: date });
     assert.ok(typeof(model.then) === 'function');
   });
 });
