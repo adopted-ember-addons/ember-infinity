@@ -78,7 +78,7 @@ export default Service.extend({
   store: service(),
 
   /**
-    Data fetching/caching service pull off of user's route
+    Internal reference to manage collection throughout lifecycle of service
 
     @public
     @property infinityModels
