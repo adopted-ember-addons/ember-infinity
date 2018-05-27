@@ -229,6 +229,8 @@ export default Service.extend({
     const totalPagesParam = paramsCheck(options.totalPagesParam, get(this, 'totalPagesParam'), 'meta.total_pages');
     const countParam = paramsCheck(options.countParam, get(this, 'countParam'), 'meta.count');
     const infinityCache = paramsCheck(options.infinityCache);
+
+    // create identifier for use in storing unique cached infinity model
     let identifier = '';
     Object.keys(options).forEach((key) => {
       identifier += '' + options[key];
