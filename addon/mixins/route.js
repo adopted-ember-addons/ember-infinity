@@ -67,7 +67,7 @@ const RouteMixin = Mixin.create({
     @return {Ember.RSVP.Promise}
   */
   infinityModel(modelName, options, boundParamsOrInfinityModel) {
-    deprecate('Ember Infinity: Route Mixin will be deprecated in the future.', false, {
+    deprecate('Ember Infinity: Route Mixin will be deprecated in the future. We have implemented a Service-Component interaction as show in the docs.', false, {
       id: 'ember-infinity',
       until: '1.1.0'
     });

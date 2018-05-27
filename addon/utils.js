@@ -1,5 +1,7 @@
 import { typeOf } from '@ember/utils';
 import { deprecate } from '@ember/application/deprecations';
+import InfinityModel from 'ember-infinity/lib/infinity-model';
+import EmberError from '@ember/error';
 
 export let objectAssign = Object.assign || function objectAssign(target) {
   'use strict';
@@ -56,3 +58,47 @@ export function paramsCheck(optionParam, routeParam, defaultParam) {
 
   }
 }
+
+/**
+ * @method findElem
+ * @param {Node|String}
+ * @return {Node}
+ */
+export function findElem(context) {
+  let elem;
+  if (
+    context.nodeType === Node.ELEMENT_NODE ||
+    context.nodeType === Node.DOCUMENT_NODE
+  ) {
+    elem = context
+  } else {
+    elem = document.querySelector(context);
+  }
+
+  return elem;
+}
+
+/**
+ * @method checkInstanceOf
+ * @param {Ember.Array}
+ * @return {Boolean}
+ */
+export function checkInstanceOf(infinityModel) {
+  if (!(infinityModel instanceof InfinityModel)) {
+    throw new EmberError("Ember Infinity: You must pass an Infinity Model instance as the first argument");
+  }
+  return true;
+}
+
+/**
+ * @method convertToArray
+ * @param {Ember.Array}
+ * @return {Array}
+ */
+export function convertToArray(queryObject) {
+  if (queryObject.toArray) {
+    return queryObject.toArray();
+  }
+  return queryObject;
+}
+

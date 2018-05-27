@@ -7,42 +7,9 @@ import { A } from '@ember/array';
 import { isEmpty, typeOf } from '@ember/utils';
 import { scheduleOnce } from '@ember/runloop';
 import { get, set } from '@ember/object';
-import { objectAssign, paramsCheck } from '../utils';
+import { checkInstanceOf, convertToArray, findElem, objectAssign, paramsCheck } from '../utils';
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
-
-/**
- * @method findElem
- * @param {Node|String}
- * @return {Node}
- */
-let findElem = (context) => {
-  let elem;
-  if (
-    context.nodeType === Node.ELEMENT_NODE ||
-    context.nodeType === Node.DOCUMENT_NODE
-  ) {
-    elem = context
-  } else {
-    elem = document.querySelector(context);
-  }
-
-  return elem;
-};
-
-let checkInstanceOf = (infinityModel) => {
-  if (!(infinityModel instanceof InfinityModel)) {
-    throw new EmberError("Ember Infinity: You must pass an Infinity Model instance as the first argument");
-  }
-  return true;
-};
-
-let convertToArray = (queryObject) => {
-  if (queryObject.toArray) {
-    return queryObject.toArray();
-  }
-  return queryObject;
-};
 
 /**
  * { 'products': { future_timestamp: infinityModel } }
@@ -533,5 +500,4 @@ export default Service.extend({
       throw new EmberError('Ember Infinity: Store is not available to infinityModel');
     }
   }
-
 });

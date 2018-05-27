@@ -36,17 +36,17 @@ Also:
 
 · **Route Mixin** (deprecated)
 
-As of 1.0-beta, you can either use the infinity service `model` hook or the `infinityModel` Route mixin hook.  We will be moving forward with the service based approach.
+As of 1.0-beta, you can either use the infinity service `model` hook or the `infinityModel` Route mixin hook.  You may be used to the Route mixin; however, we will be moving forward with the service based approach as the ergonomics for your application are greatly improved.
 
 ### Option 1 - Service Oriented Approach (recommended)
 
-Ember Infinity has moved to a service based approach wherein your application is viewed as an interaction between your components (ephemeral state) and service (long term state)
+Ember Infinity has moved to a service based approach wherein your application is viewed as an interaction between your components (ephemeral state) and service (long term state).
 
 As a result of this new approach, we can intelligently store your model state to provide you the ability to cache and invalidate your cache when you need to.  If you provide an optional `infinityCache` timestamp (in ms), the infinity service `model` hook will return the existing collection (and not make a network request) if the timestamp has not yet expired.
 
-Moreover, you are not restricted to fetching items in the route.  Fetch away in any top-level component!
+Moreover, you are not restricted to only fetching items in the route.  Fetch away in any top-level component!
 
-Note: You do not need to pass an action into infinity-loader component anymore.  We handle that internally now.  You can still pass a closure action `infinityLoad` if you must do so.
+Lastly, before we get to an example, you do not need to pass an action into infinity-loader component anymore.  We handle that internally now.  You can still pass a closure action `infinityLoad` if you need to perform additional logic.
 
 ```js
 import Route from '@ember/routing/route';
@@ -418,7 +418,7 @@ parameter is added:
 
 ```js
 return this.infinity.model('product', { perPage: 12, startingPage: 1,
-                                       category: "furniture" });
+                                       category: 'furniture' });
 ```
 
 **Extending infinityModel**
