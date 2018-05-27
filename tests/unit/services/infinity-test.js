@@ -133,17 +133,17 @@ module('Unit | Service | infinity', function(hooks) {
     service.loadNextPage = () => new RSVP.Promise((resolve) => { resolve(); });
     let date = 3600;
     service.model('post', { infinityCache: date, startingPage: 3 });
-    assert.equal(service.get('infinityModels')[0].length, 0);
+    assert.equal(service.get('infinityModels')[0].get('length'), 0, 'length of infinityModel content array is 0');
 
     let cachedModel = service.get('_cachedCollection')['post36003'];
     let cachedTimestamp = Object.keys(cachedModel)[0];
     let newArray = this.EA([this.item]);
     service.pushObjects(cachedModel[cachedTimestamp], newArray);
 
-    assert.equal(service.get('infinityModels')[0].length, 1);
+    assert.equal(service.get('infinityModels')[0].get('length'), 1, 'length of infinityModel content array is 1');
     cachedModel = service.get('_cachedCollection')['post36003'];
     cachedTimestamp = Object.keys(cachedModel)[0];
-    assert.equal(cachedModel[cachedTimestamp].length, 1);
+    assert.equal(cachedModel[cachedTimestamp].get('length'), 1, 'cached infinityModel content array is 1');
   });
 
   skip('model hook can break cache', function(assert) {
