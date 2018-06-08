@@ -17,6 +17,10 @@ module('infinity-loader', function(hooks) {
       infinityModels: A(),
       infinityLoad: () => resolve()
     };
+    this.infinityModel = {
+      name: 'dot',
+      _canLoadMore: false
+    };
     // avoid recursive func
     this._checkScrollableHeight = () => true;
   });
@@ -24,7 +28,7 @@ module('infinity-loader', function(hooks) {
   test('it renders loading text if no block given', async function(assert) {
     assert.expect(1);
 
-    await render(hbs`{{infinity-loader infinity=infinityServiceMock _checkScrollableHeight=_checkScrollableHeight}}`);
+    await render(hbs`{{infinity-loader infinityModel=infinityModel infinity=infinityServiceMock _checkScrollableHeight=_checkScrollableHeight}}`);
     assert.equal(this.element.querySelector('.infinity-loader > span').textContent, "Loading Infinite Model...");
   });
 
@@ -68,7 +72,7 @@ module('infinity-loader', function(hooks) {
     assert.expect(1);
 
     await render(hbs`
-                {{#infinity-loader infinity=infinityServiceMock _checkScrollableHeight=_checkScrollableHeight}}
+                {{#infinity-loader infinityModel=infinityModel infinity=infinityServiceMock _checkScrollableHeight=_checkScrollableHeight}}
                   <span>My custom block</span>
                 {{/infinity-loader}}
                 `);

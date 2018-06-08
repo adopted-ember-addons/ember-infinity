@@ -214,7 +214,9 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
         // service action
         get(this, 'infinity').infinityLoad(infinityModelContent, 1)
           .then(() => {
-            this._checkScrollableHeight();
+            if (get(infinityModelContent, '_canLoadMore')) {
+              this._checkScrollableHeight();
+            }
           });
       }
 

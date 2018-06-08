@@ -105,7 +105,7 @@ module('Acceptance: Infinity Route - infinity routes', function(hooks) {
     this.server.createList('post', 50);
     await visit('/test-scrollable?perPage=5');
 
-    shouldBeItemsOnTheList(assert, 50);
+    shouldBeItemsOnTheList(assert, 15);
   });
 
   module('Acceptance: Infinity Route - multiple pages fetched', function(/*hooks*/) {
