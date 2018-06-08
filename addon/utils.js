@@ -60,25 +60,6 @@ export function paramsCheck(optionParam, routeParam, defaultParam) {
 }
 
 /**
- * @method findElem
- * @param {Node|String}
- * @return {Node}
- */
-export function findElem(context) {
-  let elem;
-  if (
-    context.nodeType === Node.ELEMENT_NODE ||
-    context.nodeType === Node.DOCUMENT_NODE
-  ) {
-    elem = context
-  } else {
-    elem = document.querySelector(context);
-  }
-
-  return elem;
-}
-
-/**
  * @method checkInstanceOf
  * @param {Ember.Array}
  * @return {Boolean}

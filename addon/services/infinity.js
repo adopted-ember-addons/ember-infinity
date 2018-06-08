@@ -31,7 +31,7 @@ let cacheInfinityCollection = (_cachedCollection, infinityModel, identifier, tim
   }
 
   // 2. Set new timestamp for identifier
-  let future_timestamp = Date.now() + timestamp;
+  let future_timestamp = new Date().getTime() + timestamp;
   return _cachedCollection[identifier] = { [future_timestamp]: infinityModel };
 };
 
