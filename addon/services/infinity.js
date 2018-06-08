@@ -7,9 +7,10 @@ import { A } from '@ember/array';
 import { isEmpty, typeOf } from '@ember/utils';
 import { scheduleOnce } from '@ember/runloop';
 import { get, set } from '@ember/object';
-import { checkInstanceOf, convertToArray, findElem, objectAssign, paramsCheck } from '../utils';
+import { checkInstanceOf, convertToArray, objectAssign, paramsCheck } from '../utils';
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
+import { resolve } from 'rsvp';
 
 /**
  * { 'products': { future_timestamp: infinityModel } }
@@ -148,25 +149,26 @@ export default Service.extend({
     @method infinityLoad
     @param {Ember.ArrayProxy} infinityModel
     @param {Integer} increment - to increase page by 1 or -1
-    @param {Node} infinityLoaderElem - important when have multiple infinity loader elements on the page
    */
-  infinityLoad(infinityModel, increment = 1, infinityLoaderElem) {
+  infinityLoad(infinityModel, increment = 1) {
     if (!infinityModel) {
       return;
     }
 
     infinityModel = get(this, 'infinityModels').find(model => model === infinityModel);
+    let result;
     if (infinityModel) {
       if (get(infinityModel, '_loadingMore') || !get(infinityModel, '_canLoadMore')) {
-        return;
+        return resolve();
       }
 
       // this is duplicated if this method is called from the route.
       set(infinityModel, '_increment', increment);
-      return this.loadNextPage(infinityModel, increment, infinityLoaderElem);
+      result = this.loadNextPage(infinityModel, increment);
     } else {
-      return true;
+      result = true;
     }
+    return resolve(result);
   },
 
   /**
@@ -315,10 +317,9 @@ export default Service.extend({
     @method loadNextPage
     @param {Ember.ArrayProxy} infinityModel
     @param {Integer} increment - to increase page by 1 or -1. Default to increase by one page
-    @param {Node} infinityLoaderElem - important when have multiple infinity loader elements on the page
     @return {Ember.RSVP.Promise} A Promise that resolves the model
    */
-  loadNextPage(infinityModel, increment = 1, infinityLoaderElem = '.infinity-loader') {
+  loadNextPage(infinityModel, increment = 1) {
     set(infinityModel, '_loadingMore', true);
     set(this, '_previousScrollHeight', this._calculateHeight(infinityModel));
 
@@ -345,13 +346,6 @@ export default Service.extend({
         set(infinityModel, 'reachedInfinity', !canLoadMore);
         if (!canLoadMore) {
           this._notifyInfinityModelLoaded();
-        } else if (increment == 1) {
-          // if list still needs to populate the screen only if we are loading the next page (not previous pages)
-          infinityLoaderElem = findElem(infinityLoaderElem);
-          if (infinityLoaderElem && this._viewportHeight(infinityModel) > infinityLoaderElem.offsetTop) {
-            // load again
-            this.loadNextPage(infinityModel, increment);
-          }
         }
         return infinityModel;
       }).finally(() => set(infinityModel, '_loadingMore', false));
@@ -370,22 +364,6 @@ export default Service.extend({
       let isScrollable = !!get(infinityModel, '_scrollable');
       let viewportElem = isScrollable ? document.querySelector(get(infinityModel, '_scrollable')) : document.documentElement;
       return viewportElem.scrollHeight;
-    }
-  },
-
-  /**
-    calculate the height of the viewport
-
-    @private
-    @method _scrollableHeight
-    @param {Object} infinityModel
-    @return Integer
-   */
-  _viewportHeight(infinityModel) {
-    if (typeof FastBoot === 'undefined') {
-      let isScrollable = !!get(infinityModel, '_scrollable');
-      let viewportElem = isScrollable ? document.querySelector(get(infinityModel, '_scrollable')) : window;
-      return isScrollable ? viewportElem.clientHeight : viewportElem.innerHeight;
     }
   },
 

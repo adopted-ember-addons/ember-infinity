@@ -212,16 +212,41 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
         return get(this, 'infinityLoad')(infinityModelContent);
       } else {
         // service action
-        get(this, 'infinity').infinityLoad(infinityModelContent, 1, this.element);
+        get(this, 'infinity').infinityLoad(infinityModelContent, 1)
+          .then(() => {
+            this._checkScrollableHeight();
+          });
       }
 
     }
     this._debounceTimer = run.debounce(this, loadMore, get(this, 'eventDebounce'));
   },
 
+  _checkScrollableHeight() {
+    if (this._viewportHeight() > this.element.offsetTop) {
+      // load again
+      this._debounceScrolledToBottom();
+    }
+  },
+
   _cancelTimers() {
     run.cancel(this._debounceTimer);
   },
+
+  /**
+    calculate the height of the viewport
+
+    @private
+    @method _viewportHeight
+    @return Integer
+   */
+  _viewportHeight() {
+    if (typeof FastBoot === 'undefined') {
+      let isScrollable = !!this.scrollable;
+      let viewportElem = isScrollable ? document.querySelector(this.scrollable) : window;
+      return isScrollable ? viewportElem.clientHeight : viewportElem.innerHeight;
+    }
+  }
 });
 
 export default InfinityLoaderComponent;

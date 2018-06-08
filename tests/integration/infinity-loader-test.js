@@ -5,6 +5,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, waitUntil } from '@ember/test-helpers';
 import { set } from '@ember/object';
 import { A } from '@ember/array';
+import { resolve } from 'rsvp';
 
 module('infinity-loader', function(hooks) {
   setupRenderingTest(hooks);
@@ -14,14 +15,16 @@ module('infinity-loader', function(hooks) {
     this.send = (actionName, ...args) => this.actions[actionName].apply(this, args);
     this.infinityServiceMock = {
       infinityModels: A(),
-      infinityLoad: () => {}
+      infinityLoad: () => resolve()
     };
+    // avoid recursive func
+    this._checkScrollableHeight = () => true;
   });
 
   test('it renders loading text if no block given', async function(assert) {
     assert.expect(1);
 
-    await render(hbs`{{infinity-loader infinity=infinityServiceMock}}`);
+    await render(hbs`{{infinity-loader infinity=infinityServiceMock _checkScrollableHeight=_checkScrollableHeight}}`);
     assert.equal(this.element.querySelector('.infinity-loader > span').textContent, "Loading Infinite Model...");
   });
 
@@ -31,7 +34,7 @@ module('infinity-loader', function(hooks) {
     this.infinityModel = {
       name: 'dot'
     };
-    await render(hbs`{{infinity-loader infinityModel=infinityModel hideOnInfinity=true infinity=infinityServiceMock}}`);
+    await render(hbs`{{infinity-loader infinityModel=infinityModel hideOnInfinity=true infinity=infinityServiceMock _checkScrollableHeight=_checkScrollableHeight}}`);
     assert.equal(this.element.querySelector('.infinity-loader > span').textContent, "Loading Infinite Model...");
     assert.equal(this.element.querySelector('.infinity-loader').style.display, '', 'Element is not hidden');
     run(() => {
@@ -49,7 +52,7 @@ module('infinity-loader', function(hooks) {
     this.infinityModel = {
       name: 'dot'
     };
-    await render(hbs`{{infinity-loader infinityModel=infinityModel hideOnInfinity=false infinity=infinityServiceMock}}`);
+    await render(hbs`{{infinity-loader infinityModel=infinityModel hideOnInfinity=false infinity=infinityServiceMock _checkScrollableHeight=_checkScrollableHeight}}`);
     assert.equal(this.element.querySelector('.infinity-loader > span').textContent, "Loading Infinite Model...");
     assert.equal(this.element.querySelector('.infinity-loader').style.display, '', 'Element is not hidden');
     run(() => {
@@ -65,7 +68,7 @@ module('infinity-loader', function(hooks) {
     assert.expect(1);
 
     await render(hbs`
-                {{#infinity-loader infinity=infinityServiceMock}}
+                {{#infinity-loader infinity=infinityServiceMock _checkScrollableHeight=_checkScrollableHeight}}
                   <span>My custom block</span>
                 {{/infinity-loader}}
                 `);
