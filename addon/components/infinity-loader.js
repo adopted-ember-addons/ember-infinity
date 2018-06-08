@@ -224,6 +224,11 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
     this._debounceTimer = run.debounce(this, loadMore, get(this, 'eventDebounce'));
   },
 
+  /**
+   * recursive function to fill page with records
+   *
+   * @method _checkScrollableHeight
+   */
   _checkScrollableHeight() {
     if (this._viewportHeight() > this.element.offsetTop) {
       // load again
