@@ -9,6 +9,25 @@ export default ArrayProxy.extend({
   infinity: service(),
 
   /**
+    @public
+    @property store
+    @type {Object}
+    @default null
+   */
+  store: null,
+
+  /**
+    The supported findMethod name for
+    the developers Ember Data version.
+    Provided here for backwards compat.
+    @public
+    @property storeFindMethod
+    @type {String}
+    @default "query"
+   */
+  storeFindMethod: null,
+
+  /**
     @private
     @property _perPage
     @type Integer
