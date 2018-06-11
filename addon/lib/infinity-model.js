@@ -4,6 +4,12 @@ import { computed, get, set, getProperties } from '@ember/object';
 import { objectAssign } from '../utils';
 import { typeOf } from '@ember/utils';
 
+/**
+  @class InfinityModel
+  @namespace EmberInfinity
+  @module ember-infinity/lib/infinity-model
+  @extends Ember.ArrayProxy
+*/
 export default ArrayProxy.extend({
   /**
     @public

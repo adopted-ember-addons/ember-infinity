@@ -70,7 +70,7 @@ export default Service.extend({
 
   /**
     @method pushObjects
-    @param {ArrayProxy} infinityModel
+    @param {EmberInfinity.InfinityModel} infinityModel
     @param {Array} queryObject - list of Store models
    */
   pushObjects(infinityModel, queryObject) {
@@ -81,7 +81,7 @@ export default Service.extend({
 
   /**
     @method unshiftObjects
-    @param {ArrayProxy} infinityModel
+    @param {EmberInfinity.InfinityModel} infinityModel
     @param {Array} queryObject - list of Store models
    */
   unshiftObjects(infinityModel, queryObject) {
@@ -99,7 +99,7 @@ export default Service.extend({
     the filter param.  This will lead to a list that partly does not represent what the user filtered.
 
     @method replace
-    @param {ArrayProxy} infinityModel
+    @param {EmberInfinity.InfinityModel} infinityModel
     @param newCollection - Ember Data (or similar store) response
    */
   replace(infinityModel, newCollection) {
@@ -114,7 +114,7 @@ export default Service.extend({
     Useful for clearing out the collection
 
     @method flush
-    @param {ArrayProxy} infinityModel
+    @param {EmberInfinity.InfinityModel} infinityModel
    */
   flush(infinityModel) {
     if (checkInstanceOf(infinityModel)) {
@@ -130,7 +130,7 @@ export default Service.extend({
 
     @public
     @method infinityLoad
-    @param {Ember.ArrayProxy} infinityModel
+    @param {EmberInfinity.InfinityModel} infinityModel
     @param {Integer} increment - to increase page by 1 or -1
    */
   infinityLoad(infinityModel, increment = 1) {
@@ -297,7 +297,7 @@ export default Service.extend({
 
     @public
     @method loadNextPage
-    @param {Ember.ArrayProxy} infinityModel
+    @param {EmberInfinity.InfinityModel} infinityModel
     @param {Integer} increment - to increase page by 1 or -1. Default to increase by one page
     @return {Ember.RSVP.Promise} A Promise that resolves the model
    */
@@ -369,7 +369,7 @@ export default Service.extend({
 
     @private
     @method _requestNextPage
-    @param {Object} infinityModel
+    @param {EmberInfinity.InfinityModel} infinityModel
     @param {String} increment
     @returns {Ember.RSVP.Promise} A Promise that resolves the next page of objects
    */
@@ -387,7 +387,7 @@ export default Service.extend({
     @private
     @method _doUpdate
     @param {Ember.Enumerable} queryObject The new objects to add to the model
-    @param {Ember.ArrayProxy} infinityModel
+    @param {EmberInfinity.InfinityModel} infinityModel
     @return {Ember.Array} returns the new objects
    */
   _doUpdate(queryObject, infinityModel) {
