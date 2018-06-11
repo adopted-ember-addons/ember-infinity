@@ -141,12 +141,13 @@ export default Service.extend({
     infinityModel = get(this, 'infinityModels').find(model => model === infinityModel);
     let result;
     if (infinityModel) {
+      // this is duplicated if this method is called from the route.
+      set(infinityModel, '_increment', increment);
+
       if (get(infinityModel, '_loadingMore') || !get(infinityModel, '_canLoadMore')) {
         return resolve();
       }
 
-      // this is duplicated if this method is called from the route.
-      set(infinityModel, '_increment', increment);
       result = this.loadNextPage(infinityModel, increment);
     } else {
       result = true;

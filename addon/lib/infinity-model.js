@@ -11,7 +11,6 @@ export default ArrayProxy.extend({
   /**
     @public
     @property store
-    @type {Object}
     @default null
    */
   store: null,
@@ -22,8 +21,7 @@ export default ArrayProxy.extend({
     Provided here for backwards compat.
     @public
     @property storeFindMethod
-    @type {String}
-    @default "query"
+    @default null
    */
   storeFindMethod: null,
 

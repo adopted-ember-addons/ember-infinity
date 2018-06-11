@@ -93,7 +93,7 @@ module('Acceptance: Infinity Route - infinity routes', function(hooks) {
     infinityShouldBeReached(assert);
   });
 
-  test('it should load previous elements when start on page two', async function(assert) {
+  test('scott it should load previous elements when start on page two', async function(assert) {
     this.server.createList('post', 50);
     await visit('/test-scrollable?page=2');
 

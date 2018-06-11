@@ -67,7 +67,7 @@ const RouteMixin = Mixin.create({
     @return {Ember.RSVP.Promise}
   */
   infinityModel(modelName, options, boundParamsOrInfinityModel) {
-    deprecate('Ember Infinity: Route Mixin will be deprecated in the future. We have implemented a Service-Component interaction as show in the docs.', false, {
+    deprecate('Ember Infinity: Route Mixin will be deprecated in the future. We have implemented a Service-Component interaction as shown in the docs.', false, {
       id: 'ember-infinity',
       until: '1.1.0'
     });
@@ -94,22 +94,9 @@ const RouteMixin = Mixin.create({
     options = options ? objectAssign({}, options) : {};
 
     if (options.store) {
-      if (options.storeFindMethod) {
-        set(service, '_storeFindMethod', options.storeFindMethod);
-      }
-
-      if (typeof options.store !== 'string') {
-        throw new EmberError('Ember Infinity: Must pass custom data store as a string');
-      }
-      get(this, 'infinity._ensureCustomStoreCompatibility')(options, get(this, options.store), get(service, '_storeFindMethod'));
-
-      set(service, '_store', options.store);
-
-      delete options.store;
-      delete options.storeFindMethod;
+      get(this, 'infinity._ensureCustomStoreCompatibility')(options, options.store, options.storeFindMethod || 'query');
     }
 
-    set(service, 'store', get(this, get(service, '_store')));
     set(service, 'infinityModelLoaded', get(this, 'infinityModelLoaded'));
     set(service, 'afterInfinityModel', get(this, 'afterInfinityModel'));
 
@@ -119,6 +106,10 @@ const RouteMixin = Mixin.create({
     const firstPage = currentPage === 0 ? 1 : currentPage + 1;
     // chunk requests by indicated perPage param
     const perPage = options.perPage || 25;
+
+    // store service methods (defaults to ember-data if nothing passed)
+    const store = options.store || get(this, 'store');
+    const storeFindMethod = options.storeFindMethod || 'query';
 
     // check if user passed in param w/ infinityModel, else check if defined on the route (for backwards compat), else default
     const perPageParam = paramsCheck(options.perPageParam, get(this, 'perPageParam'), 'per_page');
@@ -133,6 +124,8 @@ const RouteMixin = Mixin.create({
     delete options.totalPagesParam;
     delete options.countParam;
     delete options.infinityCache;
+    delete options.store;
+    delete options.storeFindMethod;
 
     let InfinityModelFactory;
     let didPassBoundParams = !isEmpty(boundParams);
@@ -156,6 +149,8 @@ const RouteMixin = Mixin.create({
       totalPagesParam,
       countParam,
       _infinityModelName: modelName,
+      store,
+      storeFindMethod,
       extraParams: options,
       content: A()
     };
@@ -166,7 +161,7 @@ const RouteMixin = Mixin.create({
     }
 
     const infinityModel = InfinityModelFactory.create(initParams);
-    get(this, 'infinity._ensureCompatibility')(get(service, 'store'), get(service, '_storeFindMethod'));
+    get(this, 'infinity._ensureCompatibility')(get(infinityModel, 'store'), get(infinityModel, 'storeFindMethod'));
     get(this, 'infinity.infinityModels').pushObject(infinityModel);
 
     return InfinityPromiseArray.create({ promise: service['loadNextPage'](infinityModel) });
