@@ -3,11 +3,8 @@ import { oneWay } from '@ember/object/computed';
 import { computed, get, set, getProperties } from '@ember/object';
 import { objectAssign } from '../utils';
 import { typeOf } from '@ember/utils';
-import { inject as service } from '@ember/service';
 
 export default ArrayProxy.extend({
-  infinity: service(),
-
   /**
     @public
     @property store
