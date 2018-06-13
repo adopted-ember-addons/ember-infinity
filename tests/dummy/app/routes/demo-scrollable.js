@@ -1,5 +1,4 @@
 import Route from '@ember/routing/route';
-import InfinityRoute from 'ember-infinity/mixins/route';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 import { get } from '@ember/object';
 import { inject as service } from '@ember/service';
@@ -12,7 +11,7 @@ const ExtendedInfinityModel =  InfinityModel.extend({
   }
 });
 
-export default Route.extend(InfinityRoute, {
+export default Route.extend({
   global: service(),
   infinity: service(),
 

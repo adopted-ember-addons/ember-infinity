@@ -7,8 +7,8 @@ import { A } from '@ember/array';
 import { isEmpty, typeOf } from '@ember/utils';
 import { scheduleOnce } from '@ember/runloop';
 import { get, set } from '@ember/object';
-import { checkInstanceOf, convertToArray, objectAssign, paramsCheck } from '../utils';
 import { inject as service } from '@ember/service';
+import { checkInstanceOf, convertToArray, objectAssign, paramsCheck } from '../utils';
 import { assert } from '@ember/debug';
 import { resolve } from 'rsvp';
 
@@ -61,23 +61,6 @@ export default Service.extend({
     @default 0
   */
   _previousScrollHeight: 0,
-  /**
-    @private
-    @property _store
-    @type String
-    @default 'store'
-  */
-  _store: 'store',
-  /**
-    The supported findMethod name for
-    the developers Ember Data version.
-    Provided here for backwards compat.
-    @private
-    @property _storeFindMethod
-    @type {String}
-    @default "query"
-   */
-  _storeFindMethod: 'query',
 
   init() {
     this._super(...arguments);
@@ -87,7 +70,7 @@ export default Service.extend({
 
   /**
     @method pushObjects
-    @param {ArrayProxy} infinityModel
+    @param {EmberInfinity.InfinityModel} infinityModel
     @param {Array} queryObject - list of Store models
    */
   pushObjects(infinityModel, queryObject) {
@@ -98,7 +81,7 @@ export default Service.extend({
 
   /**
     @method unshiftObjects
-    @param {ArrayProxy} infinityModel
+    @param {EmberInfinity.InfinityModel} infinityModel
     @param {Array} queryObject - list of Store models
    */
   unshiftObjects(infinityModel, queryObject) {
@@ -116,7 +99,7 @@ export default Service.extend({
     the filter param.  This will lead to a list that partly does not represent what the user filtered.
 
     @method replace
-    @param {ArrayProxy} infinityModel
+    @param {EmberInfinity.InfinityModel} infinityModel
     @param newCollection - Ember Data (or similar store) response
    */
   replace(infinityModel, newCollection) {
@@ -131,7 +114,7 @@ export default Service.extend({
     Useful for clearing out the collection
 
     @method flush
-    @param {ArrayProxy} infinityModel
+    @param {EmberInfinity.InfinityModel} infinityModel
    */
   flush(infinityModel) {
     if (checkInstanceOf(infinityModel)) {
@@ -147,7 +130,7 @@ export default Service.extend({
 
     @public
     @method infinityLoad
-    @param {Ember.ArrayProxy} infinityModel
+    @param {EmberInfinity.InfinityModel} infinityModel
     @param {Integer} increment - to increase page by 1 or -1
    */
   infinityLoad(infinityModel, increment = 1) {
@@ -158,12 +141,13 @@ export default Service.extend({
     infinityModel = get(this, 'infinityModels').find(model => model === infinityModel);
     let result;
     if (infinityModel) {
+      // this is duplicated if this method is called from the route.
+      set(infinityModel, '_increment', increment);
+
       if (get(infinityModel, '_loadingMore') || !get(infinityModel, '_canLoadMore')) {
         return resolve();
       }
 
-      // this is duplicated if this method is called from the route.
-      set(infinityModel, '_increment', increment);
       result = this.loadNextPage(infinityModel, increment);
     } else {
       result = true;
@@ -202,17 +186,7 @@ export default Service.extend({
     options = options ? objectAssign({}, options) : {};
 
     if (options.store) {
-      if (options.storeFindMethod) {
-        set(this, '_storeFindMethod', options.storeFindMethod);
-      }
-
-      get(this, '_ensureCustomStoreCompatibility')(options, options.store, get(this, '_storeFindMethod'));
-
-      // override `store: inject.service()` on infinity service
-      set(this, 'store', options.store);
-
-      delete options.store;
-      delete options.storeFindMethod;
+      get(this, '_ensureCustomStoreCompatibility')(options, options.store, options.storeFindMethod || 'query');
     }
 
     set(this, 'infinityModelLoaded', get(this, 'infinityModelLoaded'));
@@ -224,6 +198,10 @@ export default Service.extend({
     const firstPage = currentPage === 0 ? 1 : currentPage + 1;
     // chunk requests by indicated perPage param
     const perPage = options.perPage || 25;
+
+    // store service methods (defaults to ember-data if nothing passed)
+    const store = options.store || get(this, 'store');
+    const storeFindMethod = options.storeFindMethod || 'query';
 
     // check if user passed in param w/ infinityModel, else check if defined on the route (for backwards compat), else default
     const perPageParam = paramsCheck(options.perPageParam, get(this, 'perPageParam'), 'per_page');
@@ -245,6 +223,8 @@ export default Service.extend({
     delete options.totalPagesParam;
     delete options.countParam;
     delete options.infinityCache;
+    delete options.store;
+    delete options.storeFindMethod;
 
     let InfinityModelFactory;
     let didPassBoundParams = !isEmpty(boundParams);
@@ -267,8 +247,10 @@ export default Service.extend({
       pageParam,
       totalPagesParam,
       countParam,
-      _infinityModelName: modelName,
       extraParams: options,
+      _infinityModelName: modelName,
+      store,
+      storeFindMethod,
       content: A()
     };
 
@@ -278,7 +260,7 @@ export default Service.extend({
     }
 
     const infinityModel = InfinityModelFactory.create(initParams);
-    get(this, '_ensureCompatibility')(get(this, 'store'), get(this, '_storeFindMethod'));
+    get(this, '_ensureCompatibility')(get(infinityModel, 'store'), get(infinityModel, 'storeFindMethod'));
 
     // route specific (for backwards compat)
     get(this, 'infinityModels').pushObject(infinityModel);
@@ -315,7 +297,7 @@ export default Service.extend({
 
     @public
     @method loadNextPage
-    @param {Ember.ArrayProxy} infinityModel
+    @param {EmberInfinity.InfinityModel} infinityModel
     @param {Integer} increment - to increase page by 1 or -1. Default to increase by one page
     @return {Ember.RSVP.Promise} A Promise that resolves the model
    */
@@ -323,10 +305,7 @@ export default Service.extend({
     set(infinityModel, '_loadingMore', true);
     set(this, '_previousScrollHeight', this._calculateHeight(infinityModel));
 
-    const modelName = get(infinityModel, '_infinityModelName');
-    const params    = infinityModel.buildParams(increment);
-
-    return this._requestNextPage(modelName, params)
+    return this._requestNextPage(infinityModel, increment)
       .then(newObjects => this._afterInfinityModel(newObjects, infinityModel))
       .then(newObjects => this._doUpdate(newObjects, infinityModel))
       .then(infinityModel => {
@@ -390,12 +369,15 @@ export default Service.extend({
 
     @private
     @method _requestNextPage
-    @param {String} modelName
-    @param {Object} options
+    @param {EmberInfinity.InfinityModel} infinityModel
+    @param {String} increment
     @returns {Ember.RSVP.Promise} A Promise that resolves the next page of objects
    */
-  _requestNextPage(modelName, params) {
-    return get(this, 'store')[this._storeFindMethod](modelName, params);
+  _requestNextPage(infinityModel, increment) {
+    const modelName = get(infinityModel, '_infinityModelName');
+    const params    = infinityModel.buildParams(increment);
+
+    return get(infinityModel, 'store')[get(infinityModel, 'storeFindMethod')](modelName, params);
   },
 
   /**
@@ -405,7 +387,7 @@ export default Service.extend({
     @private
     @method _doUpdate
     @param {Ember.Enumerable} queryObject The new objects to add to the model
-    @param {Ember.ArrayProxy} infinityModel
+    @param {EmberInfinity.InfinityModel} infinityModel
     @return {Ember.Array} returns the new objects
    */
   _doUpdate(queryObject, infinityModel) {

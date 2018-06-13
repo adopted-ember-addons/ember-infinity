@@ -1,5 +1,6 @@
 import Route from '@ember/routing/route';
-import InfinityRoute from 'ember-infinity/mixins/route';
+import { get } from '@ember/object';
+import { inject as service } from '@ember/service';
 
 import Pretender from 'pretender';
 import faker from 'faker';
@@ -14,7 +15,9 @@ function generateFakeData(qty) {
   return data;
 }
 
-export default Route.extend(InfinityRoute, {
+export default Route.extend({
+  infinity: service(),
+
   init() {
     if (this._super.init) {
       this._super.init.apply(this, arguments);
@@ -41,6 +44,6 @@ export default Route.extend(InfinityRoute, {
   },
 
   model({ page }) {
-    return this.infinityModel('post', { startingPage: page });
+    return get(this, 'infinity').model('post', { startingPage: page });
   }
 });

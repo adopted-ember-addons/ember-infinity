@@ -18,22 +18,6 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
    */
   eventDebounce: 50,
   /**
-   * sent up to route mixin to load next page
-   *
-   * @public
-   * @property loadMoreAction
-   * @default
-   */
-  loadMoreAction: 'infinityLoad',
-  /**
-   * sent up to route mixin to load previous page
-   *
-   * @public
-   * @property loadPreviousAction
-   * @default
-   */
-  loadPreviousAction: 'infinityLoad',
-  /**
    * @public
    * @property loadingText
    */
@@ -186,8 +170,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
         // closure action
         return get(this, 'infinityLoad')(infinityModelContent, -1);
       } else {
-        // old action
-        this.sendAction('loadPreviousAction', infinityModelContent, -1);
+        get(this, 'infinity').infinityLoad(infinityModelContent, -1)
       }
     }
 

@@ -3,10 +3,30 @@ import { oneWay } from '@ember/object/computed';
 import { computed, get, set, getProperties } from '@ember/object';
 import { objectAssign } from '../utils';
 import { typeOf } from '@ember/utils';
-import { inject as service } from '@ember/service';
 
+/**
+  @class InfinityModel
+  @namespace EmberInfinity
+  @module ember-infinity/lib/infinity-model
+  @extends Ember.ArrayProxy
+*/
 export default ArrayProxy.extend({
-  infinity: service(),
+  /**
+    @public
+    @property store
+    @default null
+   */
+  store: null,
+
+  /**
+    The supported findMethod name for
+    the developers Ember Data version.
+    Provided here for backwards compat.
+    @public
+    @property storeFindMethod
+    @default null
+   */
+  storeFindMethod: null,
 
   /**
     @private
