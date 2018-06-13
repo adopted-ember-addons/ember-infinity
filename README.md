@@ -572,7 +572,7 @@ export default Route.extend({
 Chances are you'll want to scroll some source other than the default ember-data store to infinity. You can do that by injecting your store into the route and specifying the store to the infinityModel options:
 
 ```js
-import { inject as servie } from '@ember/service';
+import { inject as service } from '@ember/service';
 
 export default Ember.Route.extend({
   infinity: service(),
