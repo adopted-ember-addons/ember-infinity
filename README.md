@@ -7,12 +7,6 @@
 [![Dependency Status](https://david-dm.org/ember-infinity/ember-infinity.svg)](https://david-dm.org/ember-infinity/ember-infinity)
 [![devDependency Status](https://david-dm.org/ember-infinity/ember-infinity/dev-status.svg)](https://david-dm.org/ember-infinity/ember-infinity#info=devDependencies)
 
-***As of v1.0-alpha, this library officially supports Ember 2.4 and above***
-
-***We are currently in the v1.0.0-beta series (stable) and will be releasing 1.0 by the end of May 2018***
-
-See this [issue](https://github.com/ember-infinity/ember-infinity/issues/281) for the remaining items to release 1.0.
-
 Demo: [ember-infinity.github.io/ember-infinity/](https://ember-infinity.github.io/ember-infinity/)
 
 Simple, flexible infinite scrolling for Ember CLI Apps.  Works out of the box
@@ -36,7 +30,7 @@ Also:
 
 · **Route Mixin** (deprecated)
 
-As of 1.0-beta, you can either use the infinity service `model` hook or the `infinityModel` Route mixin hook.  You may be used to the Route mixin; however, we will be moving forward with the service based approach as the ergonomics for your application are greatly improved.
+As of 1.0, you can either use the infinity service `model` hook or the `infinityModel` Route mixin hook.  You may be used to the Route mixin; however, we will be moving forward with the service based approach as the ergonomics for your application are greatly improved.
 
 ### Option 1 - Service Oriented Approach (recommended)
 
@@ -71,7 +65,7 @@ export default Route.extend({
 
 ### Option 2 - Route Mixin Approach (deprecated)
 
-Importing the `ember-infinity` Route Mixin and extending your route will give you access to `this.infinityModel` in your model hook.
+Importing the `ember-infinity` Route Mixin and extending your route will give you access to `this.infinityModel` in your model hook.  For various reasons (including you writing less code!), we have deprecated the use of the Route mixin and will phase it out by `v1.1`.
 
 ```js
 import Route from '@ember/routing/route';
@@ -104,7 +98,7 @@ By default, `ember-infinity` expects the server response to contain something ab
 
 ### Closure Actions<a name="ClosureActions"></a>
 
-If you want to use closure actions with `ember-infinity` and the `infinity-loader` component, you need to be a little bit more explicit.  Generally you should let the infinity service handle fetching records for you, but if you have a special case, this is how you would do it:
+If you want to use closure actions with `ember-infinity` and the `infinity-loader` component, you need to be a little bit more explicit.  Generally you should let the infinity service handle fetching records for you, but if you have a _special case_, this is how you would do it:
 
 See the Ember docs on passing actions to components [here](https://guides.emberjs.com/v3.0.0/components/triggering-changes-with-actions/#toc_passing-the-action-to-the-component).
 
@@ -171,7 +165,7 @@ export default Route.extend({
   model() {
     return RSVP.hash({
       products: this.infinity.model('product'),
-      users: this.infinity.model("user")
+      users: this.infinity.model('user')
     });
   }
 });
@@ -209,7 +203,7 @@ The infinity service also exposes 5 methods to fetch & mutate your collection:
 4. pushObjects
 5. unshiftObjects
 
-The `model` hook (similar to the Route Mixin `infinityModel` hook) will fetch the first page you request and pass the result to your template.
+The `model` hook (similar to the Route Mixin `infinityModel` hook pre 1.0) will fetch the first page you request and pass the result to your template.
 
 ```js
 import Route from '@ember/routing/route';
@@ -323,7 +317,7 @@ and will expect to receive metadata in the response payload via a `total_pages` 
 }
 ```
 
-If you wish to customize some aspects of the JSON contract for pagination, you may do so via your routes. For example, you may want to customize the following:
+If you wish to customize some aspects of the JSON contract for pagination, you may do so via your model hook. For example, you may want to customize the following:
 
 Default:
 - perPageParam: "per_page",
@@ -372,6 +366,7 @@ and `ember-infinity` will be set up to parse the total number of pages from a JS
 ```
 
 You can also prevent the `per_page` or `page` parameters from being sent by setting `perPageParam` or `pageParam` to `null`, respectively.
+Moreover, if your backend passes the total number of records instead of total pages, then as it's replacement, set the `countParam`.
 
 ### Cursor-based pagination
 
@@ -597,7 +592,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
 
 * **infinityLoad**
 
-Closure actions are enabled in the `1.0.0-beta` series.
+Closure actions are enabled in the `1.0.0` series.
 
 ```hbs
 {{infinity-loader

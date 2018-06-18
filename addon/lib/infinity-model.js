@@ -183,22 +183,17 @@ export default ArrayProxy.extend({
   canLoadMore: computed('_totalPages', '_count', 'currentPage', '_increment', {
     get() {
       let { _count, _totalPages , currentPage, perPage, _increment } = getProperties(this, '_count', '_totalPages', 'currentPage', 'perPage', '_increment');
-      if (_totalPages) {
-        if (_increment === 1 && currentPage !== undefined) {
-          // load next page
+      let shouldCheck = _increment === 1 && currentPage !== undefined;
+      if (shouldCheck) {
+        if (_totalPages) {
           return (currentPage < _totalPages) ? true : false;
-        } else if (get(this, 'firstPage') > 1) {
-          // load previous page if starting page was not 1.  Otherwise ignore this block
-          return get(this, 'firstPage') > 1 ? true : false;
-        }
-      } else if (_count) {
-        if (_increment === 1 && currentPage !== undefined) {
-          // load next page
+        } else if (_count) {
           return (currentPage < _count / perPage) ? true : false;
-        } else if (get(this, 'firstPage') > 1) {
-          // load previous page if starting page was not 1.  Otherwise ignore this block
-          return get(this, 'firstPage') > 1 ? true : false;
         }
+      }
+      if (get(this, 'firstPage') > 1) {
+        // load previous page if starting page was not 1.  Otherwise ignore this block
+        return get(this, 'firstPage') > 1 ? true : false;
       }
       return false;
     },
