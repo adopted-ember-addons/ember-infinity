@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "Simple, flexible infinite scroll for Ember CLI Apps.",
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "infinity",
+    "scroll",
+    "paginate"
   ],
   "license": "MIT",
   "author": "Hugh Francis",

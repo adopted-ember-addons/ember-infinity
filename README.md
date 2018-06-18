@@ -24,11 +24,11 @@ Also:
 
 `ember-infinity` exposes 3 consumable items for your application.
 
-· **infinity service**
+1. **infinity service**
 
-· **infinity-loader component**
+2. **infinity-loader component**
 
-· **Route Mixin** (deprecated)
+3. **Route Mixin** (deprecated)
 
 As of 1.0, you can either use the infinity service `model` hook or the `infinityModel` Route mixin hook.  You may be used to the Route mixin; however, we will be moving forward with the service based approach as the ergonomics for your application are greatly improved.
 
@@ -42,6 +42,8 @@ Moreover, you are not restricted to only fetching items in the route.  Fetch awa
 
 Lastly, before we get to an example, you do not need to pass an action into infinity-loader component anymore.  We handle that internally now.  You can still pass a closure action `infinityLoad` if you need to perform additional logic.
 
+Let's see how simple it is to fetch a list of products.  Instead of `this.store.query('product')` or `this.store.findAll('product')`, you simply invoke `this.infinity.model('product')` and under the hood, `ember-infinity` will query the store and manage fetching new records for you!
+
 ```js
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
@@ -50,7 +52,7 @@ export default Route.extend({
   infinity: service(),
 
   model() {
-    return this.infinity.model('product', { infinityCache: 36000 }); // in milliseconds - cache the product infinity model for 10 minutes
+    return this.infinity.model('product');
   }
 });
 ```
@@ -95,60 +97,6 @@ In both cases, whenever the `infinity-loader` component is in view, we will fetc
 ### Response Meta Expectations
 
 By default, `ember-infinity` expects the server response to contain something about how many total pages it can expect to fetch. `ember-infinity` defaults to looking for something like `meta: { total_pages: 20 }` in your response.  See [Advanced Usage](#AdvancedUsage).
-
-### Closure Actions<a name="ClosureActions"></a>
-
-If you want to use closure actions with `ember-infinity` and the `infinity-loader` component, you need to be a little bit more explicit.  Generally you should let the infinity service handle fetching records for you, but if you have a _special case_, this is how you would do it:
-
-See the Ember docs on passing actions to components [here](https://guides.emberjs.com/v3.0.0/components/triggering-changes-with-actions/#toc_passing-the-action-to-the-component).
-
-```js
-import Controller from '@ember/routing/route';
-import { inject as service } from '@ember/service';
-import { get } from '@ember/object';
-
-export default Controller.extend({
-  infinity: service(),
-
-  actions: {
-    /**
-      Note this must be handled by you.  An action will be called with the result of your Route model hook from the `infinity-loader` component, similar to this:
-      // closure action in infinity-loader component
-      get(this, 'infinityLoad')(infinityModelContent);
-
-      @method loadMoreProduct
-      @param {InfinityModel} products
-    */
-    loadMoreProduct(products) {
-      // Perform other logic ....
-      get(this, 'infinity').infinityLoad(products);
-    }
-  }
-});
-```
-
-```js
-import Route from '@ember/routing/route';
-import { inject as service } from '@ember/service';
-
-export default Route.extend({
-  infinity: service(),
-
-  model() {
-    return this.infinity.model('product');
-  }
-});
-```
-
-```hbs
-{{!-- some nested component in your template file where action bubbling does not reach your route --}}
-{{#each model as |product|}}
-  <h1>{{product.name}}</h1>
-  <h2>{{product.description}}</h2>
-{{/each}}
-
-{{infinity-loader infinityModel=model infinityLoad=(action "loadMoreProduct")}}
-```
 
 ### Multiple Infinity Models in one Route
 
@@ -281,6 +229,60 @@ export default Route.extend({
 {{infinity-loader infinityModel=model}}
 ```
 
+### Closure Actions<a name="ClosureActions"></a>
+
+If you want to use closure actions with `ember-infinity` and the `infinity-loader` component, you need to be a little bit more explicit.  Generally you should let the infinity service handle fetching records for you, but if you have a _special case_, this is how you would do it:
+
+See the Ember docs on passing actions to components [here](https://guides.emberjs.com/v3.0.0/components/triggering-changes-with-actions/#toc_passing-the-action-to-the-component).
+
+```js
+import Controller from '@ember/routing/route';
+import { inject as service } from '@ember/service';
+import { get } from '@ember/object';
+
+export default Controller.extend({
+  infinity: service(),
+
+  actions: {
+    /**
+      Note this must be handled by you.  An action will be called with the result of your Route model hook from the `infinity-loader` component, similar to this:
+      // closure action in infinity-loader component
+      get(this, 'infinityLoad')(infinityModelContent);
+
+      @method loadMoreProduct
+      @param {InfinityModel} products
+    */
+    loadMoreProduct(products) {
+      // Perform other logic ....
+      get(this, 'infinity').infinityLoad(products);
+    }
+  }
+});
+```
+
+```js
+import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
+
+export default Route.extend({
+  infinity: service(),
+
+  model() {
+    return this.infinity.model('product');
+  }
+});
+```
+
+```hbs
+{{!-- some nested component in your template file where action bubbling does not reach your route --}}
+{{#each model as |product|}}
+  <h1>{{product.name}}</h1>
+  <h2>{{product.description}}</h2>
+{{/each}}
+
+{{infinity-loader infinityModel=model infinityLoad=(action "loadMoreProduct")}}
+```
+
 ### Non-Blocking Model Hooks
 
 In the world of optimistic route transitions & skeleton UI, it's necessary to return a POJO or similar primitive to Ember's Route#model hook to ensure the transition is not blocked by promise.
@@ -320,16 +322,16 @@ and will expect to receive metadata in the response payload via a `total_pages` 
 If you wish to customize some aspects of the JSON contract for pagination, you may do so via your model hook. For example, you may want to customize the following:
 
 Default:
-- perPageParam: "per_page",
-- pageParam: "page",
-- totalPagesParam: "meta.total_pages",
-- countParam: "meta.count",
+- perPageParam: `per_page`,
+- pageParam: `page`,
+- totalPagesParam: `meta.total_pages`,
+- countParam: `meta.count`,
 
 Example Customization shown below:
-- perPageParam: "per",
-- pageParam: "pg",
-- totalPagesParam: "meta.total",
-- countParam: "meta.records",
+- perPageParam: `per`,
+- pageParam: `pg`,
+- totalPagesParam: `meta.total`,
+- countParam: `meta.records`,
 
 ```js
 import Route from '@ember/routing/route';
@@ -404,7 +406,7 @@ export default Ember.Route.extend({
 });
 ```
 
-### infinityModel
+### Static parameters
 
 You can also provide additional static parameters to `infinityModel` that
 will be passed to your backend server in addition to the
