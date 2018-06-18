@@ -1,5 +1,17 @@
 # Change Log
 
+## [1.0.0](https://github.com/ember-infinity/ember-infinity/tree/v1.0.0) (2018-06-17)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.8...1.0.0)
+
+**Important Merged pull requests:**
+
+- Component Service Interaction [#287](https://github.com/ember-infinity/ember-infinity/pull/287)
+- Load more until screen is filled [#275](https://github.com/ember-infinity/ember-infinity/pull/279)
+- Enable closure actions [#271](https://github.com/ember-infinity/ember-infinity/pull/271)
+- Load previous pages [#259](https://github.com/ember-infinity/ember-infinity/pull/259)
+
+**Closed issues:**
+
 ## [1.0.0-alpha.*](https://github.com/ember-infinity/ember-infinity/tree/1.0.0-alpha.9) (2018-03-07)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.8...1.0.0-alpha.9)
 
