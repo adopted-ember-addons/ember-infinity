@@ -7,12 +7,6 @@
 [![Dependency Status](https://david-dm.org/ember-infinity/ember-infinity.svg)](https://david-dm.org/ember-infinity/ember-infinity)
 [![devDependency Status](https://david-dm.org/ember-infinity/ember-infinity/dev-status.svg)](https://david-dm.org/ember-infinity/ember-infinity#info=devDependencies)
 
-***As of v1.0-alpha, this library officially supports Ember 2.4 and above***
-
-***We are currently in the v1.0.0-beta series (stable) and will be releasing 1.0 by the end of May 2018***
-
-See this [issue](https://github.com/ember-infinity/ember-infinity/issues/281) for the remaining items to release 1.0.
-
 Demo: [ember-infinity.github.io/ember-infinity/](https://ember-infinity.github.io/ember-infinity/)
 
 Simple, flexible infinite scrolling for Ember CLI Apps.  Works out of the box
@@ -36,7 +30,7 @@ Also:
 
 · **Route Mixin** (deprecated)
 
-As of 1.0-beta, you can either use the infinity service `model` hook or the `infinityModel` Route mixin hook.  You may be used to the Route mixin; however, we will be moving forward with the service based approach as the ergonomics for your application are greatly improved.
+As of 1.0, you can either use the infinity service `model` hook or the `infinityModel` Route mixin hook.  You may be used to the Route mixin; however, we will be moving forward with the service based approach as the ergonomics for your application are greatly improved.
 
 ### Option 1 - Service Oriented Approach (recommended)
 
@@ -598,7 +592,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
 
 * **infinityLoad**
 
-Closure actions are enabled in the `1.0.0-beta` series.
+Closure actions are enabled in the `1.0.0` series.
 
 ```hbs
 {{infinity-loader
