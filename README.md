@@ -65,7 +65,7 @@ export default Route.extend({
 
 ### Option 2 - Route Mixin Approach (deprecated)
 
-Importing the `ember-infinity` Route Mixin and extending your route will give you access to `this.infinityModel` in your model hook.
+Importing the `ember-infinity` Route Mixin and extending your route will give you access to `this.infinityModel` in your model hook.  For various reasons (including you writing less code!), we have deprecated the use of the Route mixin and will phase it out by `v1.1`.
 
 ```js
 import Route from '@ember/routing/route';
@@ -98,7 +98,7 @@ By default, `ember-infinity` expects the server response to contain something ab
 
 ### Closure Actions<a name="ClosureActions"></a>
 
-If you want to use closure actions with `ember-infinity` and the `infinity-loader` component, you need to be a little bit more explicit.  Generally you should let the infinity service handle fetching records for you, but if you have a special case, this is how you would do it:
+If you want to use closure actions with `ember-infinity` and the `infinity-loader` component, you need to be a little bit more explicit.  Generally you should let the infinity service handle fetching records for you, but if you have a _special case_, this is how you would do it:
 
 See the Ember docs on passing actions to components [here](https://guides.emberjs.com/v3.0.0/components/triggering-changes-with-actions/#toc_passing-the-action-to-the-component).
 
@@ -165,7 +165,7 @@ export default Route.extend({
   model() {
     return RSVP.hash({
       products: this.infinity.model('product'),
-      users: this.infinity.model("user")
+      users: this.infinity.model('user')
     });
   }
 });
@@ -203,7 +203,7 @@ The infinity service also exposes 5 methods to fetch & mutate your collection:
 4. pushObjects
 5. unshiftObjects
 
-The `model` hook (similar to the Route Mixin `infinityModel` hook) will fetch the first page you request and pass the result to your template.
+The `model` hook (similar to the Route Mixin `infinityModel` hook pre 1.0) will fetch the first page you request and pass the result to your template.
 
 ```js
 import Route from '@ember/routing/route';
