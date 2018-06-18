@@ -323,7 +323,7 @@ and will expect to receive metadata in the response payload via a `total_pages` 
 }
 ```
 
-If you wish to customize some aspects of the JSON contract for pagination, you may do so via your routes. For example, you may want to customize the following:
+If you wish to customize some aspects of the JSON contract for pagination, you may do so via your model hook. For example, you may want to customize the following:
 
 Default:
 - perPageParam: "per_page",
@@ -372,6 +372,7 @@ and `ember-infinity` will be set up to parse the total number of pages from a JS
 ```
 
 You can also prevent the `per_page` or `page` parameters from being sent by setting `perPageParam` or `pageParam` to `null`, respectively.
+Moreover, if your backend passes the total number of records instead of total pages, then as it's replacement, set the `countParam`.
 
 ### Cursor-based pagination
 
