@@ -1,8 +1,11 @@
 import Route from '@ember/routing/route';
-import InfinityRoute from 'ember-infinity/mixins/route';
+import { inject as service } from '@ember/service';
+import { get } from '@ember/object';
 
-export default Route.extend(InfinityRoute, {
+export default Route.extend({
+  infinity: service(),
+
   model() {
-    return this.infinityModel('post', {perPage: 1, startingPage: 1});
+    return get(this, 'infinity').model('post', { perPage: 1, startingPage: 1 });
   }
 });

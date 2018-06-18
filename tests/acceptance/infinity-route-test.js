@@ -103,9 +103,13 @@ module('Acceptance: Infinity Route - infinity routes', function(hooks) {
 
   test('it should load elements until page is filled', async function(assert) {
     this.server.createList('post', 50);
-    await visit('/test-scrollable?perPage=5');
+    await visit('/test-scrollable?perPage=3');
 
-    shouldBeItemsOnTheList(assert, 50);
+    await waitUntil(() => {
+      return postList().querySelectorAll('li').length === 12;
+    });
+
+    shouldBeItemsOnTheList(assert, 12);
   });
 
   module('Acceptance: Infinity Route - multiple pages fetched', function(/*hooks*/) {

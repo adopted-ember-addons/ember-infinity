@@ -4,8 +4,11 @@ import InViewportMixin from 'ember-in-viewport';
 import { run } from '@ember/runloop';
 import { get, set, computed, observer, defineProperty } from '@ember/object';
 import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 
 const InfinityLoaderComponent = Component.extend(InViewportMixin, {
+  infinity: service(),
+
   classNames: ['infinity-loader'],
   classNameBindings: ['infinityModelContent.reachedInfinity', 'viewportEntered:in-viewport'],
   /**
@@ -14,22 +17,6 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
    * @default 50
    */
   eventDebounce: 50,
-  /**
-   * sent up to route mixin to load next page
-   *
-   * @public
-   * @property loadMoreAction
-   * @default
-   */
-  loadMoreAction: 'infinityLoad',
-  /**
-   * sent up to route mixin to load previous page
-   *
-   * @public
-   * @property loadPreviousAction
-   * @default
-   */
-  loadPreviousAction: 'infinityLoad',
   /**
    * @public
    * @property loadingText
@@ -183,8 +170,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
         // closure action
         return get(this, 'infinityLoad')(infinityModelContent, -1);
       } else {
-        // old action
-        this.sendAction('loadPreviousAction', infinityModelContent, -1);
+        get(this, 'infinity').infinityLoad(infinityModelContent, -1)
       }
     }
 
@@ -205,20 +191,52 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
       let infinityModelContent = get(this, 'infinityModelContent');
 
       if (typeof(get(this, 'infinityLoad')) === 'function') {
-        // closure action
+        // closure action (if you need to perform some other logic)
         return get(this, 'infinityLoad')(infinityModelContent);
       } else {
-        // old action
-        this.sendAction('loadMoreAction', infinityModelContent);
+        // service action
+        get(this, 'infinity').infinityLoad(infinityModelContent, 1)
+          .then(() => {
+            if (get(infinityModelContent, '_canLoadMore')) {
+              this._checkScrollableHeight();
+            }
+          });
       }
 
     }
     this._debounceTimer = run.debounce(this, loadMore, get(this, 'eventDebounce'));
   },
 
+  /**
+   * recursive function to fill page with records
+   *
+   * @method _checkScrollableHeight
+   */
+  _checkScrollableHeight() {
+    if (this._viewportHeight() > this.element.offsetTop) {
+      // load again
+      this._debounceScrolledToBottom();
+    }
+  },
+
   _cancelTimers() {
     run.cancel(this._debounceTimer);
   },
+
+  /**
+    calculate the height of the viewport
+
+    @private
+    @method _viewportHeight
+    @return Integer
+   */
+  _viewportHeight() {
+    if (typeof FastBoot === 'undefined') {
+      let isScrollable = !!this.scrollable;
+      let viewportElem = isScrollable ? document.querySelector(this.scrollable) : window;
+      return isScrollable ? viewportElem.clientHeight : viewportElem.innerHeight;
+    }
+  }
 });
 
 export default InfinityLoaderComponent;

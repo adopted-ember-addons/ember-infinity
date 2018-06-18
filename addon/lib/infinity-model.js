@@ -4,8 +4,30 @@ import { computed, get, set, getProperties } from '@ember/object';
 import { objectAssign } from '../utils';
 import { typeOf } from '@ember/utils';
 
-
+/**
+  @class InfinityModel
+  @namespace EmberInfinity
+  @module ember-infinity/lib/infinity-model
+  @extends Ember.ArrayProxy
+*/
 export default ArrayProxy.extend({
+  /**
+    @public
+    @property store
+    @default null
+   */
+  store: null,
+
+  /**
+    The supported findMethod name for
+    the developers Ember Data version.
+    Provided here for backwards compat.
+    @public
+    @property storeFindMethod
+    @default null
+   */
+  storeFindMethod: null,
+
   /**
     @private
     @property _perPage
@@ -52,6 +74,14 @@ export default ArrayProxy.extend({
 
   /**
     @private
+    @property _count
+    @type Integer
+    @default 0
+  */
+  _count: 0,
+
+  /**
+    @private
     @property _totalPages
     @type Integer
     @default 0
@@ -89,6 +119,14 @@ export default ArrayProxy.extend({
     @default "meta.total_pages"
    */
   totalPagesParam: 'meta.total_pages',
+
+  /**
+    Path of the "count" param in indicating
+    number of records from HTTP response
+    @type {String}
+    @default "meta.count"
+   */
+  countParam: 'meta.count',
 
   /**
     Arbitrary meta copied over from
@@ -142,13 +180,21 @@ export default ArrayProxy.extend({
     @type Boolean
     @default false
   */
-  canLoadMore: computed('_totalPages', 'currentPage', '_increment', {
+  canLoadMore: computed('_totalPages', '_count', 'currentPage', '_increment', {
     get() {
-      let { _totalPages , currentPage, _increment } = getProperties(this, '_totalPages', 'currentPage', '_increment');
+      let { _count, _totalPages , currentPage, perPage, _increment } = getProperties(this, '_count', '_totalPages', 'currentPage', 'perPage', '_increment');
       if (_totalPages) {
         if (_increment === 1 && currentPage !== undefined) {
           // load next page
           return (currentPage < _totalPages) ? true : false;
+        } else if (get(this, 'firstPage') > 1) {
+          // load previous page if starting page was not 1.  Otherwise ignore this block
+          return get(this, 'firstPage') > 1 ? true : false;
+        }
+      } else if (_count) {
+        if (_increment === 1 && currentPage !== undefined) {
+          // load next page
+          return (currentPage < _count / perPage) ? true : false;
         } else if (get(this, 'firstPage') > 1) {
           // load previous page if starting page was not 1.  Otherwise ignore this block
           return get(this, 'firstPage') > 1 ? true : false;
