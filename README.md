@@ -395,7 +395,7 @@ const ExtendedInfinityModel = InfinityModel.extend({
   },
   afterInfinityModel(posts) {
     let loadedAny = posts.get('length') > 0;
-    infinityModel.set('canLoadMore', loadedAny);
+    posts.set('canLoadMore', loadedAny);
 
     this.set('_minId', posts.get('lastObject.id'));
     this.set('_minUpdatedAt', posts.get('lastObject.updated_at').toISOString());
@@ -483,7 +483,7 @@ setupController(controller, model) {
 
 ### afterInfinityModel
 
-In some cases, a single call to your data store isn't enough. The afterInfinityModel
+In some cases, a single call to your data store isn't enough. The `afterInfinityModel`
 method is available for those cases when you need to chain together functions or
 promises after fetching a model.
 
@@ -547,12 +547,12 @@ export default Route.extend(InfinityRoute, {
 });
 ```
 
-afterInfinityModel should return either a promise, ArrayProxy, or a
+`afterInfinityModel` should return either a promise, ArrayProxy, or a
 falsy value.  The returned value, when not falsy, will take the place of the
 resolved promise object and, if it is a promise, will hold execution until resolved.
 In the case of a falsy value, the original promise result is used.
 
-So relating this to the examples above... In the first example, afterInfinityModel
+So relating this to the examples above... In the first example, `afterInfinityModel`
 does not have an explicit return defined so the original posts promise result is used.
 In the second example, the returned collection of authors is used.
 
