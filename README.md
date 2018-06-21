@@ -383,25 +383,30 @@ items are added to the top of the list by other users in between requests.
 To do this, implement the `afterInfinityModel` hook as follows:
 
 ```js
-export default Ember.Route.extend({
-  _minId: undefined,
-  _minUpdatedAt: undefined,
+import Route from '@ember/routing/route';
+import InfinityModel from 'ember-infinity/lib/infinity-model';
 
-  infinity: service(),
-
-  model() {
-    return this.infinity.model("post", {}, {
-      min_id: '_minId',
-      min_updated_at: '_minUpdatedAt'
-    });
+const ExtendedInfinityModel = InfinityModel.extend({
+  buildParams() {
+    let params = this._super(...arguments);
+    params['min_id']: get(this, '_minId'); // where `this` is the infinityModel instance
+    params['min_updated_at']: get(this, '_minUpdatedAt');
+    return params;
   },
-
-  afterInfinityModel(posts, infinityModel) {
+  afterInfinityModel(posts) {
     let loadedAny = posts.get('length') > 0;
     infinityModel.set('canLoadMore', loadedAny);
 
     this.set('_minId', posts.get('lastObject.id'));
     this.set('_minUpdatedAt', posts.get('lastObject.updated_at').toISOString());
+  }
+});
+
+export default Route.extend({
+  infinity: service(),
+
+  model() {
+    return this.infinity.model('post', {}, ExtendedInfinityModel);
   }
 });
 ```
@@ -485,14 +490,23 @@ promises after fetching a model.
 As a simple example, let's say you had a blog and just needed to set a property
 on each Post model after fetching all of them:
 
-```js
-model() {
-  return this.infinity.model("post");
-},
+#### Using the `ember-infinity` Service approach
 
-afterInfinityModel(posts) {
-  posts.setEach('author', 'Jane Smith');
-}
+```js
+import Route from '@ember/routing/route';
+import InfinityModel from 'ember-infinity/lib/infinity-model';
+
+const ExtendedInfinityModel = InfinityModel.extend({
+  afterInfinityModel(posts) {
+    posts.setEach('author', 'Jane Smith');
+  }
+});
+
+export default Route.extend({
+  model() {
+    return this.infinity.model('post', {}, ExtendedInfinityModel);
+  }
+});
 ```
 
 As a more complex example, let's say you had a blog with Posts and Authors as separate
@@ -500,13 +514,37 @@ related models and you needed to extract an association from Posts. In that case
 return the collection you want from afterInfinityModel:
 
 ```js
-model() {
-  return this.infinity.model("post");
-},
+import Route from '@ember/routing/route';
+import InfinityModel from 'ember-infinity/lib/infinity-model';
 
-afterInfinityModel(posts) {
-  return posts.mapBy('author').uniq();
-}
+const ExtendedInfinityModel = InfinityModel.extend({
+  afterInfinityModel(posts) {
+    return posts.mapBy('author').uniq();
+  }
+});
+
+export default Route.extend({
+  model() {
+    return this.infinity.model('post', {}, ExtendedInfinityModel);
+  }
+});
+```
+
+#### Using the Route mixin approach
+
+```js
+import Route from '@ember/routing/route';
+import InfinityModel from 'ember-infinity/lib/infinity-model';
+
+export default Route.extend(InfinityRoute, {
+  model() {
+    return this.infinity.model("post");
+  },
+
+  afterInfinityModel(posts) {
+    posts.setEach('author', 'Jane Smith');
+  }
+});
 ```
 
 afterInfinityModel should return either a promise, ArrayProxy, or a

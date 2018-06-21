@@ -18,10 +18,10 @@ module('Unit | RouteMixin', function(hooks) {
       return ArrayProxy.create(assign({ content: A(content) }, meta));
     };
 
-    let infinity = this.owner.lookup('service:infinity');
+    this.infinity = this.owner.lookup('service:infinity');
     this.createRoute = (infinityModelArgs, routeProperties={}) => {
       let RouteObject = Route.extend(RouteMixin, assign(routeProperties, {
-        infinity,
+        infinity: this.infinity,
         model() {
           return this.infinityModel(...infinityModelArgs);
         }
