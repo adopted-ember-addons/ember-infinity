@@ -424,10 +424,6 @@ export default Service.extend({
     @method _afterInfinityModel
    */
   _afterInfinityModel(newObjects, infinityModel) {
-    if (!infinityModel.afterInfinityModel || typeof infinityModel.afterInfinityModel !== 'function') {
-      return newObjects;
-    }
-
     let result = infinityModel.afterInfinityModel(newObjects, infinityModel);
     if (result) {
       return result;
