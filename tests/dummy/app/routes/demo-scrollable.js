@@ -8,6 +8,10 @@ const ExtendedInfinityModel =  InfinityModel.extend({
     let params = this._super(...arguments);
     params['categoryId'] = get(this, 'global').categoryId;
     return params;
+  },
+  afterInfinityModel(newObjects/*, infinityModel*/) {
+    // smoke test.  not really doing anything.  tested at unit level
+    return newObjects;
   }
 });
 
