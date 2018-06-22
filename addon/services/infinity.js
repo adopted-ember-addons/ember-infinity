@@ -189,9 +189,6 @@ export default Service.extend({
       get(this, '_ensureCustomStoreCompatibility')(options, options.store, options.storeFindMethod || 'query');
     }
 
-    set(this, 'infinityModelLoaded', get(this, 'infinityModelLoaded'));
-    set(this, 'afterInfinityModel', get(this, 'afterInfinityModel'));
-
     // default is to start at 0, request next page and increment
     const currentPage = options.startingPage === undefined ? 0 : options.startingPage - 1;
     // sets first page when route is loaded
@@ -324,7 +321,7 @@ export default Service.extend({
         let canLoadMore = get(infinityModel, '_canLoadMore');
         set(infinityModel, 'reachedInfinity', !canLoadMore);
         if (!canLoadMore) {
-          this._notifyInfinityModelLoaded();
+          this._notifyInfinityModelLoaded(infinityModel);
         }
         return infinityModel;
       }).finally(() => set(infinityModel, '_loadingMore', false));
@@ -409,14 +406,15 @@ export default Service.extend({
 
     @private
     @method _notifyInfinityModelLoaded
+    @param {EmberInfinity.InfinityModel} infinityModel
    */
-  _notifyInfinityModelLoaded() {
-    if (!this.infinityModelLoaded) {
+  _notifyInfinityModelLoaded(infinityModel) {
+    if (!infinityModel.infinityModelLoaded) {
       return;
     }
 
     const totalPages = get(this, '_totalPages');
-    scheduleOnce('afterRender', this, 'infinityModelLoaded', { totalPages: totalPages });
+    scheduleOnce('afterRender', infinityModel, 'infinityModelLoaded', { totalPages: totalPages });
   },
 
   /**
@@ -426,11 +424,7 @@ export default Service.extend({
     @method _afterInfinityModel
    */
   _afterInfinityModel(newObjects, infinityModel) {
-    if (!this.afterInfinityModel || typeof this.afterInfinityModel !== 'function') {
-      return newObjects;
-    }
-
-    let result = this.afterInfinityModel(newObjects, infinityModel);
+    let result = infinityModel.afterInfinityModel(newObjects, infinityModel);
     if (result) {
       return result;
     }

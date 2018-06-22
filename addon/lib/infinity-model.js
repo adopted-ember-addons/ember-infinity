@@ -3,6 +3,7 @@ import { oneWay } from '@ember/object/computed';
 import { computed, get, set, getProperties } from '@ember/object';
 import { objectAssign } from '../utils';
 import { typeOf } from '@ember/utils';
+import { resolve } from 'rsvp';
 
 /**
   @class InfinityModel
@@ -220,5 +221,20 @@ export default ArrayProxy.extend({
     }
 
     return objectAssign(pageParams, get(this, 'extraParams'));
+  },
+
+  /**
+    abstract after-model hook, can be overridden in subclasses
+    Used to keep shape for optimization
+
+    @method afterInfinityModel
+    @param {Ember.Array} newObjects the new objects added to the model
+    @param {Ember.ArrayProxy} infinityModel (self)
+    @return {Ember.RSVP.Promise} A Promise that resolves the new objects
+    @return {Ember.Array} the new objects
+   */
+  afterInfinityModel(newObjects/*, infinityModel*/) {
+    // override in your subclass to customize
+    return resolve(newObjects);
   }
 });

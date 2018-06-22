@@ -97,9 +97,6 @@ const RouteMixin = Mixin.create({
       get(this, 'infinity._ensureCustomStoreCompatibility')(options, options.store, options.storeFindMethod || 'query');
     }
 
-    set(service, 'infinityModelLoaded', get(this, 'infinityModelLoaded'));
-    set(service, 'afterInfinityModel', get(this, 'afterInfinityModel'));
-
     // default is to start at 0, request next page and increment
     const currentPage = options.startingPage === undefined ? 0 : options.startingPage - 1;
     // sets first page when route is loaded
@@ -110,6 +107,15 @@ const RouteMixin = Mixin.create({
     // store service methods (defaults to ember-data if nothing passed)
     const store = options.store || get(this, 'store');
     const storeFindMethod = options.storeFindMethod || 'query';
+
+    // hook functions
+    let infinityModelLoaded, afterInfinityModel;
+    if (!ExtendedInfinityModel || (ExtendedInfinityModel && !ExtendedInfinityModel.infinityModelLoaded)) {
+      infinityModelLoaded = get(this, 'infinityModelLoaded');
+    }
+    if (!ExtendedInfinityModel || (ExtendedInfinityModel && !ExtendedInfinityModel.afterInfinityModel)) {
+      afterInfinityModel = get(this, 'afterInfinityModel');
+    }
 
     // check if user passed in param w/ infinityModel, else check if defined on the route (for backwards compat), else default
     const perPageParam = paramsCheck(options.perPageParam, get(this, 'perPageParam'), 'per_page');
@@ -158,6 +164,12 @@ const RouteMixin = Mixin.create({
     if (didPassBoundParams) {
       initParams._deprecatedBoundParams = boundParams;
       initParams.route = this;
+    }
+    if (infinityModelLoaded) {
+      initParams.infinityModelLoaded = infinityModelLoaded;
+    }
+    if (afterInfinityModel) {
+      initParams.afterInfinityModel = afterInfinityModel;
     }
 
     const infinityModel = InfinityModelFactory.create(initParams);
