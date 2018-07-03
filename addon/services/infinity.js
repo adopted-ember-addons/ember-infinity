@@ -379,11 +379,15 @@ export default Service.extend({
     set(infinityModel, '_count', count);
     set(infinityModel, 'meta', get(queryObject, 'meta'));
 
+    let newObjects;
     if (infinityModel.get('_increment') === 1) {
-      return infinityModel.pushObjects(queryObject.toArray());
+       newObjects = infinityModel.pushObjects(queryObject.toArray());
     } else {
-      return infinityModel.unshiftObjects(queryObject.toArray());
+      newObjects = infinityModel.unshiftObjects(queryObject.toArray());
     }
+
+    this._notifyInfinityModelUpdated(queryObject, infinityModel);
+    return newObjects;
   },
 
   /**
@@ -394,12 +398,22 @@ export default Service.extend({
     @param {EmberInfinity.InfinityModel} infinityModel
    */
   _notifyInfinityModelLoaded(infinityModel) {
-    if (!infinityModel.infinityModelLoaded) {
-      return;
-    }
-
     const totalPages = get(this, '_totalPages');
     scheduleOnce('afterRender', infinityModel, 'infinityModelLoaded', { totalPages: totalPages });
+  },
+
+  /**
+    finish the loading cycle by notifying that infinity has been updated
+
+    @private
+    @method _notifyInfinityModelUpdated
+    @param {Array} queryObject
+    @param {EmberInfinity.InfinityModel} infinityModel
+   */
+  _notifyInfinityModelUpdated(queryObject, infinityModel) {
+    const totalPages = get(this, '_totalPages');
+    const lastPageLoaded = get(infinityModel, 'currentPage');
+    scheduleOnce('afterRender', infinityModel, 'infinityModelUpdated', { lastPageLoaded, totalPages, queryObject });
   },
 
   /**

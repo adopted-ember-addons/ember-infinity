@@ -500,7 +500,7 @@ So relating this to the examples above... In the first example, `afterInfinityMo
 does not have an explicit return defined so the original posts promise result is used.
 In the second example, the returned collection of authors is used.
 
-### Event Hooks
+### Model Event Hooks
 
 The route mixin also provides following event hooks:
 
@@ -510,38 +510,37 @@ Triggered on the route whenever new objects are pushed into the infinityModel.
 
 **Args:**
 
-
-**infinityModelLoaded**
-
 * lastPageLoaded
 
 * totalPages
 
 * infinityModel
 
-Triggered on the route when the infinityModel is fully loaded.
+
+**infinityModelLoaded**
+
+Triggered on InfinityModel when is fully loaded.
 
 **Args:**
 
 * totalPages
 
-
 ```js
 import Route from '@ember/routing/route';
+import InfinityModel from 'ember-infinity/lib/infinity-model';
 
-export default Route.extend({
-  ...
-
-  model() {
-    /* Load pages of the Product Model, starting from page 1, in groups of 12. */
-    return this.infinity.model('product', { perPage: 12, startingPage: 1 });
-  },
-
+const ExtendedInfinityModel = InfinityModel.extend({
   infinityModelUpdated({ lastPageLoaded, totalPages, newObjects }) {
     Ember.Logger.debug('updated with more items');
   },
   infinityModelLoaded({ totalPages }) {
     Ember.Logger.info('no more items to load');
+  }
+});
+
+export default Route.extend({
+  model() {
+    return this.infinity.model('product', { perPage: 12, startingPage: 1 }, ExtendedInfinityModel);
   }
 }
 ```
