@@ -28,7 +28,7 @@ Also:
 
 2. **infinity-loader component**
 
-3. **Route Mixin** (deprecated)
+3. **Route Mixin** (deprecated and removed as of 1.1)
 
 As of 1.0, you can either use the infinity service `model` hook or the `infinityModel` Route mixin hook.  You may be used to the Route mixin; however, we will be moving forward with the service based approach as the ergonomics for your application are greatly improved.
 
@@ -427,8 +427,6 @@ return this.infinity.model('product', { perPage: 12, startingPage: 1,
 
 As of 1.0+, you can override or extend the behavior of Ember Infinity by providing a class that extends InfinityModel as a third argument to the Route#infinityModel hook.
 
-**Note**: This behavior should negate any need for the pre 1.0 "Bound Params" style of work. See [Bound Parameters](#Bound Parameters) Section below for more information.
-
 ```js
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 
@@ -454,14 +452,6 @@ export default Route.extend({
   }
 });
 ```
-
-**[DEPRECATED] Bound Parameters**
-
-As of 1.0+, passing a third parameter to represent Bound Parameters is deprecated. All valid use cases of this feature should now be ported to the [Extended Infinity Model pattern][Extending infinityModel].
-
-Bound Params were introduced as a way of dynamically fetching data over time - the query params passed to the server would be dictated by a property (computed or otherwise) on the route level, that was evaluated at the request time.
-
-This design has always felt a little off - using computed properties on the Route level is an uncommon (and thus non-ergonomic) pattern in Ember. As users have requested more features in Ember Infinity, we've realized it's more important to provide a flexible primitive that can be manipulated and extended in a Ember-esque way. This opens Ember Infinity up to a great deal more use cases, while also providing a path forward to those using the pre 1.0 version of Bound Params.
 
 * **modelPath**
 
