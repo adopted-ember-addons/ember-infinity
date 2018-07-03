@@ -1,5 +1,4 @@
 import { typeOf } from '@ember/utils';
-import { deprecate } from '@ember/application/deprecations';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 import EmberError from '@ember/error';
 
@@ -34,24 +33,13 @@ export let objectAssign = Object.assign || function objectAssign(target) {
   @param {String} - default
   @return {String}
 */
-export function paramsCheck(optionParam, routeParam, defaultParam) {
-  if (typeOf(optionParam) === 'null' || typeOf(routeParam) === 'null') {
+export function paramsCheck(optionParam, defaultParam) {
+  if (typeOf(optionParam) === 'null') {
     // allow user to set to null if passed into infinityRoute explicitly
     return;
 
   } else if (optionParam) {
     return optionParam;
-
-  } else if (routeParam) {
-    deprecate(
-      `Ember Infinity: Please migrate route param - ${routeParam} - to be explicitly passed as second argument to infinityModel`,
-      false,
-      {
-        id: 'ember-infinity',
-        until: '1.0.0'
-      }
-    );
-    return routeParam;
 
   } else {
     return defaultParam;

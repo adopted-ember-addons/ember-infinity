@@ -196,10 +196,10 @@ export default Service.extend({
     const storeFindMethod = options.storeFindMethod || 'query';
 
     // check if user passed in param w/ infinityModel, else check if defined on the route (for backwards compat), else default
-    const perPageParam = paramsCheck(options.perPageParam, get(this, 'perPageParam'), 'per_page');
-    const pageParam = paramsCheck(options.pageParam, get(this, 'pageParam'), 'page');
-    const totalPagesParam = paramsCheck(options.totalPagesParam, get(this, 'totalPagesParam'), 'meta.total_pages');
-    const countParam = paramsCheck(options.countParam, get(this, 'countParam'), 'meta.count');
+    const perPageParam = paramsCheck(options.perPageParam, 'per_page');
+    const pageParam = paramsCheck(options.pageParam, 'page');
+    const totalPagesParam = paramsCheck(options.totalPagesParam, 'meta.total_pages');
+    const countParam = paramsCheck(options.countParam, 'meta.count');
     const infinityCache = paramsCheck(options.infinityCache);
 
     // create identifier for use in storing unique cached infinity model
