@@ -28,11 +28,9 @@ Also:
 
 2. **infinity-loader component**
 
-3. **Route Mixin** (deprecated and removed as of 1.1)
+3. **Route Mixin** (deprecated and removed as of 1.1).  See old docs (here)[https://github.com/ember-infinity/ember-infinity/blob/2e0cb02e5845a97cad8783893cd7f4ddcf5dc5a7/README.md]
 
-As of 1.0, you can either use the infinity service `model` hook or the `infinityModel` Route mixin hook.  You may be used to the Route mixin; however, we will be moving forward with the service based approach as the ergonomics for your application are greatly improved.
-
-### Option 1 - Service Oriented Approach (recommended)
+### Service Oriented Approach (recommended)
 
 Ember Infinity has moved to a service based approach wherein your application is viewed as an interaction between your components (ephemeral state) and service (long term state).
 
@@ -65,34 +63,7 @@ export default Route.extend({
 {{infinity-loader infinityModel=model}}
 ```
 
-### Option 2 - Route Mixin Approach (deprecated)
-
-Importing the `ember-infinity` Route Mixin and extending your route will give you access to `this.infinityModel` in your model hook.  For various reasons (including you writing less code!), we have deprecated the use of the Route mixin and will phase it out by `v1.1`.
-
-```js
-import Route from '@ember/routing/route';
-import InfinityRoute from "ember-infinity/mixins/route";
-
-export default Route.extend(InfinityRoute, {
-  model() {
-    /* Load pages of the Product Model, starting from page 1, in groups of 12. */
-    return this.infinityModel('product', { perPage: 12, startingPage: 1 });
-  }
-});
-```
-
-Then, you'll need to add the `infinity-loader` component to your template, like so, in which `model` is an instance of InfinityModel returned from your model hook.
-
-```hbs
-{{#each model as |product|}}
-  <h1>{{product.name}}</h1>
-  <h2>{{product.description}}</h2>
-{{/each}}
-
-{{infinity-loader infinityModel=model}}
-```
-
-In both cases, whenever the `infinity-loader` component is in view, we will fetch the next page for you.
+Whenever the `infinity-loader` component is in view, we will fetch the next page for you.
 
 ### Response Meta Expectations
 
@@ -516,23 +487,6 @@ const ExtendedInfinityModel = InfinityModel.extend({
 export default Route.extend({
   model() {
     return this.infinity.model('post', {}, ExtendedInfinityModel);
-  }
-});
-```
-
-#### Using the Route mixin approach
-
-```js
-import Route from '@ember/routing/route';
-import InfinityModel from 'ember-infinity/lib/infinity-model';
-
-export default Route.extend(InfinityRoute, {
-  model() {
-    return this.infinity.model("post");
-  },
-
-  afterInfinityModel(posts) {
-    posts.setEach('author', 'Jane Smith');
   }
 });
 ```
