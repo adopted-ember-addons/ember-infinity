@@ -30,11 +30,11 @@ Also:
 
 3. **Route Mixin** (deprecated and removed as of 1.1).  See old docs (here)[https://github.com/ember-infinity/ember-infinity/blob/2e0cb02e5845a97cad8783893cd7f4ddcf5dc5a7/README.md]
 
-### Service Oriented Approach (recommended)
+### Service Component Approach
 
-Ember Infinity has moved to a service based approach wherein your application is viewed as an interaction between your components (ephemeral state) and service (long term state).
+Ember Infinity is based on a service based approach wherein your application is viewed as an interaction between your components (ephemeral state) and service (long term state).
 
-As a result of this new approach, we can intelligently store your model state to provide you the ability to cache and invalidate your cache when you need to.  If you provide an optional `infinityCache` timestamp (in ms), the infinity service `model` hook will return the existing collection (and not make a network request) if the timestamp has not yet expired.  Be careful as this will also circumvent your ability to receive fresh data on every route visit.
+As a result, we can intelligently store your model state to provide you the ability to cache and invalidate your cache when you need to.  If you provide an optional `infinityCache` timestamp (in ms), the infinity service `model` hook will return the existing collection (and not make a network request) if the timestamp has not yet expired.  Be careful as this will also circumvent your ability to receive fresh data on every route visit.
 
 Moreover, you are not restricted to only fetching items in the route.  Fetch away in any top-level component!
 
@@ -502,7 +502,7 @@ In the second example, the returned collection of authors is used.
 
 ### Model Event Hooks
 
-The route mixin also provides following event hooks:
+The infinity model also provides following event hooks:
 
 **infinityModelUpdated**
 
