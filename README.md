@@ -28,7 +28,7 @@ Also:
 
 2. **infinity-loader component**
 
-3. **Route Mixin** (deprecated and removed as of 1.1).  See old docs (here)[https://github.com/ember-infinity/ember-infinity/blob/2e0cb02e5845a97cad8783893cd7f4ddcf5dc5a7/README.md]
+3. **Route Mixin** (deprecated and removed as of 1.1). If you still want to upgrade, but keep your Route mixins, install `1.0.1`. See old docs (here)[https://github.com/ember-infinity/ember-infinity/blob/2e0cb02e5845a97cad8783893cd7f4ddcf5dc5a7/README.md]
 
 ### Service Component Approach
 
