@@ -188,7 +188,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
      */
     function loadMore() {
       // resolve to create thennable
-      // type is <InfinityModel|Promise>
+      // type is <InfinityModel|Promise|null>
       let infinityModelContent = resolve(get(this, 'infinityModelContent'));
 
       infinityModelContent.then((content) => {
