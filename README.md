@@ -32,7 +32,7 @@ Also:
 
 ### Service Component Approach
 
-Ember Infinity is based on a service based approach wherein your application is viewed as an interaction between your components (ephemeral state) and service (long term state).
+Ember Infinity is based on a component-service approach wherein your application is viewed as an interaction between your components (ephemeral state) and service (long term state).
 
 As a result, we can intelligently store your model state to provide you the ability to cache and invalidate your cache when you need to.  If you provide an optional `infinityCache` timestamp (in ms), the infinity service `model` hook will return the existing collection (and not make a network request) if the timestamp has not yet expired.  Be careful as this will also circumvent your ability to receive fresh data on every route visit.
 
