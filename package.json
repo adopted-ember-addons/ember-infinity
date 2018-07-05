@@ -18,11 +18,12 @@
   "scripts": {
     "build": "ember build",
     "start": "ember serve",
+    "lint:js": "eslint .",
     "test": "ember test",
     "test:all": "ember try:each"
   },
   "engines": {
-    "node": "^4.5 || 6.* || >= 7.*"
+    "node": "6.* || 8.* || >= 10.*"
   },
   "dependencies": {
     "ember-cli-babel": "^6.6.0",
@@ -30,8 +31,8 @@
   },
   "devDependencies": {
     "@ember/test-helpers": "^0.7.18",
-    "broccoli-asset-rev": "^2.4.5",
-    "ember-cli": "~3.1.4",
+    "broccoli-asset-rev": "^2.7.0",
+    "ember-cli": "~3.2.0",
     "ember-cli-dependency-checker": "^2.0.0",
     "ember-cli-eslint": "^4.2.1",
     "ember-cli-htmlbars": "^2.0.1",
@@ -39,7 +40,7 @@
     "ember-cli-inject-live-reload": "^1.4.1",
     "ember-cli-mirage": "^0.4.3",
     "ember-cli-pretender": "^1.0.1",
-    "ember-cli-qunit": "^4.1.1",
+    "ember-cli-qunit": "^4.3.2",
     "ember-cli-shims": "^1.2.0",
     "ember-cli-sri": "^2.1.0",
     "ember-cli-test-loader": "^2.2.0",
@@ -48,10 +49,9 @@
     "ember-disable-prototype-extensions": "^1.1.2",
     "ember-export-application-global": "^2.0.0",
     "ember-faker": "^1.1.2",
-    "ember-load-initializers": "^1.0.0",
+    "ember-load-initializers": "^1.1.0",
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-resolver": "^4.0.0",
-    "ember-route-action-helper": "^2.0.6",
     "ember-source": "~3.2.0",
     "ember-source-channel-url": "^1.0.1",
     "ember-try": "^0.2.23",

@@ -1,7 +1,6 @@
 import Service from '@ember/service';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
-import BoundParamsMixin from 'ember-infinity/mixins/bound-params';
 import EmberError from '@ember/error';
 import { A } from '@ember/array';
 import { isEmpty, typeOf } from '@ember/utils';
@@ -163,23 +162,19 @@ export default Service.extend({
     @method model
     @param {String} modelName The name of the model.
     @param {Object} options - optional - the perPage and startingPage to load from.
-    @param {Object} boundParamsOrInfinityModel - optional -
+    @param {Object} ExtendedInfinityModel - optional -
       params on route to be looked up on every route request or
       instance of InfinityModel
     @return {Ember.RSVP.Promise}
   */
-  model(modelName, options, boundParamsOrInfinityModel) {
-    let boundParams, ExtendedInfinityModel;
-    if (typeOf(boundParamsOrInfinityModel) === "class") {
-      if (!(boundParamsOrInfinityModel.prototype instanceof InfinityModel)) {
+  model(modelName, options, ExtendedInfinityModel) {
+    if (typeOf(ExtendedInfinityModel) === "class") {
+      if (!(ExtendedInfinityModel.prototype instanceof InfinityModel)) {
         throw new EmberError("Ember Infinity: You must pass an Infinity Model instance as the third argument");
       }
-      ExtendedInfinityModel = boundParamsOrInfinityModel;
-    } else if (typeOf(boundParamsOrInfinityModel) === "object") {
-      boundParams = boundParamsOrInfinityModel;
     }
 
-    if (modelName === undefined) {
+    if (isEmpty(modelName)) {
       throw new EmberError("Ember Infinity: You must pass a Model Name to infinityModel");
     }
 
@@ -201,10 +196,10 @@ export default Service.extend({
     const storeFindMethod = options.storeFindMethod || 'query';
 
     // check if user passed in param w/ infinityModel, else check if defined on the route (for backwards compat), else default
-    const perPageParam = paramsCheck(options.perPageParam, get(this, 'perPageParam'), 'per_page');
-    const pageParam = paramsCheck(options.pageParam, get(this, 'pageParam'), 'page');
-    const totalPagesParam = paramsCheck(options.totalPagesParam, get(this, 'totalPagesParam'), 'meta.total_pages');
-    const countParam = paramsCheck(options.countParam, get(this, 'countParam'), 'meta.count');
+    const perPageParam = paramsCheck(options.perPageParam, 'per_page');
+    const pageParam = paramsCheck(options.pageParam, 'page');
+    const totalPagesParam = paramsCheck(options.totalPagesParam, 'meta.total_pages');
+    const countParam = paramsCheck(options.countParam, 'meta.count');
     const infinityCache = paramsCheck(options.infinityCache);
 
     // create identifier for use in storing unique cached infinity model
@@ -224,12 +219,7 @@ export default Service.extend({
     delete options.storeFindMethod;
 
     let InfinityModelFactory;
-    let didPassBoundParams = !isEmpty(boundParams);
-    if (didPassBoundParams) {
-      // if pass boundParamsOrInfinityModel, send to backwards compatible mixin that sets bound params on route
-      // and subsequently looked up when user wants to load next page
-      InfinityModelFactory = InfinityModel.extend(BoundParamsMixin);
-    } else if (ExtendedInfinityModel) {
+    if (ExtendedInfinityModel) {
       // if custom InfinityModel, then use as base for creating an instance
       InfinityModelFactory = ExtendedInfinityModel;
     } else {
@@ -250,11 +240,6 @@ export default Service.extend({
       storeFindMethod,
       content: A()
     };
-
-    if (didPassBoundParams) {
-      initParams._deprecatedBoundParams = boundParams;
-      initParams.route = this;
-    }
 
     const infinityModel = InfinityModelFactory.create(initParams);
     get(this, '_ensureCompatibility')(get(infinityModel, 'store'), get(infinityModel, 'storeFindMethod'));
@@ -394,11 +379,15 @@ export default Service.extend({
     set(infinityModel, '_count', count);
     set(infinityModel, 'meta', get(queryObject, 'meta'));
 
+    let newObjects;
     if (infinityModel.get('_increment') === 1) {
-      return infinityModel.pushObjects(queryObject.toArray());
+       newObjects = infinityModel.pushObjects(queryObject.toArray());
     } else {
-      return infinityModel.unshiftObjects(queryObject.toArray());
+      newObjects = infinityModel.unshiftObjects(queryObject.toArray());
     }
+
+    this._notifyInfinityModelUpdated(queryObject, infinityModel);
+    return newObjects;
   },
 
   /**
@@ -409,12 +398,22 @@ export default Service.extend({
     @param {EmberInfinity.InfinityModel} infinityModel
    */
   _notifyInfinityModelLoaded(infinityModel) {
-    if (!infinityModel.infinityModelLoaded) {
-      return;
-    }
-
     const totalPages = get(this, '_totalPages');
     scheduleOnce('afterRender', infinityModel, 'infinityModelLoaded', { totalPages: totalPages });
+  },
+
+  /**
+    finish the loading cycle by notifying that infinity has been updated
+
+    @private
+    @method _notifyInfinityModelUpdated
+    @param {Array} queryObject
+    @param {EmberInfinity.InfinityModel} infinityModel
+   */
+  _notifyInfinityModelUpdated(queryObject, infinityModel) {
+    const totalPages = get(this, '_totalPages');
+    const lastPageLoaded = get(infinityModel, 'currentPage');
+    scheduleOnce('afterRender', infinityModel, 'infinityModelUpdated', { lastPageLoaded, totalPages, queryObject });
   },
 
   /**
@@ -453,7 +452,7 @@ export default Service.extend({
   */
   _ensureCompatibility(store, storeFindMethod) {
     if (isEmpty(store) || isEmpty(store[storeFindMethod])){
-      throw new EmberError('Ember Infinity: Store is not available to infinityModel');
+      throw new EmberError('Ember Infinity: Store is not available to infinity.model');
     }
   }
 });

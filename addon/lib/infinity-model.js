@@ -236,5 +236,19 @@ export default ArrayProxy.extend({
   afterInfinityModel(newObjects/*, infinityModel*/) {
     // override in your subclass to customize
     return resolve(newObjects);
-  }
+  },
+
+  /**
+    lifecycle hooks
+
+    @method infinityModelLoaded
+   */
+  infinityModelLoaded() {},
+
+  /**
+    lifecycle hooks
+
+    @method infinityModelUpdated
+   */
+  infinityModelUpdated() {}
 });
