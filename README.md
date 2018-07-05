@@ -37,8 +37,6 @@ As a result, we can intelligently store your model state to provide you the abil
 
 Moreover, you are not restricted to only fetching items in the route.  Fetch away in any top-level component!
 
-Lastly, before we get to an example, you do not need to pass an action into infinity-loader component anymore.  We handle that internally now.  You can still pass a closure action `infinityLoad` if you need to perform additional logic.
-
 Let's see how simple it is to fetch a list of products.  Instead of `this.store.query('product')` or `this.store.findAll('product')`, you simply invoke `this.infinity.model('product')` and under the hood, `ember-infinity` will query the store and manage fetching new records for you!
 
 ```js
@@ -121,7 +119,7 @@ The infinity service also exposes 5 methods to fetch & mutate your collection:
 4. pushObjects
 5. unshiftObjects
 
-The `model` hook (similar to the Route Mixin `infinityModel` hook pre 1.0) will fetch the first page you request and pass the result to your template.
+The `model` hook will fetch the first page you request and pass the result to your template.
 
 ```js
 import Route from '@ember/routing/route';
