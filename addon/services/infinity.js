@@ -135,7 +135,7 @@ export default Service.extend({
    */
   infinityLoad(infinityModel, increment = 1) {
     if (!infinityModel) {
-      return;
+      return resolve();
     }
 
     infinityModel = get(this, 'infinityModels').find(model => model === infinityModel);

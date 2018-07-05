@@ -19,6 +19,7 @@ Router.map(function() {
   });
   this.route('load-previous');
   this.route('nested');
+  this.route('nested-component');
 });
 
 export default Router;

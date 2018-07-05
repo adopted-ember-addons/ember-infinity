@@ -5,6 +5,7 @@ import { run } from '@ember/runloop';
 import { get, set, computed, observer, defineProperty } from '@ember/object';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
+import { resolve } from 'rsvp';
 
 const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   infinity: service(),
@@ -71,7 +72,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
 
   willInsertElement() {
     if (get(this, '_isInfinityPromiseArray')) {
-      defineProperty(this, 'infinityModelContent', alias('infinityModel.content'));
+      defineProperty(this, 'infinityModelContent', alias('infinityModel.promise'));
     } else {
       defineProperty(this, 'infinityModelContent', alias('infinityModel'));
     }
@@ -118,13 +119,11 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
    * @method didEnterViewport
    */
   didEnterViewport() {
-    const consideredReady = !get(this, '_isInfinityPromiseArray') || get(this, 'infinityModel.isFulfilled');
     if (
       get(this, 'developmentMode') ||
       typeof FastBoot !== 'undefined' ||
       this.isDestroying ||
-      this.isDestroyed ||
-      !consideredReady
+      this.isDestroyed
     ) {
       return false;
     }
@@ -188,21 +187,24 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
      Without this debounce, all rows will be rendered causing immense performance problems
      */
     function loadMore() {
-      let infinityModelContent = get(this, 'infinityModelContent');
+      // resolve to create thennable
+      // type is <InfinityModel|Promise>
+      let infinityModelContent = resolve(get(this, 'infinityModelContent'));
 
-      if (typeof(get(this, 'infinityLoad')) === 'function') {
-        // closure action (if you need to perform some other logic)
-        return get(this, 'infinityLoad')(infinityModelContent);
-      } else {
-        // service action
-        get(this, 'infinity').infinityLoad(infinityModelContent, 1)
-          .then(() => {
-            if (get(infinityModelContent, '_canLoadMore')) {
-              this._checkScrollableHeight();
-            }
-          });
-      }
-
+      infinityModelContent.then((content) => {
+        if (typeof(get(this, 'infinityLoad')) === 'function') {
+          // closure action (if you need to perform some other logic)
+          return get(this, 'infinityLoad')(content);
+        } else {
+          // service action
+          get(this, 'infinity').infinityLoad(content, 1)
+            .then(() => {
+              if (get(content, '_canLoadMore')) {
+                this._checkScrollableHeight();
+              }
+            });
+        }
+      });
     }
     this._debounceTimer = run.debounce(this, loadMore, get(this, 'eventDebounce'));
   },

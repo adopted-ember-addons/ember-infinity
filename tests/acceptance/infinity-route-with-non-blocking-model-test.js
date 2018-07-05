@@ -1,20 +1,16 @@
 import { module, test } from 'qunit';
 import { visit } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
-import buildServer from '../helpers/fake-album-server';
 import assertDetails from '../helpers/assert-acceptance-details';
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
-let server;
-
-module('Acceptance: Infinity Route - non blocking model route', function(hooks) {
+module('Acceptance: Infinity Route - non blocking', function(hooks) {
   setupApplicationTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    server = buildServer();
-  });
-
-  hooks.afterEach(function() {
-    server.shutdown();
+    this.server.createList('post', 15);
+    document.getElementById('ember-testing-container').scrollTop = 0;
   });
 
   test('it renders items with non-blocking model', async function(assert) {
@@ -22,8 +18,18 @@ module('Acceptance: Infinity Route - non blocking model route', function(hooks) 
 
     assertDetails(assert, {
       title: 'Non Blocking Model Test',
-      listLength: 6,
-      reachedInfinity: true
+      listLength: 15,
+      reachedInfinity: false
+    });
+  });
+
+  test('it renders items with non-blocking component', async function(assert) {
+    await visit('/nested-component');
+
+    assertDetails(assert, {
+      title: 'Non Blocking Component Test',
+      listLength: 15,
+      reachedInfinity: false
     });
   });
 });
