@@ -1085,7 +1085,7 @@ broccoli-funnel-reducer@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/broccoli-funnel-reducer/-/broccoli-funnel-reducer-1.0.0.tgz#11365b2a785aec9b17972a36df87eef24c5cc0ea"
 
-broccoli-funnel@^1.0.0, broccoli-funnel@^1.0.1, broccoli-funnel@^1.0.2, broccoli-funnel@^1.1.0, broccoli-funnel@^1.2.0:
+broccoli-funnel@^1.0.0, broccoli-funnel@^1.0.1, broccoli-funnel@^1.0.2, broccoli-funnel@^1.1.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/broccoli-funnel/-/broccoli-funnel-1.2.0.tgz#cddc3afc5ff1685a8023488fff74ce6fb5a51296"
   dependencies:
@@ -2187,9 +2187,9 @@ ember-cli-version-checker@^2.0.0, ember-cli-version-checker@^2.1.0, ember-cli-ve
     resolve "^1.3.3"
     semver "^5.3.0"
 
-ember-cli@~3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/ember-cli/-/ember-cli-3.2.0.tgz#b6429556b407d33d6f943b966056f1f6d0fefda7"
+ember-cli@~3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/ember-cli/-/ember-cli-3.3.0.tgz#534ebe72453a4fb064a34077a0874ad69ea84be4"
   dependencies:
     amd-name-resolver "^1.2.0"
     babel-plugin-transform-es2015-modules-amd "^6.24.0"
@@ -2286,9 +2286,9 @@ ember-compatibility-helpers@^1.0.0:
     ember-cli-version-checker "^2.1.1"
     semver "^5.4.1"
 
-ember-data@~3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/ember-data/-/ember-data-3.1.1.tgz#8c17c97a4932b0a0a405cc3e38c43140880366d2"
+ember-data@~3.3.0:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/ember-data/-/ember-data-3.3.1.tgz#8ff1f7759d35fcb750c8d33435e7ef2f69242dce"
   dependencies:
     "@ember/ordered-set" "^1.0.0"
     amd-name-resolver "0.0.7"
@@ -2301,7 +2301,7 @@ ember-data@~3.1.1:
     broccoli-babel-transpiler "^6.0.0"
     broccoli-debug "^0.6.2"
     broccoli-file-creator "^1.0.0"
-    broccoli-funnel "^1.2.0"
+    broccoli-funnel "^2.0.1"
     broccoli-merge-trees "^2.0.0"
     broccoli-rollup "^1.2.0"
     calculate-cache-key-for-tree "^1.1.0"
@@ -2313,7 +2313,6 @@ ember-data@~3.1.1:
     ember-cli-version-checker "^2.1.0"
     ember-inflector "^2.0.0"
     ember-runtime-enumerable-includes-polyfill "^2.0.0"
-    exists-sync "0.0.3"
     git-repo-info "^1.1.2"
     heimdalljs "^0.3.0"
     inflection "^1.8.0"
@@ -2347,9 +2346,9 @@ ember-get-config@^0.2.2:
     broccoli-file-creator "^1.1.1"
     ember-cli-babel "^6.3.0"
 
-ember-in-viewport@DockYard/ember-in-viewport#enhancement/sn/one-io:
+ember-in-viewport@DockYard/ember-in-viewport:
   version "3.0.4"
-  resolved "https://codeload.github.com/DockYard/ember-in-viewport/tar.gz/8db04ad6d5289b0e4c0a28fa02d067aaea7c72ee"
+  resolved "https://codeload.github.com/DockYard/ember-in-viewport/tar.gz/2bc20d128d42cb5abf5b0a0a5139ce6acc9c5577"
   dependencies:
     ember-cli-babel "^6.14.1"
 
@@ -2436,9 +2435,9 @@ ember-source-channel-url@^1.0.1:
   dependencies:
     got "^8.0.1"
 
-ember-source@~3.2.0:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/ember-source/-/ember-source-3.2.2.tgz#f1b899beeb838b0866a66cd327d22e567abd8a79"
+ember-source@~3.3.0:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/ember-source/-/ember-source-3.3.1.tgz#bcac785b32d5e99867e236979c3fb34536659ecd"
   dependencies:
     broccoli-funnel "^2.0.1"
     broccoli-merge-trees "^2.0.0"
