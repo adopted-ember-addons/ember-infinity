@@ -208,7 +208,7 @@ module('Unit | RouteMixin', function(hooks) {
       this.callModelHook(route);
     });
 
-    test('scott It allows to set startingPage as 0', function(assert) {
+    test('It allows to set startingPage as 0', function(assert) {
       let store = this.createMockStore( this.EA([{id: 1, name: 'Test'}], { total_pages: 1 }) );
       let route = this.createRoute(
         ['item', {
