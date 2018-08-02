@@ -6,6 +6,6 @@
     {{#each model as |post|}}
       <li><p style="padding: 10px; border: 1px solid red">{{post.name}}</p></li>
     {{/each}}
-    {{infinity-loader infinityModel=model classNames="infinity-loader-bottom"}}
+    {{infinity-loader scrollable="#scrollablecontent" infinityModel=model classNames="infinity-loader-bottom"}}
   </ul>
 </div>

@@ -70,6 +70,22 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
    */
   isVisible: true,
 
+  init() {
+    this._super(...arguments);
+
+    let scrollableArea = get(this, 'scrollable');
+    this.setProperties({
+      viewportSpy: true,
+      viewportTolerance: {
+        top: 0,
+        right: 0,
+        bottom: get(this, 'triggerOffset'),
+        left: 0
+      },
+      scrollableArea
+    });
+  },
+
   willInsertElement() {
     if (get(this, '_isInfinityPromiseArray')) {
       defineProperty(this, 'infinityModelContent', alias('infinityModel.promise'));
@@ -91,17 +107,6 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
     this.addObserver('hideOnInfinity', this, this._loadStatusDidChange);
 
     let scrollableArea = get(this, 'scrollable');
-
-    this.setProperties({
-      viewportSpy: true,
-      viewportTolerance: {
-        top: 0,
-        right: 0,
-        bottom: get(this, 'triggerOffset'),
-        left: 0
-      },
-      scrollableArea,
-    });
     let infinityModel = get(this, 'infinityModelContent');
     if (infinityModel) {
       set(infinityModel, '_scrollable', scrollableArea);
