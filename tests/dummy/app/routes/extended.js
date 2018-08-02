@@ -1,6 +1,7 @@
 import Route from '@ember/routing/route';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
-import { inject as service } from '@ember/service';
+import { get } from '@ember/object';
+import { inject } from '@ember/service';
 
 const ExtendedInfinityModel = InfinityModel.extend({
   buildParams() {
@@ -14,10 +15,10 @@ const ExtendedInfinityModel = InfinityModel.extend({
 });
 
 export default Route.extend({
-  infinity: service(),
+  infinity: inject(),
 
   model() {
-    return this.infinity.model('post', {
+    return get(this, 'infinity').model('post', {
       'perPage': 6,
     }, ExtendedInfinityModel);
   }
