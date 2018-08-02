@@ -132,6 +132,34 @@ module('Acceptance: Infinity Route - infinity routes', function(hooks) {
     });
   });
 
+  module('Acceptance: Infinity Route - extended infinity model', function(/*hooks*/) {
+    test('it should load all pages after scrolling', async function(assert) {
+      this.server.createList('post', 15);
+      await visit('/extended');
+
+      shouldBeItemsOnTheList(assert, 6);
+      assert.equal(currentURL(), '/extended');
+
+      await triggerEvent('ul', 'scroll');
+      document.querySelector('.infinity-loader').scrollIntoView(false);
+
+      await waitUntil(() => {
+        return postList().querySelectorAll('li').length === 12;
+      });
+
+      shouldBeItemsOnTheList(assert, 12);
+
+      await triggerEvent('ul', 'scroll');
+      document.querySelector('.infinity-loader').scrollIntoView(false);
+
+      await waitUntil(() => {
+        return postList().querySelectorAll('li').length === 15;
+      });
+
+      shouldBeItemsOnTheList(assert, 15);
+    });
+  });
+
   module('Acceptance: Infinity Route - nested with closure actions', function(/*hooks*/) {
     test('load more with closure actions works', async function(assert) {
       this.server.createList('post', 50);
