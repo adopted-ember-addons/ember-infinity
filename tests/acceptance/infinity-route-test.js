@@ -106,10 +106,10 @@ module('Acceptance: Infinity Route - infinity routes', function(hooks) {
     await visit('/test-scrollable?perPage=3');
 
     await waitUntil(() => {
-      return postList().querySelectorAll('li').length === 15;
+      return postList().querySelectorAll('li').length === 12;
     });
 
-    shouldBeItemsOnTheList(assert, 15);
+    shouldBeItemsOnTheList(assert, 12);
   });
 
   module('Acceptance: Infinity Route - multiple pages fetched', function(/*hooks*/) {
@@ -125,10 +125,38 @@ module('Acceptance: Infinity Route - infinity routes', function(hooks) {
       document.getElementsByClassName('infinity-loader-above')[0].scrollIntoView(false);
 
       await waitUntil(() => {
-        return postList().querySelectorAll('li').length === 50;
+        return postList().querySelectorAll('li').length === 75;
       });
 
-      shouldBeItemsOnTheList(assert, 50);
+      shouldBeItemsOnTheList(assert, 75);
+    });
+  });
+
+  module('Acceptance: Infinity Route - extended infinity model', function(/*hooks*/) {
+    test('it should load all pages after scrolling', async function(assert) {
+      this.server.createList('post', 15);
+      await visit('/extended');
+
+      shouldBeItemsOnTheList(assert, 6);
+      assert.equal(currentURL(), '/extended');
+
+      await triggerEvent('ul', 'scroll');
+      document.querySelector('.infinity-loader').scrollIntoView(false);
+
+      await waitUntil(() => {
+        return postList().querySelectorAll('li').length === 12;
+      });
+
+      shouldBeItemsOnTheList(assert, 12);
+
+      await triggerEvent('ul', 'scroll');
+      document.querySelector('.infinity-loader').scrollIntoView(false);
+
+      await waitUntil(() => {
+        return postList().querySelectorAll('li').length === 15;
+      });
+
+      shouldBeItemsOnTheList(assert, 15);
     });
   });
 

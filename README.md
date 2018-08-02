@@ -363,7 +363,7 @@ const ExtendedInfinityModel = InfinityModel.extend({
   },
   afterInfinityModel(posts) {
     let loadedAny = posts.get('length') > 0;
-    posts.set('canLoadMore', loadedAny);
+    this.set('canLoadMore', loadedAny);
 
     this.set('_minId', posts.get('lastObject.id'));
     this.set('_minUpdatedAt', posts.get('lastObject.updated_at').toISOString());
@@ -456,7 +456,7 @@ import InfinityModel from 'ember-infinity/lib/infinity-model';
 
 const ExtendedInfinityModel = InfinityModel.extend({
   afterInfinityModel(posts) {
-    posts.setEach('author', 'Jane Smith');
+    this.setEach('author', 'Jane Smith');
   }
 });
 

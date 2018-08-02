@@ -2,7 +2,7 @@ import { alias } from '@ember/object/computed';
 import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
 import InViewportMixin from 'ember-in-viewport';
 import { run } from '@ember/runloop';
-import { get, set, computed, observer, defineProperty } from '@ember/object';
+import { get, set, computed, defineProperty } from '@ember/object';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { resolve } from 'rsvp';
@@ -70,6 +70,22 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
    */
   isVisible: true,
 
+  init() {
+    this._super(...arguments);
+
+    let scrollableArea = get(this, 'scrollable');
+    this.setProperties({
+      viewportSpy: true,
+      viewportTolerance: {
+        top: 0,
+        right: 0,
+        bottom: get(this, 'triggerOffset'),
+        left: 0
+      },
+      scrollableArea
+    });
+  },
+
   willInsertElement() {
     if (get(this, '_isInfinityPromiseArray')) {
       defineProperty(this, 'infinityModelContent', alias('infinityModel.promise'));
@@ -86,18 +102,11 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   didInsertElement() {
     this._super(...arguments);
 
-    let scrollableArea = get(this, 'scrollable');
+    this._loadStatusDidChange();
+    this.addObserver('infinityModelContent.reachedInfinity', this, this._loadStatusDidChange);
+    this.addObserver('hideOnInfinity', this, this._loadStatusDidChange);
 
-    this.setProperties({
-      viewportSpy: true,
-      viewportTolerance: {
-        top: 0,
-        right: 0,
-        bottom: get(this, 'triggerOffset'),
-        left: 0
-      },
-      scrollableArea,
-    });
+    let scrollableArea = get(this, 'scrollable');
     let infinityModel = get(this, 'infinityModelContent');
     if (infinityModel) {
       set(infinityModel, '_scrollable', scrollableArea);
@@ -107,6 +116,8 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   willDestroyElement() {
     this._super(...arguments);
     this._cancelTimers();
+    this.removeObserver('infinityModelContent.reachedInfinity', this, this._loadStatusDidChange);
+    this.removeObserver('hideOnInfinity', this, this._loadStatusDidChange);
   },
 
   _isInfinityPromiseArray: computed('infinityModel', function() {
@@ -146,11 +157,11 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   /**
    * @method loadedStatusDidChange
    */
-  loadedStatusDidChange: observer('infinityModelContent.reachedInfinity', 'hideOnInfinity', function () {
+  _loadStatusDidChange() {
     if (get(this, 'infinityModelContent.reachedInfinity') && get(this, 'hideOnInfinity')) {
       set(this, 'isVisible', false);
     }
-  }),
+  },
 
   /**
    * only load previous page if route started on a page greater than 1 && currentPage is > 0

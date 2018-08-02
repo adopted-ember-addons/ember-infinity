@@ -32,6 +32,17 @@ module('infinity-loader', function(hooks) {
     assert.equal(this.element.querySelector('.infinity-loader > span').textContent, "Loading Infinite Model...");
   });
 
+  test('hideOnInfinity works on first render', async function(assert) {
+    assert.expect(1);
+
+    this.infinityModel = {
+      name: 'dot',
+      reachedInfinity: true
+    };
+    await render(hbs`{{infinity-loader infinityModel=infinityModel hideOnInfinity=true infinity=infinityServiceMock _checkScrollableHeight=_checkScrollableHeight}}`);
+    assert.equal(this.element.querySelector('.infinity-loader').style.display, 'none', 'Element is hidden');
+  });
+
   test('hideOnInfinity works', async function(assert) {
     assert.expect(3);
 
