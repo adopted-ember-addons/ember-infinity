@@ -11,7 +11,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   infinity: service(),
 
   classNames: ['infinity-loader'],
-  classNameBindings: ['infinityModelContent.reachedInfinity', 'viewportEntered:in-viewport'],
+  classNameBindings: ['infinityModel.reachedInfinity', 'viewportEntered:in-viewport'],
   /**
    * @public
    * @property eventDebounce
@@ -103,7 +103,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
     this._super(...arguments);
 
     this._loadStatusDidChange();
-    this.addObserver('infinityModelContent.reachedInfinity', this, this._loadStatusDidChange);
+    this.addObserver('infinityModel.reachedInfinity', this, this._loadStatusDidChange);
     this.addObserver('hideOnInfinity', this, this._loadStatusDidChange);
 
     let scrollableArea = get(this, 'scrollable');
@@ -116,7 +116,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   willDestroyElement() {
     this._super(...arguments);
     this._cancelTimers();
-    this.removeObserver('infinityModelContent.reachedInfinity', this, this._loadStatusDidChange);
+    this.removeObserver('infinityModel.reachedInfinity', this, this._loadStatusDidChange);
     this.removeObserver('hideOnInfinity', this, this._loadStatusDidChange);
   },
 
@@ -158,7 +158,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
    * @method loadedStatusDidChange
    */
   _loadStatusDidChange() {
-    if (get(this, 'infinityModelContent.reachedInfinity') && get(this, 'hideOnInfinity')) {
+    if (get(this, 'infinityModel.reachedInfinity') && get(this, 'hideOnInfinity')) {
       set(this, 'isVisible', false);
     }
   },
