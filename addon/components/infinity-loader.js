@@ -107,10 +107,8 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
     this.addObserver('hideOnInfinity', this, this._loadStatusDidChange);
 
     let scrollableArea = get(this, 'scrollable');
-    let infinityModel = get(this, 'infinityModelContent');
-    if (infinityModel) {
-      set(infinityModel, '_scrollable', scrollableArea);
-    }
+    let infinityModel = get(this, 'infinityModel');
+    set(infinityModel, '_scrollable', scrollableArea);
   },
 
   willDestroyElement() {
