@@ -9,7 +9,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   infinity: service(),
 
   classNames: ['infinity-loader'],
-  classNameBindings: ['infinityModel.reachedInfinity', 'viewportEntered:in-viewport'],
+  classNameBindings: ['isDoneLoading:reached-infinity', 'viewportEntered:in-viewport'],
   /**
    * @public
    * @property eventDebounce
@@ -32,6 +32,12 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
    * @default false
    */
   hideOnInfinity: false,
+  /**
+   * @public
+   * @property isDoneLoading
+   * @default false
+   */
+  isDoneLoading: false,
   /**
    * @public
    * @property developmentMode
@@ -153,8 +159,12 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   _loadStatusDidChange() {
     get(this, 'infinityModelContent')
       .then((infinityModel) => {
-        if (get(infinityModel, 'reachedInfinity') && get(this, 'hideOnInfinity')) {
-          set(this, 'isVisible', false);
+        if (get(infinityModel, 'reachedInfinity')) {
+          set(this, 'isDoneLoading', true);
+
+          if (get(this, 'hideOnInfinity')) {
+            set(this, 'isVisible', false);
+          }
         }
       });
   },
