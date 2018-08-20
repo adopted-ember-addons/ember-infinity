@@ -1,5 +1,25 @@
 # Change Log
 
+## [1.1.3](https://github.com/ember-infinity/ember-infinity/tree/v1.0.0) (2018-08-20)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.8...1.0.0)
+
+**Important Merged pull requests:**
+
+- Fix non blocking model - thanks @Duder-onomy [#315](https://github.com/ember-infinity/ember-infinity/pull/315)
+- Fix first load hideOnInfinity [#312](https://github.com/ember-infinity/ember-infinity/pull/312)
+- Update deps [#308](https://github.com/ember-infinity/ember-infinity/pull/308)
+- Ensure nested components work [#303](https://github.com/ember-infinity/ember-infinity/pull/303)
+- Fix afterInfinityModel hook [#299](https://github.com/ember-infinity/ember-infinity/pull/299)
+
+**Closed issues:**
+- Regression, non-blocking model support and initial page of results not hiding infinityLoader [#313](https://github.com/ember-infinity/ember-infinity/issues/313)
+- Infinity-loader not hiding when there's just a single page [#311](https://github.com/ember-infinity/ember-infinity/issues/311)
+- It does not display the second page [#310](https://github.com/ember-infinity/ember-infinity/issues/310)
+- Not working properly in components [#302](https://github.com/ember-infinity/ember-infinity/issues/302)
+- Accessing `this` from within the `infinityModelLoaded()` method [#300](https://github.com/ember-infinity/ember-infinity/issues/300)
+- afterInfinityModel not working with infinity service [#298](https://github.com/ember-infinity/ember-infinity/issues/298)
+- Subclassing InfinityModel provides no pattern to replace route._afterInfinityModel [#292](https://github.com/ember-infinity/ember-infinity/issues/292)
+
 ## [1.0.0](https://github.com/ember-infinity/ember-infinity/tree/v1.0.0) (2018-06-17)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.8...1.0.0)
 
