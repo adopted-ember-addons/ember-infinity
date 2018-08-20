@@ -1,4 +1,3 @@
-import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
 import InViewportMixin from 'ember-in-viewport';
 import { run } from '@ember/runloop';
 import { get, set, computed, defineProperty } from '@ember/object';
@@ -100,24 +99,23 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
     this._super(...arguments);
 
     this._loadStatusDidChange();
-    this.addObserver('infinityModel.reachedInfinity', this, this._loadStatusDidChange);
+    get(this, 'infinityModelContent')
+      .then((infinityModel) => {
+        infinityModel.on('infinityModelLoaded', this, this._loadStatusDidChange);
+        set(infinityModel, '_scrollable', get(this, 'scrollable'));
+      });
     this.addObserver('hideOnInfinity', this, this._loadStatusDidChange);
-
-    let scrollableArea = get(this, 'scrollable');
-    let infinityModel = get(this, 'infinityModel');
-    set(infinityModel, '_scrollable', scrollableArea);
   },
 
   willDestroyElement() {
     this._super(...arguments);
     this._cancelTimers();
-    this.removeObserver('infinityModel.reachedInfinity', this, this._loadStatusDidChange);
+    get(this, 'infinityModelContent')
+      .then((infinityModel) => {
+        infinityModel.off('infinityModelLoaded', this, this._loadStatusDidChange);
+      });
     this.removeObserver('hideOnInfinity', this, this._loadStatusDidChange);
   },
-
-  _isInfinityPromiseArray: computed('infinityModel', function() {
-    return (get(this, 'infinityModel') instanceof InfinityPromiseArray);
-  }),
 
   /**
    * https://github.com/DockYard/ember-in-viewport#didenterviewport-didexitviewport
@@ -153,9 +151,12 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
    * @method loadedStatusDidChange
    */
   _loadStatusDidChange() {
-    if (get(this, 'infinityModel.reachedInfinity') && get(this, 'hideOnInfinity')) {
-      set(this, 'isVisible', false);
-    }
+    get(this, 'infinityModelContent')
+      .then((infinityModel) => {
+        if (get(infinityModel, 'reachedInfinity') && get(this, 'hideOnInfinity')) {
+          set(this, 'isVisible', false);
+        }
+      });
   },
 
   /**
@@ -225,6 +226,9 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
     }
   },
 
+  /**
+   * @method _cancelTimers
+   */
   _cancelTimers() {
     run.cancel(this._debounceTimer);
   },

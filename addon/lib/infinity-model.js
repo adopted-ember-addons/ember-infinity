@@ -1,4 +1,5 @@
 import ArrayProxy from "@ember/array/proxy"
+import Evented from '@ember/object/evented';
 import { oneWay } from '@ember/object/computed';
 import { computed, get, set, getProperties } from '@ember/object';
 import { objectAssign } from '../utils';
@@ -11,7 +12,14 @@ import { resolve } from 'rsvp';
   @module ember-infinity/lib/infinity-model
   @extends Ember.ArrayProxy
 */
-export default ArrayProxy.extend({
+export default ArrayProxy.extend(Evented, {
+  /**
+    @public
+    @property reachedInfinity
+    @default null
+   */
+  reachedInfinity: false,
+
   /**
     @public
     @property store
