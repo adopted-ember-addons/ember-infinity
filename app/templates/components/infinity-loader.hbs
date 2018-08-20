@@ -1,7 +1,7 @@
 {{#if hasBlock}}
   {{yield infinityModelContent}}
 {{else}}
-  {{#if infinityModelContent.reachedInfinity}}
+  {{#if isDoneLoading}}
     <span>{{loadedText}}</span>
   {{else}}
     <span>{{loadingText}}</span>

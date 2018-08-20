@@ -398,8 +398,10 @@ export default Service.extend({
     @param {EmberInfinity.InfinityModel} infinityModel
    */
   _notifyInfinityModelLoaded(infinityModel) {
-    const totalPages = get(this, '_totalPages');
-    scheduleOnce('afterRender', infinityModel, 'infinityModelLoaded', { totalPages: totalPages });
+    scheduleOnce('afterRender', this, () => {
+      infinityModel.infinityModelLoaded({ totalPages: get(this, 'totalPages') });
+      infinityModel.trigger('infinityModelLoaded');
+    });
   },
 
   /**

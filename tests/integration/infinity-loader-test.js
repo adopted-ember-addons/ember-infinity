@@ -19,7 +19,9 @@ module('infinity-loader', function(hooks) {
     };
     this.infinityModel = {
       name: 'dot',
-      _canLoadMore: false
+      _canLoadMore: false,
+      on: () => {},
+      off: () => {}
     };
     // avoid recursive func
     this._checkScrollableHeight = () => true;
@@ -37,27 +39,11 @@ module('infinity-loader', function(hooks) {
 
     this.infinityModel = {
       name: 'dot',
-      reachedInfinity: true
+      reachedInfinity: true,
+      on: () => {},
+      off: () => {}
     };
     await render(hbs`{{infinity-loader infinityModel=infinityModel hideOnInfinity=true infinity=infinityServiceMock _checkScrollableHeight=_checkScrollableHeight}}`);
-    assert.equal(this.element.querySelector('.infinity-loader').style.display, 'none', 'Element is hidden');
-  });
-
-  test('hideOnInfinity works', async function(assert) {
-    assert.expect(3);
-
-    this.infinityModel = {
-      name: 'dot'
-    };
-    await render(hbs`{{infinity-loader infinityModel=infinityModel hideOnInfinity=true infinity=infinityServiceMock _checkScrollableHeight=_checkScrollableHeight}}`);
-    assert.equal(this.element.querySelector('.infinity-loader > span').textContent, "Loading Infinite Model...");
-    assert.equal(this.element.querySelector('.infinity-loader').style.display, '', 'Element is not hidden');
-    run(() => {
-      set(this, 'infinityModel.reachedInfinity', true);
-    });
-    await waitUntil(() => {
-      return this.element.querySelector('.infinity-loader').style.display === 'none';
-    });
     assert.equal(this.element.querySelector('.infinity-loader').style.display, 'none', 'Element is hidden');
   });
 
@@ -65,7 +51,9 @@ module('infinity-loader', function(hooks) {
     assert.expect(3);
 
     this.infinityModel = {
-      name: 'dot'
+      name: 'dot',
+      on: () => {},
+      off: () => {}
     };
     await render(hbs`{{infinity-loader infinityModel=infinityModel hideOnInfinity=false infinity=infinityServiceMock _checkScrollableHeight=_checkScrollableHeight}}`);
     assert.equal(this.element.querySelector('.infinity-loader > span').textContent, "Loading Infinite Model...");
