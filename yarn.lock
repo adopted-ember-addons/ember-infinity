@@ -2386,7 +2386,7 @@ ember-get-config@^0.2.2:
 
 ember-in-viewport@DockYard/ember-in-viewport#sn/sharing-same-root:
   version "3.1.0"
-  resolved "https://codeload.github.com/DockYard/ember-in-viewport/tar.gz/9c5090fe3294d7b9d974dab2f6c7769d8eaeb65b"
+  resolved "https://codeload.github.com/DockYard/ember-in-viewport/tar.gz/21aee9eb5cfc4d8b40c6dcabbf84e729f9a0f044"
   dependencies:
     ember-cli-babel "^6.14.1"
 
