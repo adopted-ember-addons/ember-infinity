@@ -1,7 +1,7 @@
 # Change Log
 
 ## [1.1.3](https://github.com/ember-infinity/ember-infinity/tree/v1.0.0) (2018-08-20)
-[Full Changelog](https://github.com/hhff/ember-infinity/compare/0.2.8...1.0.0)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/v1.0.0...v1.1.3)
 
 **Important Merged pull requests:**
 
