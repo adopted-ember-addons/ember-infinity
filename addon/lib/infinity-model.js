@@ -69,9 +69,9 @@ export default ArrayProxy.extend(Evented, {
     @private
     @property extraParams
     @type Object
-    @default {}
+    @default null
   */
-  extraParams: {},
+  extraParams: null,
 
   /**
     @private
@@ -142,9 +142,9 @@ export default ArrayProxy.extend(Evented, {
     the HTTP response, to maintain the
     default behavior of ember-data requests
     @type objects
-    @default {}
+    @default null
   */
-  meta: {},
+  meta: null,
 
   /**
     @private
