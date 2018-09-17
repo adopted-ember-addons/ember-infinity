@@ -78,7 +78,7 @@ Whenever the `infinity-loader` component is in view, we will fetch the next page
 
 ### Response Meta Expectations
 
-By default, `ember-infinity` expects the server response to contain something about how many total pages it can expect to fetch. `ember-infinity` defaults to looking for something like `meta: { total_pages: 20 }` in your response.  See [Advanced Usage](#AdvancedUsage).
+By default, `ember-infinity` expects the server response to contain something about how many total pages it can expect to fetch. `ember-infinity` defaults to looking for something like `meta: { total_pages: 20 }` in your response.  See [Advanced Usage](#advanced-usage).
 
 ### Multiple Infinity Models in one Route
 
