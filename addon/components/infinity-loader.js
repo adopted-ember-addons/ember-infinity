@@ -10,6 +10,9 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
 
   classNames: ['infinity-loader'],
   classNameBindings: ['isDoneLoading:reached-infinity', 'viewportEntered:in-viewport'],
+  attributeBindings: ['data-test-infinity-loader'],
+  'data-test-infinity-loader': true,
+
   /**
    * @public
    * @property eventDebounce

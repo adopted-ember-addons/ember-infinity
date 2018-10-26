@@ -28,10 +28,11 @@ module('infinity-loader', function(hooks) {
   });
 
   test('it renders loading text if no block given', async function(assert) {
-    assert.expect(1);
+    assert.expect(2);
 
     await render(hbs`{{infinity-loader infinityModel=infinityModel infinity=infinityServiceMock _checkScrollableHeight=_checkScrollableHeight}}`);
-    assert.equal(this.element.querySelector('.infinity-loader > span').textContent, "Loading Infinite Model...");
+    assert.equal(this.element.querySelector('.infinity-loader > span').textContent.trim(), "Loading Infinite Model...", 'class name is present');
+    assert.equal(this.element.querySelector('[data-test-infinity-loader]').textContent.trim(), "Loading Infinite Model...", 'data-test attr is present');
   });
 
   test('hideOnInfinity works on first render', async function(assert) {
