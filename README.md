@@ -355,7 +355,7 @@ Moreover, if your backend passes the total number of records instead of total pa
 ## Cursor-based pagination
 
 If you are serving a continuously updating stream, it's helpful to keep track
-of your place in the list while paginating, to avoid duplicates. This is known
+of your place in the list while paginating to avoid duplicates. This is known
 as **cursor-based pagination** and is common in popular APIs like Twitter,
 Facebook, and Instagram. Instead of relying on `page_number` to paginate,
 you'll want to extract the `min_id` or `min_updated_at` from each page of
@@ -431,6 +431,22 @@ export default Route.extend({
   model() {
     let global = get(this, 'global');
     this.infinity.model('product', {}, ExtendedInfinityModel.extend({ global }));
+  }
+});
+```
+
+There is a lot you can do with this!  Here is a simple use case where, say you have an API that does not return `total_pages` or `count` and you also don't need a loading spinner. Just set `canLoadMore` to true and `ember-infinity` will always try to fetch new records when the `infinity-loader` comes into viewport.
+
+```js
+import InfinityModel from 'ember-infinity/lib/infinity-model';
+
+const ExtendedInfinityModel = InfinityModel.extend({
+  canLoadMore: true
+});
+
+export default Route.extend({
+  model() {
+    this.infinity.model('product', {}, ExtendedInfinityModel.extend());
   }
 });
 ```
