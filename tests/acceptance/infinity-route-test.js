@@ -167,7 +167,7 @@ module('Acceptance: Infinity Route - infinity routes', function(hooks) {
 
       assert.equal(find('ul').querySelectorAll('li').length, 25, `${25} items should be in the list`);
       assert.equal(find('.infinity-loader').classList.contains('reached-infinity'), false, 'Infinity should not yet have been reached');
-      assert.equal(find('.list-items').querySelector('span').textContent, 'Loading Infinite Model...');
+      assert.equal(find('.list-items').querySelector('span').textContent, 'Loading Infinity Model...');
       let { top } = document.querySelector('.list-items').getBoundingClientRect()
       scrollTo(top - 100);
 
