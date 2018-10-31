@@ -168,6 +168,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
       .then((infinityModel) => {
         infinityModel.on('infinityModelLoaded', this, this._loadStatusDidChange);
         set(infinityModel, '_scrollable', get(this, 'scrollable'));
+        set(this, 'isDoneLoading', false);
       });
   },
 
