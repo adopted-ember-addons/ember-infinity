@@ -23,12 +23,12 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
    * @public
    * @property loadingText
    */
-  loadingText: 'Loading Infinite Model...',
+  loadingText: 'Loading Infinity Model...',
   /**
    * @public
    * @property loadedText
    */
-  loadedText: 'Infinite Model Entirely Loaded.',
+  loadedText: 'Infinity Model Entirely Loaded.',
   /**
    * @public
    * @property hideOnInfinity
@@ -97,6 +97,8 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
     defineProperty(this, 'infinityModelContent', computed('infinityModel', function() {
       return resolve(get(this, 'infinityModel'));
     }));
+
+    this.addObserver('infinityModel', this, this._initialInfinityModelSetup);
   },
 
   /**
@@ -108,21 +110,23 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
     this._super(...arguments);
 
     this._loadStatusDidChange();
-    get(this, 'infinityModelContent')
-      .then((infinityModel) => {
-        infinityModel.on('infinityModelLoaded', this, this._loadStatusDidChange);
-        set(infinityModel, '_scrollable', get(this, 'scrollable'));
-      });
+
+    this._initialInfinityModelSetup();
+
     this.addObserver('hideOnInfinity', this, this._loadStatusDidChange);
   },
 
   willDestroyElement() {
     this._super(...arguments);
+
     this._cancelTimers();
+
     get(this, 'infinityModelContent')
       .then((infinityModel) => {
         infinityModel.off('infinityModelLoaded', this, this._loadStatusDidChange);
       });
+
+    this.removeObserver('infinityModel', this, this._initialInfinityModelSetup);
     this.removeObserver('hideOnInfinity', this, this._loadStatusDidChange);
   },
 
@@ -157,7 +161,19 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   },
 
   /**
-   * @method loadedStatusDidChange
+   * @method _initialInfinityModelSetup
+   */
+  _initialInfinityModelSetup() {
+    get(this, 'infinityModelContent')
+      .then((infinityModel) => {
+        infinityModel.on('infinityModelLoaded', this, this._loadStatusDidChange);
+        set(infinityModel, '_scrollable', get(this, 'scrollable'));
+        set(this, 'isDoneLoading', false);
+      });
+  },
+
+  /**
+   * @method _loadStatusDidChange
    */
   _loadStatusDidChange() {
     get(this, 'infinityModelContent')
