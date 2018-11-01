@@ -296,7 +296,7 @@ export default Service.extend({
           infinityModel.incrementProperty('currentPage');
         } else {
           if (typeof FastBoot === 'undefined') {
-            let viewportElem = get(infinityModel, '_scrollable') ? document.querySelector(get(infinityModel, '_scrollable')) : document.documentElement;
+            let viewportElem = get(infinityModel, '_scrollable') ? document.querySelector(get(infinityModel, '_scrollable')) : (document.scrollingElement || document.documentElement);
             scheduleOnce('afterRender', this, '_updateScrollTop', { infinityModel, viewportElem });
             // scrolled up to load previous page
             infinityModel.decrementProperty('currentPage');
