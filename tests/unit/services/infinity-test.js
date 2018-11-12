@@ -128,6 +128,18 @@ module('Unit | Service | infinity', function(hooks) {
     assert.ok(model instanceof InfinityModel, 'returns cached model again');
   });
 
+  // TODO: set up mirage so a request with `?limit=25` works
+  skip('model instance can be customized by extending InfinityModel', function(assert) {
+    const service = this.owner.lookup('service:infinity');
+    const perPageParam = 'limit';
+    const CustomizedInfinityModel = InfinityModel.extend({ perPageParam });
+    const model = service.model('post', {}, CustomizedInfinityModel);
+
+    service.loadNextPage = () => new RSVP.Promise((resolve) => { resolve(); });
+
+    assert.equal(model.get('perPageParam'), perPageParam, 'model has configured param');
+  });
+
   test('pushObjects will maintain sync with underlying infinityModel', function(assert) {
     let service = this.owner.lookup('service:infinity');
     service.loadNextPage = () => new RSVP.Promise((resolve) => { resolve(); });

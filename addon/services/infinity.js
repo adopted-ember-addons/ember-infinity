@@ -195,12 +195,20 @@ export default Service.extend({
     const store = options.store || get(this, 'store');
     const storeFindMethod = options.storeFindMethod || 'query';
 
-    // check if user passed in param w/ infinityModel, else check if defined on the route (for backwards compat), else default
-    const perPageParam = paramsCheck(options.perPageParam, 'per_page');
-    const pageParam = paramsCheck(options.pageParam, 'page');
-    const totalPagesParam = paramsCheck(options.totalPagesParam, 'meta.total_pages');
-    const countParam = paramsCheck(options.countParam, 'meta.count');
-    const infinityCache = paramsCheck(options.infinityCache);
+    let InfinityModelFactory;
+    if (ExtendedInfinityModel) {
+      // if custom InfinityModel, then use as base for creating an instance
+      InfinityModelFactory = ExtendedInfinityModel;
+    } else {
+      InfinityModelFactory = InfinityModel;
+    }
+
+    // check if user passed in param w/ infinityModel, else default
+    const perPageParam = paramsCheck('perPageParam', options, InfinityModelFactory);
+    const pageParam = paramsCheck('pageParam', options, InfinityModelFactory);
+    const totalPagesParam = paramsCheck('totalPagesParam', options, InfinityModelFactory);
+    const countParam = paramsCheck('countParam', options, InfinityModelFactory);
+    const infinityCache = paramsCheck('infinityCache', options, InfinityModelFactory);
 
     // create identifier for use in storing unique cached infinity model
     let identifier = '';
@@ -217,14 +225,6 @@ export default Service.extend({
     delete options.infinityCache;
     delete options.store;
     delete options.storeFindMethod;
-
-    let InfinityModelFactory;
-    if (ExtendedInfinityModel) {
-      // if custom InfinityModel, then use as base for creating an instance
-      InfinityModelFactory = ExtendedInfinityModel;
-    } else {
-      InfinityModelFactory = InfinityModel;
-    }
 
     let initParams = {
       currentPage,

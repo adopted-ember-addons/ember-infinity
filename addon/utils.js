@@ -1,3 +1,4 @@
+import { get } from '@ember/object';
 import { typeOf } from '@ember/utils';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 import EmberError from '@ember/error';
@@ -23,26 +24,30 @@ export let objectAssign = Object.assign || function objectAssign(target) {
 };
 
 /**
-  determine param to set on infinityModel
-  if user passes null, then don't send query param in request
-  if user does not pass anything for value, then see if defined on route
-  else set to default param
-  @method paramsCheck
-  @param {String} value - param passed with infinityRoute
-  @param {String} option - property defined on user route
-  @param {String} - default
-  @return {String}
-*/
-export function paramsCheck(optionParam, defaultParam) {
-  if (typeOf(optionParam) === 'null') {
+ * determine param to set on infinityModel
+ * if user passes null, then don't send query param in request
+ * if user passes option, use it
+ * else set to default param
+ *
+ * @method paramsCheck
+ * @param {String} key - param name
+ * @param {Object} options - parameter overrides
+ * @param {Object} extendedInfinityModel - custom infinity model
+ * @return {String} parameter value
+ */
+export function paramsCheck(key, options, extendedInfinityModel) {
+  const paramDefault = get(extendedInfinityModel.proto(), key);
+  const paramOverride = options[key];
+
+  if (typeOf(paramOverride) === 'null') {
     // allow user to set to null if passed into infinityRoute explicitly
     return;
 
-  } else if (optionParam) {
-    return optionParam;
+  } else if (paramOverride) {
+    return paramOverride;
 
   } else {
-    return defaultParam;
+    return paramDefault;
 
   }
 }
