@@ -352,7 +352,7 @@ and `ember-infinity` will be set up to parse the total number of pages from a JS
 You can also prevent the `per_page` or `page` parameters from being sent by setting `perPageParam` or `pageParam` to `null`, respectively.
 Moreover, if your backend passes the total number of records instead of total pages, then as it's replacement, set the `countParam`.
 
-## Cursor-based pagination
+### Cursor-based pagination
 
 If you are serving a continuously updating stream, it's helpful to keep track
 of your place in the list while paginating to avoid duplicates. This is known
@@ -405,7 +405,7 @@ return this.infinity.model('product', { perPage: 12, startingPage: 1,
                                        category: 'furniture' });
 ```
 
-**Extending infinityModel**
+### Extending infinityModel
 
 As of 1.0+, you can override or extend the behavior of Ember Infinity by providing a class that extends InfinityModel as a third argument to the Route#infinityModel hook.
 
