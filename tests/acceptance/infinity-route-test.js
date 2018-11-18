@@ -66,6 +66,10 @@ module('Acceptance: Infinity Route - infinity routes', function(hooks) {
 
     shouldBeItemsOnTheList(assert, 50);
     infinityShouldBeReached(assert);
+
+    let global = this.owner.lookup('service:global');
+
+    assert.equal(global.isUpdated, true);
   });
 
   test('it should start loading more items before the scroll is on the very bottom ' +
