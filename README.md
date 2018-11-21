@@ -22,7 +22,7 @@ Table of Contents:
 + [Custom Store](#custom-store)
 + [Infinity Loader](#infinity-loader)
 + [Load Previous Pages](#load-previous-pages)
-+ [Ember Concurrency Usage](#ember-concurrency-usage)
++ [Ember Concurrency Usage](#ember-concurrency-usage) - in progress
 + [Testing](#testing)
 
 Also:
