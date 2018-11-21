@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "ember-cli-babel": "~7.1.2",
-    "ember-in-viewport": "git+ssh://git@github.com:DockYard/ember-in-viewport.git#sn/observer-admin"
+    "ember-in-viewport": "git+ssh://git@github.com/DockYard/ember-in-viewport.git#sn/observer-admin"
   },
   "devDependencies": {
     "broccoli-asset-rev": "^2.7.0",
@@ -40,7 +40,6 @@
     "ember-cli-inject-live-reload": "^1.8.2",
     "ember-cli-mirage": "^0.4.3",
     "ember-cli-pretender": "^1.0.1",
-    "ember-qunit": "^3.4.1",
     "ember-cli-shims": "^1.2.0",
     "ember-cli-sri": "^2.1.1",
     "ember-cli-test-loader": "^2.2.0",
@@ -51,6 +50,7 @@
     "ember-faker": "^1.1.2",
     "ember-load-initializers": "^1.1.0",
     "ember-maybe-import-regenerator": "^0.1.6",
+    "ember-qunit": "^3.4.1",
     "ember-resolver": "^5.0.1",
     "ember-source": "~3.5.0",
     "ember-source-channel-url": "^1.1.0",
