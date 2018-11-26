@@ -2,6 +2,7 @@ import Service from '@ember/service';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
 import EmberError from '@ember/error';
+import { getOwner } from '@ember/application';
 import { A } from '@ember/array';
 import { isEmpty, typeOf } from '@ember/utils';
 import { scheduleOnce } from '@ember/runloop';
@@ -227,6 +228,7 @@ export default Service.extend({
     }
 
     let initParams = {
+      container: getOwner(this),
       currentPage,
       firstPage,
       perPage,
@@ -413,7 +415,7 @@ export default Service.extend({
     @param {EmberInfinity.InfinityModel} infinityModel
    */
   _notifyInfinityModelUpdated(queryObject, infinityModel) {
-    const totalPages = get(this, '_totalPages');
+    const totalPages = get(infinityModel, '_totalPages');
     const lastPageLoaded = get(infinityModel, 'currentPage');
     scheduleOnce('afterRender', infinityModel, 'infinityModelUpdated', { lastPageLoaded, totalPages, queryObject });
   },
