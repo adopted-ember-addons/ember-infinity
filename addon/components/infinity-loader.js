@@ -249,6 +249,9 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
    * @method _checkScrollableHeight
    */
   _checkScrollableHeight() {
+    if (this.isDestroying || this.isDestroyed) {
+      return false;
+    }
     if (this._viewportHeight() > this.element.offsetTop) {
       // load again
       this._debounceScrolledToBottom();
