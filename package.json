@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "ember-cli-babel": "~7.1.2",
-    "ember-in-viewport": "https://github.com/DockYard/ember-in-viewport.git#c9b500ff1645075486a5e814a0e2df6a47dddf6c"
+    "ember-in-viewport": "~3.2.0"
   },
   "devDependencies": {
     "broccoli-asset-rev": "^2.7.0",
