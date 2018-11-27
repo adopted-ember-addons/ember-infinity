@@ -4653,13 +4653,15 @@ ember-get-config@^0.2.2:
     broccoli-file-creator "^1.1.1"
     ember-cli-babel "^6.3.0"
 
-"ember-in-viewport@https://github.com/DockYard/ember-in-viewport.git#c9b500ff1645075486a5e814a0e2df6a47dddf6c":
-  version "3.1.5"
-  resolved "https://github.com/DockYard/ember-in-viewport.git#c9b500ff1645075486a5e814a0e2df6a47dddf6c"
+ember-in-viewport@~3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/ember-in-viewport/-/ember-in-viewport-3.2.0.tgz#66831059386efb0f4e57e07ccb2343bae16277cc"
+  integrity sha512-B6o16vp9mVHfKJsuHGK0XHr26l/eHjgjz9SlOY9vWwUtVny5rX5FjJTCbBXJnEWLNsmvrod7Kjab3EDe0yW8gQ==
   dependencies:
     ember-auto-import "^1.2.15"
     ember-cli-babel "^6.16.0"
     intersection-observer-admin "0.0.2"
+    raf-pool "0.0.1"
 
 ember-inflector@^2.0.0:
   version "2.3.0"
@@ -9882,6 +9884,11 @@ qw@~1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/qw/-/qw-1.0.1.tgz#efbfdc740f9ad054304426acb183412cc8b996d4"
   integrity sha1-77/cdA+a0FQwRCassYNBLMi5ltQ=
+
+raf-pool@0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/raf-pool/-/raf-pool-0.0.1.tgz#9c5755ae40e9a3929da0e6ee5cf9c46e84772c8d"
+  integrity sha512-RYxxISmXre1zDMwwHlm87SoWd3MmL3XOmfbv/ahbcx4v4zTDom958D2lb6pa0I1IY4bg/VG4sf9qU1SB8EFY4A==
 
 randomatic@^3.0.0:
   version "3.1.1"
