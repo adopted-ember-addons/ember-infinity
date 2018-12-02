@@ -4653,15 +4653,15 @@ ember-get-config@^0.2.2:
     broccoli-file-creator "^1.1.1"
     ember-cli-babel "^6.3.0"
 
-ember-in-viewport@~3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/ember-in-viewport/-/ember-in-viewport-3.2.0.tgz#66831059386efb0f4e57e07ccb2343bae16277cc"
-  integrity sha512-B6o16vp9mVHfKJsuHGK0XHr26l/eHjgjz9SlOY9vWwUtVny5rX5FjJTCbBXJnEWLNsmvrod7Kjab3EDe0yW8gQ==
+ember-in-viewport@~3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/ember-in-viewport/-/ember-in-viewport-3.2.1.tgz#df17dc6b0a3de726280d8dd53e512bb883542938"
+  integrity sha512-JTA4bzOYLxX6/ZckKPgvt5i6Wa3kqRR/Tt3k4UiBykDw536Z8BcPrqtIKTwUQQ6wDM2e2Qifpm8MpktelJftVg==
   dependencies:
     ember-auto-import "^1.2.15"
     ember-cli-babel "^6.16.0"
-    intersection-observer-admin "0.0.2"
-    raf-pool "0.0.1"
+    intersection-observer-admin "0.0.5"
+    raf-pool "0.0.4"
 
 ember-inflector@^2.0.0:
   version "2.3.0"
@@ -6648,10 +6648,10 @@ inquirer@^3.0.6:
     strip-ansi "^4.0.0"
     through "^2.3.6"
 
-intersection-observer-admin@0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/intersection-observer-admin/-/intersection-observer-admin-0.0.2.tgz#a360b4bac654965f9f4ae0a49e7adc9333ec8036"
-  integrity sha512-K27emIhOM8/an95D72m3bzY8lLcxSUOhcT0vtfZz0iCGPBaKhrodMcfFwjODZOBD4vT1c5RRDlKJDeTOWDJLIA==
+intersection-observer-admin@0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/intersection-observer-admin/-/intersection-observer-admin-0.0.5.tgz#4a97796aab49c2bca2341fcd84cae2fea79c829b"
+  integrity sha512-Nhrd3lQM0j7w6EKup+i67e39hy8IK/xPjo+g+9Ec/3F6qsd+9wGPN7Uemc/J5scVXeBEP4SEgxOYGGncc4RrWA==
 
 into-stream@^3.1.0:
   version "3.1.0"
@@ -9885,10 +9885,10 @@ qw@~1.0.1:
   resolved "https://registry.yarnpkg.com/qw/-/qw-1.0.1.tgz#efbfdc740f9ad054304426acb183412cc8b996d4"
   integrity sha1-77/cdA+a0FQwRCassYNBLMi5ltQ=
 
-raf-pool@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/raf-pool/-/raf-pool-0.0.1.tgz#9c5755ae40e9a3929da0e6ee5cf9c46e84772c8d"
-  integrity sha512-RYxxISmXre1zDMwwHlm87SoWd3MmL3XOmfbv/ahbcx4v4zTDom958D2lb6pa0I1IY4bg/VG4sf9qU1SB8EFY4A==
+raf-pool@0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/raf-pool/-/raf-pool-0.0.4.tgz#126ccaeeaa378e33c912f808a3c8f14acd0a714e"
+  integrity sha512-b0OhSuUxyGvvDrPPhUrCjxtayAR2yZxyleifiOT5qgxHB4pcnMPZRxgeo1S7tJ8HfQnVlR4/3d9QRNvCPcaA8g==
 
 randomatic@^3.0.0:
   version "3.1.1"
