@@ -4653,10 +4653,10 @@ ember-get-config@^0.2.2:
     broccoli-file-creator "^1.1.1"
     ember-cli-babel "^6.3.0"
 
-ember-in-viewport@~3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/ember-in-viewport/-/ember-in-viewport-3.2.1.tgz#df17dc6b0a3de726280d8dd53e512bb883542938"
-  integrity sha512-JTA4bzOYLxX6/ZckKPgvt5i6Wa3kqRR/Tt3k4UiBykDw536Z8BcPrqtIKTwUQQ6wDM2e2Qifpm8MpktelJftVg==
+ember-in-viewport@~3.2.2:
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/ember-in-viewport/-/ember-in-viewport-3.2.2.tgz#81110e04076cf693f29d19e58daf5a3a5b8da60e"
+  integrity sha512-EGQ7hwSlDsjaV80Adxc9zdTpXGCtZgO05ZIlEHE4C2oUNO+aS3jVgYRgqR8AzQwx3bmC8xAB4qpcLrvKVQJKWg==
   dependencies:
     ember-auto-import "^1.2.15"
     ember-cli-babel "^6.16.0"
