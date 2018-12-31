@@ -718,16 +718,21 @@ Default is 50ms.  You can optionally pass a debounce time to delay loading the l
 
 ### Use `ember-infinity` with button
 
-You can use the route loading magic of Ember Infinity without using the InfinityLoader component.
+You can use the service loading magic of ember-infinity without using the InfinityLoader component.
 
 load-more-button.js:
 
 ```js
 export default Ember.Component.extend({
+  infinity: inject(),
+
   loadText: 'Load more',
   loadedText: 'Loaded',
-  click: function(){
-    this.sendAction('action', this.get('infinityModel'));
+
+  click(){
+    this.infinityModel.then((content) => {
+      this.infinity.infinityLoad(content);
+    });
   }
 });
 ```
