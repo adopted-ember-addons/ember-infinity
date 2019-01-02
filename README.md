@@ -352,6 +352,26 @@ and `ember-infinity` will be set up to parse the total number of pages from a JS
 You can also prevent the `per_page` or `page` parameters from being sent by setting `perPageParam` or `pageParam` to `null`, respectively.
 Moreover, if your backend passes the total number of records instead of total pages, then as it's replacement, set the `countParam`.
 
+### Example JSON-API customization
+
+```js
+import Route from '@ember/routing/route';
+import { inject } from '@ember/service';
+
+export default Route.extend({
+  infinity: inject(),
+
+  model() {
+    return this.infinity.model('product', {
+      perPage: 20,
+      startingPage: 1,
+      perPageParam: 'page[size]',
+      pageParam: 'page[number]'
+    });
+  },
+});
+```
+
 ### Cursor-based pagination
 
 If you are serving a continuously updating stream, it's helpful to keep track
