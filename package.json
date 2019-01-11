@@ -31,6 +31,7 @@
     "ember-in-viewport": "~3.2.2"
   },
   "devDependencies": {
+    "@ember/optional-features": "^0.6.3",
     "broccoli-asset-rev": "^2.7.0",
     "ember-cli": "~3.7.0",
     "ember-cli-dependency-checker": "^3.0.0",
