@@ -35,6 +35,23 @@ let cacheInfinityCollection = (_cachedCollection, infinityModel, identifier, tim
   return _cachedCollection[identifier] = { [future_timestamp]: infinityModel };
 };
 
+/**
+ * @method stringifyObjectValues
+ * @param Object options
+ * @param String identifier
+ * @return String
+ */
+let stringifyObjectValues = (options, identifier = '') => {
+  return Object.keys(options).reduce((acc, key) => {
+    const value = options[key];
+    if (!!value && typeof value === 'object') {
+      return stringifyObjectValues(value, acc);
+    }
+
+    return acc += '' + value;
+  }, identifier);
+};
+
 export default Service.extend({
   /**
     Data fetching/caching service pull off of user's route
@@ -204,10 +221,7 @@ export default Service.extend({
     const infinityCache = paramsCheck(options.infinityCache);
 
     // create identifier for use in storing unique cached infinity model
-    let identifier = '';
-    Object.keys(options).forEach((key) => {
-      identifier += '' + options[key];
-    });
+    let identifier = stringifyObjectValues(options);
 
     delete options.startingPage;
     delete options.perPage;

@@ -128,6 +128,21 @@ module('Unit | Service | infinity', function(hooks) {
     assert.ok(model instanceof InfinityModel, 'returns cached model again');
   });
 
+  test('model hook can return cached infinity model with unique identifier that is a nested object', function(assert) {
+    let service = this.owner.lookup('service:infinity');
+    service.loadNextPage = () => new RSVP.Promise((resolve) => { resolve(); });
+    let date = 3600;
+    let model = service.model('post', { infinityCache: date, filter: { category: 'toe-socks' } });
+    assert.ok(typeof(model.then) === 'function');
+    assert.ok(Object.keys(service.get('_cachedCollection')['post3600toe-socks'])[0] > Date.now(), 'collection has correct key');
+    model = service.model('post', { infinityCache: date, filter: { category: 'toe-socks' } });
+    assert.ok(model instanceof InfinityModel, 'returns cached model');
+    model = service.model('post', { infinityCache: date, filter: { category: 'finger-socks' } });
+    assert.ok(typeof(model.then) === 'function', 'diff identifier will return thennable');
+    model = service.model('post', { infinityCache: date, filter: { category: 'toe-socks' } });
+    assert.ok(model instanceof InfinityModel, 'returns cached model again');
+  });
+
   test('pushObjects will maintain sync with underlying infinityModel', function(assert) {
     let service = this.owner.lookup('service:infinity');
     service.loadNextPage = () => new RSVP.Promise((resolve) => { resolve(); });
