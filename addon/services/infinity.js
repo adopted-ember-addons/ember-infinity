@@ -35,6 +35,15 @@ let cacheInfinityCollection = (_cachedCollection, infinityModel, identifier, tim
   return _cachedCollection[identifier] = { [future_timestamp]: infinityModel };
 };
 
+const ALLOWED_KEYS =
+  [
+    'perPage', 'perPageParam',
+    'startingPage', 'firstPage',
+    'totalPagesParam', 'countParam',
+    'infinityCache', 'filter',
+    'storeFindMethod', 'meta'
+  ];
+
 /**
  * @method stringifyObjectValues
  * @param Object options
@@ -42,7 +51,7 @@ let cacheInfinityCollection = (_cachedCollection, infinityModel, identifier, tim
  * @return String
  */
 let stringifyObjectValues = (options, identifier = '') => {
-  return Object.keys(options).reduce((acc, key) => {
+  return Object.keys(options).filter((key) => ALLOWED_KEYS.indexOf(key) > -1 || typeof options[key] === 'string').reduce((acc, key) => {
     const value = options[key];
     if (!!value && typeof value === 'object') {
       return stringifyObjectValues(value, acc);

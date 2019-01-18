@@ -117,7 +117,7 @@ module('Unit | Service | infinity', function(hooks) {
     let service = this.owner.lookup('service:infinity');
     service.loadNextPage = () => new RSVP.Promise((resolve) => { resolve(); });
     let date = 3600;
-    let model = service.model('post', { infinityCache: date, startingPage: 3 });
+    let model = service.model('post', { infinityCache: date, startingPage: 3, message: { plastic: 'climate-change' } });
     assert.ok(typeof(model.then) === 'function');
     assert.ok(Object.keys(service.get('_cachedCollection')['post36003'])[0] > Date.now(), 'collection has correct key');
     model = service.model('post', { infinityCache: date, startingPage: 3 });
