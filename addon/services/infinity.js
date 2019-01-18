@@ -35,14 +35,13 @@ let cacheInfinityCollection = (_cachedCollection, infinityModel, identifier, tim
   return _cachedCollection[identifier] = { [future_timestamp]: infinityModel };
 };
 
-const ALLOWED_KEYS =
-  [
-    'perPage', 'perPageParam',
-    'startingPage', 'firstPage',
-    'totalPagesParam', 'countParam',
-    'infinityCache', 'filter',
-    'storeFindMethod', 'meta'
-  ];
+const ALLOWED_KEYS = [
+  'perPage', 'perPageParam',
+  'startingPage', 'firstPage',
+  'totalPagesParam', 'countParam',
+  'infinityCache', 'filter',
+  'storeFindMethod', 'meta'
+];
 
 /**
  * @method stringifyObjectValues
@@ -51,14 +50,16 @@ const ALLOWED_KEYS =
  * @return String
  */
 let stringifyObjectValues = (options, identifier = '') => {
-  return Object.keys(options).filter((key) => ALLOWED_KEYS.indexOf(key) > -1 || typeof options[key] === 'string').reduce((acc, key) => {
-    const value = options[key];
-    if (!!value && typeof value === 'object') {
-      return stringifyObjectValues(value, acc);
-    }
+  return Object.keys(options)
+    .filter((key) => ALLOWED_KEYS.indexOf(key) > -1 || typeof options[key] === 'string')
+    .reduce((acc, key) => {
+      const value = options[key];
+      if (!!value && typeof value === 'object') {
+        return stringifyObjectValues(value, acc);
+      }
 
-    return acc += '' + value;
-  }, identifier);
+      return acc += '' + value;
+    }, identifier);
 };
 
 export default Service.extend({
