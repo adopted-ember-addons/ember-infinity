@@ -51,7 +51,12 @@ const ALLOWED_KEYS = [
  */
 let stringifyObjectValues = (options, identifier = '') => {
   return Object.keys(options)
-    .filter((key) => ALLOWED_KEYS.indexOf(key) > -1 || typeof options[key] === 'string')
+    .filter((key) => {
+      ALLOWED_KEYS.indexOf(key) > -1
+      || typeof options[key] === 'string',
+      || typeof options[key] === 'number',
+      || typeof options[key] === 'boolean'
+    })
     .reduce((acc, key) => {
       const value = options[key];
       if (!!value && typeof value === 'object') {
