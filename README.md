@@ -750,9 +750,7 @@ export default Ember.Component.extend({
   loadedText: 'Loaded',
 
   click(){
-    this.infinityModel.then((content) => {
-      this.infinity.infinityLoad(content);
-    });
+    this.infinity.infinityLoad(this.infinityModel);
   }
 });
 ```
@@ -775,7 +773,7 @@ template.hbs:
 {{/each}}
 </ul>
 
-{{load-more-button action='infinityLoad' infinityModel=model}}
+{{load-more-button infinityModel=model}}
 ```
 
 ### Delay start of infinite loading until user has indicated they would like to load more
