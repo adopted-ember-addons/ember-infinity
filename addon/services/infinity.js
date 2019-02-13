@@ -176,7 +176,7 @@ export default Service.extend({
       // this is duplicated if this method is called from the route.
       set(infinityModel, '_increment', increment);
 
-      if (get(infinityModel, '_loadingMore') || !get(infinityModel, '_canLoadMore')) {
+      if (get(infinityModel, 'loadingMore') || !get(infinityModel, '_canLoadMore')) {
         return resolve();
       }
 
@@ -315,7 +315,7 @@ export default Service.extend({
     @return {Ember.RSVP.Promise} A Promise that resolves the model
    */
   loadNextPage(infinityModel, increment = 1) {
-    set(infinityModel, '_loadingMore', true);
+    set(infinityModel, 'loadingMore', true);
     set(this, '_previousScrollHeight', this._calculateHeight(infinityModel));
 
     return this._requestNextPage(infinityModel, increment)
@@ -327,20 +327,27 @@ export default Service.extend({
           infinityModel.incrementProperty('currentPage');
         } else {
           if (typeof FastBoot === 'undefined') {
-            let viewportElem = get(infinityModel, '_scrollable') ? document.querySelector(get(infinityModel, '_scrollable')) : (document.scrollingElement || document.documentElement);
+            let viewportElem =
+              get(infinityModel, '_scrollable')
+              ? document.querySelector(get(infinityModel, '_scrollable'))
+              : (document.scrollingElement || document.documentElement);
+
             scheduleOnce('afterRender', this, '_updateScrollTop', { infinityModel, viewportElem });
             // scrolled up to load previous page
             infinityModel.decrementProperty('currentPage');
           }
         }
+
         set(infinityModel, '_firstPageLoaded', true);
         let canLoadMore = get(infinityModel, '_canLoadMore');
         set(infinityModel, 'reachedInfinity', !canLoadMore);
+
         if (!canLoadMore) {
           this._notifyInfinityModelLoaded(infinityModel);
         }
+
         return infinityModel;
-      }).finally(() => set(infinityModel, '_loadingMore', false));
+      }).finally(() => set(infinityModel, 'loadingMore', false));
   },
 
   /**

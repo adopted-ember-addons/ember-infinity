@@ -74,12 +74,12 @@ export default ArrayProxy.extend(Evented, {
   extraParams: null,
 
   /**
-    @private
-    @property _loadingMore
+    @public
+    @property loadingMore
     @type Boolean
     @default false
   */
-  _loadingMore: false,
+  loadingMore: false,
 
   /**
     @private
