@@ -352,6 +352,8 @@ and `ember-infinity` will be set up to parse the total number of pages from a JS
 You can also prevent the `per_page` or `page` parameters from being sent by setting `perPageParam` or `pageParam` to `null`, respectively.
 Moreover, if your backend passes the total number of records instead of total pages, then as it's replacement, set the `countParam`.
 
+Lastly, if you need some global configuration for these params, setup an extended infinity model to import in each of your routes.
+
 ### Example JSON-API customization
 
 ```js
@@ -425,7 +427,7 @@ return this.infinity.model('product', { perPage: 12, startingPage: 1,
                                        category: 'furniture' });
 ```
 
-### Extending infinityModel
+### Extending InfinityModel
 
 As of 1.0+, you can override or extend the behavior of Ember Infinity by providing a class that extends InfinityModel as a third argument to the Route#infinityModel hook.
 
@@ -471,23 +473,16 @@ export default Route.extend({
 });
 ```
 
-* **modelPath**
+## Model Public Properties
 
-`modelPath` is optional parameter for situations when you are overriding `setupController`
-or when your model is on different location than `controller.model`.
+* **isLoaded**
 
-```js
-model() {
-  return this.infinity.model('product', {
-    perPage: 12,
-    startingPage: 1,
-    modelPath: 'controller.products'
-  });
-},
-setupController(controller, model) {
-  controller.set('products', model);
-}
-```
+`isLoaded` says if the model is loaded after fetching results
+
+* **isError**
+
+`isError` says if the fetch failed
+
 
 ## Model Event Hooks
 
@@ -638,7 +633,7 @@ Closure actions are enabled in the `1.0.0` series.
   hideOnInfinity=true}}
 ```
 
-Now, when the Infinity Model is fully loaded, the `infinity-loader` will hide itself.
+Now, when the Infinity Model is fully loaded, the `infinity-loader` will hide itself and set `isDoneLoading` to `true`.
 
 ***Versions less than 1.0.0 called this property destroyOnInfinity***
 
@@ -693,7 +688,7 @@ own custom markup or styling for the loading state.
 When the Infinity Model loads entirely, the `reached-infinity` class is added to the
 component.
 
-* **infinity-template Generator**
+* **infinity-template generator**
 
 `ember generate infinity-template`
 

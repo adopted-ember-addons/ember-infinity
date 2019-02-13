@@ -4,7 +4,7 @@ import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
 import EmberError from '@ember/error';
 import { getOwner } from '@ember/application';
 import { A } from '@ember/array';
-import { isEmpty, typeOf } from '@ember/utils';
+import { typeOf } from '@ember/utils';
 import { scheduleOnce } from '@ember/runloop';
 import { get, set } from '@ember/object';
 import { inject as service } from '@ember/service';
@@ -207,7 +207,7 @@ export default Service.extend({
       }
     }
 
-    if (isEmpty(modelName)) {
+    if (!modelName) {
       throw new EmberError("Ember Infinity: You must pass a Model Name to infinityModel");
     }
 
@@ -315,6 +315,7 @@ export default Service.extend({
     @return {Ember.RSVP.Promise} A Promise that resolves the model
    */
   loadNextPage(infinityModel, increment = 1) {
+    set(infinityModel, 'isLoaded', false);
     set(infinityModel, '_loadingMore', true);
     set(this, '_previousScrollHeight', this._calculateHeight(infinityModel));
 
@@ -327,20 +328,29 @@ export default Service.extend({
           infinityModel.incrementProperty('currentPage');
         } else {
           if (typeof FastBoot === 'undefined') {
-            let viewportElem = get(infinityModel, '_scrollable') ? document.querySelector(get(infinityModel, '_scrollable')) : (document.scrollingElement || document.documentElement);
+            let viewportElem =
+              get(infinityModel, '_scrollable')
+              ? document.querySelector(get(infinityModel, '_scrollable'))
+              : (document.scrollingElement || document.documentElement);
+
             scheduleOnce('afterRender', this, '_updateScrollTop', { infinityModel, viewportElem });
             // scrolled up to load previous page
             infinityModel.decrementProperty('currentPage');
           }
         }
+
         set(infinityModel, '_firstPageLoaded', true);
         let canLoadMore = get(infinityModel, '_canLoadMore');
         set(infinityModel, 'reachedInfinity', !canLoadMore);
+
         if (!canLoadMore) {
           this._notifyInfinityModelLoaded(infinityModel);
         }
+
         return infinityModel;
-      }).finally(() => set(infinityModel, '_loadingMore', false));
+      })
+      .catch(() => set(infinityModel, 'isError', true))
+      .finally(() => set(infinityModel, '_loadingMore', false));
   },
 
   /**
@@ -404,6 +414,8 @@ export default Service.extend({
     @return {Ember.Array} returns the new objects
    */
   _doUpdate(queryObject, infinityModel) {
+    set(infinityModel, 'isLoaded', true);
+
     const totalPages = queryObject.get(get(infinityModel, 'totalPagesParam'));
     const count = queryObject.get(get(infinityModel, 'countParam'));
     set(infinityModel, '_totalPages', totalPages);
@@ -418,6 +430,7 @@ export default Service.extend({
     }
 
     this._notifyInfinityModelUpdated(queryObject, infinityModel);
+
     return newObjects;
   },
 
@@ -484,7 +497,7 @@ export default Service.extend({
     @method _ensureCompatibility
   */
   _ensureCompatibility(store, storeFindMethod) {
-    if (isEmpty(store) || isEmpty(store[storeFindMethod])){
+    if (!store || !store[storeFindMethod]){
       throw new EmberError('Ember Infinity: Store is not available to infinity.model');
     }
   }
