@@ -4,7 +4,7 @@ import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
 import EmberError from '@ember/error';
 import { getOwner } from '@ember/application';
 import { A } from '@ember/array';
-import { isEmpty, typeOf } from '@ember/utils';
+import { typeOf } from '@ember/utils';
 import { scheduleOnce } from '@ember/runloop';
 import { get, set } from '@ember/object';
 import { inject as service } from '@ember/service';
@@ -207,7 +207,7 @@ export default Service.extend({
       }
     }
 
-    if (isEmpty(modelName)) {
+    if (!modelName) {
       throw new EmberError("Ember Infinity: You must pass a Model Name to infinityModel");
     }
 
@@ -491,7 +491,7 @@ export default Service.extend({
     @method _ensureCompatibility
   */
   _ensureCompatibility(store, storeFindMethod) {
-    if (isEmpty(store) || isEmpty(store[storeFindMethod])){
+    if (!store || !store[storeFindMethod]){
       throw new EmberError('Ember Infinity: Store is not available to infinity.model');
     }
   }

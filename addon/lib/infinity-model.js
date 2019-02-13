@@ -14,48 +14,6 @@ import { resolve } from 'rsvp';
 */
 export default ArrayProxy.extend(Evented, {
   /**
-    @public
-    @property reachedInfinity
-    @default null
-   */
-  reachedInfinity: false,
-
-  /**
-    @public
-    @property store
-    @default null
-   */
-  store: null,
-
-  /**
-    The supported findMethod name for
-    the developers Ember Data version.
-    Provided here for backwards compat.
-    @public
-    @property storeFindMethod
-    @default null
-   */
-  storeFindMethod: null,
-
-  /**
-    @private
-    @property _perPage
-    @type Integer
-    @default 25
-  */
-  perPage: 25,
-
-  /**
-    Used as a marker for the page the route starts on
-
-    @private
-    @property firstPage
-    @type Integer
-    @default 0
-  */
-  firstPage: 0,
-
-  /**
     Increases or decreases depending on scroll direction
 
     @private
@@ -74,6 +32,16 @@ export default ArrayProxy.extend(Evented, {
   extraParams: null,
 
   /**
+    Used as a marker for the page the route starts on
+
+    @private
+    @property firstPage
+    @type Integer
+    @default 0
+  */
+  firstPage: 0,
+
+  /**
     @public
     @property loadingMore
     @type Boolean
@@ -82,28 +50,35 @@ export default ArrayProxy.extend(Evented, {
   loadingMore: false,
 
   /**
-    @private
-    @property _count
-    @type Integer
-    @default 0
-  */
-  _count: 0,
-
-  /**
-    @private
-    @property _totalPages
-    @type Integer
-    @default 0
-  */
-  _totalPages: 0,
-
-  /**
-    @private
-    @property _infinityModelName
-    @type String
+    Arbitrary meta copied over from
+    the HTTP response, to maintain the
+    default behavior of ember-data requests
+    @type objects
     @default null
   */
-  _infinityModelName: null,
+  meta: null,
+
+  /**
+    @private
+    @property _perPage
+    @type Integer
+    @default 25
+  */
+  perPage: 25,
+
+  /**
+    @public
+    @property reachedInfinity
+    @default false
+   */
+  reachedInfinity: false,
+
+  /**
+    @public
+    @property store
+    @default null
+   */
+  store: null,
 
   /**
     Name of the "per page" param in the
@@ -138,13 +113,38 @@ export default ArrayProxy.extend(Evented, {
   countParam: 'meta.count',
 
   /**
-    Arbitrary meta copied over from
-    the HTTP response, to maintain the
-    default behavior of ember-data requests
-    @type objects
+    The supported findMethod name for
+    the developers Ember Data version.
+    Provided here for backwards compat.
+    @public
+    @property storeFindMethod
+    @default null
+   */
+  storeFindMethod: null,
+
+  /**
+    @private
+    @property _count
+    @type Integer
+    @default 0
+  */
+  _count: 0,
+
+  /**
+    @private
+    @property _totalPages
+    @type Integer
+    @default 0
+  */
+  _totalPages: 0,
+
+  /**
+    @private
+    @property _infinityModelName
+    @type String
     @default null
   */
-  meta: null,
+  _infinityModelName: null,
 
   /**
     @private
