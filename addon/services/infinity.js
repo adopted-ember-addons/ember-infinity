@@ -176,7 +176,7 @@ export default Service.extend({
       // this is duplicated if this method is called from the route.
       set(infinityModel, '_increment', increment);
 
-      if (get(infinityModel, 'loadingMore') || !get(infinityModel, '_canLoadMore')) {
+      if (get(infinityModel, '_loadingMore') || !get(infinityModel, '_canLoadMore')) {
         return resolve();
       }
 
@@ -315,7 +315,8 @@ export default Service.extend({
     @return {Ember.RSVP.Promise} A Promise that resolves the model
    */
   loadNextPage(infinityModel, increment = 1) {
-    set(infinityModel, 'loadingMore', true);
+    set(infinityModel, 'isLoaded', false);
+    set(infinityModel, '_loadingMore', true);
     set(this, '_previousScrollHeight', this._calculateHeight(infinityModel));
 
     return this._requestNextPage(infinityModel, increment)
@@ -347,7 +348,9 @@ export default Service.extend({
         }
 
         return infinityModel;
-      }).finally(() => set(infinityModel, 'loadingMore', false));
+      })
+      .catch(() => set(infinityModel, 'isError', true))
+      .finally(() => set(infinityModel, '_loadingMore', false));
   },
 
   /**
@@ -411,6 +414,8 @@ export default Service.extend({
     @return {Ember.Array} returns the new objects
    */
   _doUpdate(queryObject, infinityModel) {
+    set(infinityModel, 'isLoaded', true);
+
     const totalPages = queryObject.get(get(infinityModel, 'totalPagesParam'));
     const count = queryObject.get(get(infinityModel, 'countParam'));
     set(infinityModel, '_totalPages', totalPages);
@@ -425,6 +430,7 @@ export default Service.extend({
     }
 
     this._notifyInfinityModelUpdated(queryObject, infinityModel);
+
     return newObjects;
   },
 

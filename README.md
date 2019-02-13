@@ -475,9 +475,14 @@ export default Route.extend({
 
 ## Model Public Properties
 
-* **loadingMore**
+* **isLoaded**
 
-`loadingMore` also says if the model is loading, but regardless if successful fetch or not.
+`isLoaded` says if the model is loaded after fetching results
+
+* **isError**
+
+`isError` says if the fetch failed
+
 
 ## Model Event Hooks
 
@@ -628,7 +633,7 @@ Closure actions are enabled in the `1.0.0` series.
   hideOnInfinity=true}}
 ```
 
-Now, when the Infinity Model is fully loaded, the `infinity-loader` will hide itself and set `isDoneLoading` to true.
+Now, when the Infinity Model is fully loaded, the `infinity-loader` will hide itself and set `isDoneLoading` to `true`.
 
 ***Versions less than 1.0.0 called this property destroyOnInfinity***
 

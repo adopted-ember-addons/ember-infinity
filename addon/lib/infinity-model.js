@@ -43,11 +43,19 @@ export default ArrayProxy.extend(Evented, {
 
   /**
     @public
-    @property loadingMore
+    @property isError
     @type Boolean
     @default false
   */
-  loadingMore: false,
+  isError: false,
+
+  /**
+    @public
+    @property isLoaded
+    @type Boolean
+    @default false
+  */
+  isLoaded: false,
 
   /**
     Arbitrary meta copied over from
@@ -161,6 +169,14 @@ export default ArrayProxy.extend(Evented, {
     @default 1
   */
   _increment: 1,
+
+  /**
+    @public
+    @property _loadingMore
+    @type Boolean
+    @default false
+  */
+  _loadingMore: false,
 
   /**
     simply used for previous page scrolling abilities and passed from
