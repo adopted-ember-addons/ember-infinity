@@ -479,6 +479,10 @@ export default Route.extend({
 
 `isLoaded` says if the model is loaded after fetching results
 
+* **loadingMore**
+
+`loadingMore` says if the model is currently loading more items
+
 * **isError**
 
 `isError` says if the fetch failed

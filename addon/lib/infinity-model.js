@@ -58,6 +58,14 @@ export default ArrayProxy.extend(Evented, {
   isLoaded: false,
 
   /**
+    @public
+    @property loadingMore
+    @type Boolean
+    @default false
+  */
+  loadingMore: false,
+
+  /**
     Arbitrary meta copied over from
     the HTTP response, to maintain the
     default behavior of ember-data requests
@@ -169,14 +177,6 @@ export default ArrayProxy.extend(Evented, {
     @default 1
   */
   _increment: 1,
-
-  /**
-    @public
-    @property _loadingMore
-    @type Boolean
-    @default false
-  */
-  _loadingMore: false,
 
   /**
     simply used for previous page scrolling abilities and passed from

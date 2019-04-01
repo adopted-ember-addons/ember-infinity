@@ -176,7 +176,7 @@ export default Service.extend({
       // this is duplicated if this method is called from the route.
       set(infinityModel, '_increment', increment);
 
-      if (get(infinityModel, '_loadingMore') || !get(infinityModel, '_canLoadMore')) {
+      if (get(infinityModel, 'loadingMore') || !get(infinityModel, '_canLoadMore')) {
         return resolve();
       }
 
@@ -316,7 +316,7 @@ export default Service.extend({
    */
   loadNextPage(infinityModel, increment = 1) {
     set(infinityModel, 'isLoaded', false);
-    set(infinityModel, '_loadingMore', true);
+    set(infinityModel, 'loadingMore', true);
     set(this, '_previousScrollHeight', this._calculateHeight(infinityModel));
 
     return this._requestNextPage(infinityModel, increment)
@@ -350,7 +350,7 @@ export default Service.extend({
         return infinityModel;
       })
       .catch(() => set(infinityModel, 'isError', true))
-      .finally(() => set(infinityModel, '_loadingMore', false));
+      .finally(() => set(infinityModel, 'loadingMore', false));
   },
 
   /**
