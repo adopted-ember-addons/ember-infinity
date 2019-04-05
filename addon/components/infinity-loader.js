@@ -169,6 +169,9 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
         infinityModel.on('infinityModelLoaded', this, this._loadStatusDidChange);
         set(infinityModel, '_scrollable', get(this, 'scrollable'));
         set(this, 'isDoneLoading', false);
+        if (!get(this, 'hideOnInfinity')) {
+          set(this, 'isVisible', true);
+        }
       });
   },
 
@@ -184,6 +187,8 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
           if (get(this, 'hideOnInfinity')) {
             set(this, 'isVisible', false);
           }
+        } else {
+          set(this, 'isVisible', true);
         }
       });
   },

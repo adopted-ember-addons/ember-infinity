@@ -44,7 +44,11 @@ module('infinity-loader', function(hooks) {
       on: () => {},
       off: () => {}
     };
-    await render(hbs`{{infinity-loader infinityModel=infinityModel hideOnInfinity=true infinity=infinityServiceMock _checkScrollableHeight=_checkScrollableHeight}}`);
+    await render(hbs`{{infinity-loader
+      infinityModel=infinityModel
+      hideOnInfinity=true
+      infinity=infinityServiceMock
+      _checkScrollableHeight=_checkScrollableHeight}}`);
     assert.equal(this.element.querySelector('.infinity-loader').style.display, 'none', 'Element is hidden');
   });
 
