@@ -349,7 +349,10 @@ export default Service.extend({
 
         return infinityModel;
       })
-      .catch(() => set(infinityModel, 'isError', true))
+      .catch((e) => {
+        set(infinityModel, 'isError', true);
+        throw(e);
+      })
       .finally(() => set(infinityModel, 'loadingMore', false));
   },
 
