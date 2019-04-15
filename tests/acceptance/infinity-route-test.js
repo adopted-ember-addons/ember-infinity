@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { visit, find, triggerEvent, currentURL, waitUntil } from '@ember/test-helpers';
+import { currentRouteName, visit, find, triggerEvent, currentURL, waitUntil } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
@@ -160,6 +160,17 @@ module('Acceptance: Infinity Route - infinity routes', function(hooks) {
       });
 
       shouldBeItemsOnTheList(assert, 15);
+    });
+  });
+
+  module('Acceptance: Infinity Route - error', function(/*hooks*/) {
+    test('throws error 500', async function(assert) {
+      // TODO: improve this so dont log our error
+      this.server.get('posts', { errors: ['There was an error'] }, 500);
+      await visit('/test-scrollable');
+
+      assert.equal(find('h1').textContent.trim(), 'Error', 'Displays error template');
+      assert.equal(currentRouteName(), 'error', 'Redirects to error route');
     });
   });
 
