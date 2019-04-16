@@ -1,5 +1,16 @@
 # Change Log
 
+## [1.4.2](https://github.com/ember-infinity/ember-infinity/tree/v1.0.0) (2018-08-20)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/v1.1.3...v1.4.2)
+
+- General minor updates (https://github.com/ember-infinity/ember-infinity/pull/330)
+- Use scollingElement for cross browser support for scrolling area (https://github.com/ember-infinity/ember-infinity/pull/334)
+- Use intersection-observer-admin for managing Intersection Observers (https://github.com/ember-infinity/ember-infinity/pull/341)
+- Fix infinity model container so services can be injected on it (https://github.com/ember-infinity/ember-infinity/pull/338)
+- Allow nested object to cache (https://github.com/ember-infinity/ember-infinity/pull/356)
+- Minor improvements to docs and make `isLoaded` && `isError` public (https://github.com/ember-infinity/ember-infinity/pull/364)
+- loadingMore public (https://github.com/ember-infinity/ember-infinity/pull/372)
+
 ## [1.1.3](https://github.com/ember-infinity/ember-infinity/tree/v1.0.0) (2018-08-20)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/v1.0.0...v1.1.3)
 
