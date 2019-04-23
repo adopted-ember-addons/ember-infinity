@@ -4051,15 +4051,15 @@ ember-get-config@^0.2.2:
     broccoli-file-creator "^1.1.1"
     ember-cli-babel "^6.3.0"
 
-ember-in-viewport@~3.2.2:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/ember-in-viewport/-/ember-in-viewport-3.2.2.tgz#81110e04076cf693f29d19e58daf5a3a5b8da60e"
-  integrity sha512-EGQ7hwSlDsjaV80Adxc9zdTpXGCtZgO05ZIlEHE4C2oUNO+aS3jVgYRgqR8AzQwx3bmC8xAB4qpcLrvKVQJKWg==
+ember-in-viewport@~3.5.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/ember-in-viewport/-/ember-in-viewport-3.5.1.tgz#fb00a86555e63e6ddbacf0b01423689f4f37a61e"
+  integrity sha512-Gh2dEodIIqlv8aXnnRWsOl0sFW/pk3w/8IEWpiC0Fc7bckybg51Vp7w21rqURI3uhBIt9I2ikYO3XX1yi5Mf8w==
   dependencies:
     ember-auto-import "^1.2.15"
-    ember-cli-babel "^6.16.0"
-    intersection-observer-admin "0.0.5"
-    raf-pool "0.0.4"
+    ember-cli-babel "^7.1.2"
+    intersection-observer-admin "0.2.0"
+    raf-pool "0.1.0"
 
 "ember-inflector@^2.0.0 || ^3.0.0", ember-inflector@^3.0.0:
   version "3.0.0"
@@ -5776,10 +5776,10 @@ inquirer@^3.0.6, inquirer@^3.3.0:
     strip-ansi "^4.0.0"
     through "^2.3.6"
 
-intersection-observer-admin@0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/intersection-observer-admin/-/intersection-observer-admin-0.0.5.tgz#4a97796aab49c2bca2341fcd84cae2fea79c829b"
-  integrity sha512-Nhrd3lQM0j7w6EKup+i67e39hy8IK/xPjo+g+9Ec/3F6qsd+9wGPN7Uemc/J5scVXeBEP4SEgxOYGGncc4RrWA==
+intersection-observer-admin@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/intersection-observer-admin/-/intersection-observer-admin-0.2.0.tgz#39773b17b73f3c52b3b2c442ee8ef4fbc676c407"
+  integrity sha512-bEnD6tJEu13Hh79bcDpg7VFw5xLqHabp7+UmwIp+Mxl6t3DBmaiwG2VodttSXgRYfP962ixBeodneE9U/hy32g==
 
 into-stream@^3.1.0:
   version "3.1.0"
@@ -8183,10 +8183,10 @@ qunit@~2.6.0:
     sane "^2.5.2"
     walk-sync "0.3.2"
 
-raf-pool@0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/raf-pool/-/raf-pool-0.0.4.tgz#126ccaeeaa378e33c912f808a3c8f14acd0a714e"
-  integrity sha512-b0OhSuUxyGvvDrPPhUrCjxtayAR2yZxyleifiOT5qgxHB4pcnMPZRxgeo1S7tJ8HfQnVlR4/3d9QRNvCPcaA8g==
+raf-pool@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/raf-pool/-/raf-pool-0.1.0.tgz#856242f3d66b45ee0d4a9159d05d8560614891b3"
+  integrity sha512-TU79Jf8D0OsPlEPegLmx4O/Az3I2qm3TZnHEZE+fUJ/aeVf46m/HDRV5lHrdRQ9m3PhodfwFVwmMz/BgUXEppg==
 
 randomatic@^3.0.0:
   version "3.1.1"
