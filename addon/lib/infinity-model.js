@@ -36,6 +36,7 @@ class InfinityModel extends ArrayProxy {
     @property canLoadMore
     @type Boolean
     @default false
+    @overridable
   */
   get canLoadMore() {
     if (typeof this._canLoadMore === 'boolean') {
