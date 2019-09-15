@@ -1,11 +1,12 @@
 import ArrayProxy from "@ember/array/proxy"
 import Evented from "../-private/evented"
 import { DEFAULTS } from "../-private/defaults"
-import { computed, get, set, getProperties } from '@ember/object';
+import { get, set } from '@ember/object';
 import { objectAssign } from '../utils';
 import { resolve } from 'rsvp';
 
 function copyEventedProperties(target, source) {
+  // similar to Reflect.ownKeys() but ie11 compat
   for (let key of Object.getOwnPropertyNames(source)) {
       if (key !== 'constructor' && key !== 'prototype' && key !== 'name') {
           let desc = Object.getOwnPropertyDescriptor(source, key);
@@ -36,13 +37,12 @@ class InfinityModel extends ArrayProxy {
     @type Boolean
     @default false
   */
-  @computed('_totalPages', '_count', 'currentPage', '_increment')
   get canLoadMore() {
-    if (this._canLoadMore) {
+    if (typeof this._canLoadMore === 'boolean') {
       return this._canLoadMore;
     }
 
-    let { _count, _totalPages , currentPage, perPage, _increment } = getProperties(this, '_count', '_totalPages', 'currentPage', 'perPage', '_increment');
+    let { _count, _totalPages , currentPage, perPage, _increment } = this;
     let shouldCheck = _increment === 1 && currentPage !== undefined;
     if (shouldCheck) {
       if (_totalPages) {
@@ -51,9 +51,9 @@ class InfinityModel extends ArrayProxy {
         return (currentPage < _count / perPage) ? true : false;
       }
     }
-    if (get(this, 'firstPage') > 1) {
+    if (this.firstPage > 1) {
       // load previous page if starting page was not 1.  Otherwise ignore this block
-      return get(this, 'firstPage') > 1 ? true : false;
+      return this.firstPage > 1 ? true : false;
     }
     return false;
   }
@@ -71,7 +71,7 @@ class InfinityModel extends ArrayProxy {
    */
   buildParams(increment) {
     const pageParams = {};
-    let { perPageParam, pageParam } = getProperties(this, 'perPageParam', 'pageParam');
+    let { perPageParam, pageParam } = this;
     if (typeof perPageParam === 'string') {
       pageParams[perPageParam] = get(this, 'perPage');
     }
