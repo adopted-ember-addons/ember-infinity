@@ -7,7 +7,6 @@ export default Route.extend({
   infinity: service(),
 
   model() {
-    this.customStore.push('custom-model', { name: 'Zooloo' })
     return get(this, 'infinity').model('custom-model', { store: this.customStore, storeFindMethod: 'findAll' });
   }
 });
