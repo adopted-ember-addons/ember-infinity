@@ -6,8 +6,7 @@ import { getOwner } from '@ember/application';
 import { A } from '@ember/array';
 import { typeOf } from '@ember/utils';
 import { scheduleOnce } from '@ember/runloop';
-import { get, set } from '@ember/object';
-import { inject as service } from '@ember/service';
+import { computed, get, set } from '@ember/object';
 import { checkInstanceOf, convertToArray, objectAssign, paramsCheck } from '../utils';
 import { assert } from '@ember/debug';
 import { resolve } from 'rsvp';
@@ -70,12 +69,15 @@ let stringifyObjectValues = (options, identifier = '') => {
 export default Service.extend({
   /**
     Data fetching/caching service pull off of user's route
+    Optional for end user to have ember-data
 
     @public
     @property store
     @type Ember.Service
   */
-  store: service(),
+  store: computed(function() {
+    return getOwner(this).lookup('service:store') || Service.extend();
+  }),
 
   /**
     Internal reference to manage collection throughout lifecycle of service
