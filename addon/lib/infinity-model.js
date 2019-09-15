@@ -22,11 +22,12 @@ function copyEventedProperties(target, source) {
   @extends Ember.ArrayProxy
 */
 class InfinityModel extends ArrayProxy {
-  constructor(...args) {
-    super(...args);
+  init(...args) {
+    super.init(...args);
 
+    const [params] = args;
+    objectAssign(this, { ...DEFAULTS }, { ...params });
     copyEventedProperties(this, Evented.prototype);
-    objectAssign(this, { ...DEFAULTS });
   }
 
   /**
