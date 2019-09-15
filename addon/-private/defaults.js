@@ -10,6 +10,14 @@ export const DEFAULTS = {
   currentPage: 0,
 
   /**
+    @private
+    @property extraParams
+    @type Object
+    @default null
+  */
+  extraParams: null,
+
+  /**
     Used as a marker for the page the route starts on
 
     @private
@@ -44,6 +52,15 @@ export const DEFAULTS = {
   loadingMore: false,
 
   /**
+    Arbitrary meta copied over from
+    the HTTP response, to maintain the
+    default behavior of ember-data requests
+    @type objects
+    @default null
+  */
+  meta: null,
+
+  /**
     @private
     @property _perPage
     @type Integer
@@ -57,6 +74,13 @@ export const DEFAULTS = {
     @default false
    */
   reachedInfinity: false,
+
+  /**
+    @public
+    @property store
+    @default null
+   */
+  store: null,
 
   /**
     Name of the "per page" param in the
@@ -89,6 +113,16 @@ export const DEFAULTS = {
     @default "meta.count"
    */
   countParam: 'meta.count',
+
+  /**
+    The supported findMethod name for
+    the developers Ember Data version.
+    Provided here for backwards compat.
+    @public
+    @property storeFindMethod
+    @default null
+   */
+  storeFindMethod: null,
 
   /**
     @private
