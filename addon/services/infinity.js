@@ -178,7 +178,7 @@ export default Service.extend({
       // this is duplicated if this method is called from the route.
       set(infinityModel, '_increment', increment);
 
-      if (get(infinityModel, 'loadingMore') || !get(infinityModel, '_canLoadMore')) {
+      if (get(infinityModel, 'loadingMore') || !get(infinityModel, 'canLoadMore')) {
         return resolve();
       }
 
@@ -274,6 +274,12 @@ export default Service.extend({
       content: A()
     };
 
+    for (let key in initParams) {
+      if (typeof initParams[key] === 'undefined') {
+        delete initParams[key];
+      }
+    }
+
     const infinityModel = InfinityModelFactory.create(initParams);
     get(this, '_ensureCompatibility')(get(infinityModel, 'store'), get(infinityModel, 'storeFindMethod'));
 
@@ -342,7 +348,7 @@ export default Service.extend({
         }
 
         set(infinityModel, '_firstPageLoaded', true);
-        let canLoadMore = get(infinityModel, '_canLoadMore');
+        let canLoadMore = get(infinityModel, 'canLoadMore');
         set(infinityModel, 'reachedInfinity', !canLoadMore);
 
         if (!canLoadMore) {

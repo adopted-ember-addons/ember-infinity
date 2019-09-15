@@ -19,7 +19,7 @@ module('infinity-loader', function(hooks) {
     };
     this.infinityModel = {
       name: 'dot',
-      _canLoadMore: false,
+      canLoadMore: false,
       on: () => {},
       off: () => {}
     };

@@ -123,7 +123,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
 
     get(this, 'infinityModelContent')
       .then((infinityModel) => {
-        infinityModel.off('infinityModelLoaded', this, this._loadStatusDidChange);
+        infinityModel.off('infinityModelLoaded', this, this._loadStatusDidChange.bind(this));
       });
 
     this.removeObserver('infinityModel', this, this._initialInfinityModelSetup);
@@ -166,7 +166,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   _initialInfinityModelSetup() {
     get(this, 'infinityModelContent')
       .then((infinityModel) => {
-        infinityModel.on('infinityModelLoaded', this, this._loadStatusDidChange);
+        infinityModel.on('infinityModelLoaded', this._loadStatusDidChange.bind(this));
         set(infinityModel, '_scrollable', get(this, 'scrollable'));
         set(this, 'isDoneLoading', false);
         if (!get(this, 'hideOnInfinity')) {
@@ -238,7 +238,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
           // service action
           get(this, 'infinity').infinityLoad(content, 1)
             .then(() => {
-              if (get(content, '_canLoadMore')) {
+              if (get(content, 'canLoadMore')) {
                 this._checkScrollableHeight();
               }
             });

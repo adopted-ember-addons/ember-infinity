@@ -1,5 +1,4 @@
 import { get } from '@ember/object';
-import { typeOf } from '@ember/utils';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 import EmberError from '@ember/error';
 
@@ -36,12 +35,12 @@ export let objectAssign = Object.assign || function objectAssign(target) {
  * @return {String} parameter value
  */
 export function paramsCheck(key, options, extendedInfinityModel) {
-  const paramDefault = get(extendedInfinityModel.proto(), key);
+  const paramDefault = get(extendedInfinityModel, key);
   const paramOverride = options[key];
 
-  if (typeOf(paramOverride) === 'null') {
+  if (paramOverride === null) {
     // allow user to set to null if passed into infinityRoute explicitly
-    return;
+    return null;
 
   } else if (paramOverride) {
     return paramOverride;
