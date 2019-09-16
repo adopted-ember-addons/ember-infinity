@@ -6,7 +6,7 @@ import { getOwner } from '@ember/application';
 import { A } from '@ember/array';
 import { typeOf } from '@ember/utils';
 import { scheduleOnce } from '@ember/runloop';
-import { computed, get, set } from '@ember/object';
+import { computed, get, set, setProperties } from '@ember/object';
 import { checkInstanceOf, convertToArray, objectAssign, paramsCheck } from '../utils';
 import { assert } from '@ember/debug';
 import { resolve } from 'rsvp';
@@ -178,7 +178,7 @@ export default Service.extend({
       // this is duplicated if this method is called from the route.
       set(infinityModel, '_increment', increment);
 
-      if (get(infinityModel, 'loadingMore') || !get(infinityModel, '_canLoadMore')) {
+      if (get(infinityModel, 'loadingMore') || !get(infinityModel, 'canLoadMore')) {
         return resolve();
       }
 
@@ -230,20 +230,20 @@ export default Service.extend({
     const store = options.store || get(this, 'store');
     const storeFindMethod = options.storeFindMethod || 'query';
 
-    let InfinityModelFactory;
+    let infinityModel;
     if (ExtendedInfinityModel) {
       // if custom InfinityModel, then use as base for creating an instance
-      InfinityModelFactory = ExtendedInfinityModel;
+      infinityModel = ExtendedInfinityModel.create();
     } else {
-      InfinityModelFactory = InfinityModel;
+      infinityModel = InfinityModel.create();
     }
 
     // check if user passed in param w/ infinityModel, else default
-    const perPageParam = paramsCheck('perPageParam', options, InfinityModelFactory);
-    const pageParam = paramsCheck('pageParam', options, InfinityModelFactory);
-    const totalPagesParam = paramsCheck('totalPagesParam', options, InfinityModelFactory);
-    const countParam = paramsCheck('countParam', options, InfinityModelFactory);
-    const infinityCache = paramsCheck('infinityCache', options, InfinityModelFactory);
+    const perPageParam = paramsCheck('perPageParam', options, infinityModel);
+    const pageParam = paramsCheck('pageParam', options, infinityModel);
+    const totalPagesParam = paramsCheck('totalPagesParam', options, infinityModel);
+    const countParam = paramsCheck('countParam', options, infinityModel);
+    const infinityCache = paramsCheck('infinityCache', options, infinityModel);
 
     // create identifier for use in storing unique cached infinity model
     let identifier = stringifyObjectValues(options);
@@ -274,7 +274,13 @@ export default Service.extend({
       content: A()
     };
 
-    const infinityModel = InfinityModelFactory.create(initParams);
+    for (let key in initParams) {
+      if (typeof initParams[key] === 'undefined') {
+        delete initParams[key];
+      }
+    }
+
+    setProperties(infinityModel, { ...initParams });
     get(this, '_ensureCompatibility')(get(infinityModel, 'store'), get(infinityModel, 'storeFindMethod'));
 
     // route specific (for backwards compat)
@@ -342,7 +348,7 @@ export default Service.extend({
         }
 
         set(infinityModel, '_firstPageLoaded', true);
-        let canLoadMore = get(infinityModel, '_canLoadMore');
+        let canLoadMore = get(infinityModel, 'canLoadMore');
         set(infinityModel, 'reachedInfinity', !canLoadMore);
 
         if (!canLoadMore) {
