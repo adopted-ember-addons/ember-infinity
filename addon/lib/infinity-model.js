@@ -1,19 +1,9 @@
 import ArrayProxy from "@ember/array/proxy"
-import Evented from "../-private/evented"
+import { addEvented } from "../-private/evented"
 import { DEFAULTS } from "../-private/defaults"
 import { get, set, setProperties } from '@ember/object';
 import { objectAssign } from '../utils';
 import { resolve } from 'rsvp';
-
-function copyEventedProperties(target, source) {
-  // similar to Reflect.ownKeys() but ie11 compat
-  for (let key of Object.getOwnPropertyNames(source)) {
-      if (key !== 'constructor' && key !== 'prototype' && key !== 'name') {
-          let desc = Object.getOwnPropertyDescriptor(source, key);
-          Object.defineProperty(target, key, desc);
-      }
-  }
-}
 
 /**
   @class InfinityModel
@@ -21,12 +11,11 @@ function copyEventedProperties(target, source) {
   @module ember-infinity/lib/infinity-model
   @extends Ember.ArrayProxy
 */
-export default class InfinityModel extends ArrayProxy {
+export default class InfinityModel extends addEvented(ArrayProxy) {
   init(...args) {
     super.init(...args);
 
     setProperties(this, { ...DEFAULTS });
-    copyEventedProperties(this, Evented.prototype);
   }
 
   /**
