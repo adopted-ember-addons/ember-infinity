@@ -25,8 +25,7 @@ export default class InfinityModel extends ArrayProxy {
   init(...args) {
     super.init(...args);
 
-    const [params] = args;
-    setProperties(this, { ...DEFAULTS, ...params });
+    setProperties(this, { ...DEFAULTS });
     copyEventedProperties(this, Evented.prototype);
   }
 
