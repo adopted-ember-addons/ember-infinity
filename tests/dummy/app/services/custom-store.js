@@ -20,24 +20,28 @@ function persistData(type, obj, customStore) {
   return persistentContainer[type].set(id, record);
 }
 
-export default Service.extend({
+export default class CustomStore extends Service {
   /**
    * holds all models by type
    * @property persistentContainer
    */
-  persistentContainer: {},
+  persistentContainer = {}
+
   /**
    * find objects by id
    * find method must return a promise so patching in a thennable w/ resolve
+   * Likely your findAll will request items from your server and the data is hydrated
+   * like the push method below
+   *
    * @method findAll
    * @param {String} type
    */
   findAll(type) {
-    const containerObjs = this.get('persistentContainer')[type];
+    const containerObjs = this.persistentContainer[type];
     const content = Array.from(containerObjs.values());
     const arrProxy = ArrayProxy.create({ content: A(content) });
     return resolve(arrProxy);
-  },
+  }
   /**
    * @method push
    * @param {String} type
@@ -46,5 +50,5 @@ export default Service.extend({
   push(type, obj) {
     const hydrated = persistData(type, obj, this);
     return hydrated.get(obj.id);
-  },
-});
+  }
+}

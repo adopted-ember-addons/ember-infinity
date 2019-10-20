@@ -6,7 +6,7 @@ import { getOwner } from '@ember/application';
 import { A } from '@ember/array';
 import { typeOf } from '@ember/utils';
 import { scheduleOnce } from '@ember/runloop';
-import { computed, get, set, setProperties } from '@ember/object';
+import { get, set, setProperties } from '@ember/object';
 import { checkInstanceOf, convertToArray, objectAssign, paramsCheck } from '../utils';
 import { assert } from '@ember/debug';
 import { resolve } from 'rsvp';
@@ -66,7 +66,7 @@ let stringifyObjectValues = (options, identifier = '') => {
     }, identifier);
 };
 
-export default Service.extend({
+export default class Infinity extends Service {
   /**
     Data fetching/caching service pull off of user's route
     Optional for end user to have ember-data
@@ -75,9 +75,9 @@ export default Service.extend({
     @property store
     @type Ember.Service
   */
-  store: computed(function() {
+  get store () {
     return getOwner(this).lookup('service:store') || Service.extend();
-  }),
+  }
 
   /**
     Internal reference to manage collection throughout lifecycle of service
@@ -86,7 +86,7 @@ export default Service.extend({
     @property infinityModels
     @type Ember.Service
   */
-  infinityModels: null,
+  infinityModels
 
   /**
     @private
@@ -94,13 +94,14 @@ export default Service.extend({
     @type Integer
     @default 0
   */
-  _previousScrollHeight: 0,
+  _previousScrollHeight = 0
 
-  init() {
-    this._super(...arguments);
+  init(...args) {
+    super.init(...args);
+
     this._cachedCollection = {};
     set(this, 'infinityModels', A());
-  },
+  }
 
   /**
     @method pushObjects
@@ -111,7 +112,7 @@ export default Service.extend({
     if (checkInstanceOf(infinityModel)) {
       return infinityModel.pushObjects(convertToArray(queryObject));
     }
-  },
+  }
 
   /**
     @method unshiftObjects
@@ -122,7 +123,7 @@ export default Service.extend({
     if (checkInstanceOf(infinityModel)) {
       return infinityModel.unshiftObjects(convertToArray(queryObject));
     }
-  },
+  }
 
   /**
     - Useful for updating the infinity model with a new array
@@ -142,7 +143,7 @@ export default Service.extend({
       infinityModel.replace(0, len, convertToArray(newCollection));
       return infinityModel;
     }
-  },
+  }
 
   /**
     Useful for clearing out the collection
@@ -156,7 +157,7 @@ export default Service.extend({
       infinityModel.replace(0, len, []);
       return infinityModel;
     }
-  },
+  }
 
   /**
     Trigger a load of the next page of results while also checking if it can load more
@@ -187,7 +188,7 @@ export default Service.extend({
       result = true;
     }
     return resolve(result);
-  },
+  }
 
   /**
     Use the model method in the place of `this.store.query('model')` to
@@ -310,7 +311,7 @@ export default Service.extend({
     }
 
     return InfinityPromiseArray.create({ promise: this['loadNextPage'](infinityModel) });
-  },
+  }
 
   /**
     load the next page from the adapter and update the model
@@ -362,7 +363,7 @@ export default Service.extend({
         throw(e);
       })
       .finally(() => set(infinityModel, 'loadingMore', false));
-  },
+  }
 
   /**
     calculate the height of the scrollable viewport
@@ -378,7 +379,7 @@ export default Service.extend({
       let viewportElem = isScrollable ? document.querySelector(get(infinityModel, '_scrollable')) : document.documentElement;
       return viewportElem.scrollHeight;
     }
-  },
+  }
 
   /**
     This method calculates the difference if loadPrevious=true
@@ -396,7 +397,7 @@ export default Service.extend({
   _updateScrollTop({ infinityModel, viewportElem }) {
     let scrollDiff = this._calculateHeight(infinityModel) - get(this, '_previousScrollHeight');
     viewportElem.scrollTop += scrollDiff;
-  },
+  }
 
   /**
     request the next page from the adapter
@@ -412,7 +413,7 @@ export default Service.extend({
     const params    = infinityModel.buildParams(increment);
 
     return get(infinityModel, 'store')[get(infinityModel, 'storeFindMethod')](modelName, params);
-  },
+  }
 
   /**
     set _totalPages && count param on infinityModel
@@ -443,7 +444,7 @@ export default Service.extend({
     this._notifyInfinityModelUpdated(queryObject, infinityModel);
 
     return newObjects;
-  },
+  }
 
   /**
     finish the loading cycle by notifying that infinity has been reached
@@ -457,7 +458,7 @@ export default Service.extend({
       infinityModel.infinityModelLoaded({ totalPages: get(this, 'totalPages') });
       infinityModel.trigger('infinityModelLoaded');
     });
-  },
+  }
 
   /**
     finish the loading cycle by notifying that infinity has been updated
@@ -471,7 +472,7 @@ export default Service.extend({
     const totalPages = get(infinityModel, '_totalPages');
     const lastPageLoaded = get(infinityModel, 'currentPage');
     scheduleOnce('afterRender', infinityModel, 'infinityModelUpdated', { lastPageLoaded, totalPages, queryObject });
-  },
+  }
 
   /**
     hook to modify results from response
@@ -485,7 +486,7 @@ export default Service.extend({
       return result;
     }
     return newObjects;
-  },
+  }
 
   /**
     If pass in custom store, ensure passed string
@@ -498,7 +499,7 @@ export default Service.extend({
     if (!store[storeFindMethod]) {
       throw new EmberError('Ember Infinity: Custom data store must specify query method');
     }
-  },
+  }
 
   /**
     Determine if Ember data is valid
@@ -512,4 +513,4 @@ export default Service.extend({
       throw new EmberError('Ember Infinity: Store is not available to infinity.model');
     }
   }
-});
+}
