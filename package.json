@@ -20,6 +20,9 @@
     "start": "ember serve",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
+    "server-start-mongo": "docker run -d -p 27017:27017 --rm --name test-isnew-db mongo",
+    "server-fill-mongo": "docker exec -ti test-isnew-db mongo --eval 'for (i = 0; i < 1000; i++) db.posts.insert({name:`Name ${i}`})'",
+    "server-start-server": "node server.js",
     "test": "ember test",
     "test:all": "ember try:each"
   },
@@ -28,7 +31,8 @@
   },
   "dependencies": {
     "ember-cli-babel": "~7.11.0",
-    "ember-in-viewport": "~3.5.8"
+    "ember-in-viewport": "~3.5.8",
+    "jsonapi-server-mini": "^4.3.0"
   },
   "devDependencies": {
     "@ember/optional-features": "^0.7.0",

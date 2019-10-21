@@ -12,14 +12,17 @@
 
   <ul class="demo-items">
     {{#each model as |item|}}
-      <li>{{item.id}}. {{item.name}}</li>
+      <li>{{item.id}}. {{item.name}} <strong>new:</strong> {{item.isNew}}</li>
     {{/each}}
 
     {{infinity-loader
       infinityModel=model
       loadingText="Loading more awesome records..."
       loadedText="Loaded all the records!"
-      triggerOffset=500
+      triggerOffset=50
+      pageParam="page[number]"
+      perPageParam="page[size]"
+      countParam="meta.count"
     }}
   </ul>
 </div>

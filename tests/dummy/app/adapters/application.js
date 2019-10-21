@@ -1,5 +1,5 @@
-import DS from 'ember-data';
+import DS from 'ember-data'
 
-export default DS.RESTAdapter.extend({
-  shouldBackgroundReloadRecord() { return false; }
-});
+export default DS.JSONAPIAdapter.extend({
+	host: 'http://localhost:8888'
+})

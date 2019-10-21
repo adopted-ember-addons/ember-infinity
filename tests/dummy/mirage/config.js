@@ -22,5 +22,6 @@ export default function() {
 
     http://www.ember-cli-mirage.com/docs/v0.3.x/shorthands/
   */
-  this.get('/posts');
+  // this.get('/posts');
+  this.passthrough('http://localhost:8888/**');
 }
