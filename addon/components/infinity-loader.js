@@ -71,11 +71,11 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
    */
   triggerOffset: 0,
   /**
-   * https://emberjs.com/api/ember/3.0/classes/Component/properties/isVisible?anchor=isVisible
+   * whether the loader is showing or not
    *
-   * @property isVisible
+   * @property isShowing
    */
-  isVisible: true,
+  isShowing: true,
 
   init() {
     this._super(...arguments);
@@ -170,7 +170,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
         set(infinityModel, '_scrollable', get(this, 'scrollable'));
         set(this, 'isDoneLoading', false);
         if (!get(this, 'hideOnInfinity')) {
-          set(this, 'isVisible', true);
+          set(this, 'isShowing', true);
         }
       });
   },
@@ -185,10 +185,10 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
           set(this, 'isDoneLoading', true);
 
           if (get(this, 'hideOnInfinity')) {
-            set(this, 'isVisible', false);
+            set(this, 'isShowing', false);
           }
         } else {
-          set(this, 'isVisible', true);
+          set(this, 'isShowing', true);
         }
       });
   },

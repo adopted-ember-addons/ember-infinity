@@ -49,7 +49,7 @@ module('infinity-loader', function(hooks) {
       hideOnInfinity=true
       infinity=infinityServiceMock
       _checkScrollableHeight=_checkScrollableHeight}}`);
-    assert.equal(this.element.querySelector('.infinity-loader').style.display, 'none', 'Element is hidden');
+    assert.notOk(this.element.querySelector('.infinity-loader'), 'Element is hidden');
   });
 
   test('hideOnInfinity does not work if hideOnInfinity=false', async function(assert) {

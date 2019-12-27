@@ -1,9 +1,11 @@
-{{#if hasBlock}}
-  {{yield infinityModelContent}}
-{{else}}
-  {{#if isDoneLoading}}
-    <span>{{loadedText}}</span>
+{{#if isShowing}}
+  {{#if hasBlock}}
+    {{yield infinityModelContent}}
   {{else}}
-    <span>{{loadingText}}</span>
+    {{#if isDoneLoading}}
+      <span>{{loadedText}}</span>
+    {{else}}
+      <span>{{loadingText}}</span>
+    {{/if}}
   {{/if}}
 {{/if}}
