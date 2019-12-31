@@ -89,8 +89,8 @@ import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
 import { inject as service } from '@ember/service';
 
-export default Route.extend({
-  infinity: service(),
+export default class InfinityRoute extends Route {
+  @service infinity;
 
   model() {
     return RSVP.hash({
@@ -98,7 +98,7 @@ export default Route.extend({
       users: this.infinity.model('user')
     });
   }
-});
+}
 ```
 
 ```hbs
@@ -109,7 +109,7 @@ export default Route.extend({
     <h1>{{user.username}}</h1>
   {{/each}}
 
-  {{infinity-loader infinityModel=model.users}}
+  <InfinityLoader @infinityModel={{model.users}} />
 </aside>
 
 <section>
@@ -118,7 +118,7 @@ export default Route.extend({
     <h2>{{product.description}}</h2>
   {{/each}}
 
-  {{infinity-loader infinityModel=model.products}}
+  <InfinityLoader @infinityModel={{model.products}} />
 <section>
 ```
 
@@ -139,13 +139,13 @@ The `model` hook will fetch the first page you request and pass the result to yo
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 
-export default Route.extend({
-  infinity: service(),
+export default class ProductsRoute extends Route {
+  @service infinity;
 
   model() {
     return this.infinity.model('product');
   }
-});
+}
 ```
 
 Moreover, if you want to intelligently cache your infinity model, pass `{ infinityCache: timestamp }` and we will return the cached collection if the future timestamp is less than the current time (in ms) if your users revisit the same route.
@@ -154,13 +154,13 @@ Moreover, if you want to intelligently cache your infinity model, pass `{ infini
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 
-export default Route.extend({
-  infinity: service(),
+export default class ProductsRoute extends Route {
+  @service infinity;
 
   model() {
     return this.infinity.model('product', { infinityCache: 36000 }); // timestamp expiry of 10 minutes (in ms)
   }
-});
+}
 ```
 
 Let's see an example of using `replace`.
@@ -168,10 +168,9 @@ Let's see an example of using `replace`.
 ```js
 import Controller from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { get } from '@ember/object';
 
-export default Controller.extend({
-  infinity: service(),
+export default class Products extends Route {
+  @service infinity;
 
   actions: {
     /**
@@ -181,23 +180,23 @@ export default Controller.extend({
     async filterProducts(query) {
       let products = await this.store.query('product', { query });
       // model is the collection returned from the route model hook
-      get(this, 'infinity').replace(get(this, 'model'), products);
+      this.infinity.replace(get(this, 'model'), products);
     }
   }
-});
+}
 ```
 
 ```js
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 
-export default Route.extend({
-  infinity: service(),
+export default class ProductsRoute extends Route {
+  @service infinity
 
   model() {
     return this.infinity.model('product');
   }
-});
+}
 ```
 
 ```hbs
@@ -208,7 +207,7 @@ export default Route.extend({
   <h2>{{product.description}}</h2>
 {{/each}}
 
-{{infinity-loader infinityModel=model}}
+<InfinityLoader @infinityModel={{model.products}} />
 ```
 
 ### Closure Actions<a name="ClosureActions"></a>
@@ -220,39 +219,38 @@ See the Ember docs on passing actions to components [here](https://guides.emberj
 ```js
 import Controller from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { get } from '@ember/object';
+import { action } from '@ember/object';
 
-export default Controller.extend({
-  infinity: service(),
+export default class ProductsController extends Controller {
+  @service infinity
 
-  actions: {
-    /**
-      Note this must be handled by you.  An action will be called with the result of your Route model hook from the `infinity-loader` component, similar to this:
-      // closure action in infinity-loader component
-      get(this, 'infinityLoad')(infinityModelContent);
+  /**
+    Note this must be handled by you.  An action will be called with the result of your Route model hook from the `infinity-loader` component, similar to this:
+    // closure action in infinity-loader component
+    get(this, 'infinityLoad')(infinityModelContent);
 
-      @method loadMoreProduct
-      @param {InfinityModel} products
-    */
-    loadMoreProduct(products) {
-      // Perform other logic ....
-      get(this, 'infinity').infinityLoad(products);
-    }
+    @method loadMoreProduct
+    @param {InfinityModel} products
+  */
+  @action
+  loadMoreProduct(products) {
+    // Perform other logic ....
+    this.infinity.infinityLoad(products);
   }
-});
+}
 ```
 
 ```js
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 
-export default Route.extend({
-  infinity: service(),
+export default class ProductsRoute extends Route {
+  @service infinity
 
   model() {
     return this.infinity.model('product');
   }
-});
+}
 ```
 
 ```hbs
@@ -319,15 +317,15 @@ Example Customization shown below:
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 
-export default Route.extend({
-  infinity: service(),
+export default class ProductsRoute extends Route {
+  @service infinity
 
   model() {
     /* Load pages of the Product Model, starting from page 1, in groups of 12. Also set query params by handing off to infinityModel */
     return this.infinity.model('product', { perPage: 12, startingPage: 1,
       perPageParam: 'per', pageParam: 'pg', totalPagesParam: 'meta.total', countParam: 'meta.records' });
   }
-});
+}
 ```
 
 This will result in request query params being sent out as follows
@@ -360,8 +358,8 @@ Lastly, if you need some global configuration for these params, setup an extende
 import Route from '@ember/routing/route';
 import { inject } from '@ember/service';
 
-export default Route.extend({
-  infinity: inject(),
+export default class ProductsRoute extends Route {
+  @service infinity
 
   model() {
     return this.infinity.model('product', {
@@ -371,7 +369,7 @@ export default Route.extend({
       pageParam: 'page[number]'
     });
   },
-});
+}
 ```
 
 ### Cursor-based pagination
@@ -406,13 +404,13 @@ const ExtendedInfinityModel = InfinityModel.extend({
   }
 });
 
-export default Route.extend({
-  infinity: service(),
+export default class PostsRoute extends Route {
+  @service infinity
 
   model() {
     return this.infinity.model('post', {}, ExtendedInfinityModel);
   }
-});
+}
 ```
 
 ### Static parameters
@@ -442,19 +440,20 @@ const ExtendedInfinityModel = InfinityModel.extend({
   }
 });
 
-export default Route.extend({
-  global: service(),
-  infinity: service(),
+export default class ProductsRoute extends Route {
+  @service infinity
+  @service global
 
-  categoryId: computed('global.categoryId', function() {
+  @computed('global.categoryId')
+  get categoryId() {
     return get(this, 'global.categoryId');
-  }),
+  }
 
   model() {
-    let global = get(this, 'global');
+    const { global } = this;
     this.infinity.model('product', {}, ExtendedInfinityModel.extend({ global }));
   }
-});
+}
 ```
 
 There is a lot you can do with this!  Here is a simple use case where, say you have an API that does not return `total_pages` or `count` and you also don't need a loading spinner. Just set `canLoadMore` to true and `ember-infinity` will always try to fetch new records when the `infinity-loader` comes into viewport.
@@ -466,11 +465,13 @@ const ExtendedInfinityModel = InfinityModel.extend({
   canLoadMore: true
 });
 
-export default Route.extend({
+export default class ProductsRoute extends Route {
+  @service infinity
+
   model() {
     this.infinity.model('product', {}, ExtendedInfinityModel.extend());
   }
-});
+}
 ```
 
 ## Model Public Properties
@@ -513,11 +514,13 @@ const ExtendedInfinityModel = InfinityModel.extend({
   }
 });
 
-export default Route.extend({
+export default class PostsRoute extends Route {
+  @service infinity
+
   model() {
     return this.infinity.model('post', {}, ExtendedInfinityModel);
   }
-});
+}
 ```
 
 As a more complex example, let's say you had a blog with Posts and Authors as separate
@@ -534,11 +537,13 @@ const ExtendedInfinityModel = InfinityModel.extend({
   }
 });
 
-export default Route.extend({
+export default class PostsRoute extends Route {
+  @service infinity
+
   model() {
     return this.infinity.model('post', {}, ExtendedInfinityModel);
   }
-});
+}
 ```
 
 `afterInfinityModel` should return either a promise, ArrayProxy, or a
@@ -584,7 +589,9 @@ const ExtendedInfinityModel = InfinityModel.extend({
   }
 });
 
-export default Route.extend({
+export default class ProductsRoute extends Route {
+  @service infinity
+
   model() {
     return this.infinity.model('product', { perPage: 12, startingPage: 1 }, ExtendedInfinityModel);
   }
@@ -598,9 +605,9 @@ Chances are you'll want to scroll some source other than the default ember-data 
 ```js
 import { inject as service } from '@ember/service';
 
-export default Ember.Route.extend({
-  infinity: service(),
-  customStore: service('my-custom-store'),
+export default class ProductsRoute extends Route {
+  @service infinity
+  @service('my-custom-store') customStore
 
   model(params) {
     return this.infinity.model('product', {
@@ -610,7 +617,7 @@ export default Ember.Route.extend({
       storeFindMethod: 'findAll' // should return a promise (optional if custom store method uses `query`)
     })
   }
-});
+}
 ```
 
 ## Infinity Loader
@@ -624,17 +631,17 @@ https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
 Closure actions are enabled in the `1.0.0` series.
 
 ```hbs
-{{infinity-loader
-  infinityModel=model
-  infinityLoad=(action "loadMoreProducts")}}
+<InfinityLoader
+  @infinityModel={{model}}
+  @infinityLoad={{action "loadMoreProducts"}} />
 ```
 
 * **hideOnInfinity**
 
 ```hbs
-{{infinity-loader
-  infinityModel=model
-  hideOnInfinity=true}}
+<InfinityLoader
+  @infinityModel={{model}}
+  @hideOnInfinity={{true}} />
 ```
 
 Now, when the Infinity Model is fully loaded, the `infinity-loader` will hide itself and set `isDoneLoading` to `true`.
@@ -644,10 +651,10 @@ Now, when the Infinity Model is fully loaded, the `infinity-loader` will hide it
 * **developmentMode**
 
 ```hbs
-{{infinity-loader
-  infinityModel=model
-  infinityLoad=(action "loadMoreProducts")
-  developmentMode=true}}
+<InfinityLoader
+  @infinityModel={{model}}
+  @infinityLoad={{action "loadMoreProducts"}}
+  @developmentMode={{true}} />
 ```
 
 This simply stops the `infinity-loader` from fetching triggering loads, so that
@@ -656,11 +663,11 @@ you can work on its appearance.
 * **loadingText & loadedText**
 
 ```hbs
-{{infinity-loader
-  infinityModel=model
-  infinityLoad=(action "loadMoreProducts")
+<InfinityLoader
+  @infinityModel={{model}}
+  @infinityLoad={{action "loadMoreProducts"}}
   loadingText="Loading..."
-  loadedText="Loaded!"}}
+  loadedText="Loaded!" />
 ```
 
 By default, the `infinity-loader` will just output a `span` showing its status.
@@ -702,7 +709,7 @@ Will install the default `infinity-loader` template into your host app, at
 * **scrollable**
 
 ```hbs
-{{infinity-loader scrollable="#content"}}
+<InfinityLoader @scrollable="#content" />
 ```
 
 You can optionally pass in a CSS style selector string.  If not present, scrollable will default to using the window.  This is useful for scrollable areas that are constrained in the window.
@@ -710,11 +717,11 @@ You can optionally pass in a CSS style selector string.  If not present, scrolla
 * **loadPrevious**
 
 ```hbs
-{{infinity-loader loadPrevious=true}}
+<InfinityLoader @loadPrevious={{true}} />
 
 <ul>...</ul>
 
-{{infinity-loader}}
+<InfinityLoader />
 
 To load elements above your list on load, place an infinity-loader component above the list with `loadPrevious=true`.
 ```
@@ -722,7 +729,7 @@ To load elements above your list on load, place an infinity-loader component abo
 * **triggerOffset**
 
 ```hbs
-{{infinity-loader triggerOffset=offset}}
+<InfinityLoader @triggerOffset={{offset}} />
 ```
 
 You can optionally pass an offset value.   This value will be used when calculating if the bottom of the scrollable has been reached.
@@ -730,7 +737,7 @@ You can optionally pass an offset value.   This value will be used when calculat
 * **eventDebounce**
 
 ```hbs
-{{infinity-loader eventDebounce=50}}
+<InfinityLoader @eventDebounce={{50}} />
 ```
 
 Default is 50ms.  You can optionally pass a debounce time to delay loading the list when reach bottom of list
@@ -742,22 +749,22 @@ You can use the service loading magic of ember-infinity without using the Infini
 load-more-button.js:
 
 ```js
-export default Ember.Component.extend({
-  infinity: inject(),
+export default class InfinityComponent extends Component {
+  @service infinity
 
-  loadText: 'Load more',
-  loadedText: 'Loaded',
+  loadText = 'Load more';
+  loadedText = 'Loaded';
 
-  click(){
+  onClick() {
     this.infinity.infinityLoad(this.infinityModel);
   }
-});
+}
 ```
 
 load-more-button.hbs:
 
 ```hbs
-{{#if infinityModel.reachedInfinity}}
+{{#if @infinityModel.reachedInfinity}}
   <button>{{loadedText}}</button>
 {{else}}
   <button>{{loadText}}</button>
@@ -767,12 +774,12 @@ template.hbs:
 
 ```hbs
 <ul class="test-list">
-{{#each model as |item|}}
+{{#each @model as |item|}}
   <li>{{item.name}}</li>
 {{/each}}
 </ul>
 
-{{load-more-button infinityModel=model}}
+<LoadMoreButton @infinityModel={{model}} />
 ```
 
 ### Delay start of infinite loading until user has indicated they would like to load more
@@ -797,22 +804,21 @@ If your route loads on page 3, it will fetch page 2 on load.  As the user scroll
 
 ```hbs
 <ul>
-{{infinity-loader
-  infinityModel=model
-  loadPrevious=true
-  loadedText=null
-  loadingText=null}}
+<InfinityLoader
+  @infinityModel={{model}}
+  @loadPrevious={{true}}
+  @loadedText={{null}}
+  @loadingText={{null}} />
 
-{{#each model as |item|}}
+{{#each @model as |item|}}
   <li>{{item.id}}. {{item.name}}</li>
 {{/each}}
 
-{{infinity-loader
-  infinityModel=model
-  loadingText="Loading more awesome records..."
-  loadedText="Loaded all the records!"
-  triggerOffset=500
-}}
+<InfinityLoader
+  @infinityModel={{model}}
+  @loadingText="Loading more awesome records..."
+  @loadedText="Loaded all the records!"
+  @triggerOffset={{500}} />
 </ul>
 ```
 
