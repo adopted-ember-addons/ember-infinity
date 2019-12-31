@@ -33,6 +33,8 @@ Also:
 
 `ember install ember-infinity`
 
+As of `v2.0.0`, we support Node 10 and above.
+
 ## Basic Usage
 
 `ember-infinity` exposes 3 consumable items for your application.
