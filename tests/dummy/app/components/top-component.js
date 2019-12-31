@@ -1,14 +1,14 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 
-export default class TopComponent extends Component {
-  @service infinity
+export default Component.extend({
+  infinity: service(),
 
-  tagName = '';
+  tagName: '',
 
   init() {
-    super.init(...arguments);
+    this._super(...arguments);
 
     this.posts = this.infinity.model('post', { perPage: 5 });
   }
-}
+});
