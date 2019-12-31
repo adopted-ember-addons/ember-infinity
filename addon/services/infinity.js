@@ -75,8 +75,14 @@ export default class Infinity extends Service {
     @property store
     @type Ember.Service
   */
-  get store () {
+  get store() {
+    if (this._store) {
+      return this._store;
+    }
     return getOwner(this).lookup('service:store') || Service.extend();
+  }
+  set store(value) {
+    this._store = value;
   }
 
   /**
