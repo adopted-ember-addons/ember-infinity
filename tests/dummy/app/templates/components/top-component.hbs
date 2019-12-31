@@ -1,9 +1,11 @@
-<h2 id="posts-title">Non Blocking Component Test</h2>
+<div class="list-items">
+  <h2 id="posts-title">Non Blocking Component Test</h2>
 
-<ul class="demo-items">
-  {{#each posts as |item|}}
-    <li>{{item.id}} · {{item.name}}</li>
-  {{/each}}
+  <ul class="demo-items">
+    {{#each posts as |item|}}
+      <li>{{item.id}} · {{item.name}}</li>
+    {{/each}}
 
-  {{infinity-loader infinityModel=posts}}
-</ul>
+    <InfinityLoader @infinityModel={{posts}} />
+  </ul>
+</div>
