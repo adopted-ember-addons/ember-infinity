@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { currentRouteName, visit, find, triggerEvent, currentURL, waitUntil } from '@ember/test-helpers';
+import { currentRouteName, visit, find, settled, triggerEvent, currentURL, waitUntil } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
@@ -100,6 +100,7 @@ module('Acceptance: Infinity Route - infinity routes', function(hooks) {
     this.server.createList('post', 50);
     await visit('/test-scrollable?page=2');
 
+    await settled();
     shouldBeItemsOnTheList(assert, 50);
     assert.equal(document.querySelectorAll('ul.test-list-scrollable li')[25].offsetTop, 1250, 'scrollable list has elements above (each 250px high * 25)');
   });
