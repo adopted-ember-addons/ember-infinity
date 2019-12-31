@@ -57,13 +57,13 @@ Let's see how simple it is to fetch a list of products.  Instead of `this.store.
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 
-export default Route.extend({
-  infinity: service(),
+export default class InfinityRoute extends Route {
+  @service infinity
 
   model() {
     return this.infinity.model('product');
   }
-});
+}
 ```
 ```hbs
 {{#each model as |product|}}
@@ -71,7 +71,7 @@ export default Route.extend({
   <h2>{{product.description}}</h2>
 {{/each}}
 
-{{infinity-loader infinityModel=model}}
+<InfinityLoader @infinityModel={{model}} />
 ```
 
 Whenever the `infinity-loader` component is in view, we will fetch the next page for you.
