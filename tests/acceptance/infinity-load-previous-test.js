@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { visit, find, triggerEvent } from '@ember/test-helpers';
+import { visit, find, settled, triggerEvent } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import defaultScenario from '../../mirage/scenarios/default';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
@@ -48,6 +48,7 @@ module('Acceptance: Infinity Route - load previous', function(hooks) {
     defaultScenario(this.server);
     await visit('/load-previous');
 
+    await settled();
     shouldBeItemsOnTheList(assert, 25);
     infinityShouldNotBeReached(assert);
     scrollTo(triggerOffset() - 100);
@@ -66,6 +67,7 @@ module('Acceptance: Infinity Route - load previous', function(hooks) {
     defaultScenario(this.server);
     await visit('/load-previous?page=2');
 
+    await settled();
     shouldBeItemsOnTheList(assert, 50);
     // This is difficult b/c of #ember-testing-container
     // assert.equal(document.querySelectorAll('.posts p')[25].offsetTop, 12500, 'scrollable list has elements above (each 250px high * 25)');
