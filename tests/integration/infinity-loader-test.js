@@ -2,7 +2,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { module, test } from 'qunit';
 import { run } from '@ember/runloop';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, waitUntil } from '@ember/test-helpers';
+import { find, render, waitUntil } from '@ember/test-helpers';
 import { set } from '@ember/object';
 import { A } from '@ember/array';
 import { resolve } from 'rsvp';
@@ -30,7 +30,10 @@ module('infinity-loader', function(hooks) {
   test('it renders loading text if no block given', async function(assert) {
     assert.expect(2);
 
-    await render(hbs`{{infinity-loader infinityModel=infinityModel infinity=infinityServiceMock _checkScrollableHeight=_checkScrollableHeight}}`);
+    await render(hbs`<InfinityLoader
+      @infinityModel={{infinityModel}}
+      @infinity={{infinityServiceMock}}
+      @_checkScrollableHeight={{_checkScrollableHeight}} />`);
     assert.equal(this.element.querySelector('.infinity-loader > span').textContent.trim(), "Loading Infinity Model...", 'class name is present');
     assert.equal(this.element.querySelector('[data-test-infinity-loader]').textContent.trim(), "Loading Infinity Model...", 'data-test attr is present');
   });
@@ -49,7 +52,7 @@ module('infinity-loader', function(hooks) {
       hideOnInfinity=true
       infinity=infinityServiceMock
       _checkScrollableHeight=_checkScrollableHeight}}`);
-    assert.equal(this.element.querySelector('.infinity-loader').style.display, 'none', 'Element is hidden');
+    assert.notOk(find('.infinity-loader'), 'Element is hidden');
   });
 
   test('hideOnInfinity does not work if hideOnInfinity=false', async function(assert) {
@@ -67,9 +70,9 @@ module('infinity-loader', function(hooks) {
       set(this, 'infinityModel.reachedInfinity', true);
     });
     await waitUntil(() => {
-      return this.element.querySelector('.infinity-loader').style.display === '';
+      return find('.infinity-loader');
     });
-    assert.equal(this.element.querySelector('.infinity-loader').style.display, '', 'Element is not hidden');
+    assert.ok(find('.infinity-loader'), 'Element is not hidden');
   });
 
   test('it yields to the block if given', async function(assert) {
