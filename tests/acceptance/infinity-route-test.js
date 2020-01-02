@@ -79,22 +79,26 @@ module('Acceptance: Infinity Route - infinity routes', function(hooks) {
     this.server.createList('post', 50);
     await visit('/test-scrollable?triggerOffset=200');
 
+    await settled();
     shouldBeItemsOnTheList(assert, 25);
     infinityShouldNotBeReached(assert);
     scrollTo(triggerOffset() - 200 - 100);
 
     await triggerEvent('ul', 'scroll');
 
+    await settled();
     shouldBeItemsOnTheList(assert, 25);
     scrollTo(triggerOffset() - 200);
 
     await triggerEvent('ul', 'scroll');
 
+    await settled();
     shouldBeItemsOnTheList(assert, 25);
     scrollIntoView();
 
     await triggerEvent('ul', 'scroll');
 
+    await settled();
     shouldBeItemsOnTheList(assert, 50);
     infinityShouldBeReached(assert);
   });
