@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { visit } from '@ember/test-helpers';
+import { settled, visit } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import assertDetails from '../helpers/assert-acceptance-details';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
@@ -16,6 +16,7 @@ module('Acceptance: Infinity Route - non blocking', function(hooks) {
   test('it renders items with non-blocking model', async function(assert) {
     await visit('/non-blocking-model');
 
+    await settled();
     assertDetails(assert, {
       title: 'Non Blocking Model Test',
       listLength: 15,
@@ -27,6 +28,7 @@ module('Acceptance: Infinity Route - non blocking', function(hooks) {
     this.server.createList('post', 35);
     await visit('/nested-component');
 
+    await settled();
     assertDetails(assert, {
       title: 'Non Blocking Component Test',
       listLength: 15,
