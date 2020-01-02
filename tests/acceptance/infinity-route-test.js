@@ -188,11 +188,13 @@ module('Acceptance: Infinity Route - infinity routes', function(hooks) {
 
       await triggerEvent('ul', 'scroll');
 
+      await settled();
       assert.equal(find('ul').querySelectorAll('li').length, 25, `${25} items should be in the list`);
       document.querySelector('.list-items').scrollIntoView(false);
 
       await triggerEvent('ul', 'scroll');
 
+      await settled();
       assert.equal(find('ul').querySelectorAll('li').length, 50, `${50} items should be in the list`);
       assert.equal(find('.infinity-loader').classList.contains('reached-infinity'), true, 'Infinity should have been reached');
     });
