@@ -9,9 +9,9 @@
       {{yield this.infinityModelContent}}
     {{else}}
       {{#if this.isDoneLoading}}
-        <span>{{@loadedText}}</span>
+        <span>{{this.loadedText}}</span>
       {{else}}
-        <span>{{@loadingText}}</span>
+        <span>{{this.loadingText}}</span>
       {{/if}}
     {{/if}}
 

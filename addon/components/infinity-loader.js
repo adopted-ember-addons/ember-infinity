@@ -24,16 +24,6 @@ const InfinityLoaderComponent = Component.extend({
   eventDebounce: 50,
   /**
    * @public
-   * @property loadingText
-   */
-  loadingText: 'Loading Infinity Model...',
-  /**
-   * @public
-   * @property loadedText
-   */
-  loadedText: 'Infinity Model Entirely Loaded.',
-  /**
-   * @public
    * @property hideOnInfinity
    * @default false
    */
@@ -90,6 +80,17 @@ const InfinityLoaderComponent = Component.extend({
    * @method didInsertElement
    */
   didInsertLoader(element, [instance]) {
+    /**
+     * @public
+     * @property loadingText
+     */
+    set(instance, 'loadingText', instance.loadingText || 'Loading Infinity Model...');
+    /**
+     * @public
+     * @property loadedText
+     */
+    set(instance, 'loadedText', instance.loadedText || 'Infinity Model Entirely Loaded.');
+
     instance.elem = element;
 
     defineProperty(instance, 'infinityModelContent', computed('infinityModel', function() {
