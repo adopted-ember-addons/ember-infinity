@@ -124,6 +124,7 @@ module('Acceptance: Infinity Route - infinity routes', function(hooks) {
       this.server.createList('post', 75);
       await visit('/test-scrollable?page=3');
 
+      await settled();
       shouldBeItemsOnTheList(assert, 50);
       assert.equal(currentURL(), '/test-scrollable?page=3');
 
@@ -135,6 +136,7 @@ module('Acceptance: Infinity Route - infinity routes', function(hooks) {
         return postList().querySelectorAll('li').length === 75;
       });
 
+      await settled();
       shouldBeItemsOnTheList(assert, 75);
     });
   });
