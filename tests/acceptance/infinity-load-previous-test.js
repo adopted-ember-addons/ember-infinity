@@ -55,11 +55,13 @@ module('Acceptance: Infinity Route - load previous', function(hooks) {
 
     await triggerEvent(window, 'scroll');
 
+    await settled();
     shouldBeItemsOnTheList(assert, 25);
     scrollIntoView();
 
     await triggerEvent(window, 'scroll');
 
+    await settled();
     shouldBeItemsOnTheList(assert, 50);
   });
 
