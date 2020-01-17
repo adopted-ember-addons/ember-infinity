@@ -41,7 +41,7 @@ module('Acceptance: Infinity Route - custom store route', function(hooks) {
 
     assertDetails(assert, {
       title: 'Listing Posts',
-      listLength: 51,
+      listLength: 25,
       reachedInfinity: true
     });
   });
