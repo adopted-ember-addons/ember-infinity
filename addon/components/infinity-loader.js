@@ -3,6 +3,8 @@ import { get, set, computed, defineProperty } from '@ember/object';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 
+export const nextTick = (cb) => Promise.resolve(cb);
+
 const InfinityLoaderComponent = Component.extend({
   infinity: service(),
   inViewport: service(),
@@ -148,9 +150,10 @@ const InfinityLoaderComponent = Component.extend({
     }
 
     if (get(this, 'loadPrevious')) {
-      return this._debounceScrolledToTop();
+      return nextTick(this._debounceScrolledToTop());
     }
-    return this._debounceScrolledToBottom();
+
+    return nextTick(this._debounceScrolledToBottom());
   },
 
   /**
