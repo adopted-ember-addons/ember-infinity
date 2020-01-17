@@ -19,7 +19,7 @@ export default Route.extend({
 
   model() {
     return get(this, 'infinity').model('post', {
-      'perPage': 6,
+      perPage: 6,
     }, ExtendedInfinityModel);
   }
 });
