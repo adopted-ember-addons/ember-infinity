@@ -94,7 +94,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
 
   willInsertElement() {
     defineProperty(this, 'infinityModelContent', computed('infinityModel', function() {
-      return Promise.resolve(get(this, 'infinityModel'));
+      return Promise.resolve(this.infinityModel);
     }));
 
     this.addObserver('infinityModel', this, this._initialInfinityModelSetup);
