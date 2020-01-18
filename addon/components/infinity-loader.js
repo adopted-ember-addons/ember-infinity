@@ -3,7 +3,6 @@ import { run } from '@ember/runloop';
 import { get, set, computed, defineProperty } from '@ember/object';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
-import { resolve } from 'rsvp';
 
 const InfinityLoaderComponent = Component.extend(InViewportMixin, {
   infinity: service(),
@@ -95,7 +94,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
 
   willInsertElement() {
     defineProperty(this, 'infinityModelContent', computed('infinityModel', function() {
-      return resolve(get(this, 'infinityModel'));
+      return Promise.resolve(get(this, 'infinityModel'));
     }));
 
     this.addObserver('infinityModel', this, this._initialInfinityModelSetup);
