@@ -4,8 +4,6 @@ import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { resolve } from 'rsvp';
 
-export const nextTick = (cb) => resolve(cb);
-
 const InfinityLoaderComponent = Component.extend({
   infinity: service(),
   inViewport: service(),
@@ -106,6 +104,7 @@ const InfinityLoaderComponent = Component.extend({
     instance._loadStatusDidChange();
 
     instance.addObserver('hideOnInfinity', instance, instance._loadStatusDidChange);
+    instance.addObserver('reachedInfinity', instance, instance._loadStatusDidChange);
 
     let options = {
       viewportSpy: true,
@@ -133,6 +132,7 @@ const InfinityLoaderComponent = Component.extend({
 
     instance.removeObserver('infinityModel', instance, instance._initialInfinityModelSetup);
     instance.removeObserver('hideOnInfinity', instance, instance._loadStatusDidChange);
+    instance.removeObserver('reachedInfinity', this, this._loadStatusDidChange);
   },
 
   /**
@@ -151,10 +151,10 @@ const InfinityLoaderComponent = Component.extend({
     }
 
     if (get(this, 'loadPrevious')) {
-      return nextTick(this._debounceScrolledToTop());
+      return this._debounceScrolledToTop();
     }
 
-    return nextTick(this._debounceScrolledToBottom());
+    return this._debounceScrolledToBottom();
   },
 
   /**
