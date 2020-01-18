@@ -2,8 +2,9 @@ import { run } from '@ember/runloop';
 import { get, set, computed, defineProperty } from '@ember/object';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
+import { resolve } from 'rsvp';
 
-export const nextTick = (cb) => Promise.resolve(cb);
+export const nextTick = (cb) => resolve(cb);
 
 const InfinityLoaderComponent = Component.extend({
   infinity: service(),
@@ -96,7 +97,7 @@ const InfinityLoaderComponent = Component.extend({
     instance.elem = element;
 
     defineProperty(instance, 'infinityModelContent', computed('infinityModel', function() {
-      return Promise.resolve(instance.infinityModel);
+      return resolve(instance.infinityModel);
     }));
 
     instance.addObserver('infinityModel', instance, instance._initialInfinityModelSetup);
