@@ -1,11 +1,11 @@
-import InViewportMixin from 'ember-in-viewport';
 import { run } from '@ember/runloop';
 import { get, set, computed, defineProperty } from '@ember/object';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 
-const InfinityLoaderComponent = Component.extend(InViewportMixin, {
+const InfinityLoaderComponent = Component.extend({
   infinity: service(),
+  inViewport: service(),
 
   classNames: ['infinity-loader'],
   classNameBindings: ['isDoneLoading:reached-infinity', 'viewportEntered:in-viewport'],
@@ -114,6 +114,21 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
 
     this.addObserver('hideOnInfinity', this, this._loadStatusDidChange);
     this.addObserver('reachedInfinity', this, this._loadStatusDidChange);
+
+    let options = {
+      viewportSpy: true,
+      viewportTolerance: {
+        top: 0,
+        right: 0,
+        bottom: this.triggerOffset,
+        left: 0
+      },
+      scrollableArea: this.scrollable
+    };
+    const { onEnter, onExit } = this.inViewport.watchElement(this.element, options);
+
+    onEnter(this.didEnterViewport.bind(this));
+    onExit(this.didExitViewport.bind(this));
   },
 
   willDestroyElement() {
@@ -138,7 +153,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
    */
   didEnterViewport() {
     if (
-      get(this, 'developmentMode') ||
+      this.developmentMode ||
       typeof FastBoot !== 'undefined' ||
       this.isDestroying ||
       this.isDestroyed
