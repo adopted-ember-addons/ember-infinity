@@ -132,7 +132,7 @@ const InfinityLoaderComponent = Component.extend({
 
     instance.removeObserver('infinityModel', instance, instance._initialInfinityModelSetup);
     instance.removeObserver('hideOnInfinity', instance, instance._loadStatusDidChange);
-    instance.removeObserver('reachedInfinity', this, this._loadStatusDidChange);
+    instance.removeObserver('reachedInfinity', instance, instance._loadStatusDidChange);
   },
 
   /**
