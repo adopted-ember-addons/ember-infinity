@@ -116,6 +116,7 @@ const InfinityLoaderComponent = Component.extend({
     this._initialInfinityModelSetup();
 
     this.addObserver('hideOnInfinity', this, this._loadStatusDidChange);
+    this.addObserver('reachedInfinity', this, this._loadStatusDidChange);
 
     let options = {
       viewportSpy: true,
@@ -145,6 +146,7 @@ const InfinityLoaderComponent = Component.extend({
 
     this.removeObserver('infinityModel', this, this._initialInfinityModelSetup);
     this.removeObserver('hideOnInfinity', this, this._loadStatusDidChange);
+    this.removeObserver('reachedInfinity', this, this._loadStatusDidChange);
   },
 
   /**
