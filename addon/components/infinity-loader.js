@@ -114,6 +114,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
     this._initialInfinityModelSetup();
 
     this.addObserver('hideOnInfinity', this, this._loadStatusDidChange);
+    this.addObserver('reachedInfinity', this, this._loadStatusDidChange);
   },
 
   willDestroyElement() {
@@ -128,6 +129,7 @@ const InfinityLoaderComponent = Component.extend(InViewportMixin, {
 
     this.removeObserver('infinityModel', this, this._initialInfinityModelSetup);
     this.removeObserver('hideOnInfinity', this, this._loadStatusDidChange);
+    this.removeObserver('reachedInfinity', this, this._loadStatusDidChange);
   },
 
   /**
