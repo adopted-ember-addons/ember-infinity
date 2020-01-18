@@ -4,6 +4,8 @@ import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { resolve } from 'rsvp';
 
+export const nextTick = (cb) => resolve(cb);
+
 const InfinityLoaderComponent = Component.extend({
   infinity: service(),
   inViewport: service(),
@@ -127,8 +129,8 @@ const InfinityLoaderComponent = Component.extend({
     };
     const { onEnter, onExit } = this.inViewport.watchElement(this.element, options);
 
-    onEnter(this.didEnterViewport.bind(this));
-    onExit(this.didExitViewport.bind(this));
+    onEnter(nextTick(this.didEnterViewport.bind(this)));
+    onExit(nextTick(this.didExitViewport.bind(this)));
   },
 
   willDestroyElement() {
