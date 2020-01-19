@@ -8,6 +8,7 @@ const InfinityLoaderComponent = Component.extend({
   infinity: service(),
   inViewport: service(),
 
+  // TODO: remove when implement glimmer components
   tagName: '',
 
   /**
