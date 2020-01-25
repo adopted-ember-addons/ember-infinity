@@ -1,6 +1,6 @@
 {
   "name": "ember-infinity",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "description": "Simple, flexible infinite scroll for Ember CLI Apps.",
   "keywords": [
     "ember-addon",
@@ -27,7 +27,9 @@
     "node": "10.* || >= 12.*"
   },
   "dependencies": {
+    "@ember/render-modifiers": "^1.0.2",
     "ember-cli-babel": "~7.11.0",
+    "ember-cli-htmlbars": "^3.0.1",
     "ember-in-viewport": "~3.7.1"
   },
   "devDependencies": {
@@ -37,7 +39,6 @@
     "ember-cli": "~3.12.0",
     "ember-cli-dependency-checker": "^3.1.0",
     "ember-cli-eslint": "^5.1.0",
-    "ember-cli-htmlbars": "^3.0.1",
     "ember-cli-htmlbars-inline-precompile": "^2.1.0",
     "ember-cli-inject-live-reload": "^1.8.2",
     "ember-cli-mirage": "^0.4.3",
