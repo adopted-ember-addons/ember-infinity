@@ -2,7 +2,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { module, test } from 'qunit';
 import { run } from '@ember/runloop';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, waitUntil } from '@ember/test-helpers';
+import { find, render, waitUntil } from '@ember/test-helpers';
 import { set } from '@ember/object';
 import { A } from '@ember/array';
 import { resolve } from 'rsvp';
@@ -49,7 +49,8 @@ module('infinity-loader', function(hooks) {
       hideOnInfinity=true
       infinity=infinityServiceMock
       _checkScrollableHeight=_checkScrollableHeight}}`);
-    assert.equal(this.element.querySelector('.infinity-loader').style.display, 'none', 'Element is hidden');
+
+    assert.notOk(find('[data-test-infinity-loader]'), 'Element is not found');
   });
 
   test('hideOnInfinity does not work if hideOnInfinity=false', async function(assert) {
