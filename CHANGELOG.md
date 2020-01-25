@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.0](https://github.com/ember-infinity/ember-infinity/tree/v2.1.0) (2020-01-24)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/v2.0.3...v2.1.0)
+
+- Remove tagName from loader component to remove isVisible (https://github.com/ember-infinity/ember-infinity/pull/416)
+- Replace Mixin with inViewport service (https://github.com/ember-infinity/ember-infinity/pull/410)
+
+## [2.0.3](https://github.com/ember-infinity/ember-infinity/tree/v2.0.3) (2020-01-18)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/v2.0.1...v2.0.3)
+
+- Show loader when reachedInfinity changes (https://github.com/ember-infinity/ember-infinity/pull/413)
+- Bump node in pkg.json (https://github.com/ember-infinity/ember-infinity/pull/408)
+
 ## [2.0.1](https://github.com/ember-infinity/ember-infinity/tree/v2.0.1) (2019-12-31)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/v2.0.0...v2.0.1)
 
