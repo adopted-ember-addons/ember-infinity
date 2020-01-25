@@ -1,0 +1,19 @@
+{{#if this.isVisible}}
+  <div
+    {{did-insert this.didInsertLoader this}}
+    {{will-destroy this.willDestroyLoader this}}
+    class="{{this.loaderClassNames}}{{if this.viewportEntered " in-viewport"}}{{if this.isDoneLoading " reached-infinity"}}"
+    data-test-infinity-loader>
+
+    {{#if hasBlock}}
+      {{yield this.infinityModelContent}}
+    {{else}}
+      {{#if this.isDoneLoading}}
+        <span>{{this.loadedText}}</span>
+      {{else}}
+        <span>{{this.loadingText}}</span>
+      {{/if}}
+    {{/if}}
+
+  </div>
+{{/if}}
