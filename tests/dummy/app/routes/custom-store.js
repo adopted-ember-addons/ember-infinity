@@ -6,6 +6,9 @@ export default Route.extend({
   infinity: service(),
 
   model() {
-    return this.infinity.model('custom-model', { store: this.customStore, storeFindMethod: 'findAll' });
+    return this.infinity.model('custom-model', {
+      store: this.customStore,
+      storeFindMethod: 'findAll'
+    });
   }
 });

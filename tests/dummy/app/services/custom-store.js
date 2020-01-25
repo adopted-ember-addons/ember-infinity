@@ -36,9 +36,9 @@ export default class CustomStore extends Service {
    * @method findAll
    * @param {String} type
    */
-  findAll(type) {
+  findAll(type, { per_page = Infinity } = {}) {
     const containerObjs = this.persistentContainer[type];
-    const content = Array.from(containerObjs.values());
+    const content = Array.from(containerObjs.values()).slice(0, per_page);
     const arrProxy = ArrayProxy.create({ content: A(content) });
     return resolve(arrProxy);
   }
