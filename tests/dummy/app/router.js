@@ -10,6 +10,7 @@ Router.map(function() {
   this.route('custom-store');
   this.route('non-blocking-model');
   this.route('demo', { path: '/' });
+  this.route('demo-horizontal', { path: '/horizontal' });
   this.route('demo-scrollable', { path: '/demo-scrollable' });
   this.route('home', { path: 'test' });
   this.route('test-scrollable', { path: '/test-scrollable' });

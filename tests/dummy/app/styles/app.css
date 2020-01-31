@@ -8,6 +8,10 @@ body {
   margin-top: 160px;
 }
 
+.demo-horizontal-view {
+  margin-top: 160px;
+}
+
 .test-list li {
   height: 500px;
 }
@@ -46,6 +50,12 @@ body {
 .demo-items {
   list-style: none;
 }
+
+.demo-horizontal-items {
+  list-style: none;
+  display: flex;
+}
+
 .demo-items li {
   border: 1px solid #999;
   margin: 10px;
@@ -53,6 +63,14 @@ body {
   box-shadow: 0 0 3px rgba(0,0,0,0.5);
   padding: 10px;
   width: 90%;
+}
+.demo-horizontal-items li {
+  border: 1px solid #999;
+  margin: 5px;
+  background: #fff;
+  box-shadow: 0 0 3px rgba(0,0,0,0.5);
+  padding: 10px 30px;
+  width: 100%;
 }
 
 .test-list-scrollable {
