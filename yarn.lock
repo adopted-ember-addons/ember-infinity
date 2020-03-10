@@ -5543,16 +5543,16 @@ ember-get-config@^0.2.2:
     broccoli-file-creator "^1.1.1"
     ember-cli-babel "^6.3.0"
 
-ember-in-viewport@~3.7.1:
-  version "3.7.1"
-  resolved "https://registry.yarnpkg.com/ember-in-viewport/-/ember-in-viewport-3.7.1.tgz#8bbef5039bc02351b023bb5689b59ab2246ecb2f"
-  integrity sha512-ZOyCBmMKk2uRIqvWCbJmeN5Ay4iDMc5R0DxePq0adtSQh6Rp4M3RQaGpguhcZveW8ibfJVfD+K7r6lXe4Eu1sA==
+ember-in-viewport@~3.7.2:
+  version "3.7.2"
+  resolved "https://registry.yarnpkg.com/ember-in-viewport/-/ember-in-viewport-3.7.2.tgz#f958a6e635749c91effeaf8818d68919a0be6852"
+  integrity sha512-Jv664t0cPiAMv6SOuQS+JmMfFeLnhGlhK06y5Hytolauwp8XJWDoq44wqQ7+oyCJEhf5bL+sam5tENep6euA9Q==
   dependencies:
     ember-auto-import "^1.5.2"
     ember-cli-babel "^7.7.3"
     ember-modifier "^1.0.2"
     fast-deep-equal "^2.0.1"
-    intersection-observer-admin "~0.2.10"
+    intersection-observer-admin "~0.2.12"
     raf-pool "~0.1.4"
 
 "ember-inflector@^2.0.0 || ^3.0.0":
@@ -7398,10 +7398,10 @@ inquirer@^6.2.2:
     strip-ansi "^5.1.0"
     through "^2.3.6"
 
-intersection-observer-admin@~0.2.10:
-  version "0.2.10"
-  resolved "https://registry.yarnpkg.com/intersection-observer-admin/-/intersection-observer-admin-0.2.10.tgz#f5577240c8713612e7df68e71528e986a84b8c8a"
-  integrity sha512-qQo6SDLSSJYMDYo46b9rDA47VFiCn4pOhEMb97I4+iuFJBRfB28+nWpFtlAfkMwUyST30YNlovtebQOwsGKX1g==
+intersection-observer-admin@~0.2.12:
+  version "0.2.12"
+  resolved "https://registry.yarnpkg.com/intersection-observer-admin/-/intersection-observer-admin-0.2.12.tgz#046b208afc8cbf626943d61688d5a779c5831275"
+  integrity sha512-97+A29MV0kp6Xzkb4CxBNxxDU4qldyVFNzvZIiLMYqIZFutT2DJCzE1TEv0hXdmFQfAIY4KhNhL6L1BEEU0J8w==
 
 into-stream@^3.1.0:
   version "3.1.0"
