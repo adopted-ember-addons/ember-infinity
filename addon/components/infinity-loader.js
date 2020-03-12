@@ -2,8 +2,11 @@ import { run } from '@ember/runloop';
 import { get, set, computed, defineProperty } from '@ember/object';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
+import layout from '../templates/components/infinity-loader';
 
 const InfinityLoaderComponent = Component.extend({
+  layout,
+
   infinity: service(),
   inViewport: service(),
 
