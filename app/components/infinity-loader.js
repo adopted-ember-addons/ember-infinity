@@ -1,3 +1,3 @@
-import infinityLoader from 'ember-infinity/components/infinity-loader';
+import InfinityLoader from 'ember-infinity/components/infinity-loader';
 
-export default infinityLoader;
+export default InfinityLoader;
