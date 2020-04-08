@@ -1,8 +1,9 @@
-import { run } from '@ember/runloop';
 import { get, set, computed, defineProperty } from '@ember/object';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
+import { task, taskGroup, timeout } from 'ember-concurrency';
 import layout from '../templates/components/infinity-loader';
+
 
 const InfinityLoaderComponent = Component.extend({
   layout,
@@ -156,9 +157,9 @@ const InfinityLoaderComponent = Component.extend({
     }
 
     if (get(this, 'loadPrevious')) {
-      return this._debounceScrolledToTop();
+      return this._scrolledToTopTask.perform();
     }
-    return this._debounceScrolledToBottom();
+    return this._scrolledToBottomTask.perform();
   },
 
   /**
@@ -174,89 +175,100 @@ const InfinityLoaderComponent = Component.extend({
    * @method _initialInfinityModelSetup
    */
   _initialInfinityModelSetup() {
-    get(this, 'infinityModelContent')
-      .then((infinityModel) => {
-        infinityModel.on('infinityModelLoaded', this._loadStatusDidChange.bind(this));
-        set(infinityModel, '_scrollable', get(this, 'scrollable'));
-        set(this, 'isDoneLoading', false);
-        if (!get(this, 'hideOnInfinity')) {
-          set(this, 'isVisible', true);
-        }
-      });
+    return this._initialInfinityModelSetupTask.perform();
   },
+
+  /**
+   * @task _initialInfinityModelSetupTask
+   */
+  _initialInfinityModelSetupTask: task(function*() {
+    const infinityModel = yield get(this, 'infinityModelContent');
+
+    infinityModel.on('infinityModelLoaded', this._loadStatusDidChange.bind(this));
+    set(infinityModel, '_scrollable', get(this, 'scrollable'));
+    set(this, 'isDoneLoading', false);
+    if (!get(this, 'hideOnInfinity')) {
+      set(this, 'isVisible', true);
+    }
+  }),
 
   /**
    * @method _loadStatusDidChange
    */
   _loadStatusDidChange() {
-    get(this, 'infinityModelContent')
-      .then((infinityModel) => {
-        if (get(infinityModel, 'reachedInfinity')) {
-          set(this, 'isDoneLoading', true);
-
-          if (get(this, 'hideOnInfinity')) {
-            set(this, 'isVisible', false);
-          }
-        } else {
-          set(this, 'isVisible', true);
-        }
-      });
+    return this._loadStatusDidChangeTask.perform();
   },
+
+  /**
+   * @task _loadStatusDidChangeTask
+   */
+  _loadStatusDidChangeTask: task(function*() {
+    const infinityModel = yield get(this, 'infinityModelContent');
+
+    if (get(infinityModel, 'reachedInfinity')) {
+      set(this, 'isDoneLoading', true);
+
+      if (get(this, 'hideOnInfinity')) {
+        set(this, 'isVisible', false);
+      }
+    } else {
+      set(this, 'isVisible', true);
+    }
+  }),
+
+  /**
+   * Task group to manage concurrency/cancelation for scrolled to top/bottom tasks
+   * @taskGroup _loadTasks
+   */
+  _loadTasks: taskGroup().restartable(),
 
   /**
    * only load previous page if route started on a page greater than 1 && currentPage is > 0
    *
-   * @method _debounceScrolledToTop
+   * @task _scrolledToTopTask
    */
-  _debounceScrolledToTop() {
+  _scrolledToTopTask: task(function*() {
+    const content = yield get(this, 'infinityModelContent');
+    if (get(content, 'firstPage') <= 1 || get(content, 'currentPage') == 0) {
+      return;
+    }
+
     /*
      This debounce is needed when there is not enough delay between onScrolledToBottom calls.
      Without this debounce, all rows will be rendered causing immense performance problems
      */
-    function loadPreviousPage(content) {
-      if (typeof(get(this, 'infinityLoad')) === 'function') {
-        // closure action
-        return get(this, 'infinityLoad')(content, -1);
-      } else {
-        get(this, 'infinity').infinityLoad(content, -1)
-      }
-    }
+    yield timeout(get(this, 'eventDebounce'));
 
-    get(this, 'infinityModelContent').then((content) => {
-      if (get(content, 'firstPage') > 1 && get(content, 'currentPage') > 0) {
-        this._debounceTimer = run.debounce(this, loadPreviousPage, content, get(this, 'eventDebounce'));
-      }
-    })
-  },
+    if (typeof(get(this, 'infinityLoad')) === 'function') {
+      // closure action
+      return get(this, 'infinityLoad')(content, -1);
+    } else {
+      get(this, 'infinity').infinityLoad(content, -1)
+    }
+  }).group('_loadTasks'),
 
   /**
-   * @method _debounceScrolledToBottom
+   * @task _scrolledToBottomTask
    */
-  _debounceScrolledToBottom() {
+  _scrolledToBottomTask: task(function*() {
     /*
      This debounce is needed when there is not enough delay between onScrolledToBottom calls.
      Without this debounce, all rows will be rendered causing immense performance problems
      */
-    function loadMore() {
-      // resolve to create thennable
-      // type is <InfinityModel|Promise|null>
-      get(this, 'infinityModelContent').then((content) => {
-        if (typeof(get(this, 'infinityLoad')) === 'function') {
-          // closure action (if you need to perform some other logic)
-          return get(this, 'infinityLoad')(content);
-        } else {
-          // service action
-          get(this, 'infinity').infinityLoad(content, 1)
-            .then(() => {
-              if (get(content, 'canLoadMore')) {
-                this._checkScrollableHeight();
-              }
-            });
+    yield timeout(get(this, 'eventDebounce'));
+
+    const content = yield get(this, 'infinityModelContent');
+    if (typeof(get(this, 'infinityLoad')) === 'function') {
+      // closure action (if you need to perform some other logic)
+      return get(this, 'infinityLoad')(content);
+    } else {
+      // service action
+      yield get(this, 'infinity').infinityLoad(content, 1);
+        if (get(content, 'canLoadMore')) {
+          this._checkScrollableHeight();
         }
-      });
     }
-    this._debounceTimer = run.debounce(this, loadMore, get(this, 'eventDebounce'));
-  },
+  }).group('_loadTasks'),
 
   /**
    * recursive function to fill page with records
@@ -269,7 +281,7 @@ const InfinityLoaderComponent = Component.extend({
     }
     if (this._viewportHeight() > this.elem.offsetTop) {
       // load again
-      this._debounceScrolledToBottom();
+      this._scrolledToBottomTask.perform();
     }
   },
 
@@ -277,7 +289,7 @@ const InfinityLoaderComponent = Component.extend({
    * @method _cancelTimers
    */
   _cancelTimers() {
-    run.cancel(this._debounceTimer);
+    this._loadTasks.cancelAll();
   },
 
   /**

@@ -2,7 +2,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { module, test } from 'qunit';
 import { run } from '@ember/runloop';
 import { setupRenderingTest } from 'ember-qunit';
-import { find, render, waitUntil } from '@ember/test-helpers';
+import { find, render, waitUntil, clearRender } from '@ember/test-helpers';
 import { set } from '@ember/object';
 import { A } from '@ember/array';
 import { resolve } from 'rsvp';
@@ -82,5 +82,25 @@ module('infinity-loader', function(hooks) {
                 {{/infinity-loader}}
                 `);
     assert.equal(this.element.querySelector('.infinity-loader > span').textContent, "My custom block");
+  });
+
+  test('it gracefully handles removal before model loads', async function(assert) {
+    assert.expect(0);
+
+    this.set('showLoader', true);
+
+    const model = this.infinityModel;
+    // using runloop.later does not work here…
+    this.set('infinityModel', new Promise(resolve =>
+      setTimeout(() => resolve(model), 1000)
+    ));
+
+    await render(hbs`
+      {{#if this.showLoader}}
+        {{infinity-loader infinityModel=infinityModel infinity=infinityServiceMock _checkScrollableHeight=_checkScrollableHeight}}
+      {{/if}}
+    `);
+
+    await clearRender();
   });
 });
