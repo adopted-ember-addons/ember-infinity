@@ -176,6 +176,10 @@ const InfinityLoaderComponent = Component.extend({
   _initialInfinityModelSetup() {
     get(this, 'infinityModelContent')
       .then((infinityModel) => {
+        if (this.isDestroyed || this.isDestroying) {
+          return;
+        }
+
         infinityModel.on('infinityModelLoaded', this._loadStatusDidChange.bind(this));
         set(infinityModel, '_scrollable', get(this, 'scrollable'));
         set(this, 'isDoneLoading', false);
@@ -191,6 +195,10 @@ const InfinityLoaderComponent = Component.extend({
   _loadStatusDidChange() {
     get(this, 'infinityModelContent')
       .then((infinityModel) => {
+        if (this.isDestroyed || this.isDestroying) {
+          return;
+        }
+
         if (get(infinityModel, 'reachedInfinity')) {
           set(this, 'isDoneLoading', true);
 
