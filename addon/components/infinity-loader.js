@@ -106,8 +106,6 @@ const InfinityLoaderComponent = Component.extend({
     instance.addObserver('infinityModel', instance, instance._initialInfinityModelSetup);
     instance._initialInfinityModelSetup();
 
-    instance._loadStatusDidChange();
-
     instance.addObserver('hideOnInfinity', instance, instance._loadStatusDidChange);
     instance.addObserver('reachedInfinity', instance, instance._loadStatusDidChange);
 
@@ -186,6 +184,7 @@ const InfinityLoaderComponent = Component.extend({
         if (!get(this, 'hideOnInfinity')) {
           set(this, 'isVisible', true);
         }
+        this._loadStatusDidChange();
       });
   },
 
