@@ -5,8 +5,7 @@ node_js:
   # so that your addon works for all apps
   - "10"
 
-sudo: false
-dist: trusty
+dist: xenial
 
 addons:
   chrome: stable
