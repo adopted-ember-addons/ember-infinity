@@ -80,6 +80,20 @@ const InfinityLoaderComponent = Component.extend({
     return 'infinity-loader '.concat(this.classNames).trim();
   }),
 
+  init() {
+    this._super(...arguments);
+
+    defineProperty(this, 'infinityModelContent', computed('infinityModel', function() {
+      return Promise.resolve(this.infinityModel);
+    }));
+
+    this.addObserver('infinityModel', this, this._initialInfinityModelSetup);
+    this._initialInfinityModelSetup();
+
+    this.addObserver('hideOnInfinity', this, this._loadStatusDidChange);
+    this.addObserver('reachedInfinity', this, this._loadStatusDidChange);
+  },
+
   /**
    * setup ember-in-viewport properties
    *
@@ -99,18 +113,6 @@ const InfinityLoaderComponent = Component.extend({
 
     instance.elem = element;
 
-    defineProperty(instance, 'infinityModelContent', computed('infinityModel', function() {
-      return Promise.resolve(instance.infinityModel);
-    }));
-
-    instance.addObserver('infinityModel', instance, instance._initialInfinityModelSetup);
-    instance._initialInfinityModelSetup();
-
-    instance._loadStatusDidChange();
-
-    instance.addObserver('hideOnInfinity', instance, instance._loadStatusDidChange);
-    instance.addObserver('reachedInfinity', instance, instance._loadStatusDidChange);
-
     let options = {
       viewportSpy: true,
       viewportTolerance: {
@@ -127,17 +129,17 @@ const InfinityLoaderComponent = Component.extend({
     onExit(instance.didExitViewport.bind(instance));
   },
 
-  willDestroyLoader(_element, [instance]) {
-    instance._cancelTimers();
+  willDestroy() {
+    this._cancelTimers();
 
-    get(instance, 'infinityModelContent')
+    get(this, 'infinityModelContent')
       .then((infinityModel) => {
-        infinityModel.off('infinityModelLoaded', instance, instance._loadStatusDidChange.bind(instance));
+        infinityModel.off('infinityModelLoaded', this, this._loadStatusDidChange.bind(this));
       });
 
-    instance.removeObserver('infinityModel', instance, instance._initialInfinityModelSetup);
-    instance.removeObserver('hideOnInfinity', instance, instance._loadStatusDidChange);
-    instance.removeObserver('reachedInfinity', instance, instance._loadStatusDidChange);
+    this.removeObserver('infinityModel', this, this._initialInfinityModelSetup);
+    this.removeObserver('hideOnInfinity', this, this._loadStatusDidChange);
+    this.removeObserver('reachedInfinity', this, this._loadStatusDidChange);
   },
 
   /**
@@ -186,6 +188,7 @@ const InfinityLoaderComponent = Component.extend({
         if (!get(this, 'hideOnInfinity')) {
           set(this, 'isVisible', true);
         }
+        this._loadStatusDidChange();
       });
   },
 
