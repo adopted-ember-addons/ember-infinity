@@ -1,9 +1,14 @@
+'use strict';
+
 module.exports = {
   root: true,
   parser: 'babel-eslint',
   parserOptions: {
     ecmaVersion: 2018,
-    sourceType: 'module'
+    sourceType: 'module',
+    ecmaFeatures: {
+      legacyDecorators: true
+    }
   },
   plugins: [
     'ember'
@@ -16,6 +21,10 @@ module.exports = {
     browser: true
   },
   rules: {
+    'ember/no-jquery': 'error',
+    'ember/no-new-mixins': 0,
+    'ember/no-observers': 0,
+    'ember/no-get': 0
   },
   overrides: [
     // node files

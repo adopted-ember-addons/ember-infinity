@@ -1,6 +1,6 @@
 <ul class="demo-items">
-  <button class="filter-posts" onclick={{action filterPosts model}}>Filter Posts</button>
-  <button class="flush-posts" onclick={{action flushPosts model}}>Flush Posts</button>
+  <button type="button" class="filter-posts" onclick={{action filterPosts model}}>Filter Posts</button>
+  <button type="button" class="flush-posts" onclick={{action flushPosts model}}>Flush Posts</button>
   {{#each model as |item|}}
     <li>{{item.id}} · {{item.name}}</li>
   {{/each}}
