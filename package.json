@@ -20,7 +20,7 @@
     "start": "ember serve",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
-    "test": "ember test",
+    "test:ember": "ember test",
     "test:all": "ember try:each"
   },
   "dependencies": {
