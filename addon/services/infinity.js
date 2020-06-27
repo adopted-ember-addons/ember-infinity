@@ -461,10 +461,11 @@ export default class Infinity extends Service {
     @param {EmberInfinity.InfinityModel} infinityModel
    */
   _notifyInfinityModelLoaded(infinityModel) {
-    scheduleOnce('afterRender', this, () => {
+    function loaded() {
       infinityModel.infinityModelLoaded({ totalPages: get(this, 'totalPages') });
       infinityModel.trigger('infinityModelLoaded');
-    });
+    }
+    scheduleOnce('afterRender', this, loaded);
   }
 
   /**
