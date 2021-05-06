@@ -463,9 +463,9 @@ There is a lot you can do with this!  Here is a simple use case where, say you h
 ```js
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 
-const ExtendedInfinityModel = InfinityModel.extend({
-  canLoadMore: true
-});
+class ExtendedInfinityModel extends InfinityModel {
+  canLoadMore = true;
+}
 
 export default class ProductsRoute extends Route {
   @service infinity
