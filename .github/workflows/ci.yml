@@ -35,7 +35,7 @@ jobs:
     - name: yarn install
       run: yarn
     - name: lint
-      run: yarn lint
+      run: yarn lint:js
 
   floating:
     name: "Floating dependencies"
