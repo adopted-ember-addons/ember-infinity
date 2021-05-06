@@ -2,9 +2,9 @@
   <div
     {{did-insert this.didInsertLoader this}}
     class="{{this.loaderClassNames}}{{if this.viewportEntered " in-viewport"}}{{if this.isDoneLoading " reached-infinity"}}"
-    data-test-infinity-loader>
-
-    {{#if hasBlock}}
+    data-test-infinity-loader
+  >
+    {{#if (has-block)}}
       {{yield this.infinityModelContent}}
     {{else}}
       {{#if this.isDoneLoading}}
@@ -13,6 +13,5 @@
         <span>{{this.loadingText}}</span>
       {{/if}}
     {{/if}}
-
   </div>
 {{/if}}
