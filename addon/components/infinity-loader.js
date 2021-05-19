@@ -278,7 +278,7 @@ const InfinityLoaderComponent = Component.extend({
     if (this.isDestroying || this.isDestroyed) {
       return false;
     }
-    if (this._viewportHeight() > this.elem.offsetTop) {
+    if (this._viewportBottom() > this.elem.getBoundingClientRect().top) {
       // load again
       this._debounceScrolledToBottom();
     }
@@ -292,17 +292,17 @@ const InfinityLoaderComponent = Component.extend({
   },
 
   /**
-    calculate the height of the viewport
+    calculate the bottom of the viewport
 
     @private
-    @method _viewportHeight
+    @method _viewportBottom
     @return Integer
    */
-  _viewportHeight() {
+  _viewportBottom() {
     if (typeof FastBoot === 'undefined') {
       let isScrollable = !!this.scrollable;
       let viewportElem = isScrollable ? document.querySelector(this.scrollable) : window;
-      return isScrollable ? viewportElem.clientHeight : viewportElem.innerHeight;
+      return isScrollable ? viewportElem.getBoundingClientRect().bottom : viewportElem.innerHeight;
     }
   }
 });
