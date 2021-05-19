@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.2.1](https://github.com/ember-infinity/ember-infinity/tree/v2.2.1) (2021-05-19)
+[Full Changelog](https://github.com/hhff/ember-infinity/compare/v2.1.0...v2.2.1)
+
+- Bugfix Use abs position when checking if element is visible in viewport (https://github.com/ember-infinity/ember-infinity/pull/437)
+- BFix hasBlock deprecation (RFC #689) (https://github.com/ember-infinity/ember-infinity/pull/443)
+
 ## [2.1.0](https://github.com/ember-infinity/ember-infinity/tree/v2.1.0) (2020-01-24)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/v2.0.3...v2.1.0)
 
