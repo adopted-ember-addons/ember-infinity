@@ -13,8 +13,6 @@ jobs:
     env:
       CI: true
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
     steps:
     - uses: actions/checkout@v2
     - name: Install node
@@ -51,6 +49,8 @@ jobs:
           ember-lts-3.20,
           ember-beta,
           ember-release,
+          embroider-safe,
+          embroider-optimized
         ]
     steps:
     - uses: actions/checkout@v2
