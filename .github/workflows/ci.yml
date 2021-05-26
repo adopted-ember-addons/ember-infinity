@@ -13,8 +13,6 @@ jobs:
     env:
       CI: true
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
     steps:
     - uses: actions/checkout@v2
     - name: Install node
