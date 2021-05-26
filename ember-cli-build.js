@@ -16,5 +16,16 @@ module.exports = function(defaults) {
     behave. You most likely want to be modifying `./index.js` or app's build file
   */
 
-  return app.toTree();
+  const { maybeEmbroider } = require('@embroider/test-setup');
+  return maybeEmbroider(app, {
+    packageRules: [{
+      package: '@ember-data/store',
+      semverRange: '<=3.16.0',
+      addonModules: {
+        '-private.js': {
+          dependsOnModules: [],
+        },
+      },
+    }]
+  });
 };
