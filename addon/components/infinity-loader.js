@@ -1,4 +1,4 @@
-import { run } from '@ember/runloop';
+import { cancel, debounce } from '@ember/runloop';
 import { get, set, computed, defineProperty } from '@ember/object';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
@@ -235,7 +235,7 @@ const InfinityLoaderComponent = Component.extend({
 
     get(this, 'infinityModelContent').then((content) => {
       if (get(content, 'firstPage') > 1 && get(content, 'currentPage') > 0) {
-        this._debounceTimer = run.debounce(this, loadPreviousPage, content, get(this, 'eventDebounce'));
+        this._debounceTimer = debounce(this, loadPreviousPage, content, get(this, 'eventDebounce'));
       }
     })
   },
@@ -266,7 +266,7 @@ const InfinityLoaderComponent = Component.extend({
         }
       });
     }
-    this._debounceTimer = run.debounce(this, loadMore, get(this, 'eventDebounce'));
+    this._debounceTimer = debounce(this, loadMore, get(this, 'eventDebounce'));
   },
 
   /**
@@ -288,7 +288,7 @@ const InfinityLoaderComponent = Component.extend({
    * @method _cancelTimers
    */
   _cancelTimers() {
-    run.cancel(this._debounceTimer);
+    cancel(this._debounceTimer);
   },
 
   /**
