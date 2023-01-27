@@ -70,11 +70,11 @@ const InfinityLoaderComponent = Component.extend({
    */
   triggerOffset: 0,
   /**
-   * https://emberjs.com/api/ember/3.0/classes/Component/properties/isVisible?anchor=isVisible
+   * flag to show/hide the component
    *
-   * @property isVisible
+   * @property shouldShow
    */
-  isVisible: true,
+  shouldShow: true,
 
   loaderClassNames: computed('classNames', function() {
     return 'infinity-loader '.concat(this.classNames).trim();
@@ -186,7 +186,7 @@ const InfinityLoaderComponent = Component.extend({
         set(infinityModel, '_scrollable', get(this, 'scrollable'));
         set(this, 'isDoneLoading', false);
         if (!get(this, 'hideOnInfinity')) {
-          set(this, 'isVisible', true);
+          set(this, 'shouldShow', true);
         }
         this._loadStatusDidChange();
       });
@@ -206,10 +206,10 @@ const InfinityLoaderComponent = Component.extend({
           set(this, 'isDoneLoading', true);
 
           if (get(this, 'hideOnInfinity')) {
-            set(this, 'isVisible', false);
+            set(this, 'shouldShow', false);
           }
         } else {
-          set(this, 'isVisible', true);
+          set(this, 'shouldShow', true);
         }
       });
   },

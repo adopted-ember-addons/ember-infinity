@@ -1,4 +1,4 @@
-{{#if this.isVisible}}
+{{#if this.shouldShow}}
   <div
     {{did-insert this.didInsertLoader this}}
     class="{{this.loaderClassNames}}{{if this.viewportEntered " in-viewport"}}{{if this.isDoneLoading " reached-infinity"}}"
