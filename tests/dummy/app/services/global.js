@@ -1,6 +1,7 @@
 import Service from '@ember/service';
+import { tracked } from '@glimmer/tracking';
 
-export default Service.extend({
-  categoryId: '1',
-  isUpdated: false
-});
+export default class GlobalService extends Service {
+  @tracked categoryId = '1';
+  @tracked isUpdated = false;
+}

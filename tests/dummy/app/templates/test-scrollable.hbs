@@ -1,25 +1,25 @@
 <h2 id="posts-title">Listing Posts</h2>
 
 <ul id="test-list" class="test-list-scrollable">
-  {{infinity-loader
-    classNames="infinity-loader-above"
-    infinityModel=model
-    loadPrevious=true
-    loadingText=null
-    loadedText=null
-    scrollable="#test-list"
-  }}
+  <InfinityLoader
+    @classNames="infinity-loader-above"
+    @infinityModel={{this.model}}
+    @loadPrevious={{true}}
+    @loadingText={{null}}
+    @loadedText={{null}}
+    @scrollable="#test-list"
+  />
 
-  {{#each model as |post|}}
+  {{#each this.model as |post|}}
     <li>{{post.name}}</li>
   {{/each}}
 
-  {{infinity-loader
-    classNames="infinity-loader-bottom"
-    infinityModel=model
-    triggerOffset=triggerOffset
-    loadingText="loading"
-    loadedText="loaded"
-    scrollable="#test-list"
-  }}
+  <InfinityLoader
+    @classNames="infinity-loader-bottom"
+    @infinityModel={{this.model}}
+    @triggerOffset={{this.triggerOffset}}
+    @loadingText="loading"
+    @loadedText="loaded"
+    @scrollable="#test-list"
+  />
 </ul>

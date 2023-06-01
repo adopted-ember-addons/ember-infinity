@@ -6,40 +6,40 @@ import assertDetails from '../helpers/assert-acceptance-details';
 
 let server;
 
-module('Acceptance: Infinity Route', function(hooks) {
+module('Acceptance: Infinity Route', function (hooks) {
   setupApplicationTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     server = buildServer();
     document.getElementById('ember-testing-container').scrollTop = 0;
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     server.shutdown();
   });
 
-  test('it works when meta is present in payload', async function(assert) {
+  test('it works when meta is present in payload', async function (assert) {
     await visit('/test');
 
-    assertDetails(assert, {
+    await assertDetails(assert, {
       title: 'Listing Posts',
       listLength: 6,
-      reachedInfinity: true
+      reachedInfinity: true,
     });
   });
 
-  test('it works with parameters', async function(assert) {
+  test('it works with parameters', async function (assert) {
     await visit('/category/a?per_page=2');
 
-    assertDetails(assert, {
-      title: "Listing Posts using Parameters",
+    await assertDetails(assert, {
+      title: 'Listing Posts using Parameters',
       listLength: 2,
-      reachedInfinity: false
+      reachedInfinity: false,
     });
 
     let postList = find('ul');
 
-    assert.equal(postList.querySelector('li').textContent, "Squarepusher", "First item should be 'Squarepusher'");
-    assert.equal(postList.querySelectorAll('li').length, 2, "List length is 2");
+    assert.equal(postList.querySelector('li').textContent, 'Squarepusher', "First item should be 'Squarepusher'");
+    assert.equal(postList.querySelectorAll('li').length, 2, 'List length is 2');
   });
 });

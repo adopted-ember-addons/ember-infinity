@@ -1,9 +1,9 @@
 {{#if (has-block)}}
-  {{yield infinityModelContent}}
+  {{yield this.infinityModelContent}}
 {{else}}
-  {{#if isDoneLoading}}
-    <span>{{loadedText}}</span>
+  {{#if this.isDoneLoading}}
+    <span>{{this.loadedText}}</span>
   {{else}}
-    <span>{{loadingText}}</span>
+    <span>{{this.loadingText}}</span>
   {{/if}}
 {{/if}}

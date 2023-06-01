@@ -1,14 +1,12 @@
-import Component from '@ember/component';
+import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
 
-export default Component.extend({
-  infinity: service(),
+export default class TopComponentComponent extends Component {
+  @service infinity;
 
-  tagName: '',
-
-  init() {
-    this._super(...arguments);
+  constructor() {
+    super(...arguments);
 
     this.posts = this.infinity.model('post', { perPage: 5 });
   }
-});
+}

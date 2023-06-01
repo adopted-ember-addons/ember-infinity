@@ -6,15 +6,15 @@ import assertDetails from '../helpers/assert-acceptance-details';
 
 let server;
 
-module('Acceptance: Infinity Route - custom store route', function(hooks) {
+module('Acceptance: Infinity Route - custom store route', function (hooks) {
   setupApplicationTest(hooks);
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     server.shutdown();
     delete this.customStore;
   });
 
-  test('it works with custom store', async function(assert) {
+  test('it works with custom store', async function (assert) {
     server = buildServer();
     this.customStore = this.owner.lookup('service:custom-store');
     for (let x = 0; x <= 5; x++) {
@@ -23,14 +23,14 @@ module('Acceptance: Infinity Route - custom store route', function(hooks) {
 
     await visit('/custom-store');
 
-    assertDetails(assert, {
+    await assertDetails(assert, {
       title: 'Listing Posts',
       listLength: 6,
-      reachedInfinity: true
+      reachedInfinity: true,
     });
   });
 
-  test('it works with custom store', async function(assert) {
+  test('it works with custom store', async function (assert) {
     server = buildServer();
     this.customStore = this.owner.lookup('service:custom-store');
     for (let x = 0; x <= 50; x++) {
@@ -39,10 +39,10 @@ module('Acceptance: Infinity Route - custom store route', function(hooks) {
 
     await visit('/custom-store');
 
-    assertDetails(assert, {
+    await assertDetails(assert, {
       title: 'Listing Posts',
       listLength: 25,
-      reachedInfinity: true
+      reachedInfinity: true,
     });
   });
 });

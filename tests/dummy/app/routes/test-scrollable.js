@@ -1,23 +1,18 @@
 import Route from '@ember/routing/route';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
-import { get, set } from '@ember/object';
 import { inject as service } from '@ember/service';
 
-const ExtendedInfinityModel =  InfinityModel.extend({
-  global: service(),
+const ExtendedInfinityModel = class extends InfinityModel {
+  @service global;
   infinityModelUpdated() {
-    set(get(this, 'global'), 'isUpdated', true);
+    this.global.isUpdated = true;
   }
-});
+};
 
-export default Route.extend({
-  infinity: service(),
+export default class TestScrollableRoute extends Route {
+  @service infinity;
 
   model({ page, perPage }) {
-    return get(this, 'infinity').model(
-      'post',
-      { startingPage: page, perPage },
-      ExtendedInfinityModel
-    );
+    return this.infinity.model('post', { startingPage: page, perPage }, ExtendedInfinityModel);
   }
-});
+}

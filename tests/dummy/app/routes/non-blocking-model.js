@@ -1,12 +1,12 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 
-export default Route.extend({
-  infinity: service(),
+export default class NonBlockingModelRoute extends Route {
+  @service infinity;
 
   model() {
     return {
-      posts: this.infinity.model('post')
-    }
+      posts: this.infinity.model('post'),
+    };
   }
-});
+}

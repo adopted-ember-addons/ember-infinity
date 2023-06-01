@@ -1,14 +1,14 @@
 <h2 id="posts-title">Non Blocking Model Test</h2>
 
 <ul id="test-list" class="test-list test-list-scrollable">
-  {{#each model.posts as |post|}}
+  {{#each this.model.posts as |post|}}
     <li>{{post.name}}</li>
   {{/each}}
 
-  {{infinity-loader
-    infinityModel=model.posts
-    loadingText="loading"
-    loadedText="loaded"
-    scrollable="#test-list"
-  }}
+  <InfinityLoader
+    @infinityModel={{this.model.posts}}
+    @loadingText="loading"
+    @loadedText="loaded"
+    @scrollable="#test-list"
+  />
 </ul>

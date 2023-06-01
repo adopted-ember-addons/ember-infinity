@@ -1,11 +1,10 @@
 import Route from '@ember/routing/route';
-import { get } from '@ember/object';
 import { inject as service } from '@ember/service';
 
-export default Route.extend({
-  infinity: service(),
+export default class NestedRoute extends Route {
+  @service infinity;
 
   model() {
-    return get(this, 'infinity').model('post');
+    return this.infinity.model('post');
   }
-});
+}

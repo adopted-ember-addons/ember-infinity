@@ -1,12 +1,12 @@
-import config from './config/environment';
 import EmberRouter from '@ember/routing/router';
+import config from './config/environment';
 
-const Router = EmberRouter.extend({
-  location: config.locationType,
-  rootURL: config.rootURL
-});
+export default class Router extends EmberRouter {
+  location = config.locationType;
+  rootURL = config.rootURL;
+}
 
-Router.map(function() {
+Router.map(function () {
   this.route('custom-store');
   this.route('non-blocking-model');
   this.route('demo', { path: '/' });
@@ -15,7 +15,7 @@ Router.map(function() {
   this.route('home', { path: 'test' });
   this.route('test-scrollable');
   this.route('category', { path: '/category/:category' });
-  this.route('posts', function() {
+  this.route('posts', function () {
     this.route('show', { path: '/:post' });
   });
   this.route('load-previous');
@@ -23,5 +23,3 @@ Router.map(function() {
   this.route('nested-component');
   this.route('extended');
 });
-
-export default Router;

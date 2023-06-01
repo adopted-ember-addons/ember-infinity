@@ -1,7 +1,6 @@
-import ArrayProxy from "@ember/array/proxy"
-import { addEvented } from "../-private/evented"
-import { DEFAULTS } from "../-private/defaults"
-import { get, set, setProperties } from '@ember/object';
+import ArrayProxy from '@ember/array/proxy';
+import { addEvented } from '../-private/evented';
+import { DEFAULTS } from '../-private/defaults';
 import { objectAssign } from '../utils';
 import { resolve } from 'rsvp';
 
@@ -11,13 +10,7 @@ import { resolve } from 'rsvp';
   @module ember-infinity/lib/infinity-model
   @extends Ember.ArrayProxy
 */
-export default class InfinityModel extends addEvented(ArrayProxy) {
-  init(...args) {
-    super.init(...args);
-
-    setProperties(this, { ...DEFAULTS });
-  }
-
+export default class InfinityModel extends DEFAULTS(addEvented(ArrayProxy)) {
   /**
     determines if can load next page or previous page (if applicable)
 
@@ -32,13 +25,13 @@ export default class InfinityModel extends addEvented(ArrayProxy) {
       return this._canLoadMore;
     }
 
-    let { _count, _totalPages , currentPage, perPage, _increment } = this;
-    let shouldCheck = _increment === 1 && currentPage !== undefined;
+    const { _count, _totalPages, currentPage, perPage, _increment } = this;
+    const shouldCheck = _increment === 1 && currentPage !== undefined;
     if (shouldCheck) {
       if (_totalPages) {
-        return (currentPage < _totalPages) ? true : false;
+        return currentPage < _totalPages ? true : false;
       } else if (_count) {
-        return (currentPage < _count / perPage) ? true : false;
+        return currentPage < _count / perPage ? true : false;
       }
     }
     if (this.firstPage > 1) {
@@ -49,7 +42,7 @@ export default class InfinityModel extends addEvented(ArrayProxy) {
   }
 
   set canLoadMore(value) {
-    set(this, '_canLoadMore', value);
+    this._canLoadMore = value;
   }
 
   /**
@@ -63,13 +56,13 @@ export default class InfinityModel extends addEvented(ArrayProxy) {
     const pageParams = {};
     let { perPageParam, pageParam } = this;
     if (typeof perPageParam === 'string') {
-      pageParams[perPageParam] = get(this, 'perPage');
+      pageParams[perPageParam] = this.perPage;
     }
-    if (typeof pageParam === 'string' ) {
-      pageParams[pageParam] = get(this, 'currentPage') + increment;
+    if (typeof pageParam === 'string') {
+      pageParams[pageParam] = this.currentPage + increment;
     }
 
-    return objectAssign(pageParams, get(this, 'extraParams'));
+    return objectAssign(pageParams, this.extraParams);
   }
 
   /**
@@ -82,7 +75,7 @@ export default class InfinityModel extends addEvented(ArrayProxy) {
     @return {Ember.RSVP.Promise} A Promise that resolves the new objects
     @return {Ember.Array} the new objects
    */
-  afterInfinityModel(newObjects/*, infinityModel*/) {
+  afterInfinityModel(newObjects /*, infinityModel*/) {
     // override in your subclass to customize
     return resolve(newObjects);
   }

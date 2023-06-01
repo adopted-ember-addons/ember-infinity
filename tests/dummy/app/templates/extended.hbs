@@ -1,11 +1,19 @@
-<p style="text-align: center">Quantity: {{model.length}}</p>
+<p style="text-align: center">Quantity: {{this.model.length}}</p>
 
-<div class="list-items" id="scrollablecontent" style="width: 300px; height: 300px; margin: 0 auto; padding: 10px; border: 1px solid blue; overflow-y: auto;">
+<div
+  class="list-items"
+  id="scrollablecontent"
+  style="width: 300px; height: 300px; margin: 0 auto; padding: 10px; border: 1px solid blue; overflow-y: auto;"
+>
   <h2>Posts container</h2>
   <ul>
-    {{#each model as |post|}}
+    {{#each this.model as |post|}}
       <li><p style="padding: 10px; border: 1px solid red">{{post.name}}</p></li>
     {{/each}}
-    {{infinity-loader scrollable="#scrollablecontent" infinityModel=model classNames="infinity-loader-bottom"}}
+    <InfinityLoader
+      @scrollable="#scrollablecontent"
+      @infinityModel={{this.model}}
+      @classNames="infinity-loader-bottom"
+    />
   </ul>
 </div>
