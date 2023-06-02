@@ -21,5 +21,6 @@ Router.map(function () {
   this.route('load-previous');
   this.route('nested');
   this.route('nested-component');
+  this.route('nested-component-with-custom-params');
   this.route('extended');
 });

@@ -6,7 +6,6 @@ import { getOwner } from '@ember/application';
 import { A } from '@ember/array';
 import { typeOf } from '@ember/utils';
 import { scheduleOnce } from '@ember/runloop';
-import { setProperties } from '@ember/object';
 import { checkInstanceOf, convertToArray, objectAssign, paramsCheck } from '../utils';
 import { assert } from '@ember/debug';
 import { resolve } from 'rsvp';
@@ -251,20 +250,22 @@ export default class Infinity extends Service {
     const store = options.store || this.store;
     const storeFindMethod = options.storeFindMethod || 'query';
 
-    let infinityModel;
+    let InfinityModelInstance, infinityModelForParamsCheck;
     if (ExtendedInfinityModel) {
       // if custom InfinityModel, then use as base for creating an instance
-      infinityModel = ExtendedInfinityModel.create();
+      InfinityModelInstance = ExtendedInfinityModel;
+      infinityModelForParamsCheck = ExtendedInfinityModel.create();
     } else {
-      infinityModel = InfinityModel.create();
+      InfinityModelInstance = InfinityModel;
+      infinityModelForParamsCheck = InfinityModel.create();
     }
 
     // check if user passed in param w/ infinityModel, else default
-    const perPageParam = paramsCheck('perPageParam', options, infinityModel);
-    const pageParam = paramsCheck('pageParam', options, infinityModel);
-    const totalPagesParam = paramsCheck('totalPagesParam', options, infinityModel);
-    const countParam = paramsCheck('countParam', options, infinityModel);
-    const infinityCache = paramsCheck('infinityCache', options, infinityModel);
+    const perPageParam = paramsCheck('perPageParam', options, infinityModelForParamsCheck);
+    const pageParam = paramsCheck('pageParam', options, infinityModelForParamsCheck);
+    const totalPagesParam = paramsCheck('totalPagesParam', options, infinityModelForParamsCheck);
+    const countParam = paramsCheck('countParam', options, infinityModelForParamsCheck);
+    const infinityCache = paramsCheck('infinityCache', options, infinityModelForParamsCheck);
 
     // create identifier for use in storing unique cached infinity model
     let identifier = stringifyObjectValues(options);
@@ -279,7 +280,7 @@ export default class Infinity extends Service {
     delete options.store;
     delete options.storeFindMethod;
 
-    let initParams = {
+    const initParams = {
       container: getOwner(this),
       currentPage,
       firstPage,
@@ -301,7 +302,7 @@ export default class Infinity extends Service {
       }
     }
 
-    setProperties(infinityModel, { ...initParams });
+    const infinityModel = InfinityModelInstance.create(initParams);
     this._ensureCompatibility(infinityModel.store, infinityModel.storeFindMethod);
 
     // route specific (for backwards compat)
@@ -335,7 +336,7 @@ export default class Infinity extends Service {
       }
     }
 
-    return InfinityPromiseArray.create({ promise: this['loadNextPage'](infinityModel) });
+    return InfinityPromiseArray.create({ promise: this.loadNextPage(infinityModel) });
   }
 
   /**

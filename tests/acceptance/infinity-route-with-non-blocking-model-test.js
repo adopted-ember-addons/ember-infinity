@@ -33,4 +33,25 @@ module('Acceptance: Infinity Route - non blocking', function (hooks) {
       reachedInfinity: false,
     });
   });
+
+  test('it renders items with non-blocking component', async function (assert) {
+    this.server.createList('post', 35);
+    await visit('/nested-component');
+
+    await assertDetails(assert, {
+      title: 'Non Blocking Component Test',
+      listLength: 15,
+      reachedInfinity: false,
+    });
+  });
+
+  test('it renders items with non-blocking component with custom meta params', async function (assert) {
+    await visit('/nested-component-with-custom-params');
+
+    await assertDetails(assert, {
+      title: 'Non Blocking Component Test',
+      listLength: 10,
+      reachedInfinity: false,
+    });
+  });
 });
