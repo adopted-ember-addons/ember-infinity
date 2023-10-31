@@ -1,7 +1,6 @@
 import Service from '@ember/service';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
-import EmberError from '@ember/error';
 import { getOwner } from '@ember/application';
 import { A } from '@ember/array';
 import { typeOf } from '@ember/utils';
@@ -213,12 +212,12 @@ export default class Infinity extends Service {
   model(modelName, options, ExtendedInfinityModel) {
     if (typeOf(ExtendedInfinityModel) === "class") {
       if (!(ExtendedInfinityModel.prototype instanceof InfinityModel)) {
-        throw new EmberError("Ember Infinity: You must pass an Infinity Model instance as the third argument");
+        throw new Error("Ember Infinity: You must pass an Infinity Model instance as the third argument");
       }
     }
 
     if (!modelName) {
-      throw new EmberError("Ember Infinity: You must pass a Model Name to infinityModel");
+      throw new Error("Ember Infinity: You must pass a Model Name to infinityModel");
     }
 
     options = options ? objectAssign({}, options) : {};
@@ -505,7 +504,7 @@ export default class Infinity extends Service {
   */
   _ensureCustomStoreCompatibility(options, store, storeFindMethod) {
     if (!store[storeFindMethod]) {
-      throw new EmberError('Ember Infinity: Custom data store must specify query method');
+      throw new Error('Ember Infinity: Custom data store must specify query method');
     }
   }
 
@@ -518,7 +517,7 @@ export default class Infinity extends Service {
   */
   _ensureCompatibility(store, storeFindMethod) {
     if (!store || !store[storeFindMethod]){
-      throw new EmberError('Ember Infinity: Store is not available to infinity.model');
+      throw new Error('Ember Infinity: Store is not available to infinity.model');
     }
   }
 }

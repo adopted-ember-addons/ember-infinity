@@ -1,6 +1,5 @@
 import { get } from '@ember/object';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
-import EmberError from '@ember/error';
 
 export let objectAssign = Object.assign || function objectAssign(target) {
   'use strict';
@@ -58,7 +57,7 @@ export function paramsCheck(key, options, extendedInfinityModel) {
  */
 export function checkInstanceOf(infinityModel) {
   if (!(infinityModel instanceof InfinityModel)) {
-    throw new EmberError("Ember Infinity: You must pass an Infinity Model instance as the first argument");
+    throw new Error("Ember Infinity: You must pass an Infinity Model instance as the first argument");
   }
   return true;
 }
