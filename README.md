@@ -33,7 +33,7 @@ Also:
 
 `ember install ember-infinity`
 
-As of `v2.0.0`, we support Node 10 and above.  We test against `ember-source > 3.8`.  Try out `v2.0.0`.  If it doesn't work or you don't have the right polyfills because you are on an older Ember version, then `v1.4.9` will be your best bet.
+As of `v3.0.0`, we support Node 16 and above.  We test against `ember-source > 3.8`.  Try out `v2.0.0`.  If it doesn't work or you don't have the right polyfills because you are on an older Ember version, then `v1.4.9` will be your best bet.
 
 ## Basic Usage
 
