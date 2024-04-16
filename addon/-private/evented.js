@@ -17,13 +17,10 @@ export function addEvented(Base) {
         notifier.trigger.apply(notifier, args);
       }
     }
-  }
+  };
 }
 
-function notifierForEvent(
-  object,
-  eventName
-) {
+function notifierForEvent(object, eventName) {
   if (object._eventedNotifiers === undefined) {
     object._eventedNotifiers = {};
   }

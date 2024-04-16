@@ -15,6 +15,7 @@ module('Acceptance: Infinity Route - custom store route', function (hooks) {
   });
 
   test('it works with custom store', async function (assert) {
+    assert.expect(3);
     server = buildServer();
     this.customStore = this.owner.lookup('service:custom-store');
     for (let x = 0; x <= 5; x++) {
@@ -30,7 +31,8 @@ module('Acceptance: Infinity Route - custom store route', function (hooks) {
     });
   });
 
-  test('it works with custom store', async function (assert) {
+  test('it works with custom store 2', async function (assert) {
+    assert.expect(3);
     server = buildServer();
     this.customStore = this.owner.lookup('service:custom-store');
     for (let x = 0; x <= 50; x++) {

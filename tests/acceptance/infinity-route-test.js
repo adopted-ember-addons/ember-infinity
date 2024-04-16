@@ -35,7 +35,9 @@ module('Acceptance: Infinity Route - infinity routes', function (hooks) {
   }
 
   function scrollIntoView() {
-    document.getElementsByClassName('infinity-loader-bottom')[0].scrollIntoView(false);
+    document
+      .getElementsByClassName('infinity-loader-bottom')[0]
+      .scrollIntoView(false);
   }
 
   async function shouldBeItemsOnTheList(assert, amount) {
@@ -75,6 +77,7 @@ module('Acceptance: Infinity Route - infinity routes', function (hooks) {
     'it should start loading more items when the scroll is on the very bottom ' +
       'when triggerOffset is not set',
     async function (assert) {
+      assert.expect(8);
       this.server.createList('post', 50);
       await visit('/test-scrollable');
 
@@ -93,7 +96,7 @@ module('Acceptance: Infinity Route - infinity routes', function (hooks) {
       infinityShouldBeReached(assert);
 
       const global = this.owner.lookup('service:global');
-      assert.equal(global.isUpdated, true);
+      assert.true(global.isUpdated);
     }
   );
 
@@ -101,6 +104,7 @@ module('Acceptance: Infinity Route - infinity routes', function (hooks) {
     'it should start loading more items before the scroll is on the very bottom ' +
       'when triggerOffset is set',
     async function (assert) {
+      assert.expect(8);
       this.server.createList('post', 50);
       await visit('/test-scrollable?triggerOffset=200');
 
@@ -126,6 +130,7 @@ module('Acceptance: Infinity Route - infinity routes', function (hooks) {
   );
 
   test('it should load previous elements when start on page two', async function (assert) {
+    assert.expect(1);
     this.server.createList('post', 50);
     await visit('/test-scrollable?page=2');
 
@@ -134,6 +139,7 @@ module('Acceptance: Infinity Route - infinity routes', function (hooks) {
   });
 
   test('it should load elements until page is filled', async function (assert) {
+    assert.expect(1);
     this.server.createList('post', 50);
     await visit('/test-scrollable?perPage=3');
 
@@ -144,57 +150,67 @@ module('Acceptance: Infinity Route - infinity routes', function (hooks) {
     await shouldBeItemsOnTheList(assert, 12);
   });
 
-  module('Acceptance: Infinity Route - multiple pages fetched', function (/*hooks*/) {
-    test('it should load previous elements when start on page three and scroll up', async function (assert) {
-      this.server.createList('post', 75);
-      await visit('/test-scrollable?page=3');
+  module(
+    'Acceptance: Infinity Route - multiple pages fetched',
+    function (/*hooks*/) {
+      test('it should load previous elements when start on page three and scroll up', async function (assert) {
+        assert.expect(3);
+        this.server.createList('post', 75);
+        await visit('/test-scrollable?page=3');
 
-      await waitUntil(() => {
-        return postList().querySelectorAll('li').length === 50;
+        await waitUntil(() => {
+          return postList().querySelectorAll('li').length === 50;
+        });
+
+        await shouldBeItemsOnTheList(assert, 50);
+        assert.strictEqual(currentURL(), '/test-scrollable?page=3');
+
+        await triggerEvent('ul', 'scroll');
+
+        document
+          .getElementsByClassName('infinity-loader-above')[0]
+          .scrollIntoView(false);
+
+        await waitUntil(() => {
+          return postList().querySelectorAll('li').length === 75;
+        });
+
+        await shouldBeItemsOnTheList(assert, 75);
       });
+    }
+  );
 
-      await shouldBeItemsOnTheList(assert, 50);
-      assert.equal(currentURL(), '/test-scrollable?page=3');
+  module(
+    'Acceptance: Infinity Route - extended infinity model',
+    function (/*hooks*/) {
+      test('it should load all pages after scrolling', async function (assert) {
+        assert.expect(4);
+        this.server.createList('post', 15);
+        await visit('/extended');
 
-      await triggerEvent('ul', 'scroll');
+        await shouldBeItemsOnTheList(assert, 6);
+        assert.strictEqual(currentURL(), '/extended');
 
-      document.getElementsByClassName('infinity-loader-above')[0].scrollIntoView(false);
+        await triggerEvent('ul', 'scroll');
+        document.querySelector('.infinity-loader').scrollIntoView(false);
 
-      await waitUntil(() => {
-        return postList().querySelectorAll('li').length === 75;
+        await waitUntil(() => {
+          return postList().querySelectorAll('li').length === 12;
+        });
+
+        await shouldBeItemsOnTheList(assert, 12);
+
+        await triggerEvent('ul', 'scroll');
+        document.querySelector('.infinity-loader').scrollIntoView(false);
+
+        await waitUntil(() => {
+          return postList().querySelectorAll('li').length === 15;
+        });
+
+        await shouldBeItemsOnTheList(assert, 15);
       });
-
-      await shouldBeItemsOnTheList(assert, 75);
-    });
-  });
-
-  module('Acceptance: Infinity Route - extended infinity model', function (/*hooks*/) {
-    test('it should load all pages after scrolling', async function (assert) {
-      this.server.createList('post', 15);
-      await visit('/extended');
-
-      await shouldBeItemsOnTheList(assert, 6);
-      assert.equal(currentURL(), '/extended');
-
-      await triggerEvent('ul', 'scroll');
-      document.querySelector('.infinity-loader').scrollIntoView(false);
-
-      await waitUntil(() => {
-        return postList().querySelectorAll('li').length === 12;
-      });
-
-      await shouldBeItemsOnTheList(assert, 12);
-
-      await triggerEvent('ul', 'scroll');
-      document.querySelector('.infinity-loader').scrollIntoView(false);
-
-      await waitUntil(() => {
-        return postList().querySelectorAll('li').length === 15;
-      });
-
-      await shouldBeItemsOnTheList(assert, 15);
-    });
-  });
+    }
+  );
 
   module('Acceptance: Infinity Route - error', function (/*hooks*/) {
     test('throws error 500', async function (assert) {
@@ -202,58 +218,69 @@ module('Acceptance: Infinity Route - infinity routes', function (hooks) {
       this.server.get('posts', { errors: ['There was an error'] }, 500);
       await visit('/test-scrollable');
 
-      assert.equal(find('h1').textContent.trim(), 'Error', 'Displays error template');
-      assert.equal(currentRouteName(), 'error', 'Redirects to error route');
+      assert.strictEqual(
+        find('h1').textContent.trim(),
+        'Error',
+        'Displays error template'
+      );
+      assert.strictEqual(
+        currentRouteName(),
+        'error',
+        'Redirects to error route'
+      );
     });
   });
 
-  module('Acceptance: Infinity Route - nested with closure actions', function (/*hooks*/) {
-    test('load more with closure actions works', async function (assert) {
-      this.server.createList('post', 50);
-      await visit('/nested');
+  module(
+    'Acceptance: Infinity Route - nested with closure actions',
+    function (/*hooks*/) {
+      test('load more with closure actions works', async function (assert) {
+        this.server.createList('post', 50);
+        await visit('/nested');
 
-      assert.equal(
-        find('ul').querySelectorAll('li').length,
-        25,
-        `${25} items should be in the list`
-      );
-      assert.equal(
-        find('.infinity-loader').classList.contains('reached-infinity'),
-        false,
-        'Infinity should not yet have been reached'
-      );
-      assert.equal(
-        find('.list-items').querySelector('span').textContent,
-        'Loading Infinity Model...'
-      );
-      let { top } = document.querySelector('.list-items').getBoundingClientRect();
-      scrollTo(top - 100);
+        assert.strictEqual(
+          find('ul').querySelectorAll('li').length,
+          25,
+          `${25} items should be in the list`
+        );
+        assert.false(
+          find('.infinity-loader').classList.contains('reached-infinity'),
+          'Infinity should not yet have been reached'
+        );
+        assert.strictEqual(
+          find('.list-items').querySelector('span').textContent,
+          'Loading Infinity Model...'
+        );
+        let { top } = document
+          .querySelector('.list-items')
+          .getBoundingClientRect();
+        scrollTo(top - 100);
 
-      await triggerEvent('ul', 'scroll');
+        await triggerEvent('ul', 'scroll');
 
-      assert.equal(
-        find('ul').querySelectorAll('li').length,
-        25,
-        `${25} items should be in the list`
-      );
-      document.querySelector('.list-items').scrollIntoView(false);
+        assert.strictEqual(
+          find('ul').querySelectorAll('li').length,
+          25,
+          `${25} items should be in the list`
+        );
+        document.querySelector('.list-items').scrollIntoView(false);
 
-      await triggerEvent('ul', 'scroll');
+        await triggerEvent('ul', 'scroll');
 
-      await waitUntil(() => {
-        return find('ul').querySelectorAll('li').length === 50;
+        await waitUntil(() => {
+          return find('ul').querySelectorAll('li').length === 50;
+        });
+
+        assert.strictEqual(
+          find('ul').querySelectorAll('li').length,
+          50,
+          `${50} items should be in the list`
+        );
+        assert.true(
+          find('.infinity-loader').classList.contains('reached-infinity'),
+          'Infinity should have been reached'
+        );
       });
-
-      assert.equal(
-        find('ul').querySelectorAll('li').length,
-        50,
-        `${50} items should be in the list`
-      );
-      assert.equal(
-        find('.infinity-loader').classList.contains('reached-infinity'),
-        true,
-        'Infinity should have been reached'
-      );
-    });
-  });
+    }
+  );
 });

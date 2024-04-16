@@ -1,13 +1,5 @@
-// eslint-disable-next-line no-undef
+'use strict';
+
 module.exports = {
-  printWidth: 120,
-  overrides: [
-    {
-      files: '*.{js,ts}',
-      options: {
-        printWidth: 100,
-        singleQuote: true,
-      },
-    },
-  ],
+  singleQuote: true,
 };

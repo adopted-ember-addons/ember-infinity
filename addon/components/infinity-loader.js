@@ -26,7 +26,10 @@ export default class InfinityLoaderComponent extends Component {
    * @property loadingText
    */
   get loadingText() {
-    return this._loadingText || (this.args.loadingText ?? 'Loading Infinity Model...');
+    return (
+      this._loadingText ||
+      (this.args.loadingText ?? 'Loading Infinity Model...')
+    );
   }
 
   set loadingText(value) {
@@ -37,7 +40,10 @@ export default class InfinityLoaderComponent extends Component {
    * @property loadedText
    */
   get loadedText() {
-    return this._loadedText || (this.args.loadedText ?? 'Infinity Model Entirely Loaded.');
+    return (
+      this._loadedText ||
+      (this.args.loadedText ?? 'Infinity Model Entirely Loaded.')
+    );
   }
 
   set loadedText(value) {
@@ -142,7 +148,8 @@ export default class InfinityLoaderComponent extends Component {
      * @public
      * @property loadedText
      */
-    instance.loadedText = instance.loadedText || 'Infinity Model Entirely Loaded.';
+    instance.loadedText =
+      instance.loadedText || 'Infinity Model Entirely Loaded.';
 
     instance.elem = element;
 
@@ -156,7 +163,10 @@ export default class InfinityLoaderComponent extends Component {
       },
       scrollableArea: instance.scrollable,
     };
-    const { onEnter, onExit } = instance.inViewport.watchElement(element, options);
+    const { onEnter, onExit } = instance.inViewport.watchElement(
+      element,
+      options
+    );
 
     onEnter(instance.didEnterViewport.bind(instance));
     onExit(instance.didExitViewport.bind(instance));
@@ -168,7 +178,11 @@ export default class InfinityLoaderComponent extends Component {
 
     this.infinityModelContent.then((infinityModel) => {
       if (!this.isDestroyed) {
-        infinityModel.off('infinityModelLoaded', this, this._loadStatusDidChange.bind(this));
+        infinityModel.off(
+          'infinityModelLoaded',
+          this,
+          this._loadStatusDidChange.bind(this)
+        );
       }
     });
 
@@ -217,7 +231,10 @@ export default class InfinityLoaderComponent extends Component {
         return;
       }
 
-      infinityModel.on('infinityModelLoaded', this._loadStatusDidChange.bind(this));
+      infinityModel.on(
+        'infinityModelLoaded',
+        this._loadStatusDidChange.bind(this)
+      );
       set(infinityModel, '_scrollable', this.scrollable);
       this.isDoneLoading = false;
       if (!this.hideOnInfinity) {
@@ -270,7 +287,12 @@ export default class InfinityLoaderComponent extends Component {
 
     this.infinityModelContent.then((content) => {
       if (content.firstPage > 1 && content.currentPage > 0) {
-        this._debounceTimer = debounce(this, loadPreviousPage, content, this.eventDebounce);
+        this._debounceTimer = debounce(
+          this,
+          loadPreviousPage,
+          content,
+          this.eventDebounce
+        );
       }
     });
   }
@@ -335,8 +357,12 @@ export default class InfinityLoaderComponent extends Component {
   _viewportBottom() {
     if (typeof FastBoot === 'undefined') {
       const isScrollable = !!this.scrollable;
-      const viewportElem = isScrollable ? document.querySelector(this.scrollable) : window;
-      return isScrollable ? viewportElem.getBoundingClientRect().bottom : viewportElem.innerHeight;
+      const viewportElem = isScrollable
+        ? document.querySelector(this.scrollable)
+        : window;
+      return isScrollable
+        ? viewportElem.getBoundingClientRect().bottom
+        : viewportElem.innerHeight;
     }
   }
 }

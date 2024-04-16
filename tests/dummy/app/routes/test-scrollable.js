@@ -13,6 +13,10 @@ export default class TestScrollableRoute extends Route {
   @service infinity;
 
   model({ page, perPage }) {
-    return this.infinity.model('post', { startingPage: page, perPage }, ExtendedInfinityModel);
+    return this.infinity.model(
+      'post',
+      { startingPage: page, perPage },
+      ExtendedInfinityModel
+    );
   }
 }

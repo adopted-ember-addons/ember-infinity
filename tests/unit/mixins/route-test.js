@@ -3,7 +3,7 @@ import ArrayProxy from '@ember/array/proxy';
 import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
 import { run } from '@ember/runloop';
-import EmberObject, { get } from '@ember/object';
+import EmberObject from '@ember/object';
 import { module, test } from 'qunit';
 import InfinityModel from 'ember-infinity/lib/infinity-model';
 import { setupTest } from 'ember-qunit';
@@ -91,7 +91,7 @@ module('Unit | RouteMixin', function (hooks) {
       try {
         route.model();
       } catch (e) {
-        assert.equal(
+        assert.strictEqual(
           e.message,
           'Ember Infinity: You must pass an Infinity Model instance as the third argument',
           'wat'
@@ -100,6 +100,7 @@ module('Unit | RouteMixin', function (hooks) {
     });
 
     test('it can use infinityModel with a custom data store', function (assert) {
+      assert.expect(1);
       let item = this.EA([{ id: 1, title: 'The Great Gatsby' }]);
       let mockStore = {
         query() {
@@ -119,6 +120,7 @@ module('Unit | RouteMixin', function (hooks) {
     });
 
     test('custom data store can specify custom query method', function (assert) {
+      assert.expect(1);
       let EA = this.EA;
       let mockStore = {
         findAll() {
@@ -140,6 +142,7 @@ module('Unit | RouteMixin', function (hooks) {
     });
 
     test('custom data store must specify custom query method', function (assert) {
+      assert.expect(1);
       let simpleStore = {
         findAll() {
           return RSVP.resolve();
@@ -150,27 +153,38 @@ module('Unit | RouteMixin', function (hooks) {
       try {
         route.model();
       } catch (e) {
-        assert.equal(e.message, 'Ember Infinity: Custom data store must specify query method');
+        assert.strictEqual(
+          e.message,
+          'Ember Infinity: Custom data store must specify query method'
+        );
       }
     });
 
     test('it can not use infinityModel without passing a string for custom data store', function (assert) {
+      assert.expect(1);
       let route = this.createRoute(['post'], { store: 234 });
 
       try {
         route.model();
       } catch (e) {
-        assert.equal(e.message, 'Ember Infinity: Custom data store must specify query method');
+        assert.strictEqual(
+          e.message,
+          'Ember Infinity: Custom data store must specify query method'
+        );
       }
     });
 
     test('it can not use infinityModel without a Model Name', function (assert) {
+      assert.expect(1);
       let route = this.createRoute();
 
       try {
         route.model();
       } catch (e) {
-        assert.equal(e.message, 'Ember Infinity: You must pass a Model Name to infinityModel');
+        assert.strictEqual(
+          e.message,
+          'Ember Infinity: You must pass a Model Name to infinityModel'
+        );
       }
     });
 
@@ -182,27 +196,30 @@ module('Unit | RouteMixin', function (hooks) {
 
       let model = this.callModelHook(route);
 
-      assert.equal(model.get('_totalPages'), 31, '_totalPages');
-      assert.equal(model.get('currentPage'), 1, 'currentPage');
-      assert.equal(model.get('canLoadMore'), true, 'canLoadMore');
+      assert.strictEqual(model.get('_totalPages'), 31, '_totalPages');
+      assert.strictEqual(model.get('currentPage'), 1, 'currentPage');
+      assert.true(model.get('canLoadMore'), 'canLoadMore');
       assert.notOk(route.get('_extraParams'), 'extra params are empty');
-      assert.ok(!model.get('reachedInfinity'), 'Should not reach infinity');
+      assert.notOk(model.get('reachedInfinity'), 'Should not reach infinity');
     });
 
     test('it sets count state before it reaches the end', function (assert) {
-      let store = this.createMockStore(this.EA([{ id: 1, name: 'Test' }], { meta: { count: 31 } }));
+      let store = this.createMockStore(
+        this.EA([{ id: 1, name: 'Test' }], { meta: { count: 31 } })
+      );
       let route = this.createRoute(['item'], { store });
 
       let model = this.callModelHook(route);
 
-      assert.equal(model.get('_count'), 31, '_count');
-      assert.equal(model.get('currentPage'), 1, 'currentPage');
-      assert.equal(model.get('canLoadMore'), true, 'canLoadMore');
+      assert.strictEqual(model.get('_count'), 31, '_count');
+      assert.strictEqual(model.get('currentPage'), 1, 'currentPage');
+      assert.true(model.get('canLoadMore'), 'canLoadMore');
       assert.notOk(route.get('_extraParams'), 'extra params are empty');
-      assert.ok(!model.get('reachedInfinity'), 'Should not reach infinity');
+      assert.notOk(model.get('reachedInfinity'), 'Should not reach infinity');
     });
 
     test('it allows customizations of request params', function (assert) {
+      assert.expect(1);
       let store = this.createMockStore(this.EA([]), (modelType, findQuery) => {
         assert.deepEqual(findQuery, { per: 25, p: 1 }, 'findQuery');
       });
@@ -222,7 +239,9 @@ module('Unit | RouteMixin', function (hooks) {
     });
 
     test('It allows to set startingPage as 0', function (assert) {
-      let store = this.createMockStore(this.EA([{ id: 1, name: 'Test' }], { total_pages: 1 }));
+      let store = this.createMockStore(
+        this.EA([{ id: 1, name: 'Test' }], { total_pages: 1 })
+      );
       let route = this.createRoute(
         [
           'item',
@@ -235,11 +254,12 @@ module('Unit | RouteMixin', function (hooks) {
 
       let model = this.callModelHook(route);
 
-      assert.equal(model.get('currentPage'), 0);
-      assert.equal(model.get('canLoadMore'), false);
+      assert.strictEqual(model.get('currentPage'), 0);
+      assert.false(model.get('canLoadMore'));
     });
 
     test('it skips request params when set to null', function (assert) {
+      assert.expect(1);
       let store = this.createMockStore(this.EA([]), (modelType, findQuery) => {
         assert.deepEqual(findQuery, {}, 'findQuery');
       });
@@ -277,8 +297,12 @@ module('Unit | RouteMixin', function (hooks) {
 
       let model = this.callModelHook(route);
 
-      assert.equal(model.get('totalPagesParam'), 'pagination.total', 'totalPagesParam');
-      assert.equal(model.get('_totalPages'), 22, '_totalPages');
+      assert.strictEqual(
+        model.get('totalPagesParam'),
+        'pagination.total',
+        'totalPagesParam'
+      );
+      assert.strictEqual(model.get('_totalPages'), 22, '_totalPages');
     });
 
     test('it allows customizations of meta count params', function (assert) {
@@ -288,12 +312,19 @@ module('Unit | RouteMixin', function (hooks) {
         })
       );
 
-      let route = this.createRoute(['item', { countParam: 'pagination.records' }], { store });
+      let route = this.createRoute(
+        ['item', { countParam: 'pagination.records' }],
+        { store }
+      );
 
       let model = this.callModelHook(route);
 
-      assert.equal(model.get('countParam'), 'pagination.records', 'countParam');
-      assert.equal(model.get('_count'), 22, '_count');
+      assert.strictEqual(
+        model.get('countParam'),
+        'pagination.records',
+        'countParam'
+      );
+      assert.strictEqual(model.get('_count'), 22, '_count');
     });
 
     test('it copies arbitrary model hook meta from route request to the infinityModel', function (assert) {
@@ -307,7 +338,7 @@ module('Unit | RouteMixin', function (hooks) {
 
       let model = this.callModelHook(route);
 
-      assert.equal(model.get('meta.meaningOfLife'), 42, 'meta');
+      assert.strictEqual(model.get('meta.meaningOfLife'), 42, 'meta');
     });
   });
 
@@ -317,7 +348,10 @@ module('Unit | RouteMixin', function (hooks) {
         let store = this.createMockStore(
           this.EA([{ id: 1, name: 'Test' }], { meta: { total_pages: 2 } })
         );
-        this.route = this.createRoute(['item', extras, boundParamsOrInfinityModel], { store });
+        this.route = this.createRoute(
+          ['item', extras, boundParamsOrInfinityModel],
+          { store }
+        );
 
         this.callModelHookWithStore();
       };
@@ -338,9 +372,9 @@ module('Unit | RouteMixin', function (hooks) {
 
       this.createRouteWithStore({ startingPage: 2 });
 
-      assert.equal(this.model.get('_totalPages'), 2, '_totalPages');
-      assert.equal(this.model.get('currentPage'), 2, 'currentPage');
-      assert.equal(this.model.get('canLoadMore'), false, 'canLoadMore');
+      assert.strictEqual(this.model.get('_totalPages'), 2, '_totalPages');
+      assert.strictEqual(this.model.get('currentPage'), 2, 'currentPage');
+      assert.false(this.model.get('canLoadMore'), 'canLoadMore');
       assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
     });
 
@@ -350,13 +384,13 @@ module('Unit | RouteMixin', function (hooks) {
       this.createRouteWithStore({ extra: 'param' });
 
       // assert.equal(this.model.get('_extraParams.extra'), 'param', '_extraParams.extra');
-      assert.equal(this.model.get('canLoadMore'), true, 'canLoadMore');
+      assert.true(this.model.get('canLoadMore'), 'canLoadMore');
 
       this.loadMore();
 
       // assert.equal(this.model.get('_extraParams.extra'), 'param', '_extraParams.extra');
-      assert.equal(this.model.get('canLoadMore'), false, 'canLoadMore');
-      assert.equal(this.model.get('currentPage'), 2, 'currentPage');
+      assert.false(this.model.get('canLoadMore'), 'canLoadMore');
+      assert.strictEqual(this.model.get('currentPage'), 2, 'currentPage');
       assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
     });
 
@@ -367,23 +401,21 @@ module('Unit | RouteMixin', function (hooks) {
         customId: 2,
         buildParams() {
           let params = this._super(...arguments);
-          params['custom_id'] = get(this, 'customId');
+          params['custom_id'] = this.customId;
           return params;
         },
       });
       this.createRouteWithStore({ extra: 'param' }, ExtendedInfinityModel);
 
-      assert.equal(
+      assert.true(
         this.model instanceof InfinityModel,
-        true,
         'model is instance of extended infinity model'
       );
 
       this.loadMore();
 
-      assert.equal(
+      assert.true(
         this.model instanceof InfinityModel,
-        true,
         'model is instance of extended infinity model'
       );
       assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
@@ -395,8 +427,8 @@ module('Unit | RouteMixin', function (hooks) {
       let ExtendedInfinityModel = InfinityModel.extend({
         buildParams() {
           let params = this._super(...arguments);
-          params['custom_id'] = get(this, 'custom.id');
-          assert.equal(params['custom_id'], 2);
+          params['custom_id'] = this.custom?.id;
+          assert.strictEqual(params['custom_id'], 2);
           return params;
         },
       });
@@ -414,7 +446,7 @@ module('Unit | RouteMixin', function (hooks) {
 
       this.createRouteWithStore({ extra: 'param' });
 
-      assert.equal(
+      assert.strictEqual(
         this.model.get('_deprecatedBoundParams'),
         undefined,
         'bound params is not detected'
@@ -427,17 +459,17 @@ module('Unit | RouteMixin', function (hooks) {
       this.createRouteWithStore();
 
       assert.ok(this.model.get('canLoadMore'), 'can load more');
-      assert.equal(this.model.get('currentPage'), 1, 'currentPage');
+      assert.strictEqual(this.model.get('currentPage'), 1, 'currentPage');
 
       this.loadMore();
 
       assert.notOk(this.model.get('canLoadMore'), 'can load more');
-      assert.equal(this.model.get('currentPage'), 2, 'currentPage');
+      assert.strictEqual(this.model.get('currentPage'), 2, 'currentPage');
 
       this.loadMore();
 
       assert.notOk(this.model.get('canLoadMore'), 'can load more');
-      assert.equal(this.model.get('currentPage'), 2, 'currentPage');
+      assert.strictEqual(this.model.get('currentPage'), 2, 'currentPage');
     });
 
     test('It resets the currentPage when the model hook is called again', function (assert) {
@@ -446,18 +478,18 @@ module('Unit | RouteMixin', function (hooks) {
       this.createRouteWithStore();
 
       assert.ok(this.model.get('canLoadMore'), 'can load more');
-      assert.equal(this.model.get('currentPage'), 1, 'currentPage');
+      assert.strictEqual(this.model.get('currentPage'), 1, 'currentPage');
 
       this.callModelHookWithStore();
-      assert.equal(this.model.get('currentPage'), 1, 'currentPage');
+      assert.strictEqual(this.model.get('currentPage'), 1, 'currentPage');
 
       this.loadMore();
 
-      assert.equal(this.model.get('currentPage'), 2, 'currentPage');
+      assert.strictEqual(this.model.get('currentPage'), 2, 'currentPage');
 
       this.callModelHookWithStore();
 
-      assert.equal(this.model.get('currentPage'), 1, 'currentPage');
+      assert.strictEqual(this.model.get('currentPage'), 1, 'currentPage');
     });
   });
 
@@ -474,8 +506,8 @@ module('Unit | RouteMixin', function (hooks) {
         ),
         // for query method in model hook
         (modelType, findQuery) => {
-          assert.equal(findQuery.testPerPage, 1);
-          assert.equal(findQuery.testPage, this.expectedPageNumber);
+          assert.strictEqual(findQuery.testPerPage, 1);
+          assert.strictEqual(findQuery.testPage, this.expectedPageNumber);
         }
       );
 
@@ -504,8 +536,8 @@ module('Unit | RouteMixin', function (hooks) {
 
       this.expectedPageNumber = 2;
 
-      assert.equal(this.model.get('canLoadMore'), true, 'canLoadMore');
-      assert.equal(this.model.get('currentPage'), 2, 'currentPage');
+      assert.true(this.model.get('canLoadMore'), 'canLoadMore');
+      assert.strictEqual(this.model.get('currentPage'), 2, 'currentPage');
     });
 
     test('it uses overridden params when reaching the end', function (assert) {
@@ -513,13 +545,15 @@ module('Unit | RouteMixin', function (hooks) {
 
       this.expectedPageNumber = 3;
 
-      const infinityModel = this.route.get('infinity.infinityModels').objectAt(0);
+      const infinityModel = this.route
+        .get('infinity.infinityModels')
+        .objectAt(0);
       run(() => {
         this.route.infinity.infinityLoad(infinityModel);
       });
 
-      assert.equal(this.model.get('canLoadMore'), false, 'canLoadMore');
-      assert.equal(this.model.get('currentPage'), 3, 'currentPage');
+      assert.false(this.model.get('canLoadMore'), 'canLoadMore');
+      assert.strictEqual(this.model.get('currentPage'), 3, 'currentPage');
       assert.ok(this.model.get('reachedInfinity'), 'Should reach infinity');
     });
   });

@@ -25,7 +25,7 @@ export default class CustomStore extends Service {
    * holds all models by type
    * @property persistentContainer
    */
-  persistentContainer = {}
+  persistentContainer = {};
 
   /**
    * find objects by id

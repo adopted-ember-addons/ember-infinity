@@ -1,6 +1,5 @@
 import EmberObject from '@ember/object';
 
-export default EmberObject.extend({
-  name: ''
-});
-
+export default class CustomModel extends EmberObject {
+  name = '';
+}

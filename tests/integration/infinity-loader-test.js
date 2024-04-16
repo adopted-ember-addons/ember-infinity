@@ -12,7 +12,8 @@ module('infinity-loader', function (hooks) {
 
   hooks.beforeEach(function () {
     this.actions = {};
-    this.send = (actionName, ...args) => this.actions[actionName].apply(this, args);
+    this.send = (actionName, ...args) =>
+      this.actions[actionName].apply(this, args);
     this.infinityServiceMock = {
       infinityModels: A(),
       infinityLoad: () => resolve(),
@@ -38,13 +39,15 @@ module('infinity-loader', function (hooks) {
       />
     `);
 
-    assert.equal(
+    assert.strictEqual(
       this.element.querySelector('.infinity-loader > span').textContent.trim(),
       'Loading Infinity Model...',
       'class name is present'
     );
-    assert.equal(
-      this.element.querySelector('[data-test-infinity-loader]').textContent.trim(),
+    assert.strictEqual(
+      this.element
+        .querySelector('[data-test-infinity-loader]')
+        .textContent.trim(),
       'Loading Infinity Model...',
       'data-test attr is present'
     );
@@ -88,15 +91,28 @@ module('infinity-loader', function (hooks) {
       />
     `);
 
-    assert.equal(this.element.querySelector('.infinity-loader > span').textContent, 'Loading Infinity Model...');
-    assert.equal(this.element.querySelector('.infinity-loader').style.display, '', 'Element is not hidden');
+    assert.strictEqual(
+      this.element.querySelector('.infinity-loader > span').textContent,
+      'Loading Infinity Model...'
+    );
+    assert.strictEqual(
+      this.element.querySelector('.infinity-loader').style.display,
+      '',
+      'Element is not hidden'
+    );
     run(() => {
       set(this, 'infinityModel.reachedInfinity', true);
     });
     await waitUntil(() => {
-      return this.element.querySelector('.infinity-loader').style.display === '';
+      return (
+        this.element.querySelector('.infinity-loader').style.display === ''
+      );
     });
-    assert.equal(this.element.querySelector('.infinity-loader').style.display, '', 'Element is not hidden');
+    assert.strictEqual(
+      this.element.querySelector('.infinity-loader').style.display,
+      '',
+      'Element is not hidden'
+    );
   });
 
   test('it yields to the block if given', async function (assert) {
@@ -111,6 +127,9 @@ module('infinity-loader', function (hooks) {
         <span>My custom block</span>
       </InfinityLoader>
     `);
-    assert.equal(this.element.querySelector('.infinity-loader > span').textContent, 'My custom block');
+    assert.strictEqual(
+      this.element.querySelector('.infinity-loader > span').textContent,
+      'My custom block'
+    );
   });
 });

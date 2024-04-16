@@ -10,5 +10,5 @@ export default Serializer.extend({
     let subset = models.slice(offset, offset + perPage);
 
     return { posts: subset, meta: { total_pages: pageCount } };
-  }
+  },
 });
