@@ -21,6 +21,7 @@ module.exports = {
   },
   rules: {
     'ember/no-new-mixins': 0,
+    'ember/avoid-leaking-state-in-ember-objects': 0,
   },
   overrides: [
     // node files
