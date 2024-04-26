@@ -1,8 +1,8 @@
 import { module, test } from 'qunit';
 import { visit, find, triggerEvent, waitUntil } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import defaultScenario from '../../mirage/scenarios/default';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 module('Acceptance: Infinity Route - load previous', function (hooks) {
   setupApplicationTest(hooks);

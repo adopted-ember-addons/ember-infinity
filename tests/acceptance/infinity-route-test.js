@@ -8,7 +8,7 @@ import {
   waitUntil,
 } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
-import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 
 module('Acceptance: Infinity Route - infinity routes', function (hooks) {
   setupApplicationTest(hooks);

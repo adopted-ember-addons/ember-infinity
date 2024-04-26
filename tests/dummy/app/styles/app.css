@@ -1,9 +1,10 @@
 body {
-  font-family: 'Arial';
+  font-family: Arial, sans-serif;
   padding: 0;
   margin: 0;
   width: 100%;
 }
+
 .demo-view {
   margin-top: 160px;
 }
@@ -31,14 +32,13 @@ body {
   right: 0;
 }
 
-
 .jumbo-header {
   color: #fff;
   background: purple;
   font-size: 36px;
   width: 100%;
   height: 150px;
-  box-shadow: 0 15px 15px rgba(0,0,0,0.5);
+  box-shadow: 0 15px 15px rgba(0, 0, 0, 0.5);
 }
 
 @media (max-width: 600px) {
@@ -60,15 +60,16 @@ body {
   border: 1px solid #999;
   margin: 10px;
   background: #fff;
-  box-shadow: 0 0 3px rgba(0,0,0,0.5);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
   padding: 10px;
   width: 90%;
 }
+
 .demo-horizontal-items li {
   border: 1px solid #999;
   margin: 5px;
   background: #fff;
-  box-shadow: 0 0 3px rgba(0,0,0,0.5);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
   padding: 10px 30px;
   width: 100%;
 }

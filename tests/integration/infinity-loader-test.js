@@ -24,8 +24,6 @@ module('infinity-loader', function (hooks) {
       on: () => {},
       off: () => {},
     };
-    // avoid recursive func
-    this._checkScrollableHeight = () => true;
   });
 
   test('it renders loading text if no block given', async function (assert) {
@@ -35,7 +33,6 @@ module('infinity-loader', function (hooks) {
       <InfinityLoader
         @infinityModel={{this.infinityModel}}
         @infinity={{this.infinityServiceMock}}
-        @_checkScrollableHeight={{this._checkScrollableHeight}}
       />
     `);
 
@@ -67,7 +64,6 @@ module('infinity-loader', function (hooks) {
         @infinityModel={{this.infinityModel}}
         @hideOnInfinity={{true}}
         @infinity={{this.infinityServiceMock}}
-        @_checkScrollableHeight={{this._checkScrollableHeight}}
       />
     `);
 
@@ -87,7 +83,6 @@ module('infinity-loader', function (hooks) {
         @infinityModel={{this.infinityModel}}
         @hideOnInfinity={{false}}
         @infinity={{this.infinityServiceMock}}
-        @_checkScrollableHeight={{this._checkScrollableHeight}}
       />
     `);
 
@@ -122,7 +117,6 @@ module('infinity-loader', function (hooks) {
       <InfinityLoader
         @infinityModel={{this.infinityModel}}
         @infinity={{this.infinityServiceMock}}
-        @_checkScrollableHeight={{this._checkScrollableHeight}}
       >
         <span>My custom block</span>
       </InfinityLoader>
