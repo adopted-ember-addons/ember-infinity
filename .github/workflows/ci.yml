@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   test:
-    name: "Tests"
+    name: 'Tests'
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -28,11 +28,15 @@ jobs:
         run: npm ci
       - name: Lint
         run: npm run lint
+        working-directory: ember-infinity
+      - name: Lint Test App
+        run: npm run lint
+        working-directory: test-app
       - name: Run Tests
-        run: npm run test:ember
+        run: npm run test:test-app
 
   floating:
-    name: "Floating Dependencies"
+    name: 'Floating Dependencies'
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -45,12 +49,12 @@ jobs:
       - name: Install Dependencies
         run: npm install --no-shrinkwrap
       - name: Run Tests
-        run: npm run test:ember
+        run: npm run test:test-app
 
   try-scenarios:
     name: ${{ matrix.try-scenario }}
     runs-on: ubuntu-latest
-    needs: "test"
+    needs: 'test'
 
     strategy:
       fail-fast: false
@@ -76,4 +80,6 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       - name: Run Tests
-        run: ./node_modules/.bin/ember try:one ${{ matrix.try-scenario }}
+        env:
+          EMBER_TRY_SCENARIO: ${{ matrix.try-scenario }}
+        run: npm run test:test-app:ember-try $EMBER_TRY_SCENARIO
