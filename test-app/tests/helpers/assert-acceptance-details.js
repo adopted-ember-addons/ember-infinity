@@ -2,7 +2,7 @@ import { find, findAll, waitUntil } from '@ember/test-helpers';
 
 export default async function assertDetails(
   assert,
-  { title, listLength, reachedInfinity }
+  { title, listLength, reachedInfinity },
 ) {
   await waitUntil(() => findAll('ul>li').length === listLength);
 
@@ -10,10 +10,10 @@ export default async function assertDetails(
   const postList = find('ul');
   const infinityLoader = find('.infinity-loader');
 
-  assert.equal(postsTitle.textContent, title);
-  assert.equal(postList.querySelectorAll('li').length, listLength);
-  assert.equal(
+  assert.strictEqual(postsTitle.textContent, title);
+  assert.strictEqual(postList.querySelectorAll('li').length, listLength);
+  assert.strictEqual(
     infinityLoader.classList.contains('reached-infinity'),
-    reachedInfinity
+    reachedInfinity,
   );
 }

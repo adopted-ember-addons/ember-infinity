@@ -27,8 +27,6 @@ module('infinity-loader', function (hooks) {
   });
 
   test('it renders loading text if no block given', async function (assert) {
-    assert.expect(2);
-
     await render(hbs`
       <InfinityLoader
         @infinityModel={{this.infinityModel}}
@@ -39,20 +37,18 @@ module('infinity-loader', function (hooks) {
     assert.strictEqual(
       this.element.querySelector('.infinity-loader > span').textContent.trim(),
       'Loading Infinity Model...',
-      'class name is present'
+      'class name is present',
     );
     assert.strictEqual(
       this.element
         .querySelector('[data-test-infinity-loader]')
         .textContent.trim(),
       'Loading Infinity Model...',
-      'data-test attr is present'
+      'data-test attr is present',
     );
   });
 
   test('hideOnInfinity works on first render', async function (assert) {
-    assert.expect(1);
-
     this.infinityModel = {
       name: 'dot',
       reachedInfinity: true,
@@ -71,8 +67,6 @@ module('infinity-loader', function (hooks) {
   });
 
   test('hideOnInfinity does not work if hideOnInfinity=false', async function (assert) {
-    assert.expect(3);
-
     this.infinityModel = {
       name: 'dot',
       on: () => {},
@@ -88,12 +82,12 @@ module('infinity-loader', function (hooks) {
 
     assert.strictEqual(
       this.element.querySelector('.infinity-loader > span').textContent,
-      'Loading Infinity Model...'
+      'Loading Infinity Model...',
     );
     assert.strictEqual(
       this.element.querySelector('.infinity-loader').style.display,
       '',
-      'Element is not hidden'
+      'Element is not hidden',
     );
     run(() => {
       set(this, 'infinityModel.reachedInfinity', true);
@@ -106,13 +100,11 @@ module('infinity-loader', function (hooks) {
     assert.strictEqual(
       this.element.querySelector('.infinity-loader').style.display,
       '',
-      'Element is not hidden'
+      'Element is not hidden',
     );
   });
 
   test('it yields to the block if given', async function (assert) {
-    assert.expect(1);
-
     await render(hbs`
       <InfinityLoader
         @infinityModel={{this.infinityModel}}
@@ -123,7 +115,7 @@ module('infinity-loader', function (hooks) {
     `);
     assert.strictEqual(
       this.element.querySelector('.infinity-loader > span').textContent,
-      'My custom block'
+      'My custom block',
     );
   });
 });

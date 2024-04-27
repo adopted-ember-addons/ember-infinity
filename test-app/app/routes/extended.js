@@ -9,7 +9,7 @@ const ExtendedInfinityModel = InfinityModel.extend({
   },
 
   afterInfinityModel(posts) {
-    this.set('canLoadMore', posts.get('length') > 0);
+    this.set('canLoadMore', posts.length > 0);
   },
 });
 

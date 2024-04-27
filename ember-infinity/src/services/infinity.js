@@ -2,6 +2,7 @@ import Service from '@ember/service';
 import InfinityModel from '../lib/infinity-model';
 import InfinityPromiseArray from '../lib/infinity-promise-array';
 import { getOwner } from '@ember/application';
+import { get } from '@ember/object';
 import { A } from '@ember/array';
 import { typeOf } from '@ember/utils';
 import { scheduleOnce } from '@ember/runloop';
@@ -511,17 +512,17 @@ export default class Infinity extends Service {
   _doUpdate(queryObject, infinityModel) {
     infinityModel.isLoaded = true;
 
-    const totalPages = queryObject.get(infinityModel.totalPagesParam);
-    const count = queryObject.get(infinityModel.countParam);
+    const totalPages = get(queryObject, infinityModel.totalPagesParam);
+    const count = get(queryObject, infinityModel.countParam);
     infinityModel._totalPages = totalPages;
     infinityModel._count = count;
     infinityModel.meta = queryObject.meta;
 
     let newObjects;
     if (infinityModel.get('_increment') === 1) {
-      newObjects = infinityModel.pushObjects(queryObject.toArray());
+      newObjects = infinityModel.pushObjects(queryObject.slice());
     } else {
-      newObjects = infinityModel.unshiftObjects(queryObject.toArray());
+      newObjects = infinityModel.unshiftObjects(queryObject.slice());
     }
 
     this._notifyInfinityModelUpdated(queryObject, infinityModel);
@@ -569,7 +570,7 @@ export default class Infinity extends Service {
     @method _afterInfinityModel
    */
   _afterInfinityModel(newObjects, infinityModel) {
-    let result = infinityModel.afterInfinityModel(newObjects, infinityModel);
+    const result = infinityModel.afterInfinityModel(newObjects, infinityModel);
     if (result) {
       return result;
     }

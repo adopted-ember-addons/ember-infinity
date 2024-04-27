@@ -100,7 +100,7 @@ module('Unit | Service | infinity', function (hooks) {
     assert.deepEqual(
       service.get('_cachedCollection'),
       {},
-      'default of _cachedCollection'
+      'default of _cachedCollection',
     );
     model = service.model('post');
     assert.strictEqual(typeof model.then, 'function');
@@ -118,7 +118,7 @@ module('Unit | Service | infinity', function (hooks) {
     assert.strictEqual(typeof model.then, 'function');
     assert.ok(
       Object.keys(service.get('_cachedCollection')['post3600'])[0] > Date.now(),
-      'collection has correct key'
+      'collection has correct key',
     );
     model = service.model('post', { infinityCache: date });
     assert.ok(model instanceof InfinityModel, 'returns cached model');
@@ -143,7 +143,7 @@ module('Unit | Service | infinity', function (hooks) {
     assert.ok(
       Object.keys(service.get('_cachedCollection')['post36003true'])[0] >
         Date.now(),
-      'collection has correct key'
+      'collection has correct key',
     );
     model = service.model('post', {
       infinityCache: date,
@@ -155,7 +155,7 @@ module('Unit | Service | infinity', function (hooks) {
     assert.strictEqual(
       typeof model.then,
       'function',
-      'diff identifier will return thennable'
+      'diff identifier will return thennable',
     );
     model = service.model('post', {
       infinityCache: date,
@@ -180,7 +180,7 @@ module('Unit | Service | infinity', function (hooks) {
     assert.ok(
       Object.keys(service.get('_cachedCollection')['post3600toe-socks'])[0] >
         Date.now(),
-      'collection has correct key'
+      'collection has correct key',
     );
     model = service.model('post', {
       infinityCache: date,
@@ -194,7 +194,7 @@ module('Unit | Service | infinity', function (hooks) {
     assert.strictEqual(
       typeof model.then,
       'function',
-      'diff identifier will return thennable'
+      'diff identifier will return thennable',
     );
     model = service.model('post', {
       infinityCache: date,
@@ -218,7 +218,7 @@ module('Unit | Service | infinity', function (hooks) {
     assert.equal(
       model.get('perPageParam'),
       perPageParam,
-      'model has configured param'
+      'model has configured param',
     );
   });
 
@@ -233,7 +233,7 @@ module('Unit | Service | infinity', function (hooks) {
     assert.strictEqual(
       service.get('infinityModels')[0].get('length'),
       0,
-      'length of infinityModel content array is 0'
+      'length of infinityModel content array is 0',
     );
 
     let cachedModel = service.get('_cachedCollection')['post36003'];
@@ -244,14 +244,14 @@ module('Unit | Service | infinity', function (hooks) {
     assert.strictEqual(
       service.get('infinityModels')[0].get('length'),
       1,
-      'length of infinityModel content array is 1'
+      'length of infinityModel content array is 1',
     );
     cachedModel = service.get('_cachedCollection')['post36003'];
     cachedTimestamp = Object.keys(cachedModel)[0];
     assert.strictEqual(
       cachedModel[cachedTimestamp].get('length'),
       1,
-      'cached infinityModel content array is 1'
+      'cached infinityModel content array is 1',
     );
   });
 

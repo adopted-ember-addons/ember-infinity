@@ -42,7 +42,7 @@ module('Acceptance: Infinity Route - load previous', function (hooks) {
     assert.equal(
       postList().querySelectorAll('p').length,
       amount,
-      `${amount} items should be in the list`
+      `${amount} items should be in the list`,
     );
   }
 
@@ -54,36 +54,30 @@ module('Acceptance: Infinity Route - load previous', function (hooks) {
     assert.equal(
       infinityLoader().classList.contains('reached-infinity'),
       false,
-      'Infinity should not yet have been reached'
+      'Infinity should not yet have been reached',
     );
     assert.equal(infinityLoader().querySelector('span').textContent, 'loading');
   }
 
-  test(
-    'it should start loading more items when the scroll is on the very bottom ' +
-      'when triggerOffset is not set',
-    async function (assert) {
-      assert.expect(5);
-      defaultScenario(this.server);
-      await visit('/load-previous');
+  test('it should start loading more items when the scroll is on the very bottom when triggerOffset is not set', async function (assert) {
+    defaultScenario(this.server);
+    await visit('/load-previous');
 
-      await shouldBeItemsOnTheList(assert, 25);
-      infinityShouldNotBeReached(assert);
-      scrollTo(triggerOffset() - 100);
+    await shouldBeItemsOnTheList(assert, 25);
+    infinityShouldNotBeReached(assert);
+    scrollTo(triggerOffset() - 100);
 
-      await triggerEvent(window, 'scroll');
+    await triggerEvent(window, 'scroll');
 
-      await shouldBeItemsOnTheList(assert, 25);
-      scrollIntoView();
+    await shouldBeItemsOnTheList(assert, 25);
+    scrollIntoView();
 
-      await triggerEvent(window, 'scroll');
+    await triggerEvent(window, 'scroll');
 
-      await shouldBeItemsOnTheList(assert, 50);
-    }
-  );
+    await shouldBeItemsOnTheList(assert, 50);
+  });
 
   test('it should load previous elements when start on page two', async function (assert) {
-    assert.expect(1);
     defaultScenario(this.server);
     await visit('/load-previous?page=2');
 
