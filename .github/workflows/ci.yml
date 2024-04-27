@@ -23,13 +23,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
-          cache: yarn
+          cache: npm
       - name: Install Dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
       - name: Lint
-        run: yarn lint
+        run: npm run lint
       - name: Run Tests
-        run: yarn test:ember
+        run: npm run test:ember
 
   floating:
     name: "Floating Dependencies"
@@ -41,11 +41,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18.x
-          cache: yarn
+          cache: npm
       - name: Install Dependencies
-        run: yarn install --no-lockfile
+        run: npm install --no-shrinkwrap
       - name: Run Tests
-        run: yarn test:ember
+        run: npm run test:ember
 
   try-scenarios:
     name: ${{ matrix.try-scenario }}
@@ -57,7 +57,6 @@ jobs:
       matrix:
         try-scenario:
           - ember-classic
-          - ember-lts-3.24
           - ember-lts-3.28
           - ember-lts-4.4
           - ember-lts-4.8
@@ -73,8 +72,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
-          cache: yarn
+          cache: npm
       - name: Install Dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
       - name: Run Tests
         run: ./node_modules/.bin/ember try:one ${{ matrix.try-scenario }}

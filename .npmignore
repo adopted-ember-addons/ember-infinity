@@ -26,7 +26,6 @@
 /ember-cli-build.js
 /testem.js
 /tests/
-/yarn.lock
 .gitkeep
 
 # ember-try
