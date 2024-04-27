@@ -1,0 +1,80 @@
+{
+  "name": "ember-infinity",
+  "version": "2.3.0",
+  "description": "Simple, flexible infinite scroll for Ember CLI Apps.",
+  "keywords": [
+    "ember-addon",
+    "infinity",
+    "scroll",
+    "paginate"
+  ],
+  "license": "MIT",
+  "author": "Hugh Francis",
+  "directories": {
+    "doc": "doc",
+    "test": "tests"
+  },
+  "exports": {
+    ".": "./dist/index.js",
+    "./*": "./dist/*",
+    "./test-support": "./dist/test-support/index.js",
+    "./addon-main.js": "./addon-main.js"
+  },
+  "files": [
+    "addon-main.js",
+    "dist"
+  ],
+  "ember-addon": {
+    "main": "addon-main.js",
+    "type": "addon",
+    "version": 2,
+    "app-js": {
+      "./components/infinity-loader.js": "./dist/_app_/components/infinity-loader.js",
+      "./services/infinity.js": "./dist/_app_/services/infinity.js"
+    }
+  },
+  "repository": "https://github.com/ember-infinity/ember-infinity",
+  "scripts": {
+    "build": "rollup --config",
+    "prepublishOnly": "rollup --config",
+    "start": "rollup --config --watch",
+    "lint": "concurrently \"npm:lint:*(!fix)\" --names \"lint:\"",
+    "lint:fix": "concurrently \"npm:lint:*:fix\" --names \"fix:\"",
+    "lint:hbs": "ember-template-lint .",
+    "lint:hbs:fix": "ember-template-lint . --fix",
+    "lint:js": "eslint . --cache",
+    "lint:js:fix": "eslint . --fix",
+    "test": "concurrently \"npm:lint\" \"npm:test:*\" --names \"lint,test:\""
+  },
+  "dependencies": {
+    "@embroider/addon-shim": "^1.8.7",
+    "@ember/render-modifiers": "^2.1.0",
+    "ember-in-viewport": "~4.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.4",
+    "@babel/eslint-parser": "^7.21.3",
+    "@babel/plugin-proposal-decorators": "^7.24.1",
+    "@babel/plugin-transform-class-properties": "^7.24.1",
+    "@embroider/addon-dev": "^4.3.1",
+    "@rollup/plugin-babel": "^6.0.4",
+    "concurrently": "^8.0.1",
+    "ember-template-lint": "^5.7.2",
+    "eslint": "^8.37.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-ember": "^11.5.0",
+    "eslint-plugin-n": "^15.7.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.7",
+    "rollup": "^4.17.0"
+  },
+  "peerDependencies": {
+    "ember-source": "^3.28.0 || ^4.0.0"
+  },
+  "engines": {
+    "node": ">= 18"
+  },
+  "ember": {
+    "edition": "octane"
+  }
+}

@@ -1,97 +1,16 @@
 {
-  "name": "ember-infinity",
-  "version": "2.3.0",
-  "description": "Simple, flexible infinite scroll for Ember CLI Apps.",
-  "keywords": [
-    "ember-addon",
-    "infinity",
-    "scroll",
-    "paginate"
-  ],
-  "license": "MIT",
-  "author": "Hugh Francis",
-  "directories": {
-    "doc": "doc",
-    "test": "tests"
-  },
-  "repository": "https://github.com/ember-infinity/ember-infinity",
   "scripts": {
-    "build": "ember build --environment=production",
-    "lint": "concurrently \"npm:lint:*(!fix)\" --names \"lint:\"",
-    "lint:css": "stylelint \"**/*.css\"",
-    "lint:css:fix": "concurrently \"npm:lint:css -- --fix\"",
-    "lint:fix": "concurrently \"npm:lint:*:fix\" --names \"fix:\"",
-    "lint:hbs": "ember-template-lint .",
-    "lint:hbs:fix": "ember-template-lint . --fix",
-    "lint:js": "eslint . --cache",
-    "lint:js:fix": "eslint . --fix",
-    "start": "ember serve",
-    "test": "concurrently \"npm:lint\" \"npm:test:*\" --names \"lint,test:\"",
-    "test:ember": "ember test",
-    "test:ember-compatibility": "ember try:each"
+    "build": "npm run --workspace 'ember-infinity' build",
+    "lint": "npm run --workspace 'ember-infinity' --workspace 'test-app' lint",
+    "lint:fix": "npm run --workspace 'ember-infinity' --workspace 'test-app' lint:fix",
+    "prepare": "npm run build",
+    "test:test-app": "npm run --workspace 'test-app' test:ember",
+    "test:test-app:ember-try": "npm run --workspace 'test-app' test:ember-try",
+    "start": "npm run --workspace 'test-app' start"
   },
-  "dependencies": {
-    "@ember/render-modifiers": "^2.1.0",
-    "ember-cli-babel": "^7.26.11",
-    "ember-cli-htmlbars": "^6.2.0",
-    "ember-in-viewport": "~4.1.0"
-  },
-  "devDependencies": {
-    "@babel/eslint-parser": "^7.21.3",
-    "@babel/plugin-proposal-decorators": "^7.21.0",
-    "@ember/optional-features": "^2.0.0",
-    "@ember/string": "^3.0.1",
-    "@ember/test-helpers": "^2.9.3",
-    "@embroider/test-setup": "^4.0.0",
-    "@faker-js/faker": "^8.0.2",
-    "@glimmer/component": "^1.1.2",
-    "@glimmer/tracking": "^1.1.2",
-    "broccoli-asset-rev": "^3.0.0",
-    "concurrently": "^8.0.1",
-    "ember-auto-import": "^2.6.3",
-    "ember-cli": "~4.12.2",
-    "ember-cli-dependency-checker": "^3.3.1",
-    "ember-cli-inject-live-reload": "^2.1.0",
-    "ember-cli-mirage": "^3.0.3",
-    "ember-cli-sri": "^2.1.1",
-    "ember-cli-terser": "^4.0.2",
-    "ember-cli-test-loader": "^3.0.0",
-    "ember-data": "~4.4.0",
-    "ember-load-initializers": "^2.1.2",
-    "ember-maybe-import-regenerator": "^1.0.0",
-    "ember-qunit": "^6.2.0",
-    "ember-resolver": "^10.0.0",
-    "ember-source": "~4.12.0",
-    "ember-source-channel-url": "^3.0.0",
-    "ember-template-lint": "^5.7.2",
-    "ember-try": "^3.0.0",
-    "eslint": "^8.37.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-ember": "^11.5.0",
-    "eslint-plugin-n": "^15.7.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-qunit": "^7.3.4",
-    "loader.js": "^4.7.0",
-    "miragejs": "^0.1.48",
-    "pretender": "^3.4.7",
-    "prettier": "^2.8.7",
-    "qunit": "^2.19.4",
-    "qunit-dom": "^2.0.0",
-    "stylelint": "^15.4.0",
-    "stylelint-config-standard": "^32.0.0",
-    "stylelint-prettier": "^3.0.0",
-    "webpack": "^5.78.0"
-  },
-  "peerDependencies": {
-    "ember-source": "^4.0.0"
-  },
-  "engines": {
-    "node": ">= 18"
-  },
-  "ember": {
-    "edition": "octane"
-  },
-  "ember-addon": {
-    "configPath": "tests/dummy/config"
-  }
+  "private": true,
+  "workspaces": [
+    "ember-infinity",
+    "test-app"
+  ]
 }

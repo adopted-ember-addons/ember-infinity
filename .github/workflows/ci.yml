@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   test:
-    name: "Tests"
+    name: 'Tests'
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -23,16 +23,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
-          cache: yarn
+          cache: npm
       - name: Install Dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
       - name: Lint
-        run: yarn lint
+        run: npm run lint
+        working-directory: ember-infinity
+      - name: Lint Test App
+        run: npm run lint
+        working-directory: test-app
       - name: Run Tests
-        run: yarn test:ember
+        run: npm run test:test-app
 
   floating:
-    name: "Floating Dependencies"
+    name: 'Floating Dependencies'
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -41,23 +45,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18.x
-          cache: yarn
+          cache: npm
       - name: Install Dependencies
-        run: yarn install --no-lockfile
+        run: npm install --no-shrinkwrap
       - name: Run Tests
-        run: yarn test:ember
+        run: npm run test:test-app
 
   try-scenarios:
     name: ${{ matrix.try-scenario }}
     runs-on: ubuntu-latest
-    needs: "test"
+    needs: 'test'
 
     strategy:
       fail-fast: false
       matrix:
         try-scenario:
           - ember-classic
-          - ember-lts-3.24
           - ember-lts-3.28
           - ember-lts-4.4
           - ember-lts-4.8
@@ -73,8 +76,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
-          cache: yarn
+          cache: npm
       - name: Install Dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
       - name: Run Tests
-        run: ./node_modules/.bin/ember try:one ${{ matrix.try-scenario }}
+        env:
+          EMBER_TRY_SCENARIO: ${{ matrix.try-scenario }}
+        run: npm run test:test-app:ember-try $EMBER_TRY_SCENARIO
