@@ -14,7 +14,6 @@ module('Acceptance: Infinity Route - non blocking', function (hooks) {
   });
 
   test('it renders items with non-blocking model', async function (assert) {
-    assert.expect(3);
     await visit('/non-blocking-model');
 
     await assertDetails(assert, {
@@ -25,7 +24,6 @@ module('Acceptance: Infinity Route - non blocking', function (hooks) {
   });
 
   test('it renders items with non-blocking component', async function (assert) {
-    assert.expect(3);
     this.server.createList('post', 35);
     await visit('/nested-component');
 
@@ -37,7 +35,6 @@ module('Acceptance: Infinity Route - non blocking', function (hooks) {
   });
 
   test('it renders items with non-blocking component 2', async function (assert) {
-    assert.expect(3);
     this.server.createList('post', 35);
     await visit('/nested-component');
 
@@ -49,7 +46,6 @@ module('Acceptance: Infinity Route - non blocking', function (hooks) {
   });
 
   test('it renders items with non-blocking component with custom meta params', async function (assert) {
-    assert.expect(3);
     visit('/nested-component-with-custom-params');
 
     await assertDetails(assert, {

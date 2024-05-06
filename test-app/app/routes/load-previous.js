@@ -34,7 +34,7 @@ export default class LoadPreviousRoute extends Route {
         };
         return json(200, payload);
       },
-      500 /*ms*/
+      500 /*ms*/,
     );
   }
 

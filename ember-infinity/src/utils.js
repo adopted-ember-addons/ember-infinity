@@ -69,8 +69,8 @@ export function checkInstanceOf(infinityModel) {
  * @return {Array}
  */
 export function convertToArray(queryObject) {
-  if (queryObject.toArray) {
-    return queryObject.toArray();
+  if (queryObject.slice) {
+    return queryObject.slice();
   }
   return queryObject;
 }

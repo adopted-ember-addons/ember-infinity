@@ -19,7 +19,6 @@ module('Acceptance: Infinity Route', function (hooks) {
   });
 
   test('it works when meta is present in payload', async function (assert) {
-    assert.expect(3);
     await visit('/test');
 
     await assertDetails(assert, {
@@ -30,7 +29,6 @@ module('Acceptance: Infinity Route', function (hooks) {
   });
 
   test('it works with parameters', async function (assert) {
-    assert.expect(5);
     await visit('/category/a?per_page=2');
 
     await assertDetails(assert, {
@@ -44,12 +42,12 @@ module('Acceptance: Infinity Route', function (hooks) {
     assert.strictEqual(
       postList.querySelector('li').textContent,
       'Squarepusher',
-      "First item should be 'Squarepusher'"
+      "First item should be 'Squarepusher'",
     );
     assert.strictEqual(
       postList.querySelectorAll('li').length,
       2,
-      'List length is 2'
+      'List length is 2',
     );
   });
 });

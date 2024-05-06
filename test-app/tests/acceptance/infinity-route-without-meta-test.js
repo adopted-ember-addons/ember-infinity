@@ -27,7 +27,6 @@ module('Acceptance: Infinity Route', function (hooks) {
   });
 
   test('it works when meta is not present in payload', async function (assert) {
-    assert.expect(3);
     await visit('/test');
 
     await assertDetails(assert, {

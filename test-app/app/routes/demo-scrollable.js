@@ -23,7 +23,7 @@ export default class DemoScrollableRoute extends Route {
     return this.infinity.model(
       'post',
       {},
-      ExtendedInfinityModel.extend({ global })
+      ExtendedInfinityModel.extend({ global }),
     );
   }
 }

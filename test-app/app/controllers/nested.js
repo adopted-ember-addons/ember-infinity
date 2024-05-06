@@ -33,7 +33,7 @@ export default class NestedController extends Controller {
   */
   @action
   filterPosts(posts) {
-    let arr = posts.toArray();
+    let arr = posts.slice();
     let splitPosts = arr.filter((x) => x.get('name').includes('a'));
     this.infinity.replace(this.model, splitPosts);
   }

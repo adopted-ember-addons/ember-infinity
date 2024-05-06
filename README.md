@@ -411,11 +411,11 @@ const ExtendedInfinityModel = InfinityModel.extend({
     return params;
   },
   afterInfinityModel(posts) {
-    let loadedAny = posts.get('length') > 0;
+    let loadedAny = posts.length > 0;
     this.set('canLoadMore', loadedAny);
 
-    this.set('_minId', posts.get('lastObject.id'));
-    this.set('_minUpdatedAt', posts.get('lastObject.updated_at').toISOString());
+    this.set('_minId', posts.lastObject.id);
+    this.set('_minUpdatedAt', posts.lastObject.updated_at.toISOString());
   }
 });
 
