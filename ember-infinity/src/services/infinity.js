@@ -1,6 +1,6 @@
 import Service from '@ember/service';
-import InfinityModel from 'ember-infinity/lib/infinity-model';
-import InfinityPromiseArray from 'ember-infinity/lib/infinity-promise-array';
+import InfinityModel from '../lib/infinity-model';
+import InfinityPromiseArray from '../lib/infinity-promise-array';
 import { getOwner } from '@ember/application';
 import { A } from '@ember/array';
 import { typeOf } from '@ember/utils';

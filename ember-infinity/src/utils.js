@@ -1,5 +1,5 @@
 import { get } from '@ember/object';
-import InfinityModel from 'ember-infinity/lib/infinity-model';
+import InfinityModel from './lib/infinity-model';
 
 export let objectAssign =
   Object.assign ||

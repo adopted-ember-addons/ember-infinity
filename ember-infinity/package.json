@@ -35,16 +35,19 @@
   },
   "repository": "https://github.com/ember-infinity/ember-infinity",
   "scripts": {
-    "build": "rollup --config",
-    "prepublishOnly": "rollup --config",
     "start": "rollup --config --watch",
-    "lint": "concurrently \"npm:lint:*(!fix)\" --names \"lint:\"",
-    "lint:fix": "concurrently \"npm:lint:*:fix\" --names \"fix:\"",
-    "lint:hbs": "ember-template-lint .",
-    "lint:hbs:fix": "ember-template-lint . --fix",
+    "build": "concurrently 'pnpm:build:*'",
+    "build:js": "rollup --config",
+    "prepublishOnly": "rollup --config",
+    "lint": "concurrently 'pnpm:lint:*(!fix)' --names 'lint:'",
+    "lint:fix": "concurrently 'pnpm:lint:*:fix' --names 'fix:'",
+    "lint:hbs": "ember-template-lint . --no-error-on-unmatched-pattern",
+    "lint:hbs:fix": "ember-template-lint . --fix --no-error-on-unmatched-pattern",
     "lint:js": "eslint . --cache",
     "lint:js:fix": "eslint . --fix",
-    "test": "concurrently \"npm:lint\" \"npm:test:*\" --names \"lint,test:\""
+    "test": "echo 'A v2 addon does not have tests, run tests in test-app'",
+    "prepack": "pnpm run build",
+    "prepare": "pnpm run build"
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.8.7",

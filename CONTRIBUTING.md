@@ -4,13 +4,13 @@
 
 - `git clone <repository-url>`
 - `cd ember-infinity`
-- `npm run install`
+- `pnpm install`
 
 ## Linting
 
-- `npm run lint:hbs`
-- `npm run lint:js`
-- `npm run lint:js --fix`
+- `pnpm run lint:hbs`
+- `pnpm run lint:js`
+- `pnpm run lint:js --fix`
 
 ## Running tests
 

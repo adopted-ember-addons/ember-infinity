@@ -8,7 +8,7 @@ import json from '../helpers/json';
 function generateFakeData(qty) {
   let data = [];
   for (let i = 0; i < qty; i++) {
-    data.push({ id: i, name: () => faker.company.name() });
+    data.push({ id: i, name: faker.company.name() });
   }
   return data;
 }
