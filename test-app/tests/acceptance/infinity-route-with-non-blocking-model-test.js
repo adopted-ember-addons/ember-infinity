@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { visit } from '@ember/test-helpers';
+import { visit, teardownContext } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import assertDetails from '../helpers/assert-acceptance-details';
@@ -50,12 +50,14 @@ module('Acceptance: Infinity Route - non blocking', function (hooks) {
 
   test('it renders items with non-blocking component with custom meta params', async function (assert) {
     assert.expect(3);
-    await visit('/nested-component-with-custom-params');
+    visit('/nested-component-with-custom-params');
 
     await assertDetails(assert, {
       title: 'Non Blocking Component Test',
       listLength: 10,
       reachedInfinity: false,
     });
+
+    await teardownContext(this);
   });
 });
