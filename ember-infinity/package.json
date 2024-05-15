@@ -74,9 +74,6 @@
   "peerDependencies": {
     "ember-source": ">= 3.28.0"
   },
-  "engines": {
-    "node": ">= 18"
-  },
   "ember": {
     "edition": "octane"
   }
