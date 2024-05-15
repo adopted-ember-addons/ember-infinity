@@ -4,7 +4,7 @@
 [![npm version](https://badge.fury.io/js/ember-infinity.svg)](http://badge.fury.io/js/ember-infinity)
 [![Ember Observer Score](http://emberobserver.com/badges/ember-infinity.svg)](http://emberobserver.com/addons/ember-infinity)
 
-Demo: [ember-infinity.github.io/ember-infinity/](https://ember-infinity.github.io/ember-infinity/)
+Demo: [ember-adopted-addons.github.io/ember-infinity/](https://ember-adopted-addons.github.io/ember-infinity/)
 
 Simple, flexible infinite scrolling for Ember CLI Apps. Works out of the box
 with the [Kaminari Gem](https://github.com/amatsuda/kaminari.git).
@@ -41,7 +41,7 @@ We test against `ember-source >= 3.28`. Try out `v2.0.0`. If it doesn't work or 
 
 2. **infinity-loader component**
 
-3. **Route Mixin** (deprecated and removed as of 1.1). If you still want to upgrade, but keep your Route mixins, install `1.0.2`. See old docs (here)[https://github.com/ember-infinity/ember-infinity/blob/2e0cb02e5845a97cad8783893cd7f4ddcf5dc5a7/README.md]
+3. **Route Mixin** (deprecated and removed as of 1.1). If you still want to upgrade, but keep your Route mixins, install `1.0.2`. See old docs (here)[https://github.com/ember-adopted-addons/ember-infinity/blob/2e0cb02e5845a97cad8783893cd7f4ddcf5dc5a7/README.md]
 
 ### Service Component Approach
 
