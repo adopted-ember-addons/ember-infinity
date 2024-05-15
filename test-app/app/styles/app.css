@@ -32,6 +32,10 @@ body {
   right: 0;
 }
 
+.github-fork-ribbon::before {
+  background-color: purple;
+}
+
 .jumbo-header {
   color: #fff;
   background: purple;

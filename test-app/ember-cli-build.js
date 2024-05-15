@@ -19,6 +19,9 @@ module.exports = function (defaults) {
     behave. You most likely want to be modifying `./index.js` or app's build file
   */
 
+  // Import the CSS file
+  app.import('node_modules/github-fork-ribbon-css/gh-fork-ribbon.css');
+
   const { maybeEmbroider } = require('@embroider/test-setup');
   return maybeEmbroider(app);
 };
