@@ -34,7 +34,7 @@ Also:
 
 `ember install ember-infinity`
 
-We test against `ember-source > 3.28`. Try out `v2.0.0`. If it doesn't work or you don't have the right polyfills because you are on an older Ember version, then `v1.4.9` will be your best bet.
+We test against `ember-source >= 3.28`. Try out `v2.0.0`. If it doesn't work or you don't have the right polyfills because you are on an older Ember version, then `v1.4.9` will be your best bet.
 
 ## Basic Usage
 
