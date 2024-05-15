@@ -1,0 +1,23 @@
+{{#if this.shouldShow}}
+  <div
+    {{did-insert this.didInsertLoader this}}
+    {{did-update this._initialInfinityModelSetup @infinityModel}}
+    {{did-update this._loadStatusDidChange @hideOnInfinity}}
+    {{did-update this._loadStatusDidChange @reachedInfinity}}
+    class="{{this.loaderClassNames}}{{if this.viewportEntered ' in-viewport'}}{{if
+        this.isDoneLoading
+        ' reached-infinity'
+      }}"
+    data-test-infinity-loader
+  >
+    {{#if (has-block)}}
+      {{yield this.infinityModelContent}}
+    {{else}}
+      {{#if this.isDoneLoading}}
+        <span>{{this.loadedText}}</span>
+      {{else}}
+        <span>{{this.loadingText}}</span>
+      {{/if}}
+    {{/if}}
+  </div>
+{{/if}}
