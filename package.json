@@ -22,5 +22,10 @@
   },
   "engines": {
     "node": ">= 18"
+  },
+  "pnpm": {
+    "overrides": {
+      "github-changelog": "github:embroider-build/github-changelog#first-parent-only"
+    }
   }
 }
