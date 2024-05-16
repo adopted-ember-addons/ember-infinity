@@ -18,6 +18,11 @@ module.exports = function (environment) {
       // Here you can pass flags/options to your application instance
       // when it is created
     },
+
+    // Always turn on mirage for the demo app
+    'ember-cli-mirage': {
+      enabled: true
+    }
   };
 
   if (environment === 'development') {
