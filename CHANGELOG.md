@@ -1,5 +1,36 @@
 # Changelog
 
+## Release (2024-05-16)
+
+ember-infinity 3.0.0 (major)
+
+#### :boom: Breaking Change
+* `ember-infinity`, `test-app`
+  * [#470](https://github.com/adopted-ember-addons/ember-infinity/pull/470) Upgrade to Ember 5 and convert to a v2 addon ([@wozny1989](https://github.com/wozny1989))
+
+#### :bug: Bug Fix
+* [#468](https://github.com/adopted-ember-addons/ember-infinity/pull/468) Fix isVisible deprecation ([@smercadomx](https://github.com/smercadomx))
+
+#### :house: Internal
+* Other
+  * [#484](https://github.com/adopted-ember-addons/ember-infinity/pull/484) swap override for patched package ([@mansona](https://github.com/mansona))
+  * [#478](https://github.com/adopted-ember-addons/ember-infinity/pull/478) add an action to release demo site ([@mansona](https://github.com/mansona))
+  * [#479](https://github.com/adopted-ember-addons/ember-infinity/pull/479) fix pnpm version for release-plan ([@mansona](https://github.com/mansona))
+  * [#476](https://github.com/adopted-ember-addons/ember-infinity/pull/476) setup release-plan ([@mansona](https://github.com/mansona))
+* `test-app`
+  * [#483](https://github.com/adopted-ember-addons/ember-infinity/pull/483) fix issue with github-changelog ([@mansona](https://github.com/mansona))
+  * [#482](https://github.com/adopted-ember-addons/ember-infinity/pull/482) turn on mirage for production deploy of demo app ([@mansona](https://github.com/mansona))
+  * [#481](https://github.com/adopted-ember-addons/ember-infinity/pull/481) fix root-url for github pages ([@mansona](https://github.com/mansona))
+  * [#477](https://github.com/adopted-ember-addons/ember-infinity/pull/477) Update test/demo app ([@jahrock](https://github.com/jahrock))
+* `ember-infinity`
+  * [#475](https://github.com/adopted-ember-addons/ember-infinity/pull/475) remove engine reference for Node 18 ([@mansona](https://github.com/mansona))
+
+#### Committers: 4
+- Adam Woźny ([@wozny1989](https://github.com/wozny1989))
+- Chris Manson ([@mansona](https://github.com/mansona))
+- Jah Rock ([@jahrock](https://github.com/jahrock))
+- Sergio Mercado ([@smercadomx](https://github.com/smercadomx))
+
 ## [2.2.1](https://github.com/ember-infinity/ember-infinity/tree/v2.2.1) (2021-05-19)
 [Full Changelog](https://github.com/hhff/ember-infinity/compare/v2.1.0...v2.2.1)
 
