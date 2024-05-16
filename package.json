@@ -24,8 +24,8 @@
     "node": ">= 18"
   },
   "pnpm": {
-    "overrides": {
-      "github-changelog": "github:embroider-build/github-changelog#first-parent-only"
+    "patchedDependencies": {
+      "github-changelog@1.0.1": "patches/github-changelog@1.0.1.patch"
     }
   }
 }

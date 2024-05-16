@@ -1,0 +1,12 @@
+diff --git a/lib/git.js b/lib/git.js
+index b712bb439bed6c4c63360af7f5f2e7c51cfa613d..31de3ccb358a802b2a02c506473dc8cfdd7f36ad 100644
+--- a/lib/git.js
++++ b/lib/git.js
+@@ -51,6 +51,7 @@ function listCommits(from, to = "") {
+         "--oneline",
+         "--pretty=hash<%h> ref<%D> message<%s> date<%cd>",
+         "--date=short",
++        "--first-parent",
+         `${from}..${to}`,
+     ])
+         .stdout.split("\n")
