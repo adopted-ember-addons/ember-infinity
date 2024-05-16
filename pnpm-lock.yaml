@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  github-changelog: github:embroider-build/github-changelog#first-parent-only
+
 importers:
 
   .:
@@ -4143,8 +4146,9 @@ packages:
     resolution: {integrity: sha512-8aCohiDo4jwjOwma4FmYFd3i97urZulL8XL24nIPxuE+GZnfsAyy/g2Shqx6OjUiFKUXZM+Yy+KHnOmmA3FVcg==}
     engines: {node: '>= 4.0'}
 
-  github-changelog@1.0.1:
-    resolution: {integrity: sha512-MPGGRPOC1XY6XiZVDOBRSHNh52q47dTnwr/xfhtruUKsgq1tYWU/i/8GfQmzHa9smGxU3aiUWCu0gV9QROZq3A==}
+  github-changelog@https://codeload.github.com/embroider-build/github-changelog/tar.gz/a2007ebfbb4f3971ee3c7a5072c3d6b992c6e7b3:
+    resolution: {tarball: https://codeload.github.com/embroider-build/github-changelog/tar.gz/a2007ebfbb4f3971ee3c7a5072c3d6b992c6e7b3}
+    version: 1.0.1
     engines: {node: 12.* || 14.* || >= 16}
     hasBin: true
 
@@ -12829,7 +12833,7 @@ snapshots:
 
   git-repo-info@2.1.1: {}
 
-  github-changelog@1.0.1:
+  github-changelog@https://codeload.github.com/embroider-build/github-changelog/tar.gz/a2007ebfbb4f3971ee3c7a5072c3d6b992c6e7b3:
     dependencies:
       '@manypkg/get-packages': 2.2.1
       chalk: 4.1.2
@@ -14843,7 +14847,7 @@ snapshots:
       cli-highlight: 2.1.11
       execa: 4.1.0
       fs-extra: 10.1.0
-      github-changelog: 1.0.1
+      github-changelog: https://codeload.github.com/embroider-build/github-changelog/tar.gz/a2007ebfbb4f3971ee3c7a5072c3d6b992c6e7b3
       js-yaml: 4.1.0
       latest-version: 5.1.0
       parse-github-repo-url: 1.4.1
