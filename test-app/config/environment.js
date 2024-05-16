@@ -4,7 +4,7 @@ module.exports = function (environment) {
   const ENV = {
     modulePrefix: 'test-app',
     environment,
-    rootURL: '/',
+    rootURL: process.env.GITHUB_PAGES ? '/ember-infinity/' : '/',
     locationType: 'history',
     EmberENV: {
       EXTEND_PROTOTYPES: false,
