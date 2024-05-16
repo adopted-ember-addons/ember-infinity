@@ -21,8 +21,8 @@ module.exports = function (environment) {
 
     // Always turn on mirage for the demo app
     'ember-cli-mirage': {
-      enabled: true
-    }
+      enabled: true,
+    },
   };
 
   if (environment === 'development') {
