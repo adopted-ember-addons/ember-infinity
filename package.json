@@ -1,18 +1,25 @@
 {
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:adopted-ember-addons/ember-infinity.git"
+  },
+  "workspaces": [
+    "ember-infinity",
+    "test-app"
+  ],
   "scripts": {
     "build": "pnpm run --filter ember-infinity build",
     "lint": "pnpm run --filter '*' lint",
     "lint:fix": "pnpm run --filter '*' lint:fix",
     "prepare": "pnpm run build",
+    "start": "pnpm run --filter test-app start",
     "test:test-app": "pnpm run --filter test-app test:ember",
-    "test:test-app:ember-try": "pnpm run --filter test-app test:ember-try",
-    "start": "pnpm run --filter test-app start"
+    "test:test-app:ember-try": "pnpm run --filter test-app test:ember-try"
   },
-  "private": true,
-  "workspaces": [
-    "ember-infinity",
-    "test-app"
-  ],
+  "devDependencies": {
+    "release-plan": "^0.9.0"
+  },
   "engines": {
     "node": ">= 18"
   }
