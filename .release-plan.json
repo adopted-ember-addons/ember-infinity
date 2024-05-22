@@ -1,0 +1,21 @@
+{
+  "solution": {
+    "ember-infinity": {
+      "impact": "major",
+      "oldVersion": "2.3.0",
+      "newVersion": "3.0.0",
+      "constraints": [
+        {
+          "impact": "major",
+          "reason": "Appears in changelog section :boom: Breaking Change"
+        },
+        {
+          "impact": "patch",
+          "reason": "Appears in changelog section :house: Internal"
+        }
+      ],
+      "pkgJSONPath": "./ember-infinity/package.json"
+    }
+  },
+  "description": "## Release (2024-05-16)\n\nember-infinity 3.0.0 (major)\n\n#### :boom: Breaking Change\n* `ember-infinity`, `test-app`\n  * [#470](https://github.com/adopted-ember-addons/ember-infinity/pull/470) Upgrade to Ember 5 and convert to a v2 addon ([@wozny1989](https://github.com/wozny1989))\n\n#### :bug: Bug Fix\n* [#468](https://github.com/adopted-ember-addons/ember-infinity/pull/468) Fix isVisible deprecation ([@smercadomx](https://github.com/smercadomx))\n\n#### :house: Internal\n* Other\n  * [#484](https://github.com/adopted-ember-addons/ember-infinity/pull/484) swap override for patched package ([@mansona](https://github.com/mansona))\n  * [#478](https://github.com/adopted-ember-addons/ember-infinity/pull/478) add an action to release demo site ([@mansona](https://github.com/mansona))\n  * [#479](https://github.com/adopted-ember-addons/ember-infinity/pull/479) fix pnpm version for release-plan ([@mansona](https://github.com/mansona))\n  * [#476](https://github.com/adopted-ember-addons/ember-infinity/pull/476) setup release-plan ([@mansona](https://github.com/mansona))\n* `test-app`\n  * [#483](https://github.com/adopted-ember-addons/ember-infinity/pull/483) fix issue with github-changelog ([@mansona](https://github.com/mansona))\n  * [#482](https://github.com/adopted-ember-addons/ember-infinity/pull/482) turn on mirage for production deploy of demo app ([@mansona](https://github.com/mansona))\n  * [#481](https://github.com/adopted-ember-addons/ember-infinity/pull/481) fix root-url for github pages ([@mansona](https://github.com/mansona))\n  * [#477](https://github.com/adopted-ember-addons/ember-infinity/pull/477) Update test/demo app ([@jahrock](https://github.com/jahrock))\n* `ember-infinity`\n  * [#475](https://github.com/adopted-ember-addons/ember-infinity/pull/475) remove engine reference for Node 18 ([@mansona](https://github.com/mansona))\n\n#### Committers: 4\n- Adam Woźny ([@wozny1989](https://github.com/wozny1989))\n- Chris Manson ([@mansona](https://github.com/mansona))\n- Jah Rock ([@jahrock](https://github.com/jahrock))\n- Sergio Mercado ([@smercadomx](https://github.com/smercadomx))\n"
+}
