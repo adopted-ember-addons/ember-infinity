@@ -177,7 +177,7 @@ export default class InfinityLoaderComponent extends Component {
     this._cancelTimers();
 
     this.infinityModelContent.then((infinityModel) => {
-      if (!this.isDestroyed) {
+      if (!this.isDestroyed && !this.isDestroying) {
         infinityModel.off(
           'infinityModelLoaded',
           this,
