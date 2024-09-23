@@ -1,5 +1,20 @@
 # Changelog
 
+## Release (2024-09-23)
+
+ember-infinity 3.0.1 (patch)
+
+#### :bug: Bug Fix
+* `ember-infinity`
+  * [#486](https://github.com/adopted-ember-addons/ember-infinity/pull/486) Account for isDestroying state on InfinityLoaderComponent ([@trevordevore](https://github.com/trevordevore))
+
+#### :house: Internal
+* [#488](https://github.com/adopted-ember-addons/ember-infinity/pull/488) Update plan-release.yml to support labeling after merge ([@kategengler](https://github.com/kategengler))
+
+#### Committers: 2
+- Katie Gengler ([@kategengler](https://github.com/kategengler))
+- Trevor DeVore ([@trevordevore](https://github.com/trevordevore))
+
 ## Release (2024-05-16)
 
 ember-infinity 3.0.0 (major)
