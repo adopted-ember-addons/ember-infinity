@@ -176,6 +176,8 @@ export default class InfinityLoaderComponent extends Component {
     super.willDestroy(...arguments);
     this._cancelTimers();
 
+    this.inViewport.stopWatching(this.elem);
+
     this.infinityModelContent.then((infinityModel) => {
       if (!this.isDestroyed && !this.isDestroying) {
         infinityModel.off(
