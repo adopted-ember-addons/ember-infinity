@@ -2,8 +2,8 @@
   "solution": {
     "ember-infinity": {
       "impact": "patch",
-      "oldVersion": "3.0.0",
-      "newVersion": "3.0.1",
+      "oldVersion": "3.0.1",
+      "newVersion": "3.0.2",
       "constraints": [
         {
           "impact": "patch",
@@ -13,5 +13,5 @@
       "pkgJSONPath": "./ember-infinity/package.json"
     }
   },
-  "description": "## Release (2024-09-23)\n\nember-infinity 3.0.1 (patch)\n\n#### :bug: Bug Fix\n* `ember-infinity`\n  * [#486](https://github.com/adopted-ember-addons/ember-infinity/pull/486) Account for isDestroying state on InfinityLoaderComponent ([@trevordevore](https://github.com/trevordevore))\n\n#### :house: Internal\n* [#488](https://github.com/adopted-ember-addons/ember-infinity/pull/488) Update plan-release.yml to support labeling after merge ([@kategengler](https://github.com/kategengler))\n\n#### Committers: 2\n- Katie Gengler ([@kategengler](https://github.com/kategengler))\n- Trevor DeVore ([@trevordevore](https://github.com/trevordevore))\n"
+  "description": "## Release (2025-04-29)\n\nember-infinity 3.0.2 (patch)\n\n#### :bug: Bug Fix\n* `ember-infinity`, `test-app`\n  * [#490](https://github.com/adopted-ember-addons/ember-infinity/pull/490) Fix infinity-loader not updating model when infinity reached ([@robinborst95](https://github.com/robinborst95))\n\n#### Committers: 1\n- Robin Borst  ([@robinborst95](https://github.com/robinborst95))\n"
 }
