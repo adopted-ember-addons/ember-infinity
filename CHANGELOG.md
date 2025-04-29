@@ -1,5 +1,16 @@
 # Changelog
 
+## Release (2025-04-29)
+
+ember-infinity 3.0.2 (patch)
+
+#### :bug: Bug Fix
+* `ember-infinity`, `test-app`
+  * [#490](https://github.com/adopted-ember-addons/ember-infinity/pull/490) Fix infinity-loader not updating model when infinity reached ([@robinborst95](https://github.com/robinborst95))
+
+#### Committers: 1
+- Robin Borst  ([@robinborst95](https://github.com/robinborst95))
+
 ## Release (2024-09-23)
 
 ember-infinity 3.0.1 (patch)
