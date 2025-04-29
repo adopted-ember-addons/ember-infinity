@@ -66,6 +66,40 @@ module('infinity-loader', function (hooks) {
     assert.notOk(find('[data-test-infinity-loader]'), 'Element is not found');
   });
 
+  test('hideOnInfinity works when reached infinity and changing model', async function (assert) {
+    this.infinityModel = {
+      name: 'dot',
+      reachedInfinity: true,
+      on: () => {},
+      off: () => {},
+    };
+    await render(hbs`
+      <InfinityLoader
+        @infinityModel={{this.infinityModel}}
+        @hideOnInfinity={{true}}
+        @infinity={{this.infinityServiceMock}}
+      />
+    `);
+
+    assert.notOk(find('[data-test-infinity-loader]'), 'Loader is not shown');
+
+    run(() => {
+      set(this, 'infinityModel', {
+        name: 'dot2',
+        reachedInfinity: false,
+        on: () => {},
+        off: () => {},
+      });
+    });
+
+    await waitUntil(
+      () => {
+        return find('[data-test-infinity-loader]') != null;
+      },
+      { timeoutMessage: 'Loader is shown' },
+    );
+  });
+
   test('hideOnInfinity does not work if hideOnInfinity=false', async function (assert) {
     this.infinityModel = {
       name: 'dot',
