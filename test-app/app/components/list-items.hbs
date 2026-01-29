@@ -1,0 +1,11 @@
+<div class="list-items" ...attributes>
+  <ul class="demo-items">
+    <button type="button" class="filter-posts" onclick={{fn @filterPosts @model}}>Filter Posts</button>
+    <button type="button" class="flush-posts" onclick={{fn @flushPosts @model}}>Flush Posts</button>
+    {{#each @model as |item|}}
+      <li>{{item.id}} · {{item.name}}</li>
+    {{/each}}
+
+    <InfinityLoader @infinityModel={{@model}} />
+  </ul>
+</div>
