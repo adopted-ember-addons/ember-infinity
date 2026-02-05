@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request: {}
+
+concurrency:
+  group: ci-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: 'Tests'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: pnpm run lint
+        working-directory: ember-infinity
+      - name: Lint Test App
+        run: pnpm run lint
+        working-directory: test-app
+      - name: Run Tests
+        run: pnpm run test:test-app
+
+  floating:
+    name: 'Floating Dependencies'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run Tests
+        run: pnpm run test:test-app
+
+  try-scenarios:
+    name: ${{ matrix.try-scenario }}
+    runs-on: ubuntu-latest
+    needs: 'test'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        try-scenario:
+          - ember-classic
+          - ember-lts-3.28
+          - ember-lts-4.4
+          - ember-lts-4.8
+          - ember-lts-4.12
+          - ember-lts-5.4
+          - ember-lts-5.8
+          - ember-release
+          - ember-beta
+          - ember-canary
+          - embroider-safe
+          - embroider-optimized
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run Tests
+        env:
+          EMBER_TRY_SCENARIO: ${{ matrix.try-scenario }}
+        run: npm run test:test-app:ember-try $EMBER_TRY_SCENARIO
