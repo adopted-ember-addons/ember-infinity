@@ -1,0 +1,17 @@
+{
+  "solution": {
+    "ember-infinity": {
+      "impact": "patch",
+      "oldVersion": "3.0.1",
+      "newVersion": "3.0.2",
+      "constraints": [
+        {
+          "impact": "patch",
+          "reason": "Appears in changelog section :bug: Bug Fix"
+        }
+      ],
+      "pkgJSONPath": "./ember-infinity/package.json"
+    }
+  },
+  "description": "## Release (2025-04-29)\n\nember-infinity 3.0.2 (patch)\n\n#### :bug: Bug Fix\n* `ember-infinity`, `test-app`\n  * [#490](https://github.com/adopted-ember-addons/ember-infinity/pull/490) Fix infinity-loader not updating model when infinity reached ([@robinborst95](https://github.com/robinborst95))\n\n#### Committers: 1\n- Robin Borst  ([@robinborst95](https://github.com/robinborst95))\n"
+}
